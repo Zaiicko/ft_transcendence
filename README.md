@@ -1,6 +1,6 @@
 # front end
 
-ouvret les fichier sur le site internet excalidraw
+ouvrez les fichier sur le site internet excalidraw
 
 # image
 
