@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Secrets — NEVER commit credentials (immediate project failure)
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# TLS certificates (generated locally)
+nginx/ssl/
+
+# Logs & misc
+*.log
+.DS_Store
+
+# 42 evaluation sheet (local only)
+correction_sheet.txt

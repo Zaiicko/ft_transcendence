@@ -1,0 +1,215 @@
+// Saveboxd database schema — PostgreSQL via Prisma.
+// Sync in dev with `npx prisma db push` (done automatically at container start).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enums ----------
+
+enum AuthProvider {
+  LOCAL
+  FORTYTWO
+  GOOGLE
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+}
+
+enum PlayStatus {
+  PLAYED
+  PLAYING
+  BACKLOG
+}
+
+enum NotificationType {
+  FRIEND_REQUEST
+  FRIEND_ACCEPT
+  REVIEW_LIKE
+  NEW_MESSAGE
+}
+
+// ---------- Users & social ----------
+
+model User {
+  id               Int          @id @default(autoincrement())
+  email            String       @unique
+  username         String       @unique
+  // Null for OAuth-only accounts
+  passwordHash     String?
+  avatarUrl        String?
+  bio              String?
+  provider         AuthProvider @default(LOCAL)
+  providerId       String?
+  steamId          String?      @unique
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean      @default(false)
+  language         String       @default("en")
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  reviews            Review[]
+  reviewLikes        ReviewLike[]
+  playedGames        PlayedGame[]
+  gameLists          GameList[]
+  sentFriendships    Friendship[]   @relation("FriendshipRequester")
+  receivedFriendships Friendship[]  @relation("FriendshipAddressee")
+  sentMessages       Message[]      @relation("MessageSender")
+  receivedMessages   Message[]      @relation("MessageRecipient")
+  notifications      Notification[]
+}
+
+model Friendship {
+  id          Int              @id @default(autoincrement())
+  requester   User             @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId Int
+  addressee   User             @relation("FriendshipAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  addresseeId Int
+  status      FriendshipStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+
+  @@unique([requesterId, addresseeId])
+}
+
+// ---------- Game catalog (imported from IGDB) ----------
+
+model Game {
+  id          Int       @id @default(autoincrement())
+  igdbId      Int       @unique
+  title       String
+  summary     String?
+  releaseDate DateTime?
+  coverUrl    String?
+  screenshots String[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  genres    Genre[]
+  platforms Platform[]
+  companies Company[]
+
+  reviews   Review[]
+  playedBy  PlayedGame[]
+  listItems GameListItem[]
+}
+
+model Genre {
+  id     Int    @id @default(autoincrement())
+  igdbId Int    @unique
+  name   String
+  games  Game[]
+}
+
+model Platform {
+  id     Int    @id @default(autoincrement())
+  igdbId Int    @unique
+  name   String
+  games  Game[]
+}
+
+model Company {
+  id     Int    @id @default(autoincrement())
+  igdbId Int    @unique
+  name   String
+  games  Game[]
+}
+
+// ---------- Reviews & activity ----------
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId    Int
+  // 0–10 (displayed as 5 stars with halves)
+  rating    Int
+  text      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  likes ReviewLike[]
+
+  // One review per user per game; the game's average rating is computed from these
+  @@unique([userId, gameId])
+}
+
+model ReviewLike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, reviewId])
+}
+
+// "Done" status + date — feeds the yearly calendar and the per-game heart count
+model PlayedGame {
+  id       Int        @id @default(autoincrement())
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  game     Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId   Int
+  status   PlayStatus
+  playedAt DateTime?
+
+  @@unique([userId, gameId])
+}
+
+// ---------- Custom lists ("ranked games", "horror games", ...) ----------
+
+model GameList {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  name      String
+  createdAt DateTime @default(now())
+
+  items GameListItem[]
+
+  @@unique([userId, name])
+}
+
+model GameListItem {
+  id       Int      @id @default(autoincrement())
+  list     GameList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId   Int
+  game     Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId   Int
+  position Int      @default(0)
+
+  @@unique([listId, gameId])
+}
+
+// ---------- Chat & notifications ----------
+
+model Message {
+  id          Int       @id @default(autoincrement())
+  sender      User      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId    Int
+  recipient   User      @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  recipientId Int
+  content     String
+  readAt      DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  type      NotificationType
+  // Contextual data (who liked, which review, ...)
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+}

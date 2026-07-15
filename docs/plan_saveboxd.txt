@@ -1,0 +1,151 @@
+================================================================================
+ PLAN ft_transcendence — "Letterboxd des jeux vidéo" (Saveboxd)
+================================================================================
+
+CONTEXTE
+--------
+Projet final du tronc commun 42 (sujet v21.1), équipe de 5 personnes.
+L'idée : un réseau social de notation/critique de jeux vidéo (type Letterboxd).
+Le sujet impose une web app (front + back + BDD), un déploiement conteneurisé
+en une commande, et 14 points de modules minimum (on vise 17 pour avoir de la
+marge, comme recommandé par le sujet).
+
+STACK TECHNIQUE (validée)
+-------------------------
+- Frontend  : React 19 + TypeScript + Vite + Tailwind CSS (exigence "CSS
+              framework" de la correction sheet) + react-router + react-i18next
+- Backend   : NestJS (TypeScript) + Prisma (ORM) + Swagger (doc API)
+              + WebSockets (Socket.IO via @nestjs/websockets)
+- BDD       : PostgreSQL
+- Proxy     : nginx avec TLS (certificat auto-signé) -> HTTPS obligatoire pour
+              toute connexion navigateur->backend
+- Data jeux : API IGDB (Twitch) — script de synchronisation qui importe
+              jeux/genres/studios/plateformes/images dans notre propre BDD
+- Déploiement : docker-compose, une seule commande (make)
+
+SÉLECTION DES MODULES — 17 POINTS VISÉS (14 requis)
+---------------------------------------------------
+Cœur (14 pts) — tous s'alignent sur les features déjà imaginées :
+
+  [Majeur 2pts] Framework front + back (React + NestJS)
+  [Majeur 2pts] Interaction entre utilisateurs (chat + profils + amis)
+                -> amis/profils déjà prévus, chat basique ajouté
+  [Majeur 2pts] Temps réel via WebSockets
+                -> chat live, notifications live, feed amis en direct
+  [Majeur 2pts] User management standard (profil éditable, avatar upload +
+                défaut, amis, statut en ligne)
+  [Majeur 2pts] Système de recommandation (content-based)
+                -> suggestions par genre/studio des jeux aimés
+  [Mineur 1pt ] OAuth 2.0 (42 intra + Google)
+  [Mineur 1pt ] ORM (Prisma)
+  [Mineur 1pt ] Recherche avancée (filtres, tri, pagination du catalogue)
+                -> tri par rating/plateforme/genre/plus fait
+  [Mineur 1pt ] Système de notifications (likes, demandes d'ami, messages)
+
+Marge de sécurité (+3 pts) :
+
+  [Mineur 1pt ] 2FA (TOTP, type Google Authenticator)
+  [Mineur 1pt ] Multi-langues (i18n, >= 3 langues : FR/EN/ES)
+  [Mineur 1pt ] GDPR (export de ses données, suppression de compte)
+
+TOTAL : 17 pts. Si un module saute à la correction, on reste >= 14.
+Extensions possibles plus tard (bonus max +5) : API publique avec clé + rate
+limiting (majeur, quasi gratuit avec NestJS/Swagger), gamification
+(badges/classements), dashboard analytics.
+
+!! STEAM : le login Steam est de l'OpenID 2.0, pas du OAuth 2.0 — il ne compte
+pas de façon sûre pour le module OAuth (d'où 42 + Google). On garde Steam comme
+feature bonus (liaison de compte : import de la bibliothèque à noter +
+suggestions d'amis Steam), justifiable en "module of choice" mineur si le
+temps le permet.
+
+SCHÉMA BDD (Prisma / PostgreSQL)
+--------------------------------
+- User         : email, username, passwordHash (argon2), avatarUrl, bio,
+                 twoFactorSecret?, provider (local/42/google), steamId?, langue
+- Friendship   : requester -> addressee, status (pending/accepted)
+- Game         : igdbId, titre, description, releaseDate, coverUrl,
+                 screenshots[], studios, créateurs — importé d'IGDB
+- Genre / Platform / Company + jointures avec Game
+- Review       : user x game, note (0-10), texte — unique(user, game) ;
+                 la moyenne du jeu est calculée dessus
+- ReviewLike   : user x review — unique, pour le tri "plus likés"
+- PlayedGame   : user x game, status (played/playing/backlog), playedAt
+                 (-> calendrier de l'année) ; le "coeur" (nb de personnes
+                 l'ayant fait) se calcule dessus
+- GameList + GameListItem : listes personnalisées nommées par l'user
+                 ("ranked games", "horror games"...)
+- Message      : chat (sender, recipient, contenu, lu/non-lu)
+- Notification : type (like, ami, message...), payload, lu/non-lu
+
+ARCHITECTURE DU REPO (monorepo)
+-------------------------------
+ft_transcendence/
+├── docker-compose.yml, Makefile
+├── .env (gitignoré) + .env.example   <- credential dans le repo = échec immédiat
+├── nginx/      (TLS, reverse proxy /api -> backend, / -> frontend)
+├── backend/    (NestJS : modules auth, users, friends, games, reviews, lists,
+│                chat, notifications, recommendations, gdpr + prisma/)
+├── frontend/   (React : accueil, catalogue+recherche, fiche jeu, profil,
+│                feed social, listes, calendrier, chat, settings,
+│                privacy-policy, terms-of-service)
+└── docs/       (maquettes + schéma BDD + ce plan)
+
+PHASES DE RÉALISATION & RÉPARTITION (5 personnes)
+--------------------------------------------------
+Rôles à assigner (documentés dans le README) : PO, PM/Scrum Master, Tech Lead,
+tous Devs.
+
+Phase 0 — Fondations (ensemble)  [FAIT — branche setup]
+  Structure du repo, docker-compose (nginx TLS + postgres + back + front),
+  Prisma + schéma initial, squelette React (routing, layout Tailwind),
+  conventions git (branches main protégée / dev / feature/*, commits clairs —
+  la correction vérifie les commits de TOUS les membres).
+
+Phase 1 — Socle (1 chantier par personne)
+  Dev A : auth email/password (argon2, JWT cookie httpOnly, validation front
+          ET back)
+  Dev B : import IGDB -> BDD (script de seed + sync)
+  Dev C : catalogue + fiche jeu + recherche avancée (filtres/tri/pagination)
+  Dev D : profils, avatar upload, système d'amis + statut en ligne
+  Dev E : reviews (note, texte, moyenne, likes, tri) + statut "fait"/coeurs
+
+Phase 2 — Social & temps réel
+  Chat + WebSockets + notifications (1-2 devs), gamelists + calendrier,
+  feed des avis des amis, OAuth 42/Google.
+
+Phase 3 — Modules restants
+  Recommandations, 2FA, i18n (FR/EN/ES), GDPR, (Steam si temps).
+
+Phase 4 — Conformité soutenance
+  Pages Privacy Policy + Terms of Service avec vrai contenu accessibles depuis
+  le footer (rejet sinon), zéro erreur/warning console Chrome, responsive
+  mobile+desktop, tests multi-utilisateurs simultanés (pas de race condition
+  sur les likes -> contraintes uniques + transactions), README complet.
+
+POINTS DE VIGILANCE (sujet + correction sheet)
+----------------------------------------------
+1. README.md = grosse partie de l'éval : 1re ligne italique "This project has
+   been created as part of the 42 curriculum by <logins>", Description,
+   Instructions, Resources + usage de l'IA documenté, rôles de l'équipe,
+   gestion de projet, stack justifiée, schéma BDD, features + qui a fait quoi,
+   modules + calcul des points, contributions individuelles. En anglais.
+2. Chaque membre doit comprendre TOUT le projet (la correction interroge
+   chacun individuellement + petite modification de code en live possible).
+   L'IA ne doit générer que du code que vous savez expliquer.
+3. Secrets : IGDB client secret, JWT secret, OAuth secrets -> uniquement dans
+   .env gitignoré ; un secret commité = échec immédiat.
+4. Validation des entrées front ET back (la correction teste SQLi/XSS), mots
+   de passe hashés+salés, HTTPS partout.
+5. Multi-user simultané obligatoire (mandatory), déploiement en UNE commande.
+
+VÉRIFICATION DE BOUT EN BOUT (avant soutenance)
+-----------------------------------------------
+- make -> tout démarre, app accessible en HTTPS (https://localhost:8443)
+- Parcours complet : signup email -> login -> noter un jeu -> review visible +
+  moyenne mise à jour -> like -> notification temps réel chez l'autre user ->
+  chat entre 2 navigateurs
+- 2 navigateurs en parallèle pour valider le multi-user et le temps réel
+- Console Chrome vide (0 erreur/warning), test responsive (mobile + desktop)
+- Checklist finale = dérouler correction_sheet.txt point par point
+================================================================================
