@@ -55,9 +55,13 @@ model User {
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
-  reviews            Review[]
-  reviewLikes        ReviewLike[]
-  playedGames        PlayedGame[]
+  reviews               Review[]
+  reviewLikes           ReviewLike[]
+  reviewDislikes        ReviewDislike[]
+  reviewComments        ReviewComment[]
+  reviewCommentLikes    ReviewCommentLike[]
+  reviewCommentDislikes ReviewCommentDislike[]
+  playedGames           PlayedGame[]
   gameLists          GameList[]
   sentFriendships    Friendship[]   @relation("FriendshipRequester")
   receivedFriendships Friendship[]  @relation("FriendshipAddressee")
@@ -129,13 +133,17 @@ model Review {
   userId    Int
   game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
   gameId    Int
+  // Short headline, e.g. "Rencontres du Pire Type !"
+  title     String
   // 0–10 (displayed as 5 stars with halves)
   rating    Int
-  text      String?
+  text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  likes ReviewLike[]
+  likes    ReviewLike[]
+  dislikes ReviewDislike[]
+  comments ReviewComment[]
 
   // One review per user per game; the game's average rating is computed from these
   @@unique([userId, gameId])
@@ -150,6 +158,62 @@ model ReviewLike {
   createdAt DateTime @default(now())
 
   @@unique([userId, reviewId])
+}
+
+// Like/dislike exclusivity is enforced in the service layer (transaction),
+// kept as two models so "popular" sorting stays a plain likes count
+model ReviewDislike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, reviewId])
+}
+
+// Threaded replies under a review — nested via parent/replies (Reddit-style)
+model ReviewComment {
+  id        Int      @id @default(autoincrement())
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  text      String
+
+  // Null parent = top-level comment on the review
+  parent    ReviewComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId  Int?
+  replies   ReviewComment[] @relation("CommentReplies")
+
+  likes    ReviewCommentLike[]
+  dislikes ReviewCommentDislike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReviewCommentLike {
+  id        Int           @id @default(autoincrement())
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   ReviewComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  createdAt DateTime      @default(now())
+
+  @@unique([userId, commentId])
+}
+
+model ReviewCommentDislike {
+  id        Int           @id @default(autoincrement())
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   ReviewComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  createdAt DateTime      @default(now())
+
+  @@unique([userId, commentId])
 }
 
 // "Done" status + date — feeds the yearly calendar and the per-game heart count
