@@ -7,8 +7,9 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
+    "seed": "ts-node src/seed.ts",
     "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio --hostname 0.0.0.0 --browser none"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -27,6 +28,7 @@
     "@types/node": "^22.10.0",
     "prisma": "^6.5.0",
     "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.0"
   }
 }
