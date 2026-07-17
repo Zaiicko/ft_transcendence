@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../../auth/current-user.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { OptionalUser } from '../../auth/optional-user.decorator';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { ListCommentsDto } from './dto/list-comments.dto';
 import { ReviewCommentsService } from './review-comments.service';
 
 @Controller('reviews/:reviewId/comments')
@@ -11,11 +13,16 @@ export class ReviewCommentsController {
   @Get()
   findAll(
     @Param('reviewId', ParseIntPipe) reviewId: number,
-    @Query('sort') sort: 'top' | 'recent' = 'top',
-    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20,
+    @Query() query: ListCommentsDto,
+    @OptionalUser() viewer?: { id: number },
   ) {
-    return this.commentsService.findForReview(reviewId, sort, page, limit);
+    return this.commentsService.findForReview(
+      reviewId,
+      query.sort,
+      query.page,
+      query.limit,
+      viewer?.id,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

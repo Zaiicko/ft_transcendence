@@ -12,13 +12,13 @@ import {
 export class JwtAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const debugUserId = request.headers['x-debug-user-id'];
-    if (!debugUserId) {
+    const id = Number(request.headers['x-debug-user-id']);
+    if (!Number.isInteger(id) || id <= 0) {
       throw new UnauthorizedException(
-        'Missing x-debug-user-id header (temporary stub — no AuthModule yet)',
+        'Missing or invalid x-debug-user-id header (temporary stub — no AuthModule yet)',
       );
     }
-    request.user = { id: parseInt(debugUserId, 10) };
+    request.user = { id };
     return true;
   }
 }

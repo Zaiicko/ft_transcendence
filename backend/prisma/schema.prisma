@@ -151,6 +151,9 @@ model Review {
 
   // One review per user per game; the game's average rating is computed from these
   @@unique([userId, gameId])
+  // Postgres does not index FK columns automatically, and the unique index
+  // above starts with userId — useless for WHERE gameId = ?
+  @@index([gameId])
 }
 
 model ReviewLike {
@@ -162,6 +165,7 @@ model ReviewLike {
   createdAt DateTime @default(now())
 
   @@unique([userId, reviewId])
+  @@index([reviewId])
 }
 
 // Like/dislike exclusivity is enforced in the service layer (transaction),
@@ -175,6 +179,7 @@ model ReviewDislike {
   createdAt DateTime @default(now())
 
   @@unique([userId, reviewId])
+  @@index([reviewId])
 }
 
 // Threaded replies under a review — nested via parent/replies (Reddit-style)
@@ -196,6 +201,11 @@ model ReviewComment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Covers both "top-level comments of a review" (reviewId + parentId null)
+  // and "replies of a comment" (parentId)
+  @@index([reviewId, parentId])
+  @@index([parentId])
 }
 
 model ReviewCommentLike {
@@ -207,6 +217,7 @@ model ReviewCommentLike {
   createdAt DateTime      @default(now())
 
   @@unique([userId, commentId])
+  @@index([commentId])
 }
 
 model ReviewCommentDislike {
@@ -218,6 +229,7 @@ model ReviewCommentDislike {
   createdAt DateTime      @default(now())
 
   @@unique([userId, commentId])
+  @@index([commentId])
 }
 
 // "Done" status + date — feeds the yearly calendar and the per-game heart count

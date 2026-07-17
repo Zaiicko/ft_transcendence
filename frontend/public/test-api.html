@@ -31,6 +31,8 @@
       background: #00ac1c; color: #fff; font: inherit; cursor: pointer;
     }
     button.secondary { background: #2c3440; }
+    /* green = the current user's own reaction */
+    button.mine { background: #00ac1c; color: #fff; }
     button.small { margin: 0; padding: 2px 9px; font-size: 0.78rem; }
     button:hover { filter: brightness(1.15); }
     .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
@@ -66,6 +68,27 @@
     #log .req { color: #58a6ff; }
     #log .ok { color: #3fb950; }
     #log .err { color: #f85149; }
+
+    #gameCard .game-head {
+      display: flex; gap: 16px; margin: 0 0 16px;
+      border: 1px solid #2c3440; border-radius: 8px;
+      padding: 14px; background: #1b2129;
+    }
+    #gameCard img { width: 96px; border-radius: 6px; align-self: flex-start; }
+    #gameCard .title { font-size: 1.15rem; font-weight: bold; color: #fff; }
+    #gameCard .meta { font-size: 0.8rem; color: #8ea4b8; margin-top: 3px; }
+    #gameCard .igdb { color: #ffd700; }
+    #gameCard .text { margin-top: 8px; font-size: 0.85rem; }
+    #searchResults { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .search-card {
+      display: flex; gap: 8px; align-items: center; cursor: pointer;
+      border: 1px solid #2c3440; border-radius: 6px; padding: 6px 10px;
+      background: #1b2129; max-width: 260px;
+    }
+    .search-card:hover { border-color: #00ac1c; }
+    .search-card img { width: 32px; border-radius: 3px; }
+    .search-card .t { font-size: 0.85rem; color: #e8eef4; }
+    .search-card .meta { font-size: 0.72rem; color: #678; }
   </style>
 </head>
 <body>
@@ -76,9 +99,14 @@
     <div class="row">
       <div><label>Ton user id</label><input id="userId" type="number" value="1" onchange="loadReviews()"></div>
       <div><label>Game id ciblé</label><input id="gameId" type="number" value="1" onchange="loadReviews()"></div>
-      <div><button class="secondary" onclick="loadReviews()">Charger les reviews</button></div>
+      <div><label>Rechercher un jeu</label><input id="gameSearch" placeholder="elden… (Entrée)"
+           onkeydown="if(event.key==='Enter') searchGames(this.value)"></div>
+      <div><button class="secondary" onclick="randomGame()">🎲 Jeu au hasard</button></div>
     </div>
+    <div id="searchResults"></div>
   </fieldset>
+
+  <div id="gameCard"></div>
 
   <fieldset id="postForm">
     <legend>Poster une review</legend>
@@ -94,7 +122,8 @@
     <legend>Reviews du jeu
       <select id="sort" onchange="loadReviews()">
         <option value="recent">récentes</option>
-        <option value="popular">populaires</option>
+        <option value="popular">populaires (score net 👍-👎)</option>
+        <option value="discussed">💬 plus discutées</option>
       </select>
     </legend>
     <div id="reviews"><em>Clique « Charger les reviews »</em></div>
@@ -105,6 +134,8 @@
     <div id="log"></div>
   </fieldset>
 
+<!-- Served by the backend itself via nginx's /socket.io route -->
+<script src="/socket.io/socket.io.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
 
@@ -117,7 +148,7 @@ function logLine(cls, text) {
 
 // Wrapper unique autour de fetch : ajoute le header d'auth stub,
 // journalise requête/réponse, parse le JSON quand il y en a un.
-async function api(method, path, body) {
+async function api(method, path, body, silent = false) {
   logLine('req', `${method} ${path}` + (body ? ' ' + JSON.stringify(body) : ''));
   const res = await fetch('/api' + path, {
     method,
@@ -131,10 +162,71 @@ async function api(method, path, body) {
   const data = text ? JSON.parse(text) : null;
   logLine(res.ok ? 'ok' : 'err', `HTTP ${res.status}` + (text ? ' ' + text : ''));
   if (!res.ok) {
-    alert(`Erreur ${res.status} : ${data?.message ?? res.statusText}`);
+    if (!silent) alert(`Erreur ${res.status} : ${data?.message ?? res.statusText}`);
     throw new Error(res.status);
   }
   return data;
+}
+
+let shownGameId = null;
+
+async function loadGame() {
+  const box = $('gameCard');
+  const game = await api('GET', `/games/${$('gameId').value}`, null, true).catch(() => null);
+  if (!game) {
+    box.innerHTML = `
+      <div class="game-head"><div>
+        <div class="title">Jeu #${esc($('gameId').value)} introuvable</div>
+        <div class="meta">Cet id n'existe pas dans ta base locale (les ids dépendent de
+        l'ordre des imports — 1 à 3 ont été consommés par d'anciens jeux de test).
+        Utilise la recherche ou 🎲.</div>
+      </div></div>`;
+    return;
+  }
+  const year = game.releaseDate ? new Date(game.releaseDate).getFullYear() : '?';
+  box.innerHTML = `
+    <div class="game-head">
+      ${game.coverUrl ? `<img src="${esc(game.coverUrl)}" alt="cover" onerror="this.remove()">` : ''}
+      <div>
+        <div class="title">${esc(game.title)} <span class="meta">(${year})</span></div>
+        <div class="meta">${game.companies.map((c) => esc(c.name)).join(' · ') || 'studio inconnu'}</div>
+        <div class="meta">${game.genres.map((g) => esc(g.name)).join(', ')}</div>
+        ${game.igdbRating ? `<div class="meta igdb">★ IGDB ${game.igdbRating.toFixed(1)}/100 (${game.igdbRatingCount ?? 0} votes)</div>` : ''}
+        ${game.summary ? `<div class="text">${esc(game.summary)}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+// igdb=true: pressing Enter is the "explicit user action" the games module
+// wants for its on-demand IGDB import — missing games get added to our DB
+async function searchGames(term) {
+  if (!term.trim()) return;
+  const { data } = await api('GET', `/games/search?q=${encodeURIComponent(term)}&igdb=true`);
+  const box = $('searchResults');
+  box.innerHTML = data.length ? '' : '<em>Aucun jeu trouvé</em>';
+  for (const g of data) {
+    const card = document.createElement('div');
+    card.className = 'search-card';
+    const year = g.releaseDate ? new Date(g.releaseDate).getFullYear() : '?';
+    card.innerHTML = `
+      ${g.coverUrl ? `<img src="${esc(g.coverUrl)}" alt="" onerror="this.remove()">` : ''}
+      <div>
+        <div class="t">${esc(g.title)} <span class="meta">(${year})</span></div>
+        <div class="meta">${g.companies?.map((c) => esc(c.name)).join(' · ') ?? ''}</div>
+      </div>`;
+    card.onclick = () => { $('gameId').value = g.id; box.innerHTML = ''; loadReviews(); };
+    box.appendChild(card);
+  }
+}
+
+// Uniform random pick using the existing paginated list: total count first,
+// then one game at a random offset — no dedicated backend endpoint needed
+async function randomGame() {
+  const { total } = await api('GET', '/games?limit=1');
+  if (!total) return;
+  const page = 1 + Math.floor(Math.random() * total);
+  const { data } = await api('GET', `/games?page=${page}&limit=1`);
+  if (data[0]) { $('gameId').value = data[0].id; loadReviews(); }
 }
 
 async function createReview() {
@@ -146,30 +238,113 @@ async function createReview() {
   loadReviews();
 }
 
+// ---- Temps réel : la room du jeu affiché nous pousse ses évènements ----
+const socket = io(); // même origine, handshake sur /socket.io (proxifié par nginx)
+
+socket.on('connect', () => {
+  logLine('ok', `WS connecté (${socket.id})`);
+  joinGameRoom(); // re-join après une reconnexion automatique
+});
+socket.on('disconnect', () => logLine('err', 'WS déconnecté — reconnexion auto…'));
+
+// Structural changes -> full reload; reactions/comments -> targeted DOM
+// updates only (avoids rebuilding — and flashing — the whole list)
+for (const ev of ['review:created', 'review:updated', 'review:deleted']) {
+  socket.on(ev, (payload) => {
+    logLine('req', `WS ${ev} ${JSON.stringify(payload ?? '')}`);
+    loadReviews();
+  });
+}
+// Reactions carry the fresh counts: patch the two buttons' text in place —
+// no node is destroyed, so nothing can flash and no scroll anchor is lost
+socket.on('review:reaction', ({ reviewId, likes, dislikes }) => {
+  logLine('req', `WS review:reaction {"reviewId":${reviewId}}`);
+  const like = document.querySelector(`[data-rlike="${reviewId}"]`);
+  if (!like) return; // review not on screen
+  like.textContent = `👍 ${likes}`;
+  document.querySelector(`[data-rdislike="${reviewId}"]`).textContent = `👎 ${dislikes}`;
+});
+// A comment can be rendered twice (⭐ top comment + open thread): patch all
+socket.on('comment:reaction', ({ reviewId, commentId, likes, dislikes }) => {
+  logLine('req', `WS comment:reaction {"commentId":${commentId}}`);
+  document.querySelectorAll(`[data-clike="${commentId}"]`)
+    .forEach((b) => { b.textContent = `👍 ${likes}`; });
+  document.querySelectorAll(`[data-cdislike="${commentId}"]`)
+    .forEach((b) => { b.textContent = `👎 ${dislikes}`; });
+});
+socket.on('comment:changed', ({ reviewId }) => {
+  logLine('req', `WS comment:changed {"reviewId":${reviewId}}`);
+  refreshReviewCard(reviewId); // 💬 count on the card
+  if (openComs.has(reviewId)) showComments(reviewId);
+});
+
+// Removing DOM nodes above the reader breaks the browser's scroll anchoring
+// and yanks the page to the top — snapshot scrollY around every swap
+function keepScroll(mutate) {
+  const y = window.scrollY;
+  mutate();
+  window.scrollTo(0, y);
+}
+
+// Replace one review card in place, keeping its (stateful) thread boxes
+async function refreshReviewCard(reviewId) {
+  const old = document.getElementById(`review-${reviewId}`);
+  if (!old) return loadReviews();
+  const r = await api('GET', `/reviews/${reviewId}`, null, true).catch(() => null);
+  if (!r) return loadReviews(); // deleted meanwhile
+  const fresh = renderReview(r);
+  keepScroll(() => {
+    // move the live thread container into the new card instead of resetting it
+    fresh.querySelector(`#coms-${reviewId}`).replaceWith(old.querySelector(`#coms-${reviewId}`));
+    old.replaceWith(fresh);
+  });
+}
+
+function joinGameRoom() {
+  if (socket.connected) socket.emit('game:join', Number($('gameId').value));
+}
+
+// Serialized: overlapping reloads (own action + WS event landing together)
+// would interleave their renders and duplicate DOM — run one at a time,
+// remember at most one pending re-run
+let reloading = false;
+let reloadPending = false;
 async function loadReviews() {
+  if (reloading) { reloadPending = true; return; }
+  reloading = true;
+  try {
+    await refreshReviews();
+  } finally {
+    reloading = false;
+    if (reloadPending) { reloadPending = false; loadReviews(); }
+  }
+}
+
+async function refreshReviews() {
+  if ($('gameId').value !== shownGameId) {
+    shownGameId = $('gameId').value;
+    loadGame();
+    joinGameRoom();
+  }
   const reviews = await api('GET',
     `/games/${$('gameId').value}/reviews?sort=${$('sort').value}`);
   const root = $('reviews');
-  root.innerHTML = reviews.length ? '' : '<em>Aucune review sur ce jeu</em>';
-  for (const r of reviews) root.appendChild(renderReview(r));
+  keepScroll(() => {
+    root.innerHTML = reviews.length ? '' : '<em>Aucune review sur ce jeu</em>';
+    for (const r of reviews) root.appendChild(renderReview(r));
+  });
   // Already reviewed this game -> hide the posting form (UX only; the real
   // enforcement is the 409 from the unique constraint server-side)
   const me = Number($('userId').value);
   $('postForm').style.display = reviews.some((r) => r.user.id === me) ? 'none' : '';
-  // Mockup rule: the most-liked comment is always visible under each review
-  for (const r of reviews) {
-    if (!r._count.comments) continue;
-    const [top] = await api('GET', `/reviews/${r.id}/comments?sort=top&limit=1`);
-    if (!top) continue;
-    const box = $(`topcom-${r.id}`);
-    box.innerHTML = '<div class="meta">⭐ commentaire le plus liké</div>';
-    box.appendChild(renderComment(top, r.id));
-  }
+  // Re-open the threads the user had expanded before this re-render
+  for (const id of [...openComs]) showComments(id);
 }
 
 function renderReview(r) {
   const el = document.createElement('div');
   el.className = 'review';
+  el.id = `review-${r.id}`;
   el.innerHTML = `
     <div class="head">
       <div class="avatar">${esc(r.user.username[0].toUpperCase())}</div>
@@ -181,34 +356,70 @@ function renderReview(r) {
     </div>
     ${r.text ? `<div class="text">${esc(r.text)}</div>` : ''}
     <div class="actions">
-      <button class="small" onclick="react(${r.id}, 'like')">👍 ${r._count.likes}</button>
-      <button class="small" onclick="react(${r.id}, 'dislike')">👎 ${r._count.dislikes}</button>
-      <button class="small secondary" onclick="unreact(${r.id})" title="retirer ma réaction">✖</button>
+      <button class="small secondary ${r.myReaction === 'like' ? 'mine' : ''}"
+              data-rlike="${r.id}" onclick="react(${r.id}, 'like', this)">👍 ${r._count.likes}</button>
+      <button class="small secondary ${r.myReaction === 'dislike' ? 'mine' : ''}"
+              data-rdislike="${r.id}" onclick="react(${r.id}, 'dislike', this)">👎 ${r._count.dislikes}</button>
       <button class="small secondary" onclick="toggleComments(${r.id}, this)">💬 ${r._count.comments} coms</button>
       ${r.user.id === Number($('userId').value)
         ? `<button class="small secondary" onclick="delReview(${r.id})">🗑️ ma review</button>` : ''}
     </div>
-    <div id="topcom-${r.id}"></div>
     <div id="coms-${r.id}"></div>`;
   return el;
 }
 
-async function react(id, type) { await api('POST', `/reviews/${id}/${type}`); loadReviews(); }
-async function unreact(id) {
-  await api('DELETE', `/reviews/${id}/like`);
-  await api('DELETE', `/reviews/${id}/dislike`);
-  loadReviews();
+// Toggle: clicking your own reaction removes it. Counts arrive via the WS
+// event; the green "mine" state is patched locally right away.
+async function react(id, type, btn) {
+  const mine = btn.classList.contains('mine');
+  await api(mine ? 'DELETE' : 'POST', `/reviews/${id}/${type}`);
+  document.querySelector(`[data-rlike="${id}"]`)
+    ?.classList.toggle('mine', !mine && type === 'like');
+  document.querySelector(`[data-rdislike="${id}"]`)
+    ?.classList.toggle('mine', !mine && type === 'dislike');
+  if (!socket.connected) loadReviews();
 }
 async function delReview(id) {
   if (confirm('Supprimer cette review ?')) { await api('DELETE', `/reviews/${id}`); loadReviews(); }
 }
 
-async function toggleComments(reviewId, btn) {
-  const box = $(`coms-${reviewId}`);
-  if (box.innerHTML) { box.innerHTML = ''; return; }
+async function delCom(id) {
+  if (!confirm('Supprimer ce commentaire (et toutes ses réponses) ?')) return;
+  await api('DELETE', `/comments/${id}`);
+  if (!socket.connected) loadReviews();
+}
+
+// Open threads survive re-renders: every full reload re-opens what's in
+// these sets instead of collapsing everything
+const openComs = new Set();
+const openReplies = new Set();
+// Staleness guards: each fetch gets a generation number; if a newer fetch
+// (or a close) happened while this one was in flight, its result is dropped
+const comsGen = new Map();
+const repliesGen = new Map();
+
+async function toggleComments(reviewId) {
+  if (openComs.has(reviewId)) {
+    openComs.delete(reviewId);
+    $(`coms-${reviewId}`).innerHTML = '';
+    return;
+  }
+  openComs.add(reviewId);
+  await showComments(reviewId);
+}
+
+async function showComments(reviewId) {
+  if (!$(`coms-${reviewId}`)) { openComs.delete(reviewId); return; } // review disparue
+  const gen = (comsGen.get(reviewId) ?? 0) + 1;
+  comsGen.set(reviewId, gen);
   const comments = await api('GET', `/reviews/${reviewId}/comments?sort=top`);
+  const box = $(`coms-${reviewId}`); // re-query: a re-render may have replaced it
+  if (!box || comsGen.get(reviewId) !== gen || !openComs.has(reviewId)) return;
   box.innerHTML = '';
-  for (const c of comments) box.appendChild(renderComment(c, reviewId));
+  for (const c of comments) {
+    box.appendChild(renderComment(c, reviewId, 0));
+    if (openReplies.has(c.id)) showReplies(c.id, reviewId, 1);
+  }
   const form = document.createElement('div');
   form.className = 'comment';
   form.innerHTML = `
@@ -217,49 +428,93 @@ async function toggleComments(reviewId, btn) {
   box.appendChild(form);
 }
 
-function renderComment(c, reviewId) {
+async function showReplies(commentId, reviewId, depth) {
+  if (!$(`replies-${commentId}`)) { openReplies.delete(commentId); return; }
+  const gen = (repliesGen.get(commentId) ?? 0) + 1;
+  repliesGen.set(commentId, gen);
+  const replies = await api('GET', `/comments/${commentId}/replies`);
+  const box = $(`replies-${commentId}`);
+  if (!box || repliesGen.get(commentId) !== gen || !openReplies.has(commentId)) return;
+  box.innerHTML = '';
+  for (const r of replies) {
+    box.appendChild(renderComment(r, reviewId, depth));
+    if (openReplies.has(r.id)) showReplies(r.id, reviewId, depth + 1);
+  }
+}
+
+// Mirrors the server-side MAX_REPLY_DEPTH — the API rejects deeper replies
+// anyway, this only hides the button that would trigger a 400
+const MAX_REPLY_DEPTH = 3;
+
+function renderComment(c, reviewId, depth = 0) {
   const el = document.createElement('div');
   el.className = 'comment';
   el.innerHTML = `
     <div class="meta">${esc(c.user.username)}</div>
     <div class="text">${esc(c.text)}</div>
     <div class="actions">
-      <button class="small" onclick="reactCom(${c.id}, 'like')">👍 ${c._count.likes}</button>
-      <button class="small" onclick="reactCom(${c.id}, 'dislike')">👎 ${c._count.dislikes}</button>
-      <button class="small secondary"
-              onclick="replyBox(${c.id}, ${reviewId}, this)">↩ répondre</button>
-      ${c._count.replies ? `<button class="small secondary"
-              onclick="loadReplies(${c.id}, ${reviewId}, this)">▼ ${c._count.replies} réponses</button>` : ''}
+      <button class="small secondary ${c.myReaction === 'like' ? 'mine' : ''}"
+              data-clike="${c.id}" onclick="reactCom(${c.id}, 'like', this)">👍 ${c._count.likes}</button>
+      <button class="small secondary ${c.myReaction === 'dislike' ? 'mine' : ''}"
+              data-cdislike="${c.id}" onclick="reactCom(${c.id}, 'dislike', this)">👎 ${c._count.dislikes}</button>
+      ${depth < MAX_REPLY_DEPTH ? `<button class="small secondary reply-btn"
+              onclick="replyBox(${c.id}, ${reviewId}, this)">↩ répondre</button>` : ''}
+      ${c._count.replies && !openReplies.has(c.id) ? `<button class="small secondary"
+              onclick="loadReplies(${c.id}, ${reviewId}, ${depth}, this)">▼ ${c._count.replies} réponses</button>` : ''}
+      ${c.user.id === Number($('userId').value)
+        ? `<button class="small secondary" onclick="delCom(${c.id})">🗑️</button>` : ''}
     </div>
     <div id="replies-${c.id}"></div>`;
   return el;
 }
 
-async function loadReplies(commentId, reviewId, btn) {
-  const replies = await api('GET', `/comments/${commentId}/replies`);
-  const box = $(`replies-${commentId}`);
-  box.innerHTML = '';
-  for (const r of replies) box.appendChild(renderComment(r, reviewId));
+async function loadReplies(commentId, reviewId, depth, btn) {
+  openReplies.add(commentId);
+  await showReplies(commentId, reviewId, depth + 1);
   btn.remove();
 }
 
 function replyBox(parentId, reviewId, btn) {
+  closeReplyBoxes(); // one reply box at a time
   const input = document.createElement('input');
-  input.placeholder = 'Ta réponse… (Entrée pour envoyer)';
+  input.className = 'reply-input';
+  input.placeholder = 'Ta réponse… (Entrée pour envoyer, clic ailleurs pour annuler)';
   input.onkeydown = (e) => { if (e.key === 'Enter') postComment(reviewId, parentId, input); };
   btn.parentElement.after(input);
   input.focus();
 }
 
+function closeReplyBoxes() {
+  document.querySelectorAll('.reply-input').forEach((el) => el.remove());
+}
+
+// Click anywhere outside the reply input (or its opening button) closes it.
+// This runs on bubble: the opening click's target is the .reply-btn, so the
+// guard below keeps the box it just created.
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.reply-input, .reply-btn')) return;
+  closeReplyBoxes();
+});
+
 async function postComment(reviewId, parentId, input) {
   if (!input.value.trim()) return;
   const body = { text: input.value };
-  if (parentId) body.parentId = parentId;
+  if (parentId) { body.parentId = parentId; openReplies.add(parentId); }
+  openComs.add(reviewId);
   await api('POST', `/reviews/${reviewId}/comments`, body);
-  loadReviews();
+  if (!socket.connected) loadReviews();
 }
 
-async function reactCom(id, type) { await api('POST', `/comments/${id}/${type}`); loadReviews(); }
+async function reactCom(id, type, btn) {
+  const mine = btn.classList.contains('mine');
+  await api(mine ? 'DELETE' : 'POST', `/comments/${id}/${type}`);
+  // a comment can be rendered twice (⭐ + open thread) — patch every instance
+  document.querySelectorAll(`[data-clike="${id}"]`)
+    .forEach((b) => b.classList.toggle('mine', !mine && type === 'like'));
+  document.querySelectorAll(`[data-cdislike="${id}"]`)
+    .forEach((b) => b.classList.toggle('mine', !mine && type === 'dislike'));
+  if (!socket.connected) loadReviews();
+}
 
 // Toujours échapper le contenu utilisateur avant innerHTML (sinon XSS —
 // React fera ça automatiquement, ici on est en JS "à la main")
@@ -267,6 +522,14 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
+
+window.addEventListener('DOMContentLoaded', async () => {
+  // Game ids depend on each machine's seed — fall back to a random game
+  // if the default id doesn't exist locally
+  const exists = await api('GET', `/games/${$('gameId').value}`, null, true)
+    .then(() => true).catch(() => false);
+  exists ? loadReviews() : randomGame();
+});
 </script>
 </body>
 </html>

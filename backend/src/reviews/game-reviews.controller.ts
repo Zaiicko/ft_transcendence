@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { OptionalUser } from '../auth/optional-user.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { ListReviewsDto } from './dto/list-reviews.dto';
 import { ReviewsService } from './reviews.service';
 
 @Controller('games/:gameId/reviews')
@@ -11,11 +13,10 @@ export class GameReviewsController {
   @Get()
   findAll(
     @Param('gameId', ParseIntPipe) gameId: number,
-    @Query('sort') sort: 'popular' | 'recent' = 'recent',
-    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20,
+    @Query() query: ListReviewsDto,
+    @OptionalUser() viewer?: { id: number },
   ) {
-    return this.reviewsService.findForGame(gameId, sort, page, limit);
+    return this.reviewsService.findForGame(gameId, query.sort, query.page, query.limit, viewer?.id);
   }
 
   @UseGuards(JwtAuthGuard)

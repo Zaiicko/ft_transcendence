@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { OptionalUser } from '../auth/optional-user.decorator';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsService } from './reviews.service';
 
@@ -20,8 +21,8 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.reviewsService.findOne(id);
+  findOne(@Param('id', ParseIntPipe) id: number, @OptionalUser() viewer?: { id: number }) {
+    return this.reviewsService.findOne(id, viewer?.id);
   }
 
   @UseGuards(JwtAuthGuard)

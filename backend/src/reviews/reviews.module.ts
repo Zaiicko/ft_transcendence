@@ -4,6 +4,7 @@ import { ReviewCommentsController } from './comments/review-comments.controller'
 import { ReviewCommentsService } from './comments/review-comments.service';
 import { GameReviewsController } from './game-reviews.controller';
 import { ReviewsController } from './reviews.controller';
+import { ReviewsGateway } from './reviews.gateway';
 import { ReviewsService } from './reviews.service';
 
 @Module({
@@ -13,7 +14,7 @@ import { ReviewsService } from './reviews.service';
     ReviewCommentsController,
     CommentsController,
   ],
-  providers: [ReviewsService, ReviewCommentsService],
+  providers: [ReviewsGateway, ReviewsService, ReviewCommentsService],
   exports: [ReviewsService], // for the future games module (average rating)
 })
 export class ReviewsModule {}

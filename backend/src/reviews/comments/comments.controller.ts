@@ -13,6 +13,8 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '../../auth/current-user.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { OptionalUser } from '../../auth/optional-user.decorator';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ReviewCommentsService } from './review-comments.service';
 
@@ -23,10 +25,10 @@ export class CommentsController {
   @Get(':id/replies')
   findReplies(
     @Param('id', ParseIntPipe) id: number,
-    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20,
+    @Query() query: PaginationDto,
+    @OptionalUser() viewer?: { id: number },
   ) {
-    return this.commentsService.findReplies(id, page, limit);
+    return this.commentsService.findReplies(id, query.page, query.limit, viewer?.id);
   }
 
   @UseGuards(JwtAuthGuard)
