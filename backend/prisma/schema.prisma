@@ -52,6 +52,8 @@ model User {
   twoFactorSecret  String?
   twoFactorEnabled Boolean      @default(false)
   language         String       @default("en")
+  // Last WebSocket disconnect time — used for "last seen" once offline
+  lastSeenAt       DateTime?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
@@ -64,6 +66,19 @@ model User {
   sentMessages       Message[]      @relation("MessageSender")
   receivedMessages   Message[]      @relation("MessageRecipient")
   notifications      Notification[]
+  refreshTokens      RefreshToken[]
+}
+
+// Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  // SHA-256 hash of the token — the raw value only ever lives in the client's cookie
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
 }
 
 model Friendship {

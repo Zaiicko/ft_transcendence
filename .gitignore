@@ -13,6 +13,9 @@ build/
 # TLS certificates (generated locally)
 nginx/ssl/
 
+# Uploaded user content (avatars) — persisted via the backend_uploads volume, not git
+backend/uploads/
+
 # Logs & misc
 *.log
 .DS_Store

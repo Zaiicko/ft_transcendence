@@ -1,6 +1,15 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 
 export default function Layout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    await logout();
+    navigate('/');
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
       <header className="border-b border-zinc-800 px-6 py-4">
@@ -8,6 +17,35 @@ export default function Layout() {
           <Link to="/" className="text-xl font-bold tracking-tight">
             🎮 Saveboxd
           </Link>
+          <div className="flex items-center gap-4 text-sm">
+            {user ? (
+              <>
+                <Link to="/friends" className="hover:text-zinc-100">
+                  Friends
+                </Link>
+                <Link to="/profile" className="flex items-center gap-2 hover:text-zinc-100">
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt="" className="h-6 w-6 rounded-full object-cover" />
+                  ) : (
+                    <span className="h-6 w-6 rounded-full bg-zinc-800" />
+                  )}
+                  {user.username}
+                </Link>
+                <button type="button" onClick={handleLogout} className="text-zinc-400 hover:text-zinc-100">
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="hover:text-zinc-100">
+                  Log in
+                </Link>
+                <Link to="/signup" className="hover:text-zinc-100">
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
         </nav>
       </header>
 
