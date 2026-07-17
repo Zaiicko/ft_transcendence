@@ -26,3 +26,5 @@ backend/catalog_export.json
 backend/catalog_export.json.gz
 
 .claude
+
+catalog_export.json
