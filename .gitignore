@@ -31,3 +31,6 @@ backend/catalog_export.json.gz
 .claude
 
 catalog_export.json
+
+# Claude Code personal preferences
+CLAUDE.local.md
