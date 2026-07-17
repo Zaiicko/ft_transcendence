@@ -54,6 +54,7 @@ steam:
 
 # Share the seeded DB with the team instead of everyone re-downloading it:
 # one member runs db-dump, sends the file, others run db-restore.
+# ⚠️ db-restore REPLACES your whole local database (all tables, all users).
 DUMP_FILE = saveboxd_dump.sql
 
 db-dump:
@@ -66,6 +67,20 @@ db-restore:
 	@$(COMPOSE) exec -T postgres sh -c 'psql -q -U $$POSTGRES_USER -d $$POSTGRES_DB' < $(DUMP_FILE)
 	@$(COMPOSE) restart backend > /dev/null
 	@echo "$(BOLD)$(GREEN)Database restored from $(DUMP_FILE) ✅$(RESET)"
+
+# Safer alternative to db-restore: share only the game catalog (Game/Genre/
+# Platform/Company). Upserts by igdbId — never touches Users/Reviews/etc, so
+# it can't wipe anyone's local test data.
+CATALOG_FILE = backend/catalog_export.json
+
+catalog-export:
+	@$(COMPOSE) exec backend npm run catalog:export
+	@echo "$(BOLD)$(GREEN)Catalog exported to $(CATALOG_FILE) ($$(du -h $(CATALOG_FILE) | cut -f1)) 📦$(RESET)"
+
+catalog-import:
+	@test -f $(CATALOG_FILE) || (echo "$(BOLD)$(RED)$(CATALOG_FILE) not found — put it there first.$(RESET)" && exit 1)
+	@$(COMPOSE) exec backend npm run catalog:import
+	@echo "$(BOLD)$(GREEN)Catalog imported — your users/reviews were untouched ✅$(RESET)"
 
 logs:
 	@$(COMPOSE) logs -f
@@ -105,4 +120,4 @@ logo:
 	@echo "$(BOLD)            🎮 ft_transcendence — rate your games 🎮$(RESET)"
 	@echo ""
 
-.PHONY: all up seed steam db-dump db-restore logs ps down clean fclean re logo
+.PHONY: all up seed steam db-dump db-restore catalog-export catalog-import logs ps down clean fclean re logo

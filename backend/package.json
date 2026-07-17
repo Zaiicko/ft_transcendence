@@ -9,6 +9,8 @@
     "start:prod": "node dist/main",
     "seed": "ts-node src/seed.ts",
     "steam:sync": "ts-node src/steam-sync.ts",
+    "catalog:export": "ts-node src/catalog-export.ts",
+    "catalog:import": "ts-node src/catalog-import.ts",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio --hostname 0.0.0.0 --browser none"
   },

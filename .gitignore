@@ -20,7 +20,8 @@ nginx/ssl/
 # 42 evaluation sheet (local only)
 correction_sheet.txt
 
-# Database dump shared out-of-band (heavy, regenerable — never in git)
+# Database dump / catalog export shared out-of-band (regenerable — never in git)
 saveboxd_dump.sql
+backend/catalog_export.json
 
 .claude

@@ -26,6 +26,33 @@ const PAGE_SIZE = 500;
 const PAGE_DELAY_MS = 350;
 const MAX_SCREENSHOTS = 6;
 
+// Flat snapshot used by exportCatalog()/importCatalog() to share the seeded
+// catalog between teammates without re-hitting IGDB/Steam. Tags carry their
+// REAL igdbId so a later live IGDB sync on the importer's machine matches the
+// same rows instead of creating duplicates.
+export interface CatalogTagRecord {
+  igdbId: number;
+  name: string;
+}
+
+export interface CatalogGameRecord {
+  igdbId: number;
+  title: string;
+  summary: string | null;
+  releaseDate: string | null;
+  coverUrl: string | null;
+  screenshots: string[];
+  igdbRating: number | null;
+  igdbRatingCount: number | null;
+  steamAppId: number | null;
+  steamScore: number | null;
+  gameType: GameType;
+  parentIgdbId: number | null;
+  genres: CatalogTagRecord[];
+  platforms: CatalogTagRecord[];
+  companies: CatalogTagRecord[];
+}
+
 @Injectable()
 export class GamesSyncService {
   private readonly logger = new Logger(GamesSyncService.name);
@@ -154,5 +181,149 @@ export class GamesSyncService {
       create: { igdbId: raw.id, ...data },
       update: data,
     });
+  }
+
+  // --- Catalog sharing (teammates skip re-hitting IGDB/Steam entirely) ---
+  //
+  // Unlike a full DB dump, this only ever touches Game/Genre/Platform/Company
+  // via upsert matched on igdbId (never on the local serial id). It can be
+  // run on top of ANY existing database — User/Review/Friendship/... rows are
+  // never read or written, so nobody's local test accounts or reviews are at
+  // risk of being wiped or having their game references corrupted.
+
+  async exportCatalog(): Promise<CatalogGameRecord[]> {
+    const games = await this.prisma.game.findMany({
+      include: {
+        genres: { select: { igdbId: true, name: true } },
+        platforms: { select: { igdbId: true, name: true } },
+        companies: { select: { igdbId: true, name: true } },
+        parent: { select: { igdbId: true } },
+      },
+    });
+    return games.map((g) => ({
+      igdbId: g.igdbId,
+      title: g.title,
+      summary: g.summary,
+      releaseDate: g.releaseDate?.toISOString() ?? null,
+      coverUrl: g.coverUrl,
+      screenshots: g.screenshots,
+      igdbRating: g.igdbRating,
+      igdbRatingCount: g.igdbRatingCount,
+      steamAppId: g.steamAppId,
+      steamScore: g.steamScore,
+      gameType: g.gameType,
+      parentIgdbId: g.parent?.igdbId ?? null,
+      genres: g.genres,
+      platforms: g.platforms,
+      companies: g.companies,
+    }));
+  }
+
+  // Resolves a Genre/Platform/Company by its REAL igdbId (same key the live
+  // IGDB sync uses, so both paths always converge on the same rows — no
+  // duplicates). Cached in memory for the run since the same tag repeats
+  // across thousands of games.
+  private tagCache = new Map<string, number>();
+
+  private async resolveTagId(
+    kind: 'genre' | 'platform' | 'company',
+    tag: CatalogTagRecord,
+  ): Promise<number> {
+    const key = `${kind}:${tag.igdbId}`;
+    const cached = this.tagCache.get(key);
+    if (cached) return cached;
+
+    const args = {
+      where: { igdbId: tag.igdbId },
+      update: { name: tag.name },
+      create: { igdbId: tag.igdbId, name: tag.name },
+      select: { id: true },
+    };
+    let row: { id: number };
+    switch (kind) {
+      case 'genre':
+        row = await this.prisma.genre.upsert(args);
+        break;
+      case 'platform':
+        row = await this.prisma.platform.upsert(args);
+        break;
+      case 'company':
+        row = await this.prisma.company.upsert(args);
+        break;
+    }
+    this.tagCache.set(key, row.id);
+    return row.id;
+  }
+
+  // Two passes: all games first (so every igdbId resolves to a local row),
+  // then parent links — a DLC can appear before its base game in the file.
+  async importCatalog(records: CatalogGameRecord[]): Promise<number> {
+    this.tagCache.clear();
+    let done = 0;
+    for (const r of records) {
+      const [genreIds, platformIds, companyIds] = await Promise.all([
+        Promise.all(r.genres.map((t) => this.resolveTagId('genre', t))),
+        Promise.all(r.platforms.map((t) => this.resolveTagId('platform', t))),
+        Promise.all(r.companies.map((t) => this.resolveTagId('company', t))),
+      ]);
+
+      const data = {
+        title: r.title,
+        summary: r.summary,
+        releaseDate: r.releaseDate ? new Date(r.releaseDate) : null,
+        coverUrl: r.coverUrl,
+        screenshots: r.screenshots,
+        igdbRating: r.igdbRating,
+        igdbRatingCount: r.igdbRatingCount,
+        steamAppId: r.steamAppId,
+        steamScore: r.steamScore,
+        gameType: r.gameType,
+      };
+
+      try {
+        await this.prisma.game.upsert({
+          where: { igdbId: r.igdbId },
+          create: {
+            igdbId: r.igdbId,
+            ...data,
+            genres: { connect: genreIds.map((id) => ({ id })) },
+            platforms: { connect: platformIds.map((id) => ({ id })) },
+            companies: { connect: companyIds.map((id) => ({ id })) },
+          },
+          update: {
+            ...data,
+            genres: { set: genreIds.map((id) => ({ id })) },
+            platforms: { set: platformIds.map((id) => ({ id })) },
+            companies: { set: companyIds.map((id) => ({ id })) },
+          },
+        });
+      } catch {
+        // steamAppId is unique — extremely rare local collision with a
+        // pre-existing game imported through a different path. Skip it: the
+        // rest of the catalog import must not be derailed by one row.
+        this.logger.warn(`Skipped "${r.title}" (igdbId ${r.igdbId}) — likely a steamAppId conflict`);
+      }
+      done++;
+      if (done % 1000 === 0) {
+        this.logger.log(`Catalog import progress: ${done}/${records.length}`);
+      }
+    }
+
+    let linked = 0;
+    for (const r of records) {
+      if (!r.parentIgdbId) continue;
+      const parent = await this.prisma.game.findUnique({
+        where: { igdbId: r.parentIgdbId },
+        select: { id: true },
+      });
+      if (!parent) continue;
+      await this.prisma.game.update({
+        where: { igdbId: r.igdbId },
+        data: { parentId: parent.id },
+      });
+      linked++;
+    }
+    this.logger.log(`Catalog import: ${records.length} games upserted, ${linked} parent links`);
+    return records.length;
   }
 }
