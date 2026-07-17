@@ -38,6 +38,13 @@ up: .env
 		echo "$(BOLD)$(YELLOW).env created from .env.example — fill in your secrets! 🔑$(RESET)"; \
 	fi
 
+# Import the most rated IGDB games into the catalog (needs IGDB creds in .env)
+# Usage: make seed [SEED_COUNT=1000]
+seed:
+	@echo "$(BOLD)$(YELLOW)Seeding the game catalog from IGDB... 🎮$(RESET)"
+	@$(COMPOSE) exec -e SEED_COUNT=$${SEED_COUNT:-1000} backend npm run seed
+	@echo "$(BOLD)$(GREEN)Catalog seeded! ✅$(RESET)"
+
 logs:
 	@$(COMPOSE) logs -f
 
@@ -76,4 +83,4 @@ logo:
 	@echo "$(BOLD)            🎮 ft_transcendence — rate your games 🎮$(RESET)"
 	@echo ""
 
-.PHONY: all up logs ps down clean fclean re logo
+.PHONY: all up seed logs ps down clean fclean re logo

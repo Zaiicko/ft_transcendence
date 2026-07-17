@@ -92,6 +92,10 @@ model Game {
   releaseDate DateTime?
   coverUrl    String?
   screenshots String[]
+  // IGDB aggregate rating (0-100) — used to rank the catalog before we have
+  // enough user reviews of our own
+  igdbRating      Float?
+  igdbRatingCount Int?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
