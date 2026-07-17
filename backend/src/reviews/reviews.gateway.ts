@@ -7,8 +7,11 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-// Rooms are named "game:<id>" — every browser tab currently viewing a game's
-// page sits in that game's room and receives its review events.
+// A review target is either a game or a company (studio) page. Rooms are
+// named "game:<id>" / "company:<id>" — every browser tab currently viewing
+// that page sits in the room and receives its review events.
+export type ReviewTarget = { gameId: number | null; companyId: number | null };
+
 @WebSocketGateway()
 export class ReviewsGateway {
   @WebSocketServer()
@@ -16,16 +19,26 @@ export class ReviewsGateway {
 
   @SubscribeMessage('game:join')
   handleJoinGame(@ConnectedSocket() client: Socket, @MessageBody() gameId: number) {
-    if (!Number.isInteger(gameId) || gameId <= 0) return;
-    // One watched game per client: leave any previous game room first
+    this.joinRoom(client, 'game', gameId);
+  }
+
+  @SubscribeMessage('company:join')
+  handleJoinCompany(@ConnectedSocket() client: Socket, @MessageBody() companyId: number) {
+    this.joinRoom(client, 'company', companyId);
+  }
+
+  // One watched page per client: joining a room leaves any previous one
+  private joinRoom(client: Socket, kind: 'game' | 'company', id: number) {
+    if (!Number.isInteger(id) || id <= 0) return;
     for (const room of client.rooms) {
-      if (room.startsWith('game:')) client.leave(room);
+      if (room.startsWith('game:') || room.startsWith('company:')) client.leave(room);
     }
-    client.join(`game:${gameId}`);
+    client.join(`${kind}:${id}`);
   }
 
   // Called by ReviewsService / ReviewCommentsService after each mutation
-  emitToGame(gameId: number, event: string, payload: unknown) {
-    this.server.to(`game:${gameId}`).emit(event, payload);
+  emitToTarget(target: ReviewTarget, event: string, payload: unknown) {
+    const room = target.gameId ? `game:${target.gameId}` : `company:${target.companyId}`;
+    this.server.to(room).emit(event, payload);
   }
 }

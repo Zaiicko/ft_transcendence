@@ -160,20 +160,28 @@ model Platform {
 }
 
 model Company {
-  id     Int    @id @default(autoincrement())
-  igdbId Int    @unique
-  name   String
-  games  Game[]
+  id      Int     @id @default(autoincrement())
+  igdbId  Int     @unique
+  name    String
+  logoUrl String?
+  games   Game[]
+  // Studios are reviewable exactly like games (Review has a dual target)
+  reviews Review[]
 }
 
 // ---------- Reviews & activity ----------
 
+// A review targets EXACTLY ONE of game/company (enforced in the service
+// layer — Prisma has no CHECK constraints). Likes, dislikes and threaded
+// comments are shared by both targets for free.
 model Review {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  gameId    Int
+  game      Game?    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId    Int?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId Int?
   // Short headline, e.g. "Rencontres du Pire Type !"
   title     String
   // 0–10 (displayed as 5 stars with halves)
@@ -186,11 +194,14 @@ model Review {
   dislikes ReviewDislike[]
   comments ReviewComment[]
 
-  // One review per user per game; the game's average rating is computed from these
+  // One review per user per target. NULLs never collide in a Postgres unique
+  // index, so each constraint only bites for its own target kind.
   @@unique([userId, gameId])
-  // Postgres does not index FK columns automatically, and the unique index
-  // above starts with userId — useless for WHERE gameId = ?
+  @@unique([userId, companyId])
+  // Postgres does not index FK columns automatically, and the unique indexes
+  // above start with userId — useless for WHERE gameId/companyId = ?
   @@index([gameId])
+  @@index([companyId])
 }
 
 model ReviewLike {

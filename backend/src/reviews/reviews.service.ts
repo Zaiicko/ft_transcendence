@@ -8,7 +8,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { ReviewsGateway } from './reviews.gateway';
+import { ReviewsGateway, ReviewTarget } from './reviews.gateway';
 
 type ReviewSort = 'popular' | 'recent' | 'discussed';
 
@@ -44,23 +44,34 @@ export class ReviewsService {
     private readonly gateway: ReviewsGateway,
   ) {}
 
-  async create(userId: number, gameId: number, dto: CreateReviewDto) {
+  create(userId: number, gameId: number, dto: CreateReviewDto) {
+    return this.createForTarget(userId, { gameId, companyId: null }, dto);
+  }
+
+  createForCompany(userId: number, companyId: number, dto: CreateReviewDto) {
+    return this.createForTarget(userId, { gameId: null, companyId }, dto);
+  }
+
+  private async createForTarget(userId: number, target: ReviewTarget, dto: CreateReviewDto) {
     try {
       const review = await this.prisma.review.create({
-        data: { ...dto, userId, gameId },
+        data: { ...dto, userId, gameId: target.gameId, companyId: target.companyId },
         include: {
           user: publicAuthor,
           _count: { select: { likes: true, dislikes: true, comments: true } },
         },
       });
-      this.gateway.emitToGame(gameId, 'review:created', review);
+      this.gateway.emitToTarget(target, 'review:created', review);
       return review;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // P2002 = unique constraint violation (@@unique([userId, gameId]))
-        if (e.code === 'P2002') throw new ConflictException('You already reviewed this game');
-        // P2003 = foreign key violation (user or game does not exist)
-        if (e.code === 'P2003') throw new NotFoundException('User or game not found');
+        // P2002 = unique constraint violation (one review per user per target)
+        if (e.code === 'P2002')
+          throw new ConflictException(
+            target.gameId ? 'You already reviewed this game' : 'You already reviewed this studio',
+          );
+        // P2003 = foreign key violation (user or target does not exist)
+        if (e.code === 'P2003') throw new NotFoundException('User or target not found');
       }
       throw e;
     }
@@ -88,6 +99,25 @@ export class ReviewsService {
     return rows.map(toDto);
   }
 
+  async findForCompany(
+    companyId: number,
+    sort: ReviewSort,
+    page: number,
+    limit: number,
+    viewerId?: number,
+  ) {
+    if (sort === 'popular') return this.findByScore({ companyId }, page, limit, viewerId);
+    const rows = await this.prisma.review.findMany({
+      where: { companyId },
+      orderBy:
+        sort === 'discussed' ? { comments: { _count: 'desc' } } : { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: reviewInclude(viewerId),
+    });
+    return rows.map(toDto);
+  }
+
   // Two-step scored listing: SQL computes the ordered page of ids
   // (parameterized — the template tag binds values, no injection), then
   // Prisma loads those ids with their relations and we restore the order.
@@ -97,6 +127,18 @@ export class ReviewsService {
     limit: number,
     viewerId?: number,
   ) {
+    return this.findByScore({ gameId }, page, limit, viewerId);
+  }
+
+  private async findByScore(
+    target: { gameId?: number; companyId?: number },
+    page: number,
+    limit: number,
+    viewerId?: number,
+  ) {
+    const targetFilter = target.gameId
+      ? Prisma.sql`r."gameId" = ${target.gameId}`
+      : Prisma.sql`r."companyId" = ${target.companyId}`;
     const rows = await this.prisma.$queryRaw<{ id: number }[]>`
       SELECT r.id
       FROM "Review" r
@@ -104,7 +146,7 @@ export class ReviewsService {
         ON l."reviewId" = r.id
       LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewDislike" GROUP BY "reviewId") d
         ON d."reviewId" = r.id
-      WHERE r."gameId" = ${gameId}
+      WHERE ${targetFilter}
       ORDER BY COALESCE(l.n, 0) - COALESCE(d.n, 0) DESC, r."createdAt" DESC
       LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
     if (rows.length === 0) return [];
@@ -123,6 +165,7 @@ export class ReviewsService {
       include: {
         ...reviewInclude(viewerId),
         game: { select: { id: true, title: true, coverUrl: true } },
+        company: { select: { id: true, name: true, logoUrl: true } },
       },
     });
     if (!review) throw new NotFoundException();
@@ -130,16 +173,16 @@ export class ReviewsService {
   }
 
   async update(userId: number, id: number, dto: UpdateReviewDto) {
-    const { gameId } = await this.assertOwner(id, userId);
+    const target = await this.assertOwner(id, userId);
     const review = await this.prisma.review.update({ where: { id }, data: dto });
-    this.gateway.emitToGame(gameId, 'review:updated', { reviewId: id });
+    this.gateway.emitToTarget(target, 'review:updated', { reviewId: id });
     return review;
   }
 
   async remove(userId: number, id: number) {
-    const { gameId } = await this.assertOwner(id, userId);
+    const target = await this.assertOwner(id, userId);
     await this.prisma.review.delete({ where: { id } });
-    this.gateway.emitToGame(gameId, 'review:deleted', { reviewId: id });
+    this.gateway.emitToTarget(target, 'review:deleted', { reviewId: id });
   }
 
   async like(userId: number, reviewId: number) {
@@ -191,10 +234,14 @@ export class ReviewsService {
   private async emitReaction(reviewId: number) {
     const review = await this.prisma.review.findUnique({
       where: { id: reviewId },
-      select: { gameId: true, _count: { select: { likes: true, dislikes: true } } },
+      select: {
+        gameId: true,
+        companyId: true,
+        _count: { select: { likes: true, dislikes: true } },
+      },
     });
     if (review) {
-      this.gateway.emitToGame(review.gameId, 'review:reaction', {
+      this.gateway.emitToTarget(review, 'review:reaction', {
         reviewId,
         likes: review._count.likes,
         dislikes: review._count.dislikes,
@@ -203,9 +250,12 @@ export class ReviewsService {
   }
 
   // Called by the future games module for the fiche jeu's average rating
-  getGameAverageRating(gameId: number) {
+  // Community score for a game or studio page — plain mean + count. The
+  // count gives the reader the confidence context; the catalog-wide ranking
+  // uses the games module's bayesian blend instead.
+  getAverageRating(target: { gameId?: number; companyId?: number }) {
     return this.prisma.review.aggregate({
-      where: { gameId },
+      where: target.gameId ? { gameId: target.gameId } : { companyId: target.companyId },
       _avg: { rating: true },
       _count: true,
     });
@@ -214,7 +264,7 @@ export class ReviewsService {
   private async assertOwner(reviewId: number, userId: number) {
     const review = await this.prisma.review.findUnique({
       where: { id: reviewId },
-      select: { userId: true, gameId: true },
+      select: { userId: true, gameId: true, companyId: true },
     });
     if (!review) throw new NotFoundException();
     if (review.userId !== userId) throw new ForbiddenException();

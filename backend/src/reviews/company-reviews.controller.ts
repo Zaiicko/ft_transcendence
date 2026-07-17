@@ -7,24 +7,24 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { ListReviewsDto } from './dto/list-reviews.dto';
 import { ReviewsService } from './reviews.service';
 
-@Controller('games/:gameId/reviews')
-export class GameReviewsController {
+@Controller('companies/:companyId/reviews')
+export class CompanyReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Get('stats')
-  stats(@Param('gameId', ParseIntPipe) gameId: number) {
-    return this.reviewsService.getAverageRating({ gameId });
+  stats(@Param('companyId', ParseIntPipe) companyId: number) {
+    return this.reviewsService.getAverageRating({ companyId });
   }
 
   @UseGuards(OptionalJwtAuthGuard)
   @Get()
   findAll(
-    @Param('gameId', ParseIntPipe) gameId: number,
+    @Param('companyId', ParseIntPipe) companyId: number,
     @Query() query: ListReviewsDto,
     @CurrentUser() viewer?: JwtPayload,
   ) {
-    return this.reviewsService.findForGame(
-      gameId,
+    return this.reviewsService.findForCompany(
+      companyId,
       query.sort,
       query.page,
       query.limit,
@@ -35,10 +35,10 @@ export class GameReviewsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(
-    @Param('gameId', ParseIntPipe) gameId: number,
+    @Param('companyId', ParseIntPipe) companyId: number,
     @CurrentUser() user: JwtPayload,
     @Body() dto: CreateReviewDto,
   ) {
-    return this.reviewsService.create(user.sub, gameId, dto);
+    return this.reviewsService.createForCompany(user.sub, companyId, dto);
   }
 }

@@ -216,9 +216,9 @@ export class ReviewCommentsService {
   private async emitChanged(reviewId: number) {
     const review = await this.prisma.review.findUnique({
       where: { id: reviewId },
-      select: { gameId: true },
+      select: { gameId: true, companyId: true },
     });
-    if (review) this.gateway.emitToGame(review.gameId, 'comment:changed', { reviewId });
+    if (review) this.gateway.emitToTarget(review, 'comment:changed', { reviewId });
   }
 
   // Reactions ship the fresh counts (in-place button patch client-side);
@@ -228,12 +228,12 @@ export class ReviewCommentsService {
       where: { id: commentId },
       select: {
         reviewId: true,
-        review: { select: { gameId: true } },
+        review: { select: { gameId: true, companyId: true } },
         _count: { select: { likes: true, dislikes: true } },
       },
     });
     if (comment) {
-      this.gateway.emitToGame(comment.review.gameId, 'comment:reaction', {
+      this.gateway.emitToTarget(comment.review, 'comment:reaction', {
         reviewId: comment.reviewId,
         commentId,
         likes: comment._count.likes,

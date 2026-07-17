@@ -15,6 +15,7 @@ import { SteamSyncService } from './steam/steam-sync.service';
     SteamService,
     SteamSyncService,
   ],
-  exports: [GamesService, GamesSyncService, SteamSyncService],
+  // IgdbService exported for CompaniesModule's logo sync
+  exports: [GamesService, GamesSyncService, SteamSyncService, IgdbService],
 })
 export class GamesModule {}
