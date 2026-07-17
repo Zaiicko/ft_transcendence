@@ -16,6 +16,11 @@ export interface IgdbGame {
   first_release_date?: number;
   total_rating?: number;
   total_rating_count?: number;
+  // IGDB game_type codes (successor of the deprecated "category"): 0 main,
+  // 1 dlc, 2 expansion, 3 bundle, 4 standalone expansion, 5 mod, 8 remake,
+  // 9 remaster, 11 port, ...
+  game_type?: number;
+  parent_game?: number;
   cover?: { image_id: string };
   screenshots?: { image_id: string }[];
   genres?: { id: number; name: string }[];

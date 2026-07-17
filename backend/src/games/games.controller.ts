@@ -15,7 +15,7 @@ export class GamesController {
 
   @Get()
   list(@Query() query: ListGamesDto) {
-    return this.gamesService.list(query.page, query.limit);
+    return this.gamesService.list(query);
   }
 
   // Declared before ':id' so "search" is not parsed as an id.

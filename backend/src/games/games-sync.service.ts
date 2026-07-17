@@ -1,11 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { GameType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { IgdbGame, IgdbService } from './igdb/igdb.service';
 
 const GAME_FIELDS = `fields name, summary, first_release_date, total_rating,
-  total_rating_count, cover.image_id, screenshots.image_id,
-  genres.id, genres.name, platforms.id, platforms.name,
+  total_rating_count, game_type, parent_game, cover.image_id,
+  screenshots.image_id, genres.id, genres.name, platforms.id, platforms.name,
   involved_companies.company.id, involved_companies.company.name;`;
+
+const GAME_TYPE_MAP: Record<number, GameType> = {
+  0: GameType.MAIN,
+  1: GameType.DLC,
+  2: GameType.EXPANSION,
+  4: GameType.STANDALONE,
+  8: GameType.REMAKE,
+  9: GameType.REMASTER,
+};
+
+// Child types worth importing under a base game — everything else that IGDB
+// attaches to a parent (mods/WADs, bundles, ports, packs, updates...) is noise
+const IMPORTED_DLC_TYPES = [1, 2, 4];
 
 // IGDB allows 4 req/s — stay well under it when paginating
 const PAGE_SIZE = 500;
@@ -40,10 +54,33 @@ export class GamesSyncService {
         await this.upsertFromIgdb(game);
         imported++;
       }
-      this.logger.log(`Seed progress: ${imported}/${count}`);
+      const dlcs = await this.importDlcsOf(games.map((g) => g.id));
+      this.logger.log(`Seed progress: ${imported}/${count} (+${dlcs} DLCs)`);
       await new Promise((r) => setTimeout(r, PAGE_DELAY_MS));
     }
     return imported;
+  }
+
+  // Fetch and import every DLC/expansion whose base game is in `parentIgdbIds`
+  // (their parents are already upserted, so the parent lookup resolves)
+  private async importDlcsOf(parentIgdbIds: number[]): Promise<number> {
+    if (parentIgdbIds.length === 0) return 0;
+    let imported = 0;
+    for (let offset = 0; ; offset += PAGE_SIZE) {
+      const dlcs = await this.igdb.query<IgdbGame>(
+        'games',
+        `${GAME_FIELDS}
+         where parent_game = (${parentIgdbIds.join(',')})
+           & game_type = (${IMPORTED_DLC_TYPES.join(',')});
+         limit ${PAGE_SIZE}; offset ${offset};`,
+      );
+      for (const dlc of dlcs) {
+        await this.upsertFromIgdb(dlc);
+        imported++;
+      }
+      if (dlcs.length < PAGE_SIZE) return imported;
+      await new Promise((r) => setTimeout(r, PAGE_DELAY_MS));
+    }
   }
 
   // On-demand import: fetch games matching a user search that we don't have
@@ -60,6 +97,7 @@ export class GamesSyncService {
     for (const game of games) {
       await this.upsertFromIgdb(game);
     }
+    await this.importDlcsOf(games.map((g) => g.id));
     return games.length;
   }
 
@@ -68,7 +106,18 @@ export class GamesSyncService {
       .map((ic) => ic.company)
       .filter((c) => c?.id && c?.name);
 
+    // Resolve the base game locally; null when we don't have it (the game
+    // then simply shows in the catalog on its own)
+    const parent = raw.parent_game
+      ? await this.prisma.game.findUnique({
+          where: { igdbId: raw.parent_game },
+          select: { id: true },
+        })
+      : null;
+
     const data = {
+      gameType: GAME_TYPE_MAP[raw.game_type ?? 0] ?? GameType.OTHER,
+      parentId: parent?.id ?? null,
       title: raw.name,
       summary: raw.summary ?? null,
       releaseDate: raw.first_release_date

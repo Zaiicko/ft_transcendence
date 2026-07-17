@@ -84,6 +84,16 @@ model Friendship {
 
 // ---------- Game catalog (imported from IGDB) ----------
 
+enum GameType {
+  MAIN
+  DLC
+  EXPANSION
+  STANDALONE // standalone expansion — playable without the base game
+  REMAKE
+  REMASTER
+  OTHER
+}
+
 model Game {
   id          Int       @id @default(autoincrement())
   igdbId      Int       @unique
@@ -96,8 +106,20 @@ model Game {
   // enough user reviews of our own
   igdbRating      Float?
   igdbRatingCount Int?
+  // Steam (v2): filled by the Steam-linking feature once games are mapped to
+  // their AppID — will join igdbRating in the weighted catalog score
+  steamAppId Int?   @unique
+  steamScore Float?
+  // DLC system: DLCs/expansions point to their base game and are hidden from
+  // the catalog list — they appear (and are reviewable) on the parent's page
+  gameType GameType @default(MAIN)
+  parent   Game?    @relation("GameDlcs", fields: [parentId], references: [id], onDelete: SetNull)
+  parentId Int?
+  dlcs     Game[]   @relation("GameDlcs")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([parentId])
 
   genres    Genre[]
   platforms Platform[]
