@@ -20,17 +20,23 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL}
       IGDB_CLIENT_ID: ${IGDB_CLIENT_ID}
       IGDB_CLIENT_SECRET: ${IGDB_CLIENT_SECRET}
       FORTYTWO_CLIENT_ID: ${FORTYTWO_CLIENT_ID}
       FORTYTWO_CLIENT_SECRET: ${FORTYTWO_CLIENT_SECRET}
+      FORTYTWO_CALLBACK_URL: ${FORTYTWO_CALLBACK_URL}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
+      FRONTEND_URL: ${FRONTEND_URL}
     ports:
       - "5555:5555" # Prisma Studio (dev only, started manually)
     volumes:
       - ./backend:/app
       - backend_node_modules:/app/node_modules
+      - backend_uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,4 +60,5 @@ services:
 volumes:
   postgres_data:
   backend_node_modules:
+  backend_uploads:
   frontend_node_modules:
