@@ -79,7 +79,11 @@ export class GamesService {
         COALESCE(r.n, 0)     AS "userRatingCount",
         COALESCE(p.n, 0)     AS "playedCount",
         ((COALESCE(r.n, 0) * COALESCE(r.avg, 0)
-          + ${RATING_CONFIDENCE_WEIGHT} * COALESCE(g."igdbRating" / 10.0, 5))
+          + ${RATING_CONFIDENCE_WEIGHT} * COALESCE(
+              (g."igdbRating" / 10.0 + g."steamScore" / 10.0) / 2,
+              g."igdbRating" / 10.0,
+              g."steamScore" / 10.0,
+              5))
           / (COALESCE(r.n, 0) + ${RATING_CONFIDENCE_WEIGHT}))::float AS score
       FROM "Game" g
       LEFT JOIN (

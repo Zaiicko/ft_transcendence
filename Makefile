@@ -45,6 +45,28 @@ seed:
 	@$(COMPOSE) exec -e SEED_COUNT=$${SEED_COUNT:-1000} backend npm run seed
 	@echo "$(BOLD)$(GREEN)Catalog seeded! ✅$(RESET)"
 
+# Map games to Steam AppIDs and fetch their % of positive reviews
+# Usage: make steam [STEAM_COUNT=100]
+steam:
+	@echo "$(BOLD)$(YELLOW)Syncing Steam scores... ♨️$(RESET)"
+	@$(COMPOSE) exec -e STEAM_COUNT=$${STEAM_COUNT:-} backend npm run steam:sync
+	@echo "$(BOLD)$(GREEN)Steam scores synced! ✅$(RESET)"
+
+# Share the seeded DB with the team instead of everyone re-downloading it:
+# one member runs db-dump, sends the file, others run db-restore.
+DUMP_FILE = saveboxd_dump.sql
+
+db-dump:
+	@$(COMPOSE) exec -T postgres sh -c 'pg_dump -U $$POSTGRES_USER -d $$POSTGRES_DB --clean --if-exists' > $(DUMP_FILE)
+	@echo "$(BOLD)$(GREEN)Database exported to $(DUMP_FILE) ($$(du -h $(DUMP_FILE) | cut -f1)) 📦$(RESET)"
+
+# ⚠️ Replaces your WHOLE local database with the dump's content
+db-restore:
+	@test -f $(DUMP_FILE) || (echo "$(BOLD)$(RED)$(DUMP_FILE) not found — put it at the repo root first.$(RESET)" && exit 1)
+	@$(COMPOSE) exec -T postgres sh -c 'psql -q -U $$POSTGRES_USER -d $$POSTGRES_DB' < $(DUMP_FILE)
+	@$(COMPOSE) restart backend > /dev/null
+	@echo "$(BOLD)$(GREEN)Database restored from $(DUMP_FILE) ✅$(RESET)"
+
 logs:
 	@$(COMPOSE) logs -f
 
@@ -83,4 +105,4 @@ logo:
 	@echo "$(BOLD)            🎮 ft_transcendence — rate your games 🎮$(RESET)"
 	@echo ""
 
-.PHONY: all up seed logs ps down clean fclean re logo
+.PHONY: all up seed steam db-dump db-restore logs ps down clean fclean re logo
