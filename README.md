@@ -39,7 +39,11 @@ Other targets: `make logs`, `make down`, `make clean` (wipes the DB), `make re`.
 
 - **Frontend**: React 19 + TypeScript + Vite + Tailwind CSS
 - **Backend**: NestJS + Prisma (ORM)
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL — schema lives in `backend/prisma/schema.prisma` and
+  is synced automatically at container start via `prisma db push
+  --accept-data-loss` (deliberate: the graded scenario starts from an empty DB,
+  so nothing can be lost there; local dev data is regenerable with `make seed`.
+  A production setup would use versioned `prisma migrate` files instead.)
 - **Proxy**: nginx (TLS termination, HTTPS only)
 - **Game data**: IGDB API
 
