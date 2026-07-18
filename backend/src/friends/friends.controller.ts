@@ -49,9 +49,15 @@ export class FriendsController {
     };
   }
 
-  @Post('requests/:userId')
-  sendRequest(@CurrentUser() current: JwtPayload, @Param('userId', ParseIntPipe) userId: number) {
-    return this.friends.sendRequest(current.sub, userId);
+  @Get('suggestions')
+  async suggestions(@CurrentUser() current: JwtPayload) {
+    const users = await this.friends.suggestFortyTwoFriends(current.sub);
+    return users.map(toPublicUser);
+  }
+
+  @Post('requests/:username')
+  sendRequest(@CurrentUser() current: JwtPayload, @Param('username') username: string) {
+    return this.friends.sendRequestByUsername(current.sub, username);
   }
 
   @Post('requests/:id/accept')

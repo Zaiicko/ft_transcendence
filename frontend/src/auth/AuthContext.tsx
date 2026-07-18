@@ -2,13 +2,20 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useState 
 import { apiFetch } from '../lib/api';
 import type { PublicUser } from '../lib/types';
 
+type LoginResult = PublicUser | { requiresTwoFactor: true };
+
 interface AuthContextValue {
   user: PublicUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ requiresTwoFactor: true } | void>;
+  completeTwoFactorLogin: (code: string) => Promise<void>;
   signup: (email: string, username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+}
+
+function isTwoFactorChallenge(result: LoginResult): result is { requiresTwoFactor: true } {
+  return 'requiresTwoFactor' in result;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -30,10 +37,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refreshUser]);
 
   const login = useCallback(async (email: string, password: string) => {
+    const result = await apiFetch<LoginResult>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+    if (isTwoFactorChallenge(result)) return result;
+    setUser(result);
+  }, []);
+
+  const completeTwoFactorLogin = useCallback(async (code: string) => {
     setUser(
-      await apiFetch<PublicUser>('/auth/login', {
+      await apiFetch<PublicUser>('/auth/2fa/verify-login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ code }),
       }),
     );
   }, []);
@@ -53,7 +69,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, refreshUser }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, completeTwoFactorLogin, signup, logout, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

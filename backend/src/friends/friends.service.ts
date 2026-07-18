@@ -1,10 +1,22 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { FriendshipStatus } from '@prisma/client';
+import { AuthProvider, FriendshipStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { UsersService } from '../users/users.service';
+
+const SUGGESTION_LIMIT = 20;
 
 @Injectable()
 export class FriendsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly users: UsersService,
+  ) {}
+
+  async sendRequestByUsername(requesterId: number, username: string) {
+    const target = await this.users.findByUsername(username);
+    if (!target) throw new NotFoundException('User not found');
+    return this.sendRequest(requesterId, target.id);
+  }
 
   async sendRequest(requesterId: number, addresseeId: number) {
     if (requesterId === addresseeId) {
@@ -85,5 +97,26 @@ export class FriendsService {
       }),
     ]);
     return { incoming, outgoing };
+  }
+
+  // Other 42-authenticated users, excluding yourself and anyone you already
+  // have a friendship or pending request with (in either direction).
+  async suggestFortyTwoFriends(userId: number) {
+    const relations = await this.prisma.friendship.findMany({
+      where: { OR: [{ requesterId: userId }, { addresseeId: userId }] },
+      select: { requesterId: true, addresseeId: true },
+    });
+
+    const excludeIds = new Set<number>([userId]);
+    for (const { requesterId, addresseeId } of relations) {
+      excludeIds.add(requesterId);
+      excludeIds.add(addresseeId);
+    }
+
+    return this.prisma.user.findMany({
+      where: { provider: AuthProvider.FORTYTWO, id: { notIn: [...excludeIds] } },
+      take: SUGGESTION_LIMIT,
+      orderBy: { createdAt: 'desc' },
+    });
   }
 }

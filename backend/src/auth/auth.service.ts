@@ -1,17 +1,30 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { AuthProvider, User } from '@prisma/client';
-import { createHash, randomBytes } from 'crypto';
+import { AuthProvider, Prisma, User, VerificationTokenType } from '@prisma/client';
+import { authenticator } from 'otplib';
+import * as QRCode from 'qrcode';
+import { MailerService } from '../mailer/mailer.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { hashPassword, verifyPassword } from './password.util';
+import { generateOpaqueToken, hashToken } from './token.util';
 
+// `purpose` discriminates a full session token from an in-progress 2FA
+// challenge — both are signed with the same JWT_SECRET, so without this,
+// a token issued for step 1 of login (password OK, 2FA pending) could be
+// replayed as a full session by putting it in the access_token cookie.
 export interface JwtPayload {
   sub: number;
   username: string;
+  purpose: 'session';
+}
+
+export interface MfaPendingPayload {
+  sub: number;
+  purpose: 'mfa';
 }
 
 export interface TokenPair {
@@ -22,6 +35,11 @@ export interface TokenPair {
 }
 
 const REFRESH_TOKEN_BYTES = 48;
+const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
+const RESEND_VERIFICATION_COOLDOWN_MS = 60 * 1000;
+const MFA_CHALLENGE_TTL = '5m';
+
 const DURATION_UNIT_MS: Record<string, number> = {
   s: 1000,
   m: 60_000,
@@ -36,6 +54,7 @@ export class AuthService {
     private readonly users: UsersService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
+    private readonly mailer: MailerService,
   ) {}
 
   async signup(dto: SignupDto): Promise<User> {
@@ -47,12 +66,14 @@ export class AuthService {
     }
 
     const passwordHash = await hashPassword(dto.password);
-    return this.users.create({
+    const user = await this.users.create({
       email: dto.email,
       username: dto.username,
       passwordHash,
       provider: AuthProvider.LOCAL,
     });
+    await this.requestEmailVerification(user);
+    return user;
   }
 
   async validateLocalLogin(dto: LoginDto): Promise<User> {
@@ -65,15 +86,21 @@ export class AuthService {
   }
 
   // OAuth accounts are matched strictly by (provider, providerId) — a LOCAL
-  // account with the same email is a distinct account, not auto-linked.
+  // account (or a different provider) with the same email is never silently
+  // linked; the caller gets a clear conflict instead of a duplicate-email
+  // crash from the DB.
   async findOrCreateOAuthUser(
     provider: AuthProvider,
     providerId: string,
     email: string,
     displayName: string,
-  ): Promise<User> {
+  ): Promise<{ user: User; isNewUser: boolean }> {
     const existing = await this.prisma.user.findFirst({ where: { provider, providerId } });
-    if (existing) return existing;
+    if (existing) return { user: existing, isNewUser: false };
+
+    if (await this.users.findByEmail(email)) {
+      throw new ConflictException('An account already exists with this email address');
+    }
 
     const base =
       (displayName || email.split('@')[0])
@@ -87,23 +114,41 @@ export class AuthService {
       username = `${base}${suffix}`;
     }
 
-    return this.users.create({ email, username, provider, providerId });
+    try {
+      // The provider already verified this email address.
+      const user = await this.users.create({
+        email,
+        username,
+        provider,
+        providerId,
+        emailVerifiedAt: new Date(),
+      });
+      return { user, isNewUser: true };
+    } catch (err) {
+      // Closes the race between the findByEmail check above and this create —
+      // a concurrent signup with the same email hits the DB's unique
+      // constraint instead of the pre-check.
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        throw new ConflictException('An account already exists with this email address');
+      }
+      throw err;
+    }
   }
 
   async issueTokens(user: User): Promise<TokenPair> {
     const accessTtl = this.config.get<string>('JWT_ACCESS_TTL') ?? '15m';
     const refreshTtlMs = this.parseDurationMs(this.config.get<string>('JWT_REFRESH_TTL') ?? '30d');
 
-    const payload: JwtPayload = { sub: user.id, username: user.username };
+    const payload: JwtPayload = { sub: user.id, username: user.username, purpose: 'session' };
     // JwtSignOptions.expiresIn is typed against the `ms` package's branded string
     // union (e.g. "15m"), which a plain `string` from ConfigService can't satisfy structurally.
     const accessToken = await this.jwt.signAsync(payload, { expiresIn: accessTtl } as JwtSignOptions);
 
-    const rawRefreshToken = randomBytes(REFRESH_TOKEN_BYTES).toString('hex');
+    const rawRefreshToken = generateOpaqueToken(REFRESH_TOKEN_BYTES);
     await this.prisma.refreshToken.create({
       data: {
         userId: user.id,
-        tokenHash: this.hashToken(rawRefreshToken),
+        tokenHash: hashToken(rawRefreshToken),
         expiresAt: new Date(Date.now() + refreshTtlMs),
       },
     });
@@ -117,7 +162,7 @@ export class AuthService {
   }
 
   async refresh(rawRefreshToken: string): Promise<{ user: User; tokens: TokenPair }> {
-    const tokenHash = this.hashToken(rawRefreshToken);
+    const tokenHash = hashToken(rawRefreshToken);
     const stored = await this.prisma.refreshToken.findUnique({
       where: { tokenHash },
       include: { user: true },
@@ -137,15 +182,156 @@ export class AuthService {
   }
 
   async logout(rawRefreshToken: string): Promise<void> {
-    const tokenHash = this.hashToken(rawRefreshToken);
+    const tokenHash = hashToken(rawRefreshToken);
     await this.prisma.refreshToken.updateMany({
       where: { tokenHash, revokedAt: null },
       data: { revokedAt: new Date() },
     });
   }
 
-  private hashToken(raw: string): string {
-    return createHash('sha256').update(raw).digest('hex');
+  // ---------- Email verification ----------
+
+  async requestEmailVerification(user: User): Promise<void> {
+    if (user.emailVerifiedAt) return;
+
+    const recent = await this.prisma.verificationToken.findFirst({
+      where: {
+        userId: user.id,
+        type: VerificationTokenType.EMAIL_VERIFICATION,
+        createdAt: { gt: new Date(Date.now() - RESEND_VERIFICATION_COOLDOWN_MS) },
+      },
+    });
+    if (recent) return;
+
+    const rawToken = generateOpaqueToken();
+    await this.prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        type: VerificationTokenType.EMAIL_VERIFICATION,
+        tokenHash: hashToken(rawToken),
+        expiresAt: new Date(Date.now() + EMAIL_VERIFICATION_TTL_MS),
+      },
+    });
+
+    const link = `${this.frontendUrl()}/verify-email?token=${rawToken}`;
+    await this.mailer.send({
+      to: user.email,
+      subject: 'Confirm your Saveboxd email',
+      html: `<p>Welcome to Saveboxd! Confirm your email address:</p><p><a href="${link}">${link}</a></p><p>This link expires in 24 hours.</p>`,
+    });
+  }
+
+  async verifyEmail(rawToken: string): Promise<void> {
+    const record = await this.consumeVerificationToken(rawToken, VerificationTokenType.EMAIL_VERIFICATION);
+    await this.prisma.user.update({ where: { id: record.userId }, data: { emailVerifiedAt: new Date() } });
+  }
+
+  // ---------- Password reset ----------
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const user = await this.users.findByEmail(email);
+    if (!user || !user.passwordHash) return; // never reveal whether the account exists
+
+    const rawToken = generateOpaqueToken();
+    await this.prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        type: VerificationTokenType.PASSWORD_RESET,
+        tokenHash: hashToken(rawToken),
+        expiresAt: new Date(Date.now() + PASSWORD_RESET_TTL_MS),
+      },
+    });
+
+    const link = `${this.frontendUrl()}/reset-password?token=${rawToken}`;
+    await this.mailer.send({
+      to: user.email,
+      subject: 'Reset your Saveboxd password',
+      html: `<p>Reset your password:</p><p><a href="${link}">${link}</a></p><p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>`,
+    });
+  }
+
+  async resetPassword(rawToken: string, newPassword: string): Promise<void> {
+    const record = await this.consumeVerificationToken(rawToken, VerificationTokenType.PASSWORD_RESET);
+    const passwordHash = await hashPassword(newPassword);
+    await this.prisma.$transaction([
+      this.prisma.user.update({ where: { id: record.userId }, data: { passwordHash } }),
+      this.prisma.refreshToken.updateMany({
+        where: { userId: record.userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      }),
+    ]);
+  }
+
+  private async consumeVerificationToken(rawToken: string, type: VerificationTokenType) {
+    const tokenHash = hashToken(rawToken);
+    const record = await this.prisma.verificationToken.findUnique({ where: { tokenHash } });
+    if (!record || record.type !== type || record.expiresAt < new Date()) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+    await this.prisma.verificationToken.delete({ where: { id: record.id } });
+    return record;
+  }
+
+  // ---------- 2FA (TOTP) ----------
+
+  async beginTwoFactorSetup(userId: number): Promise<{ otpauthUrl: string; qrCodeDataUrl: string }> {
+    const user = await this.users.findById(userId);
+    if (!user) throw new UnauthorizedException();
+
+    const secret = authenticator.generateSecret();
+    await this.prisma.user.update({ where: { id: userId }, data: { twoFactorSecret: secret } });
+
+    const otpauthUrl = authenticator.keyuri(user.email, 'Saveboxd', secret);
+    const qrCodeDataUrl = await QRCode.toDataURL(otpauthUrl);
+    return { otpauthUrl, qrCodeDataUrl };
+  }
+
+  async confirmTwoFactorSetup(userId: number, code: string): Promise<void> {
+    const user = await this.users.findById(userId);
+    if (!user?.twoFactorSecret) throw new UnauthorizedException('2FA setup not started');
+    if (!authenticator.verify({ token: code, secret: user.twoFactorSecret })) {
+      throw new UnauthorizedException('Invalid code');
+    }
+    await this.prisma.user.update({ where: { id: userId }, data: { twoFactorEnabled: true } });
+  }
+
+  async disableTwoFactor(userId: number, code: string): Promise<void> {
+    const user = await this.users.findById(userId);
+    if (!user?.twoFactorSecret || !authenticator.verify({ token: code, secret: user.twoFactorSecret })) {
+      throw new UnauthorizedException('Invalid code');
+    }
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorEnabled: false, twoFactorSecret: null },
+    });
+  }
+
+  issueMfaChallenge(userId: number): Promise<string> {
+    const payload: MfaPendingPayload = { sub: userId, purpose: 'mfa' };
+    return this.jwt.signAsync(payload, { expiresIn: MFA_CHALLENGE_TTL } as JwtSignOptions);
+  }
+
+  async completeMfaChallenge(challengeToken: string, code: string): Promise<User> {
+    let payload: MfaPendingPayload;
+    try {
+      payload = await this.jwt.verifyAsync<MfaPendingPayload>(challengeToken, {
+        secret: this.config.get<string>('JWT_SECRET'),
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired 2FA challenge');
+    }
+    if (payload.purpose !== 'mfa') throw new UnauthorizedException('Invalid 2FA challenge');
+
+    const user = await this.users.findById(payload.sub);
+    if (!user?.twoFactorEnabled || !user.twoFactorSecret) throw new UnauthorizedException();
+    if (!authenticator.verify({ token: code, secret: user.twoFactorSecret })) {
+      throw new UnauthorizedException('Invalid code');
+    }
+    return user;
+  }
+
+  private frontendUrl(): string {
+    return this.config.get<string>('FRONTEND_URL') ?? 'https://localhost:8443';
   }
 
   private parseDurationMs(duration: string): number {

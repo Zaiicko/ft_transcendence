@@ -9,6 +9,7 @@ export interface PublicUser {
   provider: AuthProvider;
   steamId: string | null;
   twoFactorEnabled: boolean;
+  emailVerifiedAt: string | null;
   language: string;
   lastSeenAt: string | null;
   createdAt: string;
