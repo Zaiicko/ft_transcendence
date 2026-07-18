@@ -24,25 +24,43 @@ export default function Friends() {
   const [sendError, setSendError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
-  const load = useCallback(async () => {
-    setError(null);
-    try {
-      const [friendsList, requests] = await Promise.all([
+  // load() is deliberately split into a pure fetch + stable state-applying
+  // callbacks: its body contains no setState, so it stays safe to call from
+  // the effect below (react-hooks/set-state-in-effect) — every state update
+  // happens in an async promise callback.
+  const fetchAll = useCallback(
+    () =>
+      Promise.all([
         apiFetch<FriendRow[]>('/friends'),
         apiFetch<{ incoming: FriendRequestRow[]; outgoing: FriendRequestRow[] }>('/friends/requests'),
-      ]);
+      ]),
+    [],
+  );
+
+  const applyData = useCallback(
+    ([friendsList, requests]: Awaited<ReturnType<typeof fetchAll>>) => {
       setFriends(friendsList);
       setIncoming(requests.incoming);
       setOutgoing(requests.outgoing);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not load friends');
-    } finally {
-      setLoading(false);
-    }
+      setError(null);
+    },
+    // `fetchAll` is only used as a type above, not as a value
+    [],
+  );
+
+  const applyError = useCallback((err: unknown) => {
+    setError(err instanceof ApiError ? err.message : 'Could not load friends');
   }, []);
 
+  const stopLoading = useCallback(() => setLoading(false), []);
+
+  const load = useCallback(
+    () => fetchAll().then(applyData).catch(applyError).finally(stopLoading),
+    [fetchAll, applyData, applyError, stopLoading],
+  );
+
   useEffect(() => {
-    load();
+    void load();
   }, [load]);
 
   usePresenceSocket(

@@ -13,7 +13,7 @@ interface FortyTwoMe {
 // passport-oauth2 has no built-in profile fetch — override userProfile to
 // hit the 42 intra API with the access token it just obtained.
 class FortyTwoOAuth2Strategy extends OAuth2Strategy {
-  userProfile(accessToken: string, done: (err?: any, profile?: any) => void): void {
+  userProfile(accessToken: string, done: (err?: Error | null, profile?: FortyTwoMe) => void): void {
     fetch('https://api.intra.42.fr/v2/me', {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
@@ -22,7 +22,9 @@ class FortyTwoOAuth2Strategy extends OAuth2Strategy {
         return res.json();
       })
       .then((data: FortyTwoMe) => done(undefined, data))
-      .catch((err: unknown) => done(err));
+      .catch((err: unknown) =>
+        done(err instanceof Error ? err : new Error(String(err))),
+      );
   }
 }
 
