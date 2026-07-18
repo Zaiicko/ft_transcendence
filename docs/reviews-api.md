@@ -22,7 +22,7 @@ Tous les `GET` sont publics (navigation anonyme) ; toute mutation exige d'être 
   "rating": 9,                                       // 0-10
   "text": "Portal 2 est un bijou…",
   "createdAt": "2026-07-18T11:06:05.099Z", "updatedAt": "…",
-  "user": { "id": 7, "username": "probeA", "avatarUrl": null },
+  "user": { "id": 7, "username": "probeA", "avatarUrl": null },   // null = compte supprimé (§4.7)
   "_count": { "likes": 1, "dislikes": 0, "comments": 3 },   // comments = réponses incluses
   "myReaction": "like"          // "like" | "dislike" | null — calculé pour le viewer connecté
 }
@@ -34,7 +34,9 @@ Tous les `GET` sont publics (navigation anonyme) ; toute mutation exige d'être 
 ### Commentaire
 
 Même logique : `id`, `text`, `parentId` (`null` = commentaire racine), `user`,
-`_count: { likes, dislikes, replies }`, `myReaction`.
+`_count: { likes, dislikes, replies }`, `myReaction`, plus **`deleted`** :
+`true` = tombale Reddit-style (« [supprimé] » — texte vide, `user: null`,
+réponses conservées). Afficher un placeholder grisé, sans boutons d'action.
 
 ---
 
@@ -69,7 +71,7 @@ Même logique : `id`, `text`, `parentId` (`null` = commentaire racine), `user`,
 | `POST /reviews/:reviewId/comments` | oui | `{ text, parentId? }` — `parentId` présent = réponse à un commentaire. Profondeur max **3** (`400` au-delà) |
 | `GET /comments/:id/replies?page=&limit=` | non | Réponses directes d'un commentaire |
 | `PATCH /comments/:id` | oui, auteur | `{ text }` |
-| `DELETE /comments/:id` | oui, auteur | Supprime **le commentaire et toutes ses réponses** |
+| `DELETE /comments/:id` | oui, auteur | **Reddit-style** : avec réponses → devient une tombale `deleted: true` (le thread survit) ; sans réponse → vraie suppression (+ élagage des tombales ancêtres devenues vides). Répondre/réagir à une tombale → `400`. Le 💬 des reviews ne compte pas les tombales |
 | `POST·DELETE /comments/:id/like` · `/dislike` | oui | Mêmes règles que les réactions de review |
 
 Codes d'erreur communs : `400` validation, `401` non connecté, `403` pas propriétaire,
@@ -134,8 +136,17 @@ c'est voulu (pas de reflow/clignotement, pas de rafale de requêtes).
    jamais par id codé en dur.
 6. **`_count.comments`** compte réponses incluses (c'est le total du thread) ;
    `_count.replies` d'un commentaire ne compte que ses réponses directes.
-7. La suppression d'un compte (module users) **cascade** : ses reviews, commentaires
-   et réactions disparaissent partout — prévoir que des items s'évaporent des listes.
+7. **Compte supprimé = contenu anonymisé, pas effacé** (décision d'équipe, style
+   SensCritique). À la suppression : `user` passe à **`null`** sur ses reviews et
+   commentaires (qui restent en place, avec les réponses des autres), ses
+   likes/dislikes disparaissent (les compteurs baissent), le contenu anonymisé
+   n'est plus ni éditable ni supprimable (`403`) mais reste likable/commentable.
+   **Le front doit tolérer `user: null` partout** : afficher
+   « [utilisateur supprimé] », avatar générique, et null-safe sur les tests
+   `r.user?.id === me.id`. RGPD : plus aucune donnée personnelle ne subsiste
+   (pseudo, avatar et réactions effacés), le texte de l'avis est conservé
+   dé-identifié. Aucun évènement WS n'accompagne l'anonymisation : les onglets
+   ouverts la verront au prochain rechargement de liste.
 
 ---
 

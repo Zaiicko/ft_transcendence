@@ -18,7 +18,10 @@ const publicAuthor = { select: { id: true, username: true, avatarUrl: true } };
 // turned into a `myReaction` field by toDto below
 const reviewInclude = (viewerId?: number): Prisma.ReviewInclude => ({
   user: publicAuthor,
-  _count: { select: { likes: true, dislikes: true, comments: true } },
+  // comments filtré : les tombales "[supprimé]" ne comptent pas dans le 💬
+  _count: {
+    select: { likes: true, dislikes: true, comments: { where: { deletedAt: null } } },
+  },
   ...(viewerId
     ? {
         likes: { where: { userId: viewerId }, select: { id: true } },
@@ -56,10 +59,7 @@ export class ReviewsService {
     try {
       const review = await this.prisma.review.create({
         data: { ...dto, userId, gameId: target.gameId, companyId: target.companyId },
-        include: {
-          user: publicAuthor,
-          _count: { select: { likes: true, dislikes: true, comments: true } },
-        },
+        include: reviewInclude(),
       });
       this.gateway.emitToTarget(target, 'review:created', review);
       return review;
@@ -84,14 +84,13 @@ export class ReviewsService {
     limit: number,
     viewerId?: number,
   ) {
-    // Net score (likes - dislikes) is beyond Prisma's orderBy — raw SQL path
-    if (sort === 'popular') return this.findForGameByScore(gameId, page, limit, viewerId);
+    // Net score et "discussed" filtré tombales : au-delà du orderBy Prisma,
+    // chemin SQL brut pour les deux
+    if (sort === 'popular') return this.findByScore({ gameId }, page, limit, viewerId);
+    if (sort === 'discussed') return this.findByDiscussed({ gameId }, page, limit, viewerId);
     const rows = await this.prisma.review.findMany({
       where: { gameId },
-      orderBy:
-        sort === 'discussed'
-          ? { comments: { _count: 'desc' } } // counts replies too (same reviewId)
-          : { createdAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
       include: reviewInclude(viewerId),
@@ -107,10 +106,10 @@ export class ReviewsService {
     viewerId?: number,
   ) {
     if (sort === 'popular') return this.findByScore({ companyId }, page, limit, viewerId);
+    if (sort === 'discussed') return this.findByDiscussed({ companyId }, page, limit, viewerId);
     const rows = await this.prisma.review.findMany({
       where: { companyId },
-      orderBy:
-        sort === 'discussed' ? { comments: { _count: 'desc' } } : { createdAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
       include: reviewInclude(viewerId),
@@ -121,24 +120,12 @@ export class ReviewsService {
   // Two-step scored listing: SQL computes the ordered page of ids
   // (parameterized — the template tag binds values, no injection), then
   // Prisma loads those ids with their relations and we restore the order.
-  private async findForGameByScore(
-    gameId: number,
-    page: number,
-    limit: number,
-    viewerId?: number,
-  ) {
-    return this.findByScore({ gameId }, page, limit, viewerId);
-  }
-
   private async findByScore(
     target: { gameId?: number; companyId?: number },
     page: number,
     limit: number,
     viewerId?: number,
   ) {
-    const targetFilter = target.gameId
-      ? Prisma.sql`r."gameId" = ${target.gameId}`
-      : Prisma.sql`r."companyId" = ${target.companyId}`;
     const rows = await this.prisma.$queryRaw<{ id: number }[]>`
       SELECT r.id
       FROM "Review" r
@@ -146,11 +133,40 @@ export class ReviewsService {
         ON l."reviewId" = r.id
       LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewDislike" GROUP BY "reviewId") d
         ON d."reviewId" = r.id
-      WHERE ${targetFilter}
+      WHERE ${this.targetFilter(target)}
       ORDER BY COALESCE(l.n, 0) - COALESCE(d.n, 0) DESC, r."createdAt" DESC
       LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
-    if (rows.length === 0) return [];
-    const ids = rows.map((r) => r.id);
+    return this.loadOrdered(rows.map((r) => r.id), viewerId);
+  }
+
+  // "Discussed" classe sur les commentaires VISIBLES (tombales exclues),
+  // comme le compteur affiché — même histoire des deux côtés
+  private async findByDiscussed(
+    target: { gameId?: number; companyId?: number },
+    page: number,
+    limit: number,
+    viewerId?: number,
+  ) {
+    const rows = await this.prisma.$queryRaw<{ id: number }[]>`
+      SELECT r.id
+      FROM "Review" r
+      LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewComment"
+                 WHERE "deletedAt" IS NULL GROUP BY "reviewId") c
+        ON c."reviewId" = r.id
+      WHERE ${this.targetFilter(target)}
+      ORDER BY COALESCE(c.n, 0) DESC, r."createdAt" DESC
+      LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
+    return this.loadOrdered(rows.map((r) => r.id), viewerId);
+  }
+
+  private targetFilter(target: { gameId?: number; companyId?: number }) {
+    return target.gameId
+      ? Prisma.sql`r."gameId" = ${target.gameId}`
+      : Prisma.sql`r."companyId" = ${target.companyId}`;
+  }
+
+  private async loadOrdered(ids: number[], viewerId?: number) {
+    if (ids.length === 0) return [];
     const reviews = await this.prisma.review.findMany({
       where: { id: { in: ids } },
       include: reviewInclude(viewerId),
@@ -171,7 +187,8 @@ export class ReviewsService {
         ON l."reviewId" = r.id
       LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewDislike" GROUP BY "reviewId") d
         ON d."reviewId" = r.id
-      LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewComment" GROUP BY "reviewId") c
+      LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewComment"
+                 WHERE "deletedAt" IS NULL GROUP BY "reviewId") c
         ON c."reviewId" = r.id
       WHERE r."createdAt" >= ${since} AND r.text IS NOT NULL AND r.text <> ''
       ORDER BY COALESCE(l.n, 0) - COALESCE(d.n, 0) DESC,

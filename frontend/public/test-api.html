@@ -47,6 +47,11 @@
       width: 34px; height: 34px; border-radius: 50%; background: #2c3440;
       display: flex; align-items: center; justify-content: center;
       color: #8ea4b8; font-weight: bold; flex-shrink: 0;
+      object-fit: cover; /* quand .avatar est un <img> */
+    }
+    .avatar.sm {
+      width: 18px; height: 18px; font-size: 0.6rem;
+      display: inline-flex; vertical-align: middle; margin-right: 5px;
     }
     .review .title { font-weight: bold; color: #fff; }
     .review .meta { font-size: 0.75rem; color: #678; }
@@ -485,9 +490,23 @@ async function refreshReviews() {
   // Hidden when anonymous or already reviewed (UX only; the real enforcement
   // is the 401 guard and the 409 unique constraint server-side)
   $('postForm').style.display =
-    me && !reviews.some((r) => r.user.id === me.id) ? '' : 'none';
+    me && !reviews.some((r) => r.user?.id === me.id) ? '' : 'none';
   // Re-open the threads the user had expanded before this re-render
   for (const id of [...openComs]) showComments(id);
+}
+
+// Vraie photo si l'utilisateur en a une, sinon l'initiale du username.
+// user null = compte supprimé (le contenu reste, anonymisé)
+function avatar(user, sm = false) {
+  const cls = sm ? 'avatar sm' : 'avatar';
+  if (!user) return `<div class="${cls}">✕</div>`;
+  return user.avatarUrl
+    ? `<img class="${cls}" src="${esc(user.avatarUrl)}" alt="">`
+    : `<div class="${cls}">${esc(user.username[0].toUpperCase())}</div>`;
+}
+
+function authorName(user) {
+  return user ? esc(user.username) : '<em>[utilisateur supprimé]</em>';
 }
 
 function renderReview(r) {
@@ -496,10 +515,10 @@ function renderReview(r) {
   el.id = `review-${r.id}`;
   el.innerHTML = `
     <div class="head">
-      <div class="avatar">${esc(r.user.username[0].toUpperCase())}</div>
+      ${avatar(r.user)}
       <div>
         ${r.title ? `<div class="title">${esc(r.title)}</div>` : ''}
-        <div class="meta">${esc(r.user.username)} · ${new Date(r.createdAt).toLocaleDateString('fr')}</div>
+        <div class="meta">${authorName(r.user)} · ${new Date(r.createdAt).toLocaleDateString('fr')}</div>
       </div>
       <div class="rating">${r.rating}/10</div>
     </div>
@@ -510,7 +529,7 @@ function renderReview(r) {
       <button class="small secondary ${r.myReaction === 'dislike' ? 'mine' : ''}"
               data-rdislike="${r.id}" onclick="react(${r.id}, 'dislike', this)">👎 ${r._count.dislikes}</button>
       <button class="small secondary" onclick="toggleComments(${r.id}, this)">💬 ${r._count.comments} coms</button>
-      ${me && r.user.id === me.id
+      ${me && r.user?.id === me.id
         ? `<button class="small secondary" onclick="delReview(${r.id})">🗑️ ma review</button>` : ''}
     </div>
     <div id="coms-${r.id}"></div>`;
@@ -600,8 +619,20 @@ const MAX_REPLY_DEPTH = 3;
 function renderComment(c, reviewId, depth = 0) {
   const el = document.createElement('div');
   el.className = 'comment';
+  // Tombale Reddit-style : auteur et texte effacés, réponses conservées
+  if (c.deleted) {
+    el.innerHTML = `
+      <div class="meta">${avatar(null, true)}<em>[supprimé]</em></div>
+      <div class="text"><em style="color:#678">Commentaire supprimé par son auteur</em></div>
+      <div class="actions">
+        ${c._count.replies && !openReplies.has(c.id) ? `<button class="small secondary"
+                onclick="loadReplies(${c.id}, ${reviewId}, ${depth}, this)">▼ ${c._count.replies} réponses</button>` : ''}
+      </div>
+      <div id="replies-${c.id}"></div>`;
+    return el;
+  }
   el.innerHTML = `
-    <div class="meta">${esc(c.user.username)}</div>
+    <div class="meta">${avatar(c.user, true)}${authorName(c.user)}</div>
     <div class="text">${esc(c.text)}</div>
     <div class="actions">
       <button class="small secondary ${c.myReaction === 'like' ? 'mine' : ''}"
@@ -612,7 +643,7 @@ function renderComment(c, reviewId, depth = 0) {
               onclick="replyBox(${c.id}, ${reviewId}, this)">↩ répondre</button>` : ''}
       ${c._count.replies && !openReplies.has(c.id) ? `<button class="small secondary"
               onclick="loadReplies(${c.id}, ${reviewId}, ${depth}, this)">▼ ${c._count.replies} réponses</button>` : ''}
-      ${me && c.user.id === me.id
+      ${me && c.user?.id === me.id
         ? `<button class="small secondary" onclick="delCom(${c.id})">🗑️</button>` : ''}
     </div>
     <div id="replies-${c.id}"></div>`;
@@ -719,7 +750,7 @@ function renderHighlight(r) {
     ${cover ? `<img src="${esc(cover)}" alt="">` : ''}
     <div>
       <div class="t">${esc(r.game ? r.game.title : r.company.name)} · <span style="color:#ffd700">${r.rating}/10</span></div>
-      <div class="meta">${r.title ? `« ${esc(r.title)} » — ` : ''}${esc(r.user.username)}
+      <div class="meta">${r.title ? `« ${esc(r.title)} » — ` : ''}${avatar(r.user, true)}${authorName(r.user)}
         · 👍 ${r._count.likes} · 👎 ${r._count.dislikes} · 💬 ${r._count.comments}</div>
       <div class="excerpt">${esc(r.text ?? '')}</div>
     </div>`;

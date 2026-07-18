@@ -24,12 +24,17 @@ const commentInclude = (viewerId?: number): Prisma.ReviewCommentInclude => ({
     : {}),
 });
 
-type ReactionRows = { likes?: { id: number }[]; dislikes?: { id: number }[] };
+type ReactionRows = {
+  likes?: { id: number }[];
+  dislikes?: { id: number }[];
+  deletedAt?: Date | null;
+};
 
 function toDto<T extends ReactionRows>(row: T) {
-  const { likes, dislikes, ...rest } = row;
+  const { likes, dislikes, deletedAt, ...rest } = row;
   return {
     ...rest,
+    deleted: Boolean(deletedAt),
     myReaction: likes?.length ? 'like' : dislikes?.length ? 'dislike' : null,
   };
 }
@@ -48,10 +53,13 @@ export class ReviewCommentsService {
     if (dto.parentId) {
       const parent = await this.prisma.reviewComment.findUnique({
         where: { id: dto.parentId },
-        select: { reviewId: true, parentId: true },
+        select: { reviewId: true, parentId: true, deletedAt: true },
       });
       if (!parent || parent.reviewId !== reviewId) {
         throw new BadRequestException('Parent comment does not belong to this review');
+      }
+      if (parent.deletedAt) {
+        throw new BadRequestException('Cannot reply to a deleted comment');
       }
       // Walk up the parent chain: replying to a comment already at max depth
       // is rejected, so threads can't nest forever
@@ -152,12 +160,49 @@ export class ReviewCommentsService {
 
   async remove(userId: number, id: number) {
     const { reviewId } = await this.assertOwner(id, userId);
-    // onDelete: Cascade on parentId takes care of nested replies
-    await this.prisma.reviewComment.delete({ where: { id } });
+    await this.removeOrTombstone(id);
     await this.emitChanged(reviewId);
   }
 
+  // Reddit-style : un commentaire qui a des réponses devient une "pierre
+  // tombale" anonyme (le thread dessous survit) ; une feuille est vraiment
+  // supprimée, puis on élague les tombales ancêtres restées sans enfant.
+  private async removeOrTombstone(id: number) {
+    const replies = await this.prisma.reviewComment.count({ where: { parentId: id } });
+    if (replies > 0) {
+      await this.prisma.$transaction([
+        this.prisma.reviewCommentLike.deleteMany({ where: { commentId: id } }),
+        this.prisma.reviewCommentDislike.deleteMany({ where: { commentId: id } }),
+        this.prisma.reviewComment.update({
+          where: { id },
+          data: { deletedAt: new Date(), text: '', userId: null },
+        }),
+      ]);
+      return;
+    }
+    let cursor: number | null = id;
+    while (cursor !== null) {
+      const row: { parentId: number | null } | null =
+        await this.prisma.reviewComment.findUnique({
+          where: { id: cursor },
+          select: { parentId: true },
+        });
+      await this.prisma.reviewComment.delete({ where: { id: cursor } });
+      const parentId: number | null = row?.parentId ?? null;
+      if (parentId === null) return;
+      const parent = await this.prisma.reviewComment.findUnique({
+        where: { id: parentId },
+        select: { deletedAt: true },
+      });
+      if (!parent?.deletedAt) return;
+      const siblings = await this.prisma.reviewComment.count({ where: { parentId } });
+      if (siblings > 0) return;
+      cursor = parentId;
+    }
+  }
+
   async like(userId: number, commentId: number) {
+    await this.assertAlive(commentId);
     try {
       await this.prisma.$transaction([
         this.prisma.reviewCommentDislike.deleteMany({ where: { userId, commentId } }),
@@ -181,6 +226,7 @@ export class ReviewCommentsService {
   }
 
   async dislike(userId: number, commentId: number) {
+    await this.assertAlive(commentId);
     try {
       await this.prisma.$transaction([
         this.prisma.reviewCommentLike.deleteMany({ where: { userId, commentId } }),
@@ -201,6 +247,16 @@ export class ReviewCommentsService {
       where: { userId, commentId },
     });
     if (count > 0) await this.emitReaction(commentId);
+  }
+
+  // On ne réagit pas sur une tombale (ses réactions ont été purgées)
+  private async assertAlive(commentId: number) {
+    const comment = await this.prisma.reviewComment.findUnique({
+      where: { id: commentId },
+      select: { deletedAt: true },
+    });
+    if (!comment) throw new NotFoundException('Comment not found');
+    if (comment.deletedAt) throw new BadRequestException('Comment deleted');
   }
 
   private async assertOwner(commentId: number, userId: number) {
