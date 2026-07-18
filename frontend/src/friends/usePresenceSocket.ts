@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
 interface PresenceHandlers {
@@ -6,19 +6,29 @@ interface PresenceHandlers {
   onOffline: (userId: number) => void;
 }
 
-// `handlers` is only read at connect time; both callbacks are expected to use
-// functional setState updaters so they stay correct without re-subscribing.
+// "Latest ref" pattern: the socket subscribes once (per `enabled` change) but
+// always calls the freshest handlers — no re-subscription, no stale closure,
+// and the effect's only real dependency is `enabled`.
 export function usePresenceSocket(handlers: PresenceHandlers, enabled: boolean): void {
+  const handlersRef = useRef(handlers);
+
+  useEffect(() => {
+    handlersRef.current = handlers;
+  });
+
   useEffect(() => {
     if (!enabled) return;
 
     const socket = io({ path: '/socket.io', withCredentials: true });
-    socket.on('friend:online', ({ userId }: { userId: number }) => handlers.onOnline(userId));
-    socket.on('friend:offline', ({ userId }: { userId: number }) => handlers.onOffline(userId));
+    socket.on('friend:online', ({ userId }: { userId: number }) =>
+      handlersRef.current.onOnline(userId),
+    );
+    socket.on('friend:offline', ({ userId }: { userId: number }) =>
+      handlersRef.current.onOffline(userId),
+    );
 
     return () => {
       socket.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
 }

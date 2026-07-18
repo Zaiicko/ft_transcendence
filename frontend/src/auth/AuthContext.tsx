@@ -33,8 +33,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refreshUser().finally(() => setLoading(false));
-  }, [refreshUser]);
+    // setState only happens in the promise callbacks (async), never in the
+    // effect's synchronous body — see react-hooks/set-state-in-effect
+    apiFetch<PublicUser>('/auth/me')
+      .then((me) => setUser(me))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
 
   const login = useCallback(async (email: string, password: string) => {
     const result = await apiFetch<LoginResult>('/auth/login', {
