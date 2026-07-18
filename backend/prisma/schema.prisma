@@ -124,7 +124,10 @@ model Game {
   // Steam (v2): filled by the Steam-linking feature once games are mapped to
   // their AppID — will join igdbRating in the weighted catalog score
   steamAppId Int?   @unique
-  steamScore Float?
+  // % of positive Steam reviews + how many reviews back it — the count is
+  // what lets the catalog score dampen near-empty ratings
+  steamScore       Float?
+  steamRatingCount Int?
   // DLC system: DLCs/expansions point to their base game and are hidden from
   // the catalog list — they appear (and are reviewable) on the parent's page
   gameType GameType @default(MAIN)

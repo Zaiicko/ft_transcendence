@@ -59,11 +59,15 @@ export class SteamSyncService {
     return mapped;
   }
 
-  // Step 2 — fetch the % of positive Steam reviews for mapped games that
-  // don't have a score yet (most-known games first). Re-run anytime.
+  // Step 2 — fetch the % of positive Steam reviews (and how many reviews
+  // back it) for mapped games missing either value. Re-run anytime — also
+  // backfills steamRatingCount on games scored before that column existed.
   async syncScores(limit?: number): Promise<number> {
     const games = await this.prisma.game.findMany({
-      where: { steamAppId: { not: null }, steamScore: null },
+      where: {
+        steamAppId: { not: null },
+        OR: [{ steamScore: null }, { steamScore: { not: null }, steamRatingCount: null }],
+      },
       orderBy: [{ igdbRatingCount: { sort: 'desc', nulls: 'last' } }],
       select: { id: true, steamAppId: true, title: true },
       ...(limit ? { take: limit } : {}),
@@ -71,11 +75,14 @@ export class SteamSyncService {
 
     let synced = 0;
     for (const game of games) {
-      const { score } = await this.steam.fetchReviewSummary(game.steamAppId!);
+      const { score, totalReviews } = await this.steam.fetchReviewSummary(game.steamAppId!);
       if (score !== null) {
         await this.prisma.game.update({
           where: { id: game.id },
-          data: { steamScore: Math.round(score * 10) / 10 },
+          data: {
+            steamScore: Math.round(score * 10) / 10,
+            steamRatingCount: totalReviews,
+          },
         });
         synced++;
       }

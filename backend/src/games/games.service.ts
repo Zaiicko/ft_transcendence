@@ -8,11 +8,21 @@ import { GamesSyncService } from './games-sync.service';
 // catalog on the fly
 const ON_DEMAND_THRESHOLD = 5;
 
-// Bayesian confidence weight (IMDb-style): the IGDB rating counts as this
+// Bayesian confidence weight (IMDb-style): the external rating counts as this
 // many virtual user votes, so a couple of accounts can't skew a game's score
 // while a real crowd of users progressively takes over.
-//   score = (n·avgUsers + W·igdb/10) / (n + W)
+//   score = (n·avgUsers + W·external/10) / (n + W)
 const RATING_CONFIDENCE_WEIGHT = 10;
+
+// The external ratings get the same treatment BEFORE entering the blend:
+// shrunk toward the catalog-wide average when they rest on few votes, so an
+// obscure game rated 99 by 40 IGDB users can't outrank Super Metroid's 96
+// backed by thousands. Each source is dampened by its own vote count.
+const IGDB_VOTES_CONFIDENCE = 50;
+const STEAM_REVIEWS_CONFIDENCE = 500;
+// Games scored before steamRatingCount existed (or shared via an older
+// catalog export) get a neutral assumed review count until the next sync.
+const STEAM_COUNT_FALLBACK = 100;
 
 const GAME_INCLUDE = {
   genres: true,
@@ -60,10 +70,10 @@ export class GamesService {
     const ids = candidates.map((c) => c.id);
 
     const orderBy: Record<GameSort, Prisma.Sql> = {
-      [GameSort.RATING]: Prisma.sql`score DESC, g."igdbRatingCount" DESC NULLS LAST`,
+      [GameSort.RATING]: Prisma.sql`score DESC, s."igdbRatingCount" DESC NULLS LAST`,
       [GameSort.MOST_PLAYED]: Prisma.sql`"playedCount" DESC, score DESC`,
-      [GameSort.RECENT]: Prisma.sql`g."releaseDate" DESC NULLS LAST`,
-      [GameSort.POPULAR]: Prisma.sql`g."igdbRatingCount" DESC NULLS LAST`,
+      [GameSort.RECENT]: Prisma.sql`s."releaseDate" DESC NULLS LAST`,
+      [GameSort.POPULAR]: Prisma.sql`s."igdbRatingCount" DESC NULLS LAST`,
     };
 
     type ScoredRow = {
@@ -73,28 +83,51 @@ export class GamesService {
       playedCount: number;
       score: number;
     };
+    // Inner select: dampen each external rating toward the catalog-wide
+    // average, weighted by its own vote count (igdb_d / steam_d, 0-100
+    // scale). Outer select: blend the damped external note with our users'
+    // ratings — same bayesian structure at both levels.
     const rows = await this.prisma.$queryRaw<ScoredRow[]>(Prisma.sql`
-      SELECT g.id,
-        r.avg                AS "avgUserRating",
-        COALESCE(r.n, 0)     AS "userRatingCount",
-        COALESCE(p.n, 0)     AS "playedCount",
-        ((COALESCE(r.n, 0) * COALESCE(r.avg, 0)
-          + ${RATING_CONFIDENCE_WEIGHT} * COALESCE(
-              (g."igdbRating" / 10.0 + g."steamScore" / 10.0) / 2,
-              g."igdbRating" / 10.0,
-              g."steamScore" / 10.0,
-              5))
-          / (COALESCE(r.n, 0) + ${RATING_CONFIDENCE_WEIGHT}))::float AS score
-      FROM "Game" g
-      LEFT JOIN (
-        SELECT "gameId", AVG(rating)::float AS avg, COUNT(*)::int AS n
-        FROM "Review" GROUP BY "gameId"
-      ) r ON r."gameId" = g.id
-      LEFT JOIN (
-        SELECT "gameId", COUNT(*)::int AS n
-        FROM "PlayedGame" WHERE status = 'PLAYED' GROUP BY "gameId"
-      ) p ON p."gameId" = g.id
-      WHERE g.id IN (${Prisma.join(ids)})
+      SELECT s.id,
+        s."avgUserRating",
+        s."userRatingCount",
+        s."playedCount",
+        ((s."userRatingCount" * COALESCE(s."avgUserRating", 0)
+          + ${RATING_CONFIDENCE_WEIGHT}
+            * COALESCE((s.igdb_d + s.steam_d) / 2, s.igdb_d, s.steam_d, 50) / 10.0)
+          / (s."userRatingCount" + ${RATING_CONFIDENCE_WEIGHT}))::float AS score
+      FROM (
+        SELECT g.id,
+          r.avg            AS "avgUserRating",
+          COALESCE(r.n, 0) AS "userRatingCount",
+          COALESCE(p.n, 0) AS "playedCount",
+          g."igdbRatingCount",
+          g."releaseDate",
+          CASE WHEN g."igdbRating" IS NOT NULL THEN
+            (COALESCE(g."igdbRatingCount", 0) * g."igdbRating"
+              + ${IGDB_VOTES_CONFIDENCE} * pr.igdb_avg)
+            / (COALESCE(g."igdbRatingCount", 0) + ${IGDB_VOTES_CONFIDENCE})
+          END AS igdb_d,
+          CASE WHEN g."steamScore" IS NOT NULL THEN
+            (COALESCE(g."steamRatingCount", ${STEAM_COUNT_FALLBACK}) * g."steamScore"
+              + ${STEAM_REVIEWS_CONFIDENCE} * pr.steam_avg)
+            / (COALESCE(g."steamRatingCount", ${STEAM_COUNT_FALLBACK}) + ${STEAM_REVIEWS_CONFIDENCE})
+          END AS steam_d
+        FROM "Game" g
+        CROSS JOIN (
+          SELECT AVG("igdbRating") AS igdb_avg, AVG("steamScore") AS steam_avg
+          FROM "Game"
+        ) pr
+        LEFT JOIN (
+          SELECT "gameId", AVG(rating)::float AS avg, COUNT(*)::int AS n
+          FROM "Review" GROUP BY "gameId"
+        ) r ON r."gameId" = g.id
+        LEFT JOIN (
+          SELECT "gameId", COUNT(*)::int AS n
+          FROM "PlayedGame" WHERE status = 'PLAYED' GROUP BY "gameId"
+        ) p ON p."gameId" = g.id
+        WHERE g.id IN (${Prisma.join(ids)})
+      ) s
       ORDER BY ${orderBy[dto.sort]}
       LIMIT ${limit} OFFSET ${(page - 1) * limit}`);
 
