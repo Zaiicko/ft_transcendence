@@ -1,4 +1,4 @@
-mport { IsInt, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 
 // Partial update: each field optional, but never empty if present
 export class UpdateReviewDto {
