@@ -51,8 +51,8 @@ export class FriendsController {
 
   @Get('suggestions')
   async suggestions(@CurrentUser() current: JwtPayload) {
-    const users = await this.friends.suggestFortyTwoFriends(current.sub);
-    return users.map(toPublicUser);
+    const suggested = await this.friends.suggestFriends(current.sub);
+    return suggested.map(({ user, via }) => ({ ...toPublicUser(user), via }));
   }
 
   @Post('requests/:username')

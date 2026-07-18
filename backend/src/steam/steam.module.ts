@@ -13,5 +13,7 @@ import { SteamWebApiService } from './steam-web-api.service';
   imports: [AuthModule, UsersModule],
   controllers: [SteamAuthController, SteamController],
   providers: [SteamOpenidService, SteamWebApiService],
+  // FriendsModule blends Steam friends into its suggestions
+  exports: [SteamWebApiService],
 })
 export class SteamModule {}

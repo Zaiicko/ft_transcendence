@@ -1,15 +1,22 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { AuthProvider, FriendshipStatus } from '@prisma/client';
+import { AuthProvider, FriendshipStatus, User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { SteamWebApiService } from '../steam/steam-web-api.service';
 import { UsersService } from '../users/users.service';
 
 const SUGGESTION_LIMIT = 20;
+
+export interface FriendSuggestion {
+  user: User;
+  via: 'steam' | '42';
+}
 
 @Injectable()
 export class FriendsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly users: UsersService,
+    private readonly steamWebApi: SteamWebApiService,
   ) {}
 
   async sendRequestByUsername(requesterId: number, username: string) {
@@ -99,9 +106,14 @@ export class FriendsService {
     return { incoming, outgoing };
   }
 
-  // Other 42-authenticated users, excluding yourself and anyone you already
-  // have a friendship or pending request with (in either direction).
-  async suggestFortyTwoFriends(userId: number) {
+  // People you may know, excluding yourself and anyone you already have a
+  // friendship or pending request with (in either direction). Two sources:
+  // your Steam friends who are on Saveboxd (if your Steam is linked), and —
+  // when you signed in with 42 — other 42-authenticated users.
+  async suggestFriends(userId: number): Promise<FriendSuggestion[]> {
+    const me = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!me) return [];
+
     const relations = await this.prisma.friendship.findMany({
       where: { OR: [{ requesterId: userId }, { addresseeId: userId }] },
       select: { requesterId: true, addresseeId: true },
@@ -113,10 +125,36 @@ export class FriendsService {
       excludeIds.add(addresseeId);
     }
 
-    return this.prisma.user.findMany({
-      where: { provider: AuthProvider.FORTYTWO, id: { notIn: [...excludeIds] } },
-      take: SUGGESTION_LIMIT,
-      orderBy: { createdAt: 'desc' },
-    });
+    // A user can match both sources; the Map keeps the Steam entry (a
+    // personal connection beats a shared school).
+    const suggestions = new Map<number, FriendSuggestion>();
+
+    if (me.steamId) {
+      try {
+        const friendSteamIds = await this.steamWebApi.getFriendIds(me.steamId);
+        if (friendSteamIds && friendSteamIds.length > 0) {
+          const users = await this.prisma.user.findMany({
+            where: { steamId: { in: friendSteamIds }, id: { notIn: [...excludeIds] } },
+          });
+          for (const user of users) suggestions.set(user.id, { user, via: 'steam' });
+        }
+      } catch {
+        // No STEAM_API_KEY / Steam unreachable — skip Steam suggestions
+      }
+    }
+
+    if (me.provider === AuthProvider.FORTYTWO) {
+      const users = await this.prisma.user.findMany({
+        where: {
+          provider: AuthProvider.FORTYTWO,
+          id: { notIn: [...excludeIds, ...suggestions.keys()] },
+        },
+        take: SUGGESTION_LIMIT,
+        orderBy: { createdAt: 'desc' },
+      });
+      for (const user of users) suggestions.set(user.id, { user, via: '42' });
+    }
+
+    return [...suggestions.values()].slice(0, SUGGESTION_LIMIT);
   }
 }
