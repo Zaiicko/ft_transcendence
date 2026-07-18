@@ -12,7 +12,10 @@ import { Server, Socket } from 'socket.io';
 // that page sits in the room and receives its review events.
 export type ReviewTarget = { gameId: number | null; companyId: number | null };
 
-@WebSocketGateway()
+// Options must be IDENTICAL to PresenceGateway's: Nest reuses one Socket.IO
+// server per {port, path} — a mismatch creates two servers on the same HTTP
+// listener and the first WS upgrade crashes the process (double handleUpgrade)
+@WebSocketGateway({ path: '/socket.io' })
 export class ReviewsGateway {
   @WebSocketServer()
   server: Server;

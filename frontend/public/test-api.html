@@ -495,7 +495,9 @@ async function react(id, type, btn) {
     ?.classList.toggle('mine', !mine && type === 'like');
   document.querySelector(`[data-rdislike="${id}"]`)
     ?.classList.toggle('mine', !mine && type === 'dislike');
-  if (!socket.connected) loadReviews();
+  // WS down: the review:reaction event won't come — refresh just this card
+  // (full loadReviews would collapse open threads and make the page jump)
+  if (!socket.connected) refreshReviewCard(id);
 }
 async function delReview(id) {
   if (confirm('Supprimer cette review ?')) { await api('DELETE', `/reviews/${id}`); loadReviews(); }
@@ -572,9 +574,9 @@ function renderComment(c, reviewId, depth = 0) {
     <div class="text">${esc(c.text)}</div>
     <div class="actions">
       <button class="small secondary ${c.myReaction === 'like' ? 'mine' : ''}"
-              data-clike="${c.id}" onclick="reactCom(${c.id}, 'like', this)">👍 ${c._count.likes}</button>
+              data-clike="${c.id}" onclick="reactCom(${c.id}, 'like', ${reviewId}, this)">👍 ${c._count.likes}</button>
       <button class="small secondary ${c.myReaction === 'dislike' ? 'mine' : ''}"
-              data-cdislike="${c.id}" onclick="reactCom(${c.id}, 'dislike', this)">👎 ${c._count.dislikes}</button>
+              data-cdislike="${c.id}" onclick="reactCom(${c.id}, 'dislike', ${reviewId}, this)">👎 ${c._count.dislikes}</button>
       ${depth < MAX_REPLY_DEPTH ? `<button class="small secondary reply-btn"
               onclick="replyBox(${c.id}, ${reviewId}, this)">↩ répondre</button>` : ''}
       ${c._count.replies && !openReplies.has(c.id) ? `<button class="small secondary"
@@ -620,10 +622,11 @@ async function postComment(reviewId, parentId, input) {
   if (parentId) { body.parentId = parentId; openReplies.add(parentId); }
   openComs.add(reviewId);
   await api('POST', `/reviews/${reviewId}/comments`, body);
-  if (!socket.connected) loadReviews();
+  // WS down: mimic the comment:changed handler (💬 count + fresh thread)
+  if (!socket.connected) { await refreshReviewCard(reviewId); showComments(reviewId); }
 }
 
-async function reactCom(id, type, btn) {
+async function reactCom(id, type, reviewId, btn) {
   const mine = btn.classList.contains('mine');
   await api(mine ? 'DELETE' : 'POST', `/comments/${id}/${type}`);
   // a comment can be rendered twice (⭐ + open thread) — patch every instance
@@ -631,7 +634,8 @@ async function reactCom(id, type, btn) {
     .forEach((b) => b.classList.toggle('mine', !mine && type === 'like'));
   document.querySelectorAll(`[data-cdislike="${id}"]`)
     .forEach((b) => b.classList.toggle('mine', !mine && type === 'dislike'));
-  if (!socket.connected) loadReviews();
+  // WS down: re-render just this thread, not the whole review list
+  if (!socket.connected && openComs.has(reviewId)) showComments(reviewId);
 }
 
 // Toujours échapper le contenu utilisateur avant innerHTML (sinon XSS —

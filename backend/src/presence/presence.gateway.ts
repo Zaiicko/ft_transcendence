@@ -42,7 +42,8 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
   async handleConnection(socket: Socket): Promise<void> {
     const userId = await this.authenticate(socket);
     if (userId === null) {
-      socket.disconnect(true);
+      // The Socket.IO server is shared with ReviewsGateway, whose rooms are
+      // public (anonymous browsing) — keep the socket, just don't track it
       return;
     }
     socket.data.userId = userId;
