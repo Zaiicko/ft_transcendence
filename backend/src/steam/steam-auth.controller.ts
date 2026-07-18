@@ -167,6 +167,14 @@ export class SteamAuthController {
   @Delete('link')
   @HttpCode(204)
   async unlink(@CurrentUser() current: JwtPayload) {
+    const user = await this.users.findById(current.sub);
+    if (!user) throw new UnauthorizedException();
+    // A Steam-born account with no password would be locked out forever
+    if (user.provider === AuthProvider.STEAM && !user.passwordHash) {
+      throw new BadRequestException(
+        'Add a password first — Steam is currently your only way to sign in',
+      );
+    }
     await this.prisma.user.update({
       where: { id: current.sub },
       data: { steamId: null },

@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
+import SteamLibrary from './pages/SteamLibrary';
 import TermsOfService from './pages/TermsOfService';
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/friends" element={<Friends />} />
+            <Route path="/steam" element={<SteamLibrary />} />
           </Route>
         </Route>
       </Routes>

@@ -11,7 +11,13 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  // The Steam callback lands here with ?steam=failed when OpenID verification
+  // fails (cancelled login, bad assertion…)
+  const [error, setError] = useState<string | null>(() =>
+    new URLSearchParams(location.search).get('steam') === 'failed'
+      ? 'Steam sign-in failed — please try again'
+      : null,
+  );
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
@@ -70,6 +76,9 @@ export default function Login() {
         </a>
         <a href="/api/auth/42" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
           Continue with 42
+        </a>
+        <a href="/api/auth/steam" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
+          Continue with Steam
         </a>
       </div>
 
