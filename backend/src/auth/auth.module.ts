@@ -25,6 +25,7 @@ import { JwtStrategy } from './jwt.strategy';
   providers: [AuthService, JwtStrategy, GoogleStrategy, FortyTwoStrategy],
   // JwtModule re-exported so PresenceModule can verify socket handshake cookies
   // without importing FriendsModule/UsersModule and creating a module cycle.
-  exports: [JwtModule],
+  // AuthService exported for the Steam account flow (issueTokens on login).
+  exports: [JwtModule, AuthService],
 })
 export class AuthModule {}

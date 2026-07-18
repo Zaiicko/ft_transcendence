@@ -1,0 +1,73 @@
+import {
+  Injectable,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+const API_URL = 'https://api.steampowered.com';
+
+export interface SteamOwnedGame {
+  appid: number;
+  name?: string;
+  // Total playtime, in minutes
+  playtime_forever: number;
+}
+
+@Injectable()
+export class SteamWebApiService {
+  private readonly logger = new Logger(SteamWebApiService.name);
+
+  constructor(private readonly config: ConfigService) {}
+
+  private key(): string {
+    const key = this.config.get<string>('STEAM_API_KEY');
+    if (!key) {
+      throw new ServiceUnavailableException(
+        'Steam Web API key missing — set STEAM_API_KEY in .env (https://steamcommunity.com/dev/apikey)',
+      );
+    }
+    return key;
+  }
+
+  private async get<T>(path: string, params: Record<string, string>): Promise<T | null> {
+    const qs = new URLSearchParams({ key: this.key(), ...params });
+    const res = await fetch(`${API_URL}/${path}?${qs}`);
+    // Steam answers 401/403 when the target profile is private
+    if (res.status === 401 || res.status === 403) return null;
+    if (!res.ok) {
+      this.logger.warn(`Steam API ${path} failed (HTTP ${res.status})`);
+      throw new ServiceUnavailableException(`Steam API request failed (HTTP ${res.status})`);
+    }
+    return res.json() as Promise<T>;
+  }
+
+  // null = private profile ("game details" visibility must be public)
+  async getOwnedGames(steamId: string): Promise<SteamOwnedGame[] | null> {
+    const data = await this.get<{ response?: { games?: SteamOwnedGame[] } }>(
+      'IPlayerService/GetOwnedGames/v1/',
+      { steamid: steamId, include_appinfo: '1', include_played_free_games: '1' },
+    );
+    if (data === null) return null;
+    // An empty response object (no games field) also means a private profile
+    return data.response?.games ?? null;
+  }
+
+  // null = private friend list
+  async getFriendIds(steamId: string): Promise<string[] | null> {
+    const data = await this.get<{ friendslist?: { friends?: { steamid: string }[] } }>(
+      'ISteamUser/GetFriendList/v1/',
+      { steamid: steamId, relationship: 'friend' },
+    );
+    if (data === null) return null;
+    return data.friendslist?.friends?.map((f) => f.steamid) ?? [];
+  }
+
+  async getPersonaName(steamId: string): Promise<string | null> {
+    const data = await this.get<{ response?: { players?: { personaname?: string }[] } }>(
+      'ISteamUser/GetPlayerSummaries/v2/',
+      { steamids: steamId },
+    );
+    return data?.response?.players?.[0]?.personaname ?? null;
+  }
+}

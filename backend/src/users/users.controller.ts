@@ -22,9 +22,10 @@ import { extname } from 'path';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtPayload } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { verifyPassword } from '../auth/password.util';
+import { hashPassword, verifyPassword } from '../auth/password.util';
 import { AVATARS_DIR } from '../common/uploads';
 import { DeleteAccountDto } from './dto/delete-account.dto';
+import { SetPasswordDto } from './dto/set-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { toPublicUser } from './public-user';
 import { UsersService } from './users.service';
@@ -55,6 +56,28 @@ export class UsersController {
     }
     const updated = await this.usersService.update(current.sub, dto);
     return toPublicUser(updated);
+  }
+
+  // Provider accounts (Steam/42/Google) have no password: they may set one
+  // here to also enable email+password login. Accounts that already have one
+  // must prove it before changing it.
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/password')
+  @HttpCode(204)
+  async setPassword(@CurrentUser() current: JwtPayload, @Body() dto: SetPasswordDto) {
+    const user = await this.usersService.findById(current.sub);
+    if (!user) throw new NotFoundException();
+
+    if (user.passwordHash) {
+      const valid = dto.currentPassword
+        ? await verifyPassword(user.passwordHash, dto.currentPassword)
+        : false;
+      if (!valid) throw new UnauthorizedException('Incorrect password');
+    }
+
+    await this.usersService.update(current.sub, {
+      passwordHash: await hashPassword(dto.newPassword),
+    });
   }
 
   @UseGuards(JwtAuthGuard)

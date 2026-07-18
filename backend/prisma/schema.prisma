@@ -16,6 +16,7 @@ enum AuthProvider {
   LOCAL
   FORTYTWO
   GOOGLE
+  STEAM
 }
 
 enum FriendshipStatus {
