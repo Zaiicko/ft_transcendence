@@ -7,15 +7,15 @@ type Status = 'pending' | 'success' | 'error';
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
-  const [status, setStatus] = useState<Status>('pending');
-  const [error, setError] = useState<string | null>(null);
+  // No token in the URL: start straight in the error state instead of
+  // setState-ing synchronously inside the effect (react-hooks rule)
+  const [status, setStatus] = useState<Status>(token ? 'pending' : 'error');
+  const [error, setError] = useState<string | null>(
+    token ? null : 'Missing verification token.',
+  );
 
   useEffect(() => {
-    if (!token) {
-      setStatus('error');
-      setError('Missing verification token.');
-      return;
-    }
+    if (!token) return;
     apiFetch('/auth/verify-email', { method: 'POST', body: JSON.stringify({ token }) })
       .then(() => setStatus('success'))
       .catch((err) => {

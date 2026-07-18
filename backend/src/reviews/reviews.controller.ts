@@ -8,18 +8,28 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
+import { HighlightsDto } from './dto/highlights.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsService } from './reviews.service';
 
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
+
+  // Must stay above @Get(':id'): Express matches routes in declaration
+  // order, ':id' + ParseIntPipe would 400 on the literal "highlights"
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get('highlights')
+  highlights(@Query() query: HighlightsDto, @CurrentUser() viewer?: JwtPayload) {
+    return this.reviewsService.highlights(query.days, query.page, query.limit, viewer?.sub);
+  }
 
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':id')

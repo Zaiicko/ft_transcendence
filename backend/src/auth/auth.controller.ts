@@ -16,6 +16,7 @@ import { AuthProvider, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
+import { clearAuthCookies, REFRESH_COOKIE_PATH, setAuthCookies } from './auth-cookies.util';
 import { AuthService, JwtPayload, TokenPair } from './auth.service';
 import { CurrentUser } from './current-user.decorator';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -27,7 +28,6 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 import { OAuthProfile } from './google.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
-const REFRESH_COOKIE_PATH = '/api/auth';
 // Must match AuthService's MFA_CHALLENGE_TTL ('5m') — the cookie should
 // never outlive the JWT it carries.
 const MFA_CHALLENGE_COOKIE_MAX_AGE_MS = 5 * 60 * 1000;
@@ -207,26 +207,13 @@ export class AuthController {
     return this.config.get<string>('FRONTEND_URL') ?? 'https://localhost:8443';
   }
 
+  // Cookie mechanics live in auth-cookies.util.ts (shared with the Steam
+  // account flow) — these wrappers keep the existing call sites unchanged.
   private setAuthCookies(res: Response, tokens: TokenPair) {
-    // Browser only ever talks to nginx over HTTPS in this stack — cookies are always Secure.
-    res.cookie('access_token', tokens.accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: tokens.accessTtlMs,
-    });
-    res.cookie('refresh_token', tokens.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      path: REFRESH_COOKIE_PATH,
-      maxAge: tokens.refreshTtlMs,
-    });
+    setAuthCookies(res, tokens);
   }
 
   private clearAuthCookies(res: Response) {
-    res.clearCookie('access_token', { path: '/' });
-    res.clearCookie('refresh_token', { path: REFRESH_COOKIE_PATH });
+    clearAuthCookies(res);
   }
 }

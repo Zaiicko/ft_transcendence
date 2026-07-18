@@ -10,6 +10,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import ResetPassword from './pages/ResetPassword';
 import Signup from './pages/Signup';
+import SteamLibrary from './pages/SteamLibrary';
 import TermsOfService from './pages/TermsOfService';
 import VerifyEmail from './pages/VerifyEmail';
 
@@ -29,6 +30,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/friends" element={<Friends />} />
+            <Route path="/steam" element={<SteamLibrary />} />
           </Route>
         </Route>
       </Routes>

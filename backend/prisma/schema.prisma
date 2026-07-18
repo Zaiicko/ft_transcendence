@@ -16,6 +16,7 @@ enum AuthProvider {
   LOCAL
   FORTYTWO
   GOOGLE
+  STEAM
 }
 
 enum FriendshipStatus {
@@ -145,7 +146,10 @@ model Game {
   // Steam (v2): filled by the Steam-linking feature once games are mapped to
   // their AppID — will join igdbRating in the weighted catalog score
   steamAppId Int?   @unique
-  steamScore Float?
+  // % of positive Steam reviews + how many reviews back it — the count is
+  // what lets the catalog score dampen near-empty ratings
+  steamScore       Float?
+  steamRatingCount Int?
   // DLC system: DLCs/expansions point to their base game and are hidden from
   // the catalog list — they appear (and are reviewable) on the parent's page
   gameType GameType @default(MAIN)
@@ -197,8 +201,10 @@ model Company {
 // comments are shared by both targets for free.
 model Review {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  // SetNull, pas Cascade : à la suppression du compte le contenu reste,
+  // anonymisé ("[utilisateur supprimé]") — décision d'équipe, cf. docs/reviews-api.md
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    Int?
   game      Game?    @relation(fields: [gameId], references: [id], onDelete: Cascade)
   gameId    Int?
   company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -256,9 +262,12 @@ model ReviewComment {
   id        Int      @id @default(autoincrement())
   review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId  Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    Int?
   text      String
+  // Tombstone Reddit-style : un commentaire supprimé qui a des réponses reste
+  // en "[supprimé]" (texte vidé, userId null) pour que le thread survive
+  deletedAt DateTime?
 
   // Null parent = top-level comment on the review
   parent    ReviewComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)

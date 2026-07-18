@@ -47,6 +47,11 @@
       width: 34px; height: 34px; border-radius: 50%; background: #2c3440;
       display: flex; align-items: center; justify-content: center;
       color: #8ea4b8; font-weight: bold; flex-shrink: 0;
+      object-fit: cover; /* quand .avatar est un <img> */
+    }
+    .avatar.sm {
+      width: 18px; height: 18px; font-size: 0.6rem;
+      display: inline-flex; vertical-align: middle; margin-right: 5px;
     }
     .review .title { font-weight: bold; color: #fff; }
     .review .meta { font-size: 0.75rem; color: #678; }
@@ -91,6 +96,29 @@
     .search-card img { width: 32px; border-radius: 3px; }
     .search-card .t { font-size: 0.85rem; color: #e8eef4; }
     .search-card .meta { font-size: 0.72rem; color: #678; }
+
+    .top-games { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+    .top-game { flex: 0 0 92px; cursor: pointer; text-align: center; }
+    .top-game img { width: 92px; height: 123px; object-fit: cover; border-radius: 6px; }
+    .top-game .score { color: #ffd700; font-weight: bold; font-size: 0.85rem; }
+    .top-game .t {
+      font-size: 0.72rem; color: #8ea4b8;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .hl-card {
+      border: 1px solid #2c3440; border-radius: 8px; background: #1b2129;
+      padding: 10px 12px; cursor: pointer; display: flex; gap: 10px;
+    }
+    .hl-card:hover { border-color: #00ac1c; }
+    .hl-card img { width: 48px; border-radius: 4px; align-self: flex-start; }
+    .hl-card .t { font-weight: bold; color: #fff; font-size: 0.85rem; }
+    .hl-card .meta { font-size: 0.72rem; color: #678; margin-top: 2px; }
+    .hl-card .excerpt {
+      font-size: 0.8rem; margin-top: 4px;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   </style>
 </head>
 <body>
@@ -111,6 +139,14 @@
       <span id="whoami"></span>
       <button class="small secondary" onclick="doLogout()">Se déconnecter</button>
     </div>
+  </fieldset>
+
+  <fieldset id="homeBox">
+    <legend>Accueil — populaires du moment</legend>
+    <div id="topGames" class="top-games"></div>
+    <div id="highlights" class="hl-grid"></div>
+    <button id="hlMore" class="secondary" style="display:none"
+            onclick="showMoreHighlights()">Voir plus d'avis</button>
   </fieldset>
 
   <fieldset>
@@ -454,9 +490,23 @@ async function refreshReviews() {
   // Hidden when anonymous or already reviewed (UX only; the real enforcement
   // is the 401 guard and the 409 unique constraint server-side)
   $('postForm').style.display =
-    me && !reviews.some((r) => r.user.id === me.id) ? '' : 'none';
+    me && !reviews.some((r) => r.user?.id === me.id) ? '' : 'none';
   // Re-open the threads the user had expanded before this re-render
   for (const id of [...openComs]) showComments(id);
+}
+
+// Vraie photo si l'utilisateur en a une, sinon l'initiale du username.
+// user null = compte supprimé (le contenu reste, anonymisé)
+function avatar(user, sm = false) {
+  const cls = sm ? 'avatar sm' : 'avatar';
+  if (!user) return `<div class="${cls}">✕</div>`;
+  return user.avatarUrl
+    ? `<img class="${cls}" src="${esc(user.avatarUrl)}" alt="">`
+    : `<div class="${cls}">${esc(user.username[0].toUpperCase())}</div>`;
+}
+
+function authorName(user) {
+  return user ? esc(user.username) : '<em>[utilisateur supprimé]</em>';
 }
 
 function renderReview(r) {
@@ -465,10 +515,10 @@ function renderReview(r) {
   el.id = `review-${r.id}`;
   el.innerHTML = `
     <div class="head">
-      <div class="avatar">${esc(r.user.username[0].toUpperCase())}</div>
+      ${avatar(r.user)}
       <div>
         ${r.title ? `<div class="title">${esc(r.title)}</div>` : ''}
-        <div class="meta">${esc(r.user.username)} · ${new Date(r.createdAt).toLocaleDateString('fr')}</div>
+        <div class="meta">${authorName(r.user)} · ${new Date(r.createdAt).toLocaleDateString('fr')}</div>
       </div>
       <div class="rating">${r.rating}/10</div>
     </div>
@@ -479,7 +529,7 @@ function renderReview(r) {
       <button class="small secondary ${r.myReaction === 'dislike' ? 'mine' : ''}"
               data-rdislike="${r.id}" onclick="react(${r.id}, 'dislike', this)">👎 ${r._count.dislikes}</button>
       <button class="small secondary" onclick="toggleComments(${r.id}, this)">💬 ${r._count.comments} coms</button>
-      ${me && r.user.id === me.id
+      ${me && r.user?.id === me.id
         ? `<button class="small secondary" onclick="delReview(${r.id})">🗑️ ma review</button>` : ''}
     </div>
     <div id="coms-${r.id}"></div>`;
@@ -495,7 +545,9 @@ async function react(id, type, btn) {
     ?.classList.toggle('mine', !mine && type === 'like');
   document.querySelector(`[data-rdislike="${id}"]`)
     ?.classList.toggle('mine', !mine && type === 'dislike');
-  if (!socket.connected) loadReviews();
+  // WS down: the review:reaction event won't come — refresh just this card
+  // (full loadReviews would collapse open threads and make the page jump)
+  if (!socket.connected) refreshReviewCard(id);
 }
 async function delReview(id) {
   if (confirm('Supprimer cette review ?')) { await api('DELETE', `/reviews/${id}`); loadReviews(); }
@@ -567,19 +619,31 @@ const MAX_REPLY_DEPTH = 3;
 function renderComment(c, reviewId, depth = 0) {
   const el = document.createElement('div');
   el.className = 'comment';
+  // Tombale Reddit-style : auteur et texte effacés, réponses conservées
+  if (c.deleted) {
+    el.innerHTML = `
+      <div class="meta">${avatar(null, true)}<em>[supprimé]</em></div>
+      <div class="text"><em style="color:#678">Commentaire supprimé par son auteur</em></div>
+      <div class="actions">
+        ${c._count.replies && !openReplies.has(c.id) ? `<button class="small secondary"
+                onclick="loadReplies(${c.id}, ${reviewId}, ${depth}, this)">▼ ${c._count.replies} réponses</button>` : ''}
+      </div>
+      <div id="replies-${c.id}"></div>`;
+    return el;
+  }
   el.innerHTML = `
-    <div class="meta">${esc(c.user.username)}</div>
+    <div class="meta">${avatar(c.user, true)}${authorName(c.user)}</div>
     <div class="text">${esc(c.text)}</div>
     <div class="actions">
       <button class="small secondary ${c.myReaction === 'like' ? 'mine' : ''}"
-              data-clike="${c.id}" onclick="reactCom(${c.id}, 'like', this)">👍 ${c._count.likes}</button>
+              data-clike="${c.id}" onclick="reactCom(${c.id}, 'like', ${reviewId}, this)">👍 ${c._count.likes}</button>
       <button class="small secondary ${c.myReaction === 'dislike' ? 'mine' : ''}"
-              data-cdislike="${c.id}" onclick="reactCom(${c.id}, 'dislike', this)">👎 ${c._count.dislikes}</button>
+              data-cdislike="${c.id}" onclick="reactCom(${c.id}, 'dislike', ${reviewId}, this)">👎 ${c._count.dislikes}</button>
       ${depth < MAX_REPLY_DEPTH ? `<button class="small secondary reply-btn"
               onclick="replyBox(${c.id}, ${reviewId}, this)">↩ répondre</button>` : ''}
       ${c._count.replies && !openReplies.has(c.id) ? `<button class="small secondary"
               onclick="loadReplies(${c.id}, ${reviewId}, ${depth}, this)">▼ ${c._count.replies} réponses</button>` : ''}
-      ${me && c.user.id === me.id
+      ${me && c.user?.id === me.id
         ? `<button class="small secondary" onclick="delCom(${c.id})">🗑️</button>` : ''}
     </div>
     <div id="replies-${c.id}"></div>`;
@@ -620,10 +684,11 @@ async function postComment(reviewId, parentId, input) {
   if (parentId) { body.parentId = parentId; openReplies.add(parentId); }
   openComs.add(reviewId);
   await api('POST', `/reviews/${reviewId}/comments`, body);
-  if (!socket.connected) loadReviews();
+  // WS down: mimic the comment:changed handler (💬 count + fresh thread)
+  if (!socket.connected) { await refreshReviewCard(reviewId); showComments(reviewId); }
 }
 
-async function reactCom(id, type, btn) {
+async function reactCom(id, type, reviewId, btn) {
   const mine = btn.classList.contains('mine');
   await api(mine ? 'DELETE' : 'POST', `/comments/${id}/${type}`);
   // a comment can be rendered twice (⭐ + open thread) — patch every instance
@@ -631,7 +696,65 @@ async function reactCom(id, type, btn) {
     .forEach((b) => b.classList.toggle('mine', !mine && type === 'like'));
   document.querySelectorAll(`[data-cdislike="${id}"]`)
     .forEach((b) => b.classList.toggle('mine', !mine && type === 'dislike'));
-  if (!socket.connected) loadReviews();
+  // WS down: re-render just this thread, not the whole review list
+  if (!socket.connected && openComs.has(reviewId)) showComments(reviewId);
+}
+
+// ---- Accueil : jeux populaires (score bayésien du module games) + avis
+// les plus likés du site (endpoint highlights). Un seul fetch de 30 avis,
+// révélés 6 par 6 (3 rangées de 2) côté client. ----
+let hlAll = [];
+let hlShown = 0;
+const HL_STEP = 6;
+
+async function loadHome() {
+  const [games, reviews] = await Promise.all([
+    api('GET', '/games?sort=popular&limit=6', null, true).catch(() => null),
+    api('GET', '/reviews/highlights?limit=30', null, true).catch(() => null),
+  ]);
+  if (games) {
+    $('topGames').innerHTML = '';
+    for (const g of games.data) {
+      const el = document.createElement('div');
+      el.className = 'top-game';
+      el.onclick = () => openGame(g.id);
+      el.innerHTML = `
+        ${g.coverUrl ? `<img src="${esc(g.coverUrl)}" alt="">` : ''}
+        <div class="score">★ ${g.score}</div>
+        <div class="t" title="${esc(g.title)}">${esc(g.title)}</div>`;
+      $('topGames').appendChild(el);
+    }
+  }
+  hlAll = reviews ?? [];
+  hlShown = 0;
+  $('highlights').innerHTML = hlAll.length ? '' : '<em>Aucun avis récent</em>';
+  showMoreHighlights();
+}
+
+function showMoreHighlights() {
+  for (const r of hlAll.slice(hlShown, hlShown + HL_STEP)) {
+    $('highlights').appendChild(renderHighlight(r));
+  }
+  hlShown = Math.min(hlShown + HL_STEP, hlAll.length);
+  $('hlMore').style.display = hlShown < hlAll.length ? '' : 'none';
+}
+
+function renderHighlight(r) {
+  const el = document.createElement('div');
+  el.className = 'hl-card';
+  // Clicking a card navigates to the game/studio page where the full
+  // review (and its thread) lives
+  el.onclick = () => (r.game ? openGame(r.game.id) : openCompany(r.company.id));
+  const cover = r.game ? r.game.coverUrl : r.company.logoUrl;
+  el.innerHTML = `
+    ${cover ? `<img src="${esc(cover)}" alt="">` : ''}
+    <div>
+      <div class="t">${esc(r.game ? r.game.title : r.company.name)} · <span style="color:#ffd700">${r.rating}/10</span></div>
+      <div class="meta">${r.title ? `« ${esc(r.title)} » — ` : ''}${avatar(r.user, true)}${authorName(r.user)}
+        · 👍 ${r._count.likes} · 👎 ${r._count.dislikes} · 💬 ${r._count.comments}</div>
+      <div class="excerpt">${esc(r.text ?? '')}</div>
+    </div>`;
+  return el;
 }
 
 // Toujours échapper le contenu utilisateur avant innerHTML (sinon XSS —
@@ -643,6 +766,7 @@ function esc(s) {
 
 window.addEventListener('DOMContentLoaded', async () => {
   await refreshSession();
+  loadHome(); // indépendant de la page jeu/studio affichée en dessous
   // Deep link (#game-29 / #company-104) wins — F5 and shared URLs restore it
   if (applyHash()) return;
   // Game ids depend on each machine's seed — fall back to a random game

@@ -8,6 +8,7 @@ import { GamesModule } from './games/games.module';
 import { PresenceModule } from './presence/presence.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { SteamModule } from './steam/steam.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { UsersModule } from './users/users.module';
     ReviewsModule,
     FriendsModule,
     PresenceModule,
+    SteamModule,
   ],
   controllers: [AppController],
 })

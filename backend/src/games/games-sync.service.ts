@@ -46,6 +46,7 @@ export interface CatalogGameRecord {
   igdbRatingCount: number | null;
   steamAppId: number | null;
   steamScore: number | null;
+  steamRatingCount: number | null;
   gameType: GameType;
   parentIgdbId: number | null;
   genres: CatalogTagRecord[];
@@ -211,6 +212,7 @@ export class GamesSyncService {
       igdbRatingCount: g.igdbRatingCount,
       steamAppId: g.steamAppId,
       steamScore: g.steamScore,
+      steamRatingCount: g.steamRatingCount,
       gameType: g.gameType,
       parentIgdbId: g.parent?.igdbId ?? null,
       genres: g.genres,
@@ -277,6 +279,8 @@ export class GamesSyncService {
         igdbRatingCount: r.igdbRatingCount,
         steamAppId: r.steamAppId,
         steamScore: r.steamScore,
+        // ?? null: tolerate exports produced before this field existed
+        steamRatingCount: r.steamRatingCount ?? null,
         gameType: r.gameType,
       };
 
