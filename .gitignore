@@ -22,3 +22,15 @@ backend/uploads/
 
 # 42 evaluation sheet (local only)
 correction_sheet.txt
+
+# Database dump / catalog export shared out-of-band (regenerable — never in git)
+saveboxd_dump.sql
+backend/catalog_export.json
+backend/catalog_export.json.gz
+
+.claude
+
+catalog_export.json
+
+# Claude Code personal preferences
+CLAUDE.local.md

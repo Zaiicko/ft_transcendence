@@ -65,9 +65,13 @@ model User {
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
-  reviews            Review[]
-  reviewLikes        ReviewLike[]
-  playedGames        PlayedGame[]
+  reviews               Review[]
+  reviewLikes           ReviewLike[]
+  reviewDislikes        ReviewDislike[]
+  reviewComments        ReviewComment[]
+  reviewCommentLikes    ReviewCommentLike[]
+  reviewCommentDislikes ReviewCommentDislike[]
+  playedGames           PlayedGame[]
   gameLists          GameList[]
   sentFriendships    Friendship[]   @relation("FriendshipRequester")
   receivedFriendships Friendship[]  @relation("FriendshipAddressee")
@@ -116,6 +120,16 @@ model Friendship {
 
 // ---------- Game catalog (imported from IGDB) ----------
 
+enum GameType {
+  MAIN
+  DLC
+  EXPANSION
+  STANDALONE // standalone expansion — playable without the base game
+  REMAKE
+  REMASTER
+  OTHER
+}
+
 model Game {
   id          Int       @id @default(autoincrement())
   igdbId      Int       @unique
@@ -124,8 +138,24 @@ model Game {
   releaseDate DateTime?
   coverUrl    String?
   screenshots String[]
+  // IGDB aggregate rating (0-100) — used to rank the catalog before we have
+  // enough user reviews of our own
+  igdbRating      Float?
+  igdbRatingCount Int?
+  // Steam (v2): filled by the Steam-linking feature once games are mapped to
+  // their AppID — will join igdbRating in the weighted catalog score
+  steamAppId Int?   @unique
+  steamScore Float?
+  // DLC system: DLCs/expansions point to their base game and are hidden from
+  // the catalog list — they appear (and are reviewable) on the parent's page
+  gameType GameType @default(MAIN)
+  parent   Game?    @relation("GameDlcs", fields: [parentId], references: [id], onDelete: SetNull)
+  parentId Int?
+  dlcs     Game[]   @relation("GameDlcs")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([parentId])
 
   genres    Genre[]
   platforms Platform[]
@@ -151,30 +181,48 @@ model Platform {
 }
 
 model Company {
-  id     Int    @id @default(autoincrement())
-  igdbId Int    @unique
-  name   String
-  games  Game[]
+  id      Int     @id @default(autoincrement())
+  igdbId  Int     @unique
+  name    String
+  logoUrl String?
+  games   Game[]
+  // Studios are reviewable exactly like games (Review has a dual target)
+  reviews Review[]
 }
 
 // ---------- Reviews & activity ----------
 
+// A review targets EXACTLY ONE of game/company (enforced in the service
+// layer — Prisma has no CHECK constraints). Likes, dislikes and threaded
+// comments are shared by both targets for free.
 model Review {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  gameId    Int
+  game      Game?    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId    Int?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId Int?
+  // Short headline, e.g. "Rencontres du Pire Type !"
+  title     String
   // 0–10 (displayed as 5 stars with halves)
   rating    Int
-  text      String?
+  text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  likes ReviewLike[]
+  likes    ReviewLike[]
+  dislikes ReviewDislike[]
+  comments ReviewComment[]
 
-  // One review per user per game; the game's average rating is computed from these
+  // One review per user per target. NULLs never collide in a Postgres unique
+  // index, so each constraint only bites for its own target kind.
   @@unique([userId, gameId])
+  @@unique([userId, companyId])
+  // Postgres does not index FK columns automatically, and the unique indexes
+  // above start with userId — useless for WHERE gameId/companyId = ?
+  @@index([gameId])
+  @@index([companyId])
 }
 
 model ReviewLike {
@@ -186,6 +234,71 @@ model ReviewLike {
   createdAt DateTime @default(now())
 
   @@unique([userId, reviewId])
+  @@index([reviewId])
+}
+
+// Like/dislike exclusivity is enforced in the service layer (transaction),
+// kept as two models so "popular" sorting stays a plain likes count
+model ReviewDislike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, reviewId])
+  @@index([reviewId])
+}
+
+// Threaded replies under a review — nested via parent/replies (Reddit-style)
+model ReviewComment {
+  id        Int      @id @default(autoincrement())
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  text      String
+
+  // Null parent = top-level comment on the review
+  parent    ReviewComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId  Int?
+  replies   ReviewComment[] @relation("CommentReplies")
+
+  likes    ReviewCommentLike[]
+  dislikes ReviewCommentDislike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Covers both "top-level comments of a review" (reviewId + parentId null)
+  // and "replies of a comment" (parentId)
+  @@index([reviewId, parentId])
+  @@index([parentId])
+}
+
+model ReviewCommentLike {
+  id        Int           @id @default(autoincrement())
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   ReviewComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  createdAt DateTime      @default(now())
+
+  @@unique([userId, commentId])
+  @@index([commentId])
+}
+
+model ReviewCommentDislike {
+  id        Int           @id @default(autoincrement())
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   ReviewComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  createdAt DateTime      @default(now())
+
+  @@unique([userId, commentId])
+  @@index([commentId])
 }
 
 // "Done" status + date — feeds the yearly calendar and the per-game heart count

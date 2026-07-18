@@ -7,8 +7,14 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
+    "seed": "ts-node src/seed.ts",
+    "steam:sync": "ts-node src/steam-sync.ts",
+    "catalog:export": "ts-node src/catalog-export.ts",
+    "catalog:import": "ts-node src/catalog-import.ts",
+    "companies:logos": "ts-node src/companies-logos.ts",
     "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio --hostname 0.0.0.0 --browser none",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -17,8 +23,8 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
-    "@nestjs/platform-socket.io": "^11.0.0",
-    "@nestjs/websockets": "^11.0.0",
+    "@nestjs/platform-socket.io": "^11.1.28",
+    "@nestjs/websockets": "^11.1.28",
     "@prisma/client": "^6.5.0",
     "argon2": "^0.41.1",
     "class-transformer": "^0.5.1",
@@ -34,10 +40,11 @@
     "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "socket.io": "^4.8.1",
+    "socket.io": "^4.8.3",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@nestjs/cli": "^11.0.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
@@ -49,8 +56,12 @@
     "@types/passport-oauth2": "^1.4.17",
     "@types/qrcode": "^1.5.5",
     "@types/uuid": "^10.0.0",
+    "eslint": "^10.7.0",
     "prisma": "^6.5.0",
+    "socket.io-client": "^4.8.3",
     "ts-loader": "^9.5.1",
-    "typescript": "^5.7.0"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.64.0"
   }
 }

@@ -38,6 +38,50 @@ up: .env
 		echo "$(BOLD)$(YELLOW).env created from .env.example — fill in your secrets! 🔑$(RESET)"; \
 	fi
 
+# Import the most rated IGDB games into the catalog (needs IGDB creds in .env)
+# Usage: make seed [SEED_COUNT=1000]
+seed:
+	@echo "$(BOLD)$(YELLOW)Seeding the game catalog from IGDB... 🎮$(RESET)"
+	@$(COMPOSE) exec -e SEED_COUNT=$${SEED_COUNT:-1000} backend npm run seed
+	@echo "$(BOLD)$(GREEN)Catalog seeded! ✅$(RESET)"
+
+# Map games to Steam AppIDs and fetch their % of positive reviews
+# Usage: make steam [STEAM_COUNT=100]
+steam:
+	@echo "$(BOLD)$(YELLOW)Syncing Steam scores... ♨️$(RESET)"
+	@$(COMPOSE) exec -e STEAM_COUNT=$${STEAM_COUNT:-} backend npm run steam:sync
+	@echo "$(BOLD)$(GREEN)Steam scores synced! ✅$(RESET)"
+
+# Share the seeded DB with the team instead of everyone re-downloading it:
+# one member runs db-dump, sends the file, others run db-restore.
+# ⚠️ db-restore REPLACES your whole local database (all tables, all users).
+DUMP_FILE = saveboxd_dump.sql
+
+db-dump:
+	@$(COMPOSE) exec -T postgres sh -c 'pg_dump -U $$POSTGRES_USER -d $$POSTGRES_DB --clean --if-exists' > $(DUMP_FILE)
+	@echo "$(BOLD)$(GREEN)Database exported to $(DUMP_FILE) ($$(du -h $(DUMP_FILE) | cut -f1)) 📦$(RESET)"
+
+# ⚠️ Replaces your WHOLE local database with the dump's content
+db-restore:
+	@test -f $(DUMP_FILE) || (echo "$(BOLD)$(RED)$(DUMP_FILE) not found — put it at the repo root first.$(RESET)" && exit 1)
+	@$(COMPOSE) exec -T postgres sh -c 'psql -q -U $$POSTGRES_USER -d $$POSTGRES_DB' < $(DUMP_FILE)
+	@$(COMPOSE) restart backend > /dev/null
+	@echo "$(BOLD)$(GREEN)Database restored from $(DUMP_FILE) ✅$(RESET)"
+
+# Safer alternative to db-restore: share only the game catalog (Game/Genre/
+# Platform/Company). Upserts by igdbId — never touches Users/Reviews/etc, so
+# it can't wipe anyone's local test data.
+CATALOG_FILE = backend/catalog_export.json
+
+catalog-export:
+	@$(COMPOSE) exec backend npm run catalog:export
+	@echo "$(BOLD)$(GREEN)Catalog exported to $(CATALOG_FILE) ($$(du -h $(CATALOG_FILE) | cut -f1)) 📦$(RESET)"
+
+catalog-import:
+	@test -f $(CATALOG_FILE) || (echo "$(BOLD)$(RED)$(CATALOG_FILE) not found — put it there first.$(RESET)" && exit 1)
+	@$(COMPOSE) exec backend npm run catalog:import
+	@echo "$(BOLD)$(GREEN)Catalog imported — your users/reviews were untouched ✅$(RESET)"
+
 logs:
 	@$(COMPOSE) logs -f
 
@@ -76,4 +120,4 @@ logo:
 	@echo "$(BOLD)            🎮 ft_transcendence — rate your games 🎮$(RESET)"
 	@echo ""
 
-.PHONY: all up logs ps down clean fclean re logo
+.PHONY: all up seed steam db-dump db-restore catalog-export catalog-import logs ps down clean fclean re logo
