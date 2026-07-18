@@ -159,6 +159,38 @@ export class ReviewsService {
     return ids.map((id) => byId.get(id)).filter(Boolean);
   }
 
+  // Cross-catalog feed for the home page: top-scored recent reviews (text
+  // only — a bare rating has nothing to say there), each carrying its
+  // game/company so the card can be rendered outside any target page
+  async highlights(days: number, page: number, limit: number, viewerId?: number) {
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const rows = await this.prisma.$queryRaw<{ id: number }[]>`
+      SELECT r.id
+      FROM "Review" r
+      LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewLike" GROUP BY "reviewId") l
+        ON l."reviewId" = r.id
+      LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewDislike" GROUP BY "reviewId") d
+        ON d."reviewId" = r.id
+      LEFT JOIN (SELECT "reviewId", COUNT(*) AS n FROM "ReviewComment" GROUP BY "reviewId") c
+        ON c."reviewId" = r.id
+      WHERE r."createdAt" >= ${since} AND r.text IS NOT NULL AND r.text <> ''
+      ORDER BY COALESCE(l.n, 0) - COALESCE(d.n, 0) DESC,
+               COALESCE(c.n, 0) DESC, r."createdAt" DESC
+      LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
+    if (rows.length === 0) return [];
+    const ids = rows.map((r) => r.id);
+    const reviews = await this.prisma.review.findMany({
+      where: { id: { in: ids } },
+      include: {
+        ...reviewInclude(viewerId),
+        game: { select: { id: true, title: true, coverUrl: true } },
+        company: { select: { id: true, name: true, logoUrl: true } },
+      },
+    });
+    const byId = new Map(reviews.map((r) => [r.id, toDto(r)]));
+    return ids.map((id) => byId.get(id)).filter(Boolean);
+  }
+
   async findOne(id: number, viewerId?: number) {
     const review = await this.prisma.review.findUnique({
       where: { id },
