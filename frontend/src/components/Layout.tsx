@@ -8,6 +8,7 @@ export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<ThemeMode>(storedMode);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Synchronise la classe .dark de <html> (et localStorage) avec l'état React
   useEffect(() => {
@@ -30,14 +31,6 @@ export default function Layout() {
             <SearchBar />
           </div>
           <div className="flex shrink-0 items-center gap-4 text-sm">
-            <button
-              type="button"
-              onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
-              title={mode === 'dark' ? 'Mode jour' : 'Mode nuit'}
-              className="rounded-full px-2 py-1 hover:bg-zinc-900/10 dark:hover:bg-zinc-100/10"
-            >
-              {mode === 'dark' ? '☀️' : '🌙'}
-            </button>
             {user ? (
               <>
                 <Link to="/friends" className="hover:opacity-70">
@@ -46,7 +39,7 @@ export default function Layout() {
                 <Link to="/steam" className="hover:opacity-70">
                   Steam
                 </Link>
-                <Link to="/profile" className="flex items-center gap-2 hover:opacity-70">
+                <Link to={`/u/${user.username}`} className="flex items-center gap-2 hover:opacity-70">
                   {user.avatarUrl ? (
                     <img src={user.avatarUrl} alt="" className="h-6 w-6 rounded-full object-cover" />
                   ) : (
@@ -54,13 +47,6 @@ export default function Layout() {
                   )}
                   {user.username}
                 </Link>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="opacity-80 hover:opacity-60"
-                >
-                  Log out
-                </button>
               </>
             ) : (
               <>
@@ -72,6 +58,65 @@ export default function Layout() {
                 </Link>
               </>
             )}
+
+            {/* Gear dropdown: day/night toggle for everyone; settings + logout when signed in */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((o) => !o)}
+                aria-haspopup="menu"
+                aria-expanded={menuOpen}
+                title="Menu"
+                className="rounded-full px-1 hover:opacity-70"
+              >
+                ⚙️
+              </button>
+              {menuOpen && (
+                <>
+                  {/* Full-screen catcher so any outside click closes the menu */}
+                  <button
+                    type="button"
+                    aria-label="Close menu"
+                    tabIndex={-1}
+                    onClick={() => setMenuOpen(false)}
+                    className="fixed inset-0 z-10 cursor-default"
+                  />
+                  <div
+                    role="menu"
+                    className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-lg border border-zinc-900/10 bg-white py-1 shadow-lg dark:border-zinc-100/10 dark:bg-zinc-900"
+                  >
+                    {user && (
+                      <Link
+                        to="/settings"
+                        role="menuitem"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                      >
+                        ⚙️ Settings
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                    >
+                      {mode === 'dark' ? '☀️ Mode jour' : '🌙 Mode nuit'}
+                    </button>
+                    {user && (
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                      >
+                        🚪 Log out
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </nav>
       </header>

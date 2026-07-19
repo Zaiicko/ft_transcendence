@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { FriendshipStatus, Prisma } from '@prisma/client';
 import { existsSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { basename, join } from 'path';
 import { AVATARS_DIR } from '../common/uploads';
 import { PrismaService } from '../prisma/prisma.service';
+
+// Viewer's relationship with the profile owner, so the frontend can show the
+// right friend action (or none)
+export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
+
+// Only ever the game (never company) reference, shared by top games / calendar
+const gameRef = { select: { id: true, title: true, coverUrl: true } } as const;
 
 @Injectable()
 export class UsersService {
@@ -33,6 +40,84 @@ export class UsersService {
 
   delete(id: number) {
     return this.prisma.user.delete({ where: { id } });
+  }
+
+  // Privacy-safe public profile keyed by username: identity + badges + stats +
+  // recent activity. Never exposes email / 2FA / provider ids. `viewerId` (the
+  // optionally-authenticated caller) only drives the friend-action state.
+  async getPublicProfile(username: string, viewerId?: number) {
+    const user = await this.prisma.user.findUnique({ where: { username } });
+    if (!user) return null;
+
+    const [reviewCount, playedCount, topReviews, recentReviews, playedDated, friendState] =
+      await Promise.all([
+        this.prisma.review.count({ where: { userId: user.id, gameId: { not: null } } }),
+        this.prisma.playedGame.count({ where: { userId: user.id } }),
+        // Top 3 games by the rating this user gave them
+        this.prisma.review.findMany({
+          where: { userId: user.id, gameId: { not: null } },
+          orderBy: [{ rating: 'desc' }, { createdAt: 'desc' }],
+          take: 3,
+          select: { rating: true, game: gameRef },
+        }),
+        // Latest reviews (game or company)
+        this.prisma.review.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+          select: {
+            id: true,
+            title: true,
+            rating: true,
+            text: true,
+            createdAt: true,
+            game: gameRef,
+            company: { select: { id: true, name: true, logoUrl: true } },
+          },
+        }),
+        // Completion calendar: only games with a recorded date
+        this.prisma.playedGame.findMany({
+          where: { userId: user.id, playedAt: { not: null } },
+          orderBy: { playedAt: 'desc' },
+          select: { playedAt: true, game: gameRef },
+        }),
+        this.friendState(user.id, viewerId),
+      ]);
+
+    return {
+      id: user.id,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+      bio: user.bio,
+      provider: user.provider,
+      steamId: user.steamId,
+      createdAt: user.createdAt,
+      reviewCount,
+      playedCount,
+      topGames: topReviews
+        .filter((r) => r.game)
+        .map((r) => ({ rating: r.rating, game: r.game! })),
+      recentReviews,
+      calendar: playedDated.map((p) => ({ playedAt: p.playedAt!, game: p.game })),
+      friendState,
+    };
+  }
+
+  private async friendState(ownerId: number, viewerId?: number): Promise<FriendState> {
+    if (!viewerId) return 'none';
+    if (viewerId === ownerId) return 'self';
+    const friendship = await this.prisma.friendship.findFirst({
+      where: {
+        OR: [
+          { requesterId: viewerId, addresseeId: ownerId },
+          { requesterId: ownerId, addresseeId: viewerId },
+        ],
+      },
+      select: { status: true, requesterId: true },
+    });
+    if (!friendship) return 'none';
+    if (friendship.status === FriendshipStatus.ACCEPTED) return 'friends';
+    return friendship.requesterId === viewerId ? 'outgoing' : 'incoming';
   }
 
   // avatarUrl looks like /api/uploads/avatars/<file> — only ever deletes inside AVATARS_DIR

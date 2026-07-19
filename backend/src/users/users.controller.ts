@@ -22,6 +22,7 @@ import { extname } from 'path';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtPayload } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { hashPassword, verifyPassword } from '../auth/password.util';
 import { AVATARS_DIR } from '../common/uploads';
 import { DeleteAccountDto } from './dto/delete-account.dto';
@@ -36,6 +37,17 @@ const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  // Public profile page keyed by username: identity, badges, stats and recent
+  // activity — privacy-safe (no email). `viewer` (optional auth) only sets the
+  // friend-action state. Two path segments, so no clash with @Get(':id').
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get('profile/:username')
+  async publicProfile(@Param('username') username: string, @CurrentUser() viewer?: JwtPayload) {
+    const profile = await this.usersService.getPublicProfile(username, viewer?.sub);
+    if (!profile) throw new NotFoundException();
+    return profile;
+  }
 
   // Public profile only — never return passwordHash / twoFactorSecret / providerId
   @Get(':id')

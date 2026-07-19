@@ -18,7 +18,7 @@ function secretFromOtpauthUrl(otpauthUrl: string): string {
   }
 }
 
-export default function Profile() {
+export default function Settings() {
   const { user, refreshUser, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -67,7 +67,7 @@ export default function Profile() {
     try {
       await apiFetch('/users/me', { method: 'PATCH', body: JSON.stringify({ username, bio }) });
       await refreshUser();
-      if (isWelcome) navigate('/profile', { replace: true });
+      if (isWelcome) navigate('/settings', { replace: true });
     } catch (err) {
       setProfileError(err instanceof ApiError ? err.message : 'Could not save profile');
     } finally {
@@ -205,7 +205,7 @@ export default function Profile() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <h1 className="mb-6 text-2xl font-bold">Your profile</h1>
+      <h1 className="mb-6 text-2xl font-bold">Account settings</h1>
 
       {isWelcome && (
         <div className="mb-6 rounded border border-zinc-700 bg-zinc-900 p-4">
@@ -230,6 +230,9 @@ export default function Profile() {
             {user.steamId && <SteamBadge />}
           </p>
           <p className="text-sm text-zinc-400">{user.email}</p>
+          <Link to={`/u/${user.username}`} className="text-sm text-zinc-300 underline">
+            View public profile
+          </Link>
           <label className="mt-2 inline-block cursor-pointer text-sm text-zinc-300 underline">
             {uploading ? 'Uploading…' : 'Change avatar'}
             <input
@@ -306,7 +309,7 @@ export default function Profile() {
           {isWelcome && (
             <button
               type="button"
-              onClick={() => navigate('/profile', { replace: true })}
+              onClick={() => navigate('/settings', { replace: true })}
               className="text-sm text-zinc-400 underline"
             >
               Skip for now

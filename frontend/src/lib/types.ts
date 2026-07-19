@@ -30,6 +30,36 @@ export interface ReviewHighlight {
   _count: { likes: number; dislikes: number; comments: number };
 }
 
+// Viewer's relationship with the profile owner (drives the friend button)
+export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
+
+type GameRef = { id: number; title: string; coverUrl: string | null };
+
+// GET /users/profile/:username — privacy-safe public profile (no email)
+export interface PublicProfile {
+  id: number;
+  username: string;
+  avatarUrl: string | null;
+  bio: string | null;
+  provider: AuthProvider;
+  steamId: string | null;
+  createdAt: string;
+  reviewCount: number;
+  playedCount: number;
+  topGames: { rating: number; game: GameRef }[];
+  recentReviews: {
+    id: number;
+    title: string;
+    rating: number;
+    text: string;
+    createdAt: string;
+    game: GameRef | null;
+    company: { id: number; name: string; logoUrl: string | null } | null;
+  }[];
+  calendar: { playedAt: string; game: GameRef }[];
+  friendState: FriendState;
+}
+
 export interface PublicUser {
   id: number;
   email: string;
