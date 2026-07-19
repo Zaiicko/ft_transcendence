@@ -230,9 +230,6 @@ export default function Settings() {
             {user.steamId && <SteamBadge />}
           </p>
           <p className="text-sm text-zinc-400">{user.email}</p>
-          <Link to={`/u/${user.username}`} className="text-sm text-zinc-300 underline">
-            View public profile
-          </Link>
           <label className="mt-2 inline-block cursor-pointer text-sm text-zinc-300 underline">
             {uploading ? 'Uploading…' : 'Change avatar'}
             <input
