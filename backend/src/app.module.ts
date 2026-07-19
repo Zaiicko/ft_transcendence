@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { CompaniesModule } from './companies/companies.module';
 import { FriendsModule } from './friends/friends.module';
 import { GamesModule } from './games/games.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PresenceModule } from './presence/presence.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ReviewsModule } from './reviews/reviews.module';
@@ -21,6 +22,7 @@ import { UsersModule } from './users/users.module';
     ReviewsModule,
     FriendsModule,
     PresenceModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
 })

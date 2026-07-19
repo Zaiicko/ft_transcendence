@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -45,6 +46,7 @@ export class ReviewsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly gateway: ReviewsGateway,
+    private readonly notifications: NotificationsService,
   ) {}
 
   create(userId: number, gameId: number, dto: CreateReviewDto) {
@@ -242,6 +244,7 @@ export class ReviewsService {
         this.prisma.reviewLike.create({ data: { userId, reviewId } }),
       ]);
       await this.emitReaction(reviewId);
+      await this.notifications.reviewLiked(userId, reviewId);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Already liked — idempotent, not an error

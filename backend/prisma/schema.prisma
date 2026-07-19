@@ -33,6 +33,8 @@ enum NotificationType {
   FRIEND_REQUEST
   FRIEND_ACCEPT
   REVIEW_LIKE
+  REVIEW_COMMENT
+  COMMENT_REPLY
   NEW_MESSAGE
 }
 
@@ -348,4 +350,7 @@ model Notification {
   payload   Json
   readAt    DateTime?
   createdAt DateTime         @default(now())
+
+  // La requête chaude : "mes notifications non lues"
+  @@index([userId, readAt])
 }

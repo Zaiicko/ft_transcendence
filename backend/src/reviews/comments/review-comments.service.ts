@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { NotificationsService } from '../../notifications/notifications.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ReviewsGateway } from '../reviews.gateway';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -47,6 +48,7 @@ export class ReviewCommentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly gateway: ReviewsGateway,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async create(userId: number, reviewId: number, dto: CreateCommentDto) {
@@ -82,6 +84,7 @@ export class ReviewCommentsService {
         data: { text: dto.text, parentId: dto.parentId, userId, reviewId },
       });
       await this.emitChanged(reviewId);
+      await this.notifications.commentPosted(userId, reviewId, comment.id, dto.parentId ?? null);
       return comment;
     } catch (e) {
       // P2003 = foreign key violation (review, parent comment or user missing)

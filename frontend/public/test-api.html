@@ -119,6 +119,20 @@
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
       overflow: hidden;
     }
+
+    #notifCount { color: #ffd700; font-weight: bold; margin-left: 3px; }
+    #notifPanel {
+      margin-top: 10px; border: 1px solid #2c3440; border-radius: 8px;
+      background: #1b2129; max-height: 260px; overflow-y: auto;
+    }
+    .notif {
+      padding: 8px 12px; border-bottom: 1px solid #2c3440;
+      font-size: 0.85rem; cursor: pointer;
+    }
+    .notif:last-child { border-bottom: 0; }
+    .notif:hover { background: #222b36; }
+    .notif.unread { border-left: 3px solid #00ac1c; }
+    .notif .when { color: #678; font-size: 0.72rem; margin-left: 6px; }
   </style>
 </head>
 <body>
@@ -137,7 +151,9 @@
     </div>
     <div id="loggedIn" style="display:none">
       <span id="whoami"></span>
+      <button class="small secondary" onclick="toggleNotifs()">🔔<span id="notifCount"></span></button>
       <button class="small secondary" onclick="doLogout()">Se déconnecter</button>
+      <div id="notifPanel" style="display:none"></div>
     </div>
   </fieldset>
 
@@ -230,6 +246,13 @@ async function refreshSession() {
   $('loggedOut').style.display = me ? 'none' : '';
   $('loggedIn').style.display = me ? '' : 'none';
   if (me) $('whoami').textContent = `Connecté : ${me.username} (id ${me.id}) `;
+  refreshNotifBadge();
+}
+
+// Le cookie JWT n'est lu qu'au handshake WS : après login/logout, on
+// reconnecte pour (re)joindre la room personnelle "user:<id>"
+function reconnectSocket() {
+  socket.disconnect().connect();
 }
 
 async function doAuth(mode) {
@@ -237,12 +260,14 @@ async function doAuth(mode) {
   if (mode === 'signup') body.username = $('authUsername').value;
   await api('POST', `/auth/${mode}`, body);
   await refreshSession();
+  reconnectSocket();
   loadReviews();
 }
 
 async function doLogout() {
   await api('POST', '/auth/logout');
   await refreshSession();
+  reconnectSocket();
   loadReviews();
 }
 
@@ -699,6 +724,56 @@ async function reactCom(id, type, reviewId, btn) {
   // WS down: re-render just this thread, not the whole review list
   if (!socket.connected && openComs.has(reviewId)) showComments(reviewId);
 }
+
+// ---- Notifications : badge de non-lus + panneau, poussées en direct ----
+let notifsOpen = false;
+
+function notifText(n) {
+  const p = n.payload;
+  const who = esc(p.actorUsername);
+  const title = esc(p.reviewTitle);
+  if (n.type === 'REVIEW_LIKE') return `👍 ${who} a liké ta review « ${title} »`;
+  if (n.type === 'REVIEW_COMMENT') return `💬 ${who} a commenté ta review « ${title} »`;
+  if (n.type === 'COMMENT_REPLY') return `↩ ${who} a répondu à ton commentaire (« ${title} »)`;
+  return esc(n.type); // types des autres modules (friends, messages)
+}
+
+function renderNotif(n) {
+  const div = document.createElement('div');
+  div.className = 'notif' + (n.readAt ? '' : ' unread');
+  div.innerHTML = `${notifText(n)}<span class="when">${new Date(n.createdAt).toLocaleString('fr')}</span>`;
+  const p = n.payload;
+  if (p.gameId || p.companyId) {
+    div.onclick = () => (p.gameId ? openGame(p.gameId) : openCompany(p.companyId));
+  }
+  return div;
+}
+
+async function refreshNotifBadge() {
+  if (!me) return;
+  const res = await api('GET', '/notifications/unread-count', null, true).catch(() => null);
+  $('notifCount').textContent = res?.count ? res.count : '';
+}
+
+async function toggleNotifs() {
+  notifsOpen = !notifsOpen;
+  $('notifPanel').style.display = notifsOpen ? '' : 'none';
+  if (!notifsOpen) return;
+  const list = await api('GET', '/notifications?limit=20', null, true).catch(() => []);
+  const panel = $('notifPanel');
+  panel.innerHTML = list.length ? '' : '<div class="notif"><em>Aucune notification</em></div>';
+  for (const n of list) panel.appendChild(renderNotif(n));
+  // Ouvrir le panneau vaut lecture : badge à zéro, marquage en base
+  await api('PATCH', '/notifications/read-all', null, true).catch(() => {});
+  $('notifCount').textContent = '';
+}
+
+socket.on('notification:new', (n) => {
+  logLine('req', `WS notification:new ${n.type}`);
+  const badge = $('notifCount');
+  badge.textContent = String((Number(badge.textContent) || 0) + 1);
+  if (notifsOpen) $('notifPanel').prepend(renderNotif(n));
+});
 
 // ---- Accueil : jeux populaires (score bayésien du module games) + avis
 // les plus likés du site (endpoint highlights). Un seul fetch de 30 avis,

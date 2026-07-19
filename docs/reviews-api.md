@@ -74,6 +74,21 @@ réponses conservées). Afficher un placeholder grisé, sans boutons d'action.
 | `DELETE /comments/:id` | oui, auteur | **Reddit-style** : avec réponses → devient une tombale `deleted: true` (le thread survit) ; sans réponse → vraie suppression (+ élagage des tombales ancêtres devenues vides). Répondre/réagir à une tombale → `400`. Le 💬 des reviews ne compte pas les tombales |
 | `POST·DELETE /comments/:id/like` · `/dislike` | oui | Mêmes règles que les réactions de review |
 
+### Notifications (module `notifications`, alimenté par reviews)
+
+Toutes privées (`401` sinon). Types émis par reviews : `REVIEW_LIKE` (dédupliqué
+par acteur+review, jamais pour un dislike), `REVIEW_COMMENT` (commentaire sur ta
+review), `COMMENT_REPLY` (réponse à ton commentaire). Jamais pour ses propres
+actions ni vers un auteur anonymisé. Le `payload` Json est un instantané :
+`{ actorId, actorUsername, reviewId, reviewTitle, gameId, companyId, commentId? }`.
+
+| Route | Description |
+|---|---|
+| `GET /notifications?unread=&page=&limit=` | Liste (récentes d'abord), `unread=true` filtre les non-lues |
+| `GET /notifications/unread-count` | `{ count }` pour le badge 🔔 |
+| `PATCH /notifications/:id/read` | Marque une notification lue (`404` si pas à toi) |
+| `PATCH /notifications/read-all` | Tout marquer lu |
+
 Codes d'erreur communs : `400` validation, `401` non connecté, `403` pas propriétaire,
 `404` introuvable, `409` review en double.
 
@@ -110,6 +125,14 @@ Une socket n'est que dans **une** room à la fois (re-join = quitte la précéde
 
 Les évènements de réaction **portent les compteurs à jour** : aucun re-fetch nécessaire,
 c'est voulu (pas de reflow/clignotement, pas de rafale de requêtes).
+
+### Room personnelle (notifications)
+
+Une socket **authentifiée** rejoint automatiquement sa room `user:<id>` au
+handshake (cookie JWT lu par le `NotificationsGateway`). Elle y reçoit
+`notification:new` (la ligne complète, payload inclus) sur tous ses onglets.
+⚠️ Le cookie n'est lu **qu'au handshake** : après un login/logout côté client,
+faire `socket.disconnect().connect()` pour rejoindre/quitter la room perso.
 
 ---
 
@@ -167,3 +190,18 @@ c'est voulu (pas de reflow/clignotement, pas de rafale de requêtes).
 
 Démo de référence fonctionnelle : `frontend/public/test-api.html`
 (https://localhost:8443/test-api.html) — tout le contrat ci-dessus y est exercé.
+
+---
+
+## 6. Tests automatisés
+
+```bash
+docker compose exec backend npm run test:e2e
+```
+
+24 tests e2e (`backend/test/*.e2e-spec.ts`) couvrent ce contrat : CRUD + garde-fous
+(401/403/409/400), réactions (exclusivité, idempotence), threads (profondeur max,
+tombales, élagage), anonymisation de compte, classements (`popular`, `discussed`
+filtré tombales, `highlights` : fenêtre, pagination, cibles embarquées) et temps
+réel (rooms, non-kick des sockets anonymes, payloads des évènements). Ils tournent
+sur une base dédiée `<db>_test` créée automatiquement — jamais sur la base de dev.
