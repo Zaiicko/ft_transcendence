@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { MailerModule } from '../mailer/mailer.module';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -12,6 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
 @Module({
   imports: [
     UsersModule,
+    MailerModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -25,6 +27,7 @@ import { JwtStrategy } from './jwt.strategy';
   providers: [AuthService, JwtStrategy, GoogleStrategy, FortyTwoStrategy],
   // JwtModule re-exported so PresenceModule can verify socket handshake cookies
   // without importing FriendsModule/UsersModule and creating a module cycle.
-  exports: [JwtModule],
+  // AuthService exported for the Steam account flow (issueTokens on login).
+  exports: [JwtModule, AuthService],
 })
 export class AuthModule {}

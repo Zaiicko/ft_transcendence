@@ -1,0 +1,192 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
+import { apiFetch, ApiError } from '../lib/api';
+import type { PublicUser } from '../lib/types';
+
+interface SteamLibraryGame {
+  id: number;
+  title: string;
+  coverUrl: string | null;
+  gameType: string;
+  steamAppId: number | null;
+  igdbRating: number | null;
+  steamScore: number | null;
+  releaseDate: string | null;
+  playtimeMinutes: number;
+  playedStatus: string | null;
+}
+
+interface LibraryResponse {
+  private: boolean;
+  totalOwned: number;
+  matched: SteamLibraryGame[];
+  unmatchedCount: number;
+}
+
+interface SuggestionsResponse {
+  private: boolean;
+  suggestions: PublicUser[];
+}
+
+function formatPlaytime(minutes: number): string {
+  if (minutes === 0) return 'Never played';
+  if (minutes < 60) return `${minutes} min`;
+  return `${Math.round(minutes / 60)} h`;
+}
+
+export default function SteamLibrary() {
+  const { user } = useAuth();
+
+  const steamLinked = Boolean(user?.steamId);
+
+  const [library, setLibrary] = useState<LibraryResponse | null>(null);
+  const [suggestions, setSuggestions] = useState<SuggestionsResponse | null>(null);
+  // Nothing to load when no Steam account is linked
+  const [loading, setLoading] = useState(steamLinked);
+  const [error, setError] = useState<string | null>(null);
+  const [requested, setRequested] = useState<Set<number>>(new Set());
+  const [requestError, setRequestError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!steamLinked) return;
+    // setState only happens in the promise callbacks (async), never in the
+    // effect's synchronous body — see react-hooks/set-state-in-effect
+    Promise.all([
+      apiFetch<LibraryResponse>('/steam/library'),
+      apiFetch<SuggestionsResponse>('/steam/friends/suggestions'),
+    ])
+      .then(([lib, sug]) => {
+        setLibrary(lib);
+        setSuggestions(sug);
+      })
+      .catch((err: unknown) => {
+        setError(err instanceof ApiError ? err.message : 'Could not load your Steam library');
+      })
+      .finally(() => setLoading(false));
+  }, [steamLinked]);
+
+  async function handleAddFriend(userId: number) {
+    setRequestError(null);
+    try {
+      await apiFetch(`/friends/requests/${userId}`, { method: 'POST' });
+      setRequested((prev) => new Set(prev).add(userId));
+    } catch (err) {
+      setRequestError(err instanceof ApiError ? err.message : 'Could not send friend request');
+    }
+  }
+
+  if (!steamLinked) {
+    return (
+      <div className="mx-auto max-w-lg text-center">
+        <h1 className="mb-4 text-2xl font-bold">Steam library</h1>
+        <p className="mb-6 text-zinc-400">
+          Link your Steam account to import your game library and find your Steam friends.
+        </p>
+        <a
+          href="/api/auth/steam"
+          className="rounded border border-zinc-700 px-4 py-2 hover:bg-zinc-900"
+        >
+          Link my Steam account
+        </a>
+      </div>
+    );
+  }
+
+  if (loading) return <p className="text-zinc-400">Loading your Steam library…</p>;
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-lg">
+        <h1 className="mb-4 text-2xl font-bold">Steam library</h1>
+        <p className="text-red-400">{error}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h1 className="mb-2 text-2xl font-bold">Steam library</h1>
+
+      {library?.private ? (
+        <p className="mb-8 text-zinc-400">
+          Your Steam game details are private. Set{' '}
+          <span className="text-zinc-200">Profile → Privacy Settings → Game details</span> to
+          Public on Steam, then reload this page.
+        </p>
+      ) : (
+        <>
+          <p className="mb-6 text-sm text-zinc-400">
+            {library?.totalOwned} games owned on Steam — {library?.matched.length} in our
+            catalog{library && library.unmatchedCount > 0 ? `, ${library.unmatchedCount} not referenced` : ''}.
+          </p>
+
+          {library && library.matched.length > 0 ? (
+            <ul className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {library.matched.map((game) => (
+                <li key={game.id} className="flex flex-col overflow-hidden rounded border border-zinc-800">
+                  {game.coverUrl ? (
+                    <img src={game.coverUrl} alt="" className="aspect-[3/4] w-full object-cover" />
+                  ) : (
+                    <div className="aspect-[3/4] w-full bg-zinc-800" />
+                  )}
+                  <div className="flex flex-1 flex-col gap-1 p-2">
+                    <p className="text-sm font-medium leading-tight">{game.title}</p>
+                    <p className="mt-auto text-xs text-zinc-400">{formatPlaytime(game.playtimeMinutes)}</p>
+                    {game.playedStatus && (
+                      <span className="self-start rounded bg-zinc-800 px-1.5 py-0.5 text-xs capitalize text-zinc-300">
+                        {game.playedStatus.toLowerCase()}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mb-10 text-zinc-400">None of your Steam games are in our catalog yet.</p>
+          )}
+        </>
+      )}
+
+      <h2 className="mb-2 text-xl font-bold">Steam friends on Saveboxd</h2>
+      {suggestions?.private && (
+        <p className="text-zinc-400">Your Steam friend list is private, so we cannot suggest friends.</p>
+      )}
+      {suggestions && !suggestions.private && suggestions.suggestions.length === 0 && (
+        <p className="text-zinc-400">None of your Steam friends are on Saveboxd yet.</p>
+      )}
+      {requestError && <p className="mb-3 text-sm text-red-400">{requestError}</p>}
+      {suggestions && suggestions.suggestions.length > 0 && (
+        <ul className="flex flex-col gap-3">
+          {suggestions.suggestions.map((s) => (
+            <li key={s.id} className="flex items-center gap-3 rounded border border-zinc-800 p-3">
+              {s.avatarUrl ? (
+                <img src={s.avatarUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
+              ) : (
+                <div className="h-10 w-10 rounded-full bg-zinc-800" />
+              )}
+              <span className="font-medium">{s.username}</span>
+              <div className="ml-auto">
+                {requested.has(s.id) ? (
+                  <span className="text-sm text-zinc-400">Request sent</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleAddFriend(s.id)}
+                    className="rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900"
+                  >
+                    Add friend
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p className="mt-10 text-sm text-zinc-400">
+        Manage your Steam link from your <Link to="/profile" className="underline">profile</Link>.
+      </p>
+    </div>
+  );
+}

@@ -23,6 +23,9 @@ export default function Layout() {
                 <Link to="/friends" className="hover:text-zinc-100">
                   Friends
                 </Link>
+                <Link to="/steam" className="hover:text-zinc-100">
+                  Steam
+                </Link>
                 <Link to="/profile" className="flex items-center gap-2 hover:text-zinc-100">
                   {user.avatarUrl ? (
                     <img src={user.avatarUrl} alt="" className="h-6 w-6 rounded-full object-cover" />

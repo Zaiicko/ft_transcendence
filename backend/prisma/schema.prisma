@@ -16,11 +16,17 @@ enum AuthProvider {
   LOCAL
   FORTYTWO
   GOOGLE
+  STEAM
 }
 
 enum FriendshipStatus {
   PENDING
   ACCEPTED
+}
+
+enum VerificationTokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
 }
 
 enum PlayStatus {
@@ -54,6 +60,9 @@ model User {
   twoFactorSecret  String?
   twoFactorEnabled Boolean      @default(false)
   language         String       @default("en")
+  // Null until the address is confirmed via the emailed verification link
+  // (set immediately on OAuth signup, since the provider already verified it)
+  emailVerifiedAt  DateTime?
   // Last WebSocket disconnect time — used for "last seen" once offline
   lastSeenAt       DateTime?
   createdAt        DateTime     @default(now())
@@ -73,6 +82,7 @@ model User {
   receivedMessages   Message[]      @relation("MessageRecipient")
   notifications      Notification[]
   refreshTokens      RefreshToken[]
+  verificationTokens VerificationToken[]
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -85,6 +95,18 @@ model RefreshToken {
   expiresAt  DateTime
   revokedAt  DateTime?
   createdAt  DateTime  @default(now())
+}
+
+// Opaque tokens backing "verify my email" and "reset my password" links —
+// same hash-only-at-rest pattern as RefreshToken.
+model VerificationToken {
+  id        Int                   @id @default(autoincrement())
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  type      VerificationTokenType
+  tokenHash String                @unique
+  expiresAt DateTime
+  createdAt DateTime              @default(now())
 }
 
 model Friendship {

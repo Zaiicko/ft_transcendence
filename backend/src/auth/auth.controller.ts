@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
   HttpCode,
@@ -11,18 +12,25 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthProvider } from '@prisma/client';
+import { AuthProvider, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
+import { clearAuthCookies, REFRESH_COOKIE_PATH, setAuthCookies } from './auth-cookies.util';
 import { AuthService, JwtPayload, TokenPair } from './auth.service';
 import { CurrentUser } from './current-user.decorator';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignupDto } from './dto/signup.dto';
+import { TwoFactorCodeDto } from './dto/two-factor-code.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 import { OAuthProfile } from './google.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
-const REFRESH_COOKIE_PATH = '/api/auth';
+// Must match AuthService's MFA_CHALLENGE_TTL ('5m') — the cookie should
+// never outlive the JWT it carries.
+const MFA_CHALLENGE_COOKIE_MAX_AGE_MS = 5 * 60 * 1000;
 
 @Controller('auth')
 export class AuthController {
@@ -44,6 +52,35 @@ export class AuthController {
   @HttpCode(200)
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const user = await this.auth.validateLocalLogin(dto);
+
+    if (user.twoFactorEnabled) {
+      const challenge = await this.auth.issueMfaChallenge(user.id);
+      res.cookie('mfa_pending', challenge, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        path: REFRESH_COOKIE_PATH,
+        maxAge: MFA_CHALLENGE_COOKIE_MAX_AGE_MS,
+      });
+      return { requiresTwoFactor: true };
+    }
+
+    this.setAuthCookies(res, await this.auth.issueTokens(user));
+    return toPublicUser(user);
+  }
+
+  @Post('2fa/verify-login')
+  @HttpCode(200)
+  async verifyLoginTwoFactor(
+    @Req() req: Request,
+    @Body() dto: TwoFactorCodeDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const challenge = req.cookies?.mfa_pending;
+    if (!challenge) throw new UnauthorizedException('No pending 2FA challenge');
+
+    const user = await this.auth.completeMfaChallenge(challenge, dto.code);
+    res.clearCookie('mfa_pending', { path: REFRESH_COOKIE_PATH });
     this.setAuthCookies(res, await this.auth.issueTokens(user));
     return toPublicUser(user);
   }
@@ -74,6 +111,54 @@ export class AuthController {
     return toPublicUser(user);
   }
 
+  @Post('verify-email')
+  @HttpCode(204)
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    await this.auth.verifyEmail(dto.token);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('resend-verification')
+  @HttpCode(204)
+  async resendVerification(@CurrentUser() current: JwtPayload) {
+    const user = await this.users.findById(current.sub);
+    if (user) await this.auth.requestEmailVerification(user);
+  }
+
+  @Post('forgot-password')
+  @HttpCode(200)
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    await this.auth.requestPasswordReset(dto.email);
+    // Always the same response, whether or not that email is registered.
+    return { message: 'If that email is registered, a reset link has been sent.' };
+  }
+
+  @Post('reset-password')
+  @HttpCode(204)
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    await this.auth.resetPassword(dto.token, dto.newPassword);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/setup')
+  setupTwoFactor(@CurrentUser() current: JwtPayload) {
+    return this.auth.beginTwoFactorSetup(current.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/enable')
+  @HttpCode(204)
+  async enableTwoFactor(@CurrentUser() current: JwtPayload, @Body() dto: TwoFactorCodeDto) {
+    await this.auth.confirmTwoFactorSetup(current.sub, dto.code);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/disable')
+  @HttpCode(204)
+  async disableTwoFactor(@CurrentUser() current: JwtPayload, @Body() dto: TwoFactorCodeDto) {
+    await this.auth.disableTwoFactor(current.sub, dto.code);
+  }
+
   // Passport's guard handles the redirect to Google's consent screen —
   // this handler body never actually runs for this route.
   @Get('google')
@@ -97,36 +182,41 @@ export class AuthController {
   }
 
   private async completeOAuth(provider: AuthProvider, profile: OAuthProfile, res: Response) {
-    const user = await this.auth.findOrCreateOAuthUser(
-      provider,
-      profile.providerId,
-      profile.email,
-      profile.displayName,
-    );
+    let user: User;
+    let isNewUser: boolean;
+    try {
+      ({ user, isNewUser } = await this.auth.findOrCreateOAuthUser(
+        provider,
+        profile.providerId,
+        profile.email,
+        profile.displayName,
+      ));
+    } catch (err) {
+      if (err instanceof ConflictException) {
+        res.redirect(`${this.frontendUrl()}/login?error=email_in_use`);
+        return;
+      }
+      throw err;
+    }
+
     this.setAuthCookies(res, await this.auth.issueTokens(user));
-    res.redirect(this.config.get<string>('FRONTEND_URL') ?? '/');
+    res.redirect(`${this.frontendUrl()}/profile${isNewUser ? '?welcome=1' : ''}`);
   }
 
+  private frontendUrl(): string {
+    // Slash final toléré dans .env : sans ça, `${base}/x` produit "//x"
+    // (callback Steam en 404, redirections et liens d'emails cassés)
+    const url = this.config.get<string>('FRONTEND_URL') ?? 'https://localhost:8443';
+    return url.replace(/\/+$/, '');
+  }
+
+  // Cookie mechanics live in auth-cookies.util.ts (shared with the Steam
+  // account flow) — these wrappers keep the existing call sites unchanged.
   private setAuthCookies(res: Response, tokens: TokenPair) {
-    // Browser only ever talks to nginx over HTTPS in this stack — cookies are always Secure.
-    res.cookie('access_token', tokens.accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: tokens.accessTtlMs,
-    });
-    res.cookie('refresh_token', tokens.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      path: REFRESH_COOKIE_PATH,
-      maxAge: tokens.refreshTtlMs,
-    });
+    setAuthCookies(res, tokens);
   }
 
   private clearAuthCookies(res: Response) {
-    res.clearCookie('access_token', { path: '/' });
-    res.clearCookie('refresh_token', { path: REFRESH_COOKIE_PATH });
+    clearAuthCookies(res);
   }
 }

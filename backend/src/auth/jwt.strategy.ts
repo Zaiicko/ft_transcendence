@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import type { Request } from 'express';
@@ -20,6 +20,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: JwtPayload): JwtPayload {
+    // Reject anything that isn't a full session token (e.g. an mfa_pending
+    // challenge token signed with the same secret) — see auth.service.ts.
+    if (payload.purpose !== 'session') throw new UnauthorizedException();
     return payload;
   }
 }

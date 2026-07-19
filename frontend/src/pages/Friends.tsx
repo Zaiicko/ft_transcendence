@@ -1,4 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../auth/AuthContext';
+import FortyTwoBadge from '../components/FortyTwoBadge';
 import { usePresenceSocket } from '../friends/usePresenceSocket';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
@@ -13,14 +15,20 @@ interface FriendRequestRow {
   user: PublicUser;
 }
 
+// Suggested by the backend: your Steam friends on Saveboxd, or fellow
+// 42 students when you signed in with 42
+type Suggestion = PublicUser & { via: 'steam' | '42' };
+
 export default function Friends() {
+  const { user } = useAuth();
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [incoming, setIncoming] = useState<FriendRequestRow[]>([]);
   const [outgoing, setOutgoing] = useState<FriendRequestRow[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [targetUserId, setTargetUserId] = useState('');
+  const [targetUsername, setTargetUsername] = useState('');
   const [sendError, setSendError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
@@ -33,15 +41,17 @@ export default function Friends() {
       Promise.all([
         apiFetch<FriendRow[]>('/friends'),
         apiFetch<{ incoming: FriendRequestRow[]; outgoing: FriendRequestRow[] }>('/friends/requests'),
+        apiFetch<Suggestion[]>('/friends/suggestions'),
       ]),
     [],
   );
 
   const applyData = useCallback(
-    ([friendsList, requests]: Awaited<ReturnType<typeof fetchAll>>) => {
+    ([friendsList, requests, suggested]: Awaited<ReturnType<typeof fetchAll>>) => {
       setFriends(friendsList);
       setIncoming(requests.incoming);
       setOutgoing(requests.outgoing);
+      setSuggestions(suggested);
       setError(null);
     },
     // `fetchAll` is only used as a type above, not as a value
@@ -73,19 +83,23 @@ export default function Friends() {
     !loading,
   );
 
+  async function sendRequest(username: string) {
+    await apiFetch(`/friends/requests/${encodeURIComponent(username)}`, { method: 'POST' });
+    await load();
+  }
+
   async function handleSendRequest(e: FormEvent) {
     e.preventDefault();
     setSendError(null);
-    const userId = Number(targetUserId);
-    if (!Number.isInteger(userId) || userId <= 0) {
-      setSendError('Enter a valid user id');
+    const username = targetUsername.trim();
+    if (!username) {
+      setSendError('Enter a username');
       return;
     }
     setSending(true);
     try {
-      await apiFetch(`/friends/requests/${userId}`, { method: 'POST' });
-      setTargetUserId('');
-      await load();
+      await sendRequest(username);
+      setTargetUsername('');
     } catch (err) {
       setSendError(err instanceof ApiError ? err.message : 'Could not send request');
     } finally {
@@ -116,11 +130,10 @@ export default function Friends() {
 
       <form onSubmit={handleSendRequest} className="mb-2 flex gap-2">
         <input
-          type="number"
-          min={1}
-          placeholder="User id to add"
-          value={targetUserId}
-          onChange={(e) => setTargetUserId(e.target.value)}
+          type="text"
+          placeholder="Username to add"
+          value={targetUsername}
+          onChange={(e) => setTargetUsername(e.target.value)}
           className="flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
         />
         <button
@@ -139,7 +152,10 @@ export default function Friends() {
           <ul className="flex flex-col gap-2">
             {incoming.map((r) => (
               <li key={r.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
-                <span>{r.user.username}</span>
+                <span className="flex items-center gap-2">
+                  {r.user.username}
+                  {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                </span>
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -168,7 +184,10 @@ export default function Friends() {
           <ul className="flex flex-col gap-2">
             {outgoing.map((r) => (
               <li key={r.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
-                <span>{r.user.username}</span>
+                <span className="flex items-center gap-2">
+                  {r.user.username}
+                  {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                </span>
                 <span className="text-sm text-zinc-500">Pending</span>
               </li>
             ))}
@@ -176,10 +195,48 @@ export default function Friends() {
         </section>
       )}
 
+      <section className="mb-8">
+        <h2 className="mb-1 font-medium text-zinc-300">Suggested friends</h2>
+        <p className="mb-3 text-sm text-zinc-500">
+          Your Steam friends on Saveboxd and students who signed in with 42.
+        </p>
+        {suggestions.length === 0 ? (
+          <p className="text-sm text-zinc-500">
+            {!user?.steamId && user?.provider !== 'FORTYTWO'
+              ? 'Link your Steam account (from your profile) or sign in with 42 to get suggestions.'
+              : 'No suggestions right now — none of your Steam friends are on Saveboxd yet.'}
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {suggestions.map((s) => (
+              <li key={s.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
+                <span className="flex items-center gap-2">
+                  {s.username}
+                  {s.via === '42' ? (
+                    <FortyTwoBadge />
+                  ) : (
+                    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400">
+                      Steam friend
+                    </span>
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => sendRequest(s.username)}
+                  className="rounded bg-zinc-100 px-2 py-1 text-sm text-zinc-950"
+                >
+                  Add
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section className="mt-6">
         <h2 className="mb-3 font-medium text-zinc-300">Your friends</h2>
         {friends.length === 0 ? (
-          <p className="text-sm text-zinc-500">No friends yet — add one by user id above.</p>
+          <p className="text-sm text-zinc-500">No friends yet — add one by username above.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {friends.map((f) => (
@@ -190,6 +247,7 @@ export default function Friends() {
                     title={f.isOnline ? 'Online' : 'Offline'}
                   />
                   {f.username}
+                  {f.provider === 'FORTYTWO' && <FortyTwoBadge />}
                 </span>
                 <button
                   type="button"

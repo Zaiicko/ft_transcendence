@@ -1,19 +1,56 @@
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import FortyTwoBadge from '../components/FortyTwoBadge';
 import { apiFetch, ApiError } from '../lib/api';
+
+interface TwoFactorSetup {
+  otpauthUrl: string;
+  qrCodeDataUrl: string;
+}
+
+function secretFromOtpauthUrl(otpauthUrl: string): string {
+  try {
+    return new URL(otpauthUrl).searchParams.get('secret') ?? '';
+  } catch {
+    return '';
+  }
+}
 
 export default function Profile() {
   const { user, refreshUser, logout } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isWelcome = searchParams.get('welcome') === '1';
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Feedback from the Steam link callback: /profile?steam=linked|taken
+  const steamNotice = searchParams.get('steam');
 
+  const [username, setUsername] = useState(user?.username ?? '');
   const [bio, setBio] = useState(user?.bio ?? '');
-  const [savingBio, setSavingBio] = useState(false);
-  const [bioError, setBioError] = useState<string | null>(null);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
 
   const [uploading, setUploading] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
+
+  const [resendingVerification, setResendingVerification] = useState(false);
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+  const [resendError, setResendError] = useState<string | null>(null);
+
+  const [twoFactorSetup, setTwoFactorSetup] = useState<TwoFactorSetup | null>(null);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [twoFactorBusy, setTwoFactorBusy] = useState(false);
+  const [twoFactorError, setTwoFactorError] = useState<string | null>(null);
+
+  const [unlinking, setUnlinking] = useState(false);
+  const [steamError, setSteamError] = useState<string | null>(null);
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSaved, setPasswordSaved] = useState(false);
 
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
@@ -22,17 +59,18 @@ export default function Profile() {
 
   if (!user) return null;
 
-  async function handleBioSubmit(e: FormEvent) {
+  async function handleProfileSubmit(e: FormEvent) {
     e.preventDefault();
-    setBioError(null);
-    setSavingBio(true);
+    setProfileError(null);
+    setSavingProfile(true);
     try {
-      await apiFetch('/users/me', { method: 'PATCH', body: JSON.stringify({ bio }) });
+      await apiFetch('/users/me', { method: 'PATCH', body: JSON.stringify({ username, bio }) });
       await refreshUser();
+      if (isWelcome) navigate('/profile', { replace: true });
     } catch (err) {
-      setBioError(err instanceof ApiError ? err.message : 'Could not save bio');
+      setProfileError(err instanceof ApiError ? err.message : 'Could not save profile');
     } finally {
-      setSavingBio(false);
+      setSavingProfile(false);
     }
   }
 
@@ -54,13 +92,107 @@ export default function Profile() {
     }
   }
 
+  async function handleResendVerification() {
+    setResendError(null);
+    setResendMessage(null);
+    setResendingVerification(true);
+    try {
+      await apiFetch('/auth/resend-verification', { method: 'POST' });
+      setResendMessage('Verification email sent — check your inbox.');
+    } catch (err) {
+      setResendError(err instanceof ApiError ? err.message : 'Could not resend verification email');
+    } finally {
+      setResendingVerification(false);
+    }
+  }
+
+  async function handleStartTwoFactorSetup() {
+    setTwoFactorError(null);
+    setTwoFactorBusy(true);
+    try {
+      setTwoFactorSetup(await apiFetch<TwoFactorSetup>('/auth/2fa/setup', { method: 'POST' }));
+    } catch (err) {
+      setTwoFactorError(err instanceof ApiError ? err.message : 'Could not start 2FA setup');
+    } finally {
+      setTwoFactorBusy(false);
+    }
+  }
+
+  async function handleConfirmTwoFactor(e: FormEvent) {
+    e.preventDefault();
+    setTwoFactorError(null);
+    setTwoFactorBusy(true);
+    try {
+      await apiFetch('/auth/2fa/enable', { method: 'POST', body: JSON.stringify({ code: twoFactorCode }) });
+      setTwoFactorSetup(null);
+      setTwoFactorCode('');
+      await refreshUser();
+    } catch (err) {
+      setTwoFactorError(err instanceof ApiError ? err.message : 'Invalid code');
+    } finally {
+      setTwoFactorBusy(false);
+    }
+  }
+
+  async function handleDisableTwoFactor(e: FormEvent) {
+    e.preventDefault();
+    setTwoFactorError(null);
+    setTwoFactorBusy(true);
+    try {
+      await apiFetch('/auth/2fa/disable', { method: 'POST', body: JSON.stringify({ code: twoFactorCode }) });
+      setTwoFactorCode('');
+      await refreshUser();
+    } catch (err) {
+      setTwoFactorError(err instanceof ApiError ? err.message : 'Invalid code');
+    } finally {
+      setTwoFactorBusy(false);
+    }
+  }
+
+  async function handleUnlinkSteam() {
+    setSteamError(null);
+    setUnlinking(true);
+    try {
+      await apiFetch('/auth/steam/link', { method: 'DELETE' });
+      await refreshUser();
+    } catch (err) {
+      setSteamError(err instanceof ApiError ? err.message : 'Could not unlink Steam');
+    } finally {
+      setUnlinking(false);
+    }
+  }
+
+  async function handlePasswordSubmit(e: FormEvent) {
+    e.preventDefault();
+    setPasswordError(null);
+    setPasswordSaved(false);
+    setSavingPassword(true);
+    try {
+      await apiFetch('/users/me/password', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          newPassword,
+          ...(user!.hasPassword ? { currentPassword } : {}),
+        }),
+      });
+      setCurrentPassword('');
+      setNewPassword('');
+      setPasswordSaved(true);
+      await refreshUser();
+    } catch (err) {
+      setPasswordError(err instanceof ApiError ? err.message : 'Could not save password');
+    } finally {
+      setSavingPassword(false);
+    }
+  }
+
   async function handleDelete() {
     setDeleteError(null);
     setDeleting(true);
     try {
       await apiFetch('/users/me', {
         method: 'DELETE',
-        body: JSON.stringify(user!.provider === 'LOCAL' ? { password: deletePassword } : {}),
+        body: JSON.stringify(user!.hasPassword ? { password: deletePassword } : {}),
       });
       await logout();
       navigate('/');
@@ -74,14 +206,27 @@ export default function Profile() {
     <div className="mx-auto max-w-lg">
       <h1 className="mb-6 text-2xl font-bold">Your profile</h1>
 
-      <div className="mb-8 flex items-center gap-4">
+      {isWelcome && (
+        <div className="mb-6 rounded border border-zinc-700 bg-zinc-900 p-4">
+          <p className="font-medium">Welcome to Saveboxd!</p>
+          <p className="mt-1 text-sm text-zinc-400">
+            We picked <span className="text-zinc-200">{user.username}</span> as your username — change it
+            below if you'd like, or leave it as is.
+          </p>
+        </div>
+      )}
+
+      <div className="mb-4 flex items-center gap-4">
         {user.avatarUrl ? (
           <img src={user.avatarUrl} alt="" className="h-20 w-20 rounded-full object-cover" />
         ) : (
           <div className="h-20 w-20 rounded-full bg-zinc-800" />
         )}
         <div>
-          <p className="font-medium">{user.username}</p>
+          <p className="flex items-center gap-2 font-medium">
+            {user.username}
+            {user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+          </p>
           <p className="text-sm text-zinc-400">{user.email}</p>
           <label className="mt-2 inline-block cursor-pointer text-sm text-zinc-300 underline">
             {uploading ? 'Uploading…' : 'Change avatar'}
@@ -98,8 +243,45 @@ export default function Profile() {
         </div>
       </div>
 
-      <form onSubmit={handleBioSubmit} className="mb-10 flex flex-col gap-3">
-        <label className="text-sm text-zinc-400" htmlFor="bio">
+      <div className="mb-8 text-sm">
+        {user.emailVerifiedAt ? (
+          <span className="text-green-400">✓ Email verified</span>
+        ) : (
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-400">Email not verified</span>
+            <button
+              type="button"
+              onClick={handleResendVerification}
+              disabled={resendingVerification}
+              className="text-zinc-300 underline disabled:opacity-50"
+            >
+              {resendingVerification ? 'Sending…' : 'Resend verification email'}
+            </button>
+          </div>
+        )}
+        {resendMessage && <p className="mt-1 text-green-400">{resendMessage}</p>}
+        {resendError && <p className="mt-1 text-red-400">{resendError}</p>}
+      </div>
+
+      <form onSubmit={handleProfileSubmit} className="mb-10 flex flex-col gap-3">
+        <label className="text-sm text-zinc-400" htmlFor="username">
+          Username
+        </label>
+        <input
+          id="username"
+          type="text"
+          required
+          minLength={3}
+          maxLength={24}
+          pattern="[a-zA-Z0-9_]+"
+          title="Letters, numbers and underscores only"
+          autoFocus={isWelcome}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+        />
+
+        <label className="mt-2 text-sm text-zinc-400" htmlFor="bio">
           Bio
         </label>
         <textarea
@@ -110,14 +292,190 @@ export default function Profile() {
           rows={3}
           className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
         />
-        {bioError && <p className="text-sm text-red-400">{bioError}</p>}
-        <button
-          type="submit"
-          disabled={savingBio}
-          className="self-start rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
-        >
-          {savingBio ? 'Saving…' : 'Save bio'}
-        </button>
+        {profileError && <p className="text-sm text-red-400">{profileError}</p>}
+        <div className="flex items-center gap-4">
+          <button
+            type="submit"
+            disabled={savingProfile}
+            className="self-start rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+          >
+            {savingProfile ? 'Saving…' : 'Save profile'}
+          </button>
+          {isWelcome && (
+            <button
+              type="button"
+              onClick={() => navigate('/profile', { replace: true })}
+              className="text-sm text-zinc-400 underline"
+            >
+              Skip for now
+            </button>
+          )}
+        </div>
+      </form>
+
+      <div className="mb-10 rounded border border-zinc-800 p-4">
+        <h2 className="mb-2 font-medium">Two-factor authentication</h2>
+        {user.twoFactorEnabled ? (
+          <>
+            <p className="mb-3 text-sm text-zinc-400">Enabled. Enter a code to disable it.</p>
+            <form onSubmit={handleDisableTwoFactor} className="flex gap-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="\d{6}"
+                maxLength={6}
+                required
+                placeholder="123456"
+                value={twoFactorCode}
+                onChange={(e) => setTwoFactorCode(e.target.value)}
+                className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+              />
+              <button
+                type="submit"
+                disabled={twoFactorBusy}
+                className="rounded border border-red-800 px-3 py-1.5 text-sm text-red-400 hover:bg-red-950 disabled:opacity-50"
+              >
+                {twoFactorBusy ? 'Disabling…' : 'Disable'}
+              </button>
+            </form>
+          </>
+        ) : twoFactorSetup ? (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-zinc-400">Scan this QR code with your authenticator app:</p>
+            <img src={twoFactorSetup.qrCodeDataUrl} alt="2FA QR code" className="h-40 w-40 self-start" />
+            <p className="text-xs text-zinc-500">
+              Or enter this key manually: <code>{secretFromOtpauthUrl(twoFactorSetup.otpauthUrl)}</code>
+            </p>
+            <form onSubmit={handleConfirmTwoFactor} className="flex gap-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="\d{6}"
+                maxLength={6}
+                required
+                autoFocus
+                placeholder="123456"
+                value={twoFactorCode}
+                onChange={(e) => setTwoFactorCode(e.target.value)}
+                className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+              />
+              <button
+                type="submit"
+                disabled={twoFactorBusy}
+                className="rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+              >
+                {twoFactorBusy ? 'Confirming…' : 'Confirm'}
+              </button>
+            </form>
+          </div>
+        ) : (
+          <>
+            <p className="mb-3 text-sm text-zinc-400">
+              Not enabled. Add a second step at login using an app like Google Authenticator.
+            </p>
+            <button
+              type="button"
+              onClick={handleStartTwoFactorSetup}
+              disabled={twoFactorBusy}
+              className="rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+            >
+              {twoFactorBusy ? 'Starting…' : 'Enable 2FA'}
+            </button>
+          </>
+        )}
+        {twoFactorError && <p className="mt-2 text-sm text-red-400">{twoFactorError}</p>}
+      </div>
+
+      <div className="mb-10 rounded border border-zinc-800 p-4">
+        <h2 className="mb-2 font-medium">Steam</h2>
+        {steamNotice === 'taken' && (
+          <p className="mb-3 text-sm text-red-400">
+            This Steam account is already linked to another user.
+          </p>
+        )}
+        {steamNotice === 'linked' && (
+          <p className="mb-3 text-sm text-green-400">Steam account linked!</p>
+        )}
+        {user.steamId ? (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-zinc-400">
+              Linked — you can sign in with Steam and import your game library.
+            </p>
+            {steamError && <p className="text-sm text-red-400">{steamError}</p>}
+            <div className="flex gap-3">
+              <Link
+                to="/steam"
+                className="rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900"
+              >
+                View my Steam library
+              </Link>
+              <button
+                type="button"
+                onClick={handleUnlinkSteam}
+                disabled={unlinking}
+                className="rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900 disabled:opacity-50"
+              >
+                {unlinking ? 'Unlinking…' : 'Unlink Steam'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-zinc-400">
+              Link your Steam account to sign in with Steam, import your library and find
+              your Steam friends.
+            </p>
+            <a
+              href="/api/auth/steam"
+              className="self-start rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900"
+            >
+              Link my Steam account
+            </a>
+          </div>
+        )}
+      </div>
+
+      <form onSubmit={handlePasswordSubmit} className="mb-10 rounded border border-zinc-800 p-4">
+        <h2 className="mb-2 font-medium">
+          {user.hasPassword ? 'Change password' : 'Add a password'}
+        </h2>
+        {!user.hasPassword && (
+          <p className="mb-3 text-sm text-zinc-400">
+            Your account has no password — you sign in through{' '}
+            {user.provider === 'STEAM' ? 'Steam' : user.provider === 'GOOGLE' ? 'Google' : '42'}.
+            Add one to also log in with your email.
+          </p>
+        )}
+        <div className="flex flex-col gap-3">
+          {user.hasPassword && (
+            <input
+              type="password"
+              required
+              placeholder="Current password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+            />
+          )}
+          <input
+            type="password"
+            required
+            minLength={8}
+            placeholder="New password (min. 8 characters)"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          />
+          {passwordError && <p className="text-sm text-red-400">{passwordError}</p>}
+          {passwordSaved && <p className="text-sm text-green-400">Password saved!</p>}
+          <button
+            type="submit"
+            disabled={savingPassword}
+            className="self-start rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+          >
+            {savingPassword ? 'Saving…' : user.hasPassword ? 'Change password' : 'Add password'}
+          </button>
+        </div>
       </form>
 
       <div className="rounded border border-red-900/50 p-4">
@@ -135,7 +493,7 @@ export default function Profile() {
           </button>
         ) : (
           <div className="flex flex-col gap-3">
-            {user.provider === 'LOCAL' && (
+            {user.hasPassword && (
               <input
                 type="password"
                 placeholder="Confirm your password"
