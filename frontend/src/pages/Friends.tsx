@@ -1,6 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import SteamBadge from '../components/SteamBadge';
 import { usePresenceSocket } from '../friends/usePresenceSocket';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
@@ -20,7 +20,6 @@ interface FriendRequestRow {
 type Suggestion = PublicUser & { via: 'steam' | '42' };
 
 export default function Friends() {
-  const { user } = useAuth();
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [incoming, setIncoming] = useState<FriendRequestRow[]>([]);
   const [outgoing, setOutgoing] = useState<FriendRequestRow[]>([]);
@@ -155,6 +154,7 @@ export default function Friends() {
                 <span className="flex items-center gap-2">
                   {r.user.username}
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                  {r.user.steamId && <SteamBadge />}
                 </span>
                 <div className="flex gap-2">
                   <button
@@ -187,6 +187,7 @@ export default function Friends() {
                 <span className="flex items-center gap-2">
                   {r.user.username}
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                  {r.user.steamId && <SteamBadge />}
                 </span>
                 <span className="text-sm text-zinc-500">Pending</span>
               </li>
@@ -196,29 +197,15 @@ export default function Friends() {
       )}
 
       <section className="mb-8">
-        <h2 className="mb-1 font-medium text-zinc-300">Suggested friends</h2>
-        <p className="mb-3 text-sm text-zinc-500">
-          Your Steam friends on Saveboxd and students who signed in with 42.
-        </p>
-        {suggestions.length === 0 ? (
-          <p className="text-sm text-zinc-500">
-            {!user?.steamId && user?.provider !== 'FORTYTWO'
-              ? 'Link your Steam account (from your profile) or sign in with 42 to get suggestions.'
-              : 'No suggestions right now — none of your Steam friends are on Saveboxd yet.'}
-          </p>
-        ) : (
+        <h2 className="mb-3 font-medium text-zinc-300">Suggested friends</h2>
+        {suggestions.length > 0 && (
           <ul className="flex flex-col gap-2">
             {suggestions.map((s) => (
               <li key={s.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
                 <span className="flex items-center gap-2">
                   {s.username}
-                  {s.via === '42' ? (
-                    <FortyTwoBadge />
-                  ) : (
-                    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400">
-                      Steam friend
-                    </span>
-                  )}
+                  {s.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                  {s.steamId && <SteamBadge />}
                 </span>
                 <button
                   type="button"
@@ -248,6 +235,7 @@ export default function Friends() {
                   />
                   {f.username}
                   {f.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                  {f.steamId && <SteamBadge />}
                 </span>
                 <button
                   type="button"

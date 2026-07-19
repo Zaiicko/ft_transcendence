@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
 
 interface TwoFactorSetup {
@@ -226,6 +227,7 @@ export default function Profile() {
           <p className="flex items-center gap-2 font-medium">
             {user.username}
             {user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+            {user.steamId && <SteamBadge />}
           </p>
           <p className="text-sm text-zinc-400">{user.email}</p>
           <label className="mt-2 inline-block cursor-pointer text-sm text-zinc-300 underline">
