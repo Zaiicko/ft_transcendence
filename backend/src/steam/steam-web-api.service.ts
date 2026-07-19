@@ -70,4 +70,14 @@ export class SteamWebApiService {
     );
     return data?.response?.players?.[0]?.personaname ?? null;
   }
+
+  // `avatarfull` is the 184x184 profile picture on Steam's public CDN — always
+  // available (Steam serves a default avatar even for accounts without one)
+  async getAvatarUrl(steamId: string): Promise<string | null> {
+    const data = await this.get<{ response?: { players?: { avatarfull?: string }[] } }>(
+      'ISteamUser/GetPlayerSummaries/v2/',
+      { steamids: steamId },
+    );
+    return data?.response?.players?.[0]?.avatarfull ?? null;
+  }
 }

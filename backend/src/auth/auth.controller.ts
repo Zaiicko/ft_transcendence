@@ -190,6 +190,7 @@ export class AuthController {
         profile.providerId,
         profile.email,
         profile.displayName,
+        profile.avatarUrl,
       ));
     } catch (err) {
       if (err instanceof ConflictException) {

@@ -94,6 +94,7 @@ export class AuthService {
     providerId: string,
     email: string,
     displayName: string,
+    avatarUrl?: string,
   ): Promise<{ user: User; isNewUser: boolean }> {
     const existing = await this.prisma.user.findFirst({ where: { provider, providerId } });
     if (existing) return { user: existing, isNewUser: false };
@@ -122,6 +123,8 @@ export class AuthService {
         provider,
         providerId,
         emailVerifiedAt: new Date(),
+        // Adopt the provider's profile picture once, at creation only
+        avatarUrl: avatarUrl ?? undefined,
       });
       return { user, isNewUser: true };
     } catch (err) {

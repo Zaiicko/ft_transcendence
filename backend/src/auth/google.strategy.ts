@@ -7,6 +7,8 @@ export interface OAuthProfile {
   providerId: string;
   email: string;
   displayName: string;
+  // Provider profile picture, adopted once as the avatar at account creation
+  avatarUrl?: string;
 }
 
 // passport-google-oauth20 throws at construction time if clientID/clientSecret are
@@ -31,6 +33,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       providerId: profile.id,
       email: profile.emails?.[0]?.value ?? '',
       displayName: profile.displayName ?? '',
+      avatarUrl: profile.photos?.[0]?.value,
     };
     done(null, oauthProfile);
   }

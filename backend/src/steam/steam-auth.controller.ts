@@ -153,12 +153,21 @@ export class SteamAuthController {
       throw new BadRequestException('Username already taken');
     }
 
+    // Adopt the Steam profile picture once, at account creation
+    let avatarUrl: string | undefined;
+    try {
+      avatarUrl = (await this.webApi.getAvatarUrl(payload.steamId)) ?? undefined;
+    } catch {
+      // No API key / Steam down: account is created without a prefilled avatar
+    }
+
     const user = await this.users.create({
       email: dto.email,
       username: dto.username,
       passwordHash: dto.password ? await hashPassword(dto.password) : undefined,
       provider: AuthProvider.STEAM,
       steamId: payload.steamId,
+      avatarUrl,
     });
 
     res.clearCookie(PENDING_COOKIE, { path: PENDING_COOKIE_PATH });

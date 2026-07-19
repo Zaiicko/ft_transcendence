@@ -8,6 +8,8 @@ interface FortyTwoMe {
   id: number;
   email: string;
   login: string;
+  // 42 intra profile picture (`image.link` is the full-size version)
+  image?: { link?: string };
 }
 
 // passport-oauth2 has no built-in profile fetch — override userProfile to
@@ -52,6 +54,7 @@ export class FortyTwoStrategy extends PassportStrategy(FortyTwoOAuth2Strategy, '
       providerId: String(profile.id),
       email: profile.email,
       displayName: profile.login,
+      avatarUrl: profile.image?.link,
     };
     done(null, oauthProfile);
   }
