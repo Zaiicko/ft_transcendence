@@ -53,11 +53,11 @@ export class UsersService {
       await Promise.all([
         this.prisma.review.count({ where: { userId: user.id, gameId: { not: null } } }),
         this.prisma.playedGame.count({ where: { userId: user.id } }),
-        // Top 3 games by the rating this user gave them
+        // Top 5 games by the rating this user gave them
         this.prisma.review.findMany({
           where: { userId: user.id, gameId: { not: null } },
           orderBy: [{ rating: 'desc' }, { createdAt: 'desc' }],
-          take: 3,
+          take: 5,
           select: { rating: true, game: gameRef },
         }),
         // Latest reviews (game or company)

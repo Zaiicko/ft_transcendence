@@ -288,11 +288,11 @@ export default function PublicProfile() {
         </div>
       </div>
 
-      {/* Top 3 games */}
+      {/* Top 5 games */}
       {profile.topGames.length > 0 && (
         <section className="mb-10">
           <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Top rated games</h2>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 sm:grid-cols-5">
             {profile.topGames.map(({ game, rating }) => (
               <Link key={game.id} to={`/game/${game.id}`} className="group">
                 {game.coverUrl ? (
