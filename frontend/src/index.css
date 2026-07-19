@@ -1,1 +1,55 @@
 @import 'tailwindcss';
+
+/* Tailwind v4 : la variante dark: suit la classe .dark posée sur <html>
+   (toggle jour/nuit) au lieu de la préférence système seule */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Module couleur : --accent-h/--accent-s = teinte dominante de la cover
+   vedette (posées par lib/theme.ts). Le fond du site part de cette couleur
+   et fond vers le blanc (jour) ou le noir (nuit). */
+:root {
+  --top-color: #26262b;
+  --bot-color: #26262b;
+}
+
+/* --fade-end : hauteur où la teinte a fini de fondre — mesurée par la home
+   sur la position réelle de la section "Populaires en ce moment" */
+/* Pas de background-attachment: fixed — le dégradé doit défiler avec le
+   contenu pour que sa fin coïncide avec la section mesurée */
+/* La bannière pleine largeur (w-screen) compte la scrollbar : sans ceci,
+   un défilement horizontal fantôme de quelques pixels apparaît */
+html {
+  overflow-x: hidden;
+}
+
+/* Header caméléon : posé sur la couleur du bord haut de l'image, son texte
+   s'inverse selon la luminance de celle-ci — quel que soit le mode jour/nuit */
+.header-on-dark header {
+  color: #fafafa;
+}
+.header-on-light header {
+  color: #18181b;
+}
+
+/* Raccord "ambilight" : la couleur exacte du bord HAUT du screenshot coiffe
+   la page, celle du bord BAS règne au niveau de "Populaires en ce moment"
+   (--fade-mid), puis fondu vers crème (jour) ou noir (nuit), terminé au bas
+   de la section (--fade-end). Les deux positions sont mesurées dans le DOM. */
+body {
+  background: linear-gradient(
+    180deg,
+    var(--top-color) 0%,
+    var(--bot-color) var(--fade-mid, 28rem),
+    #ffffff var(--fade-end, 44rem)
+  );
+  transition: background 0.8s ease;
+}
+
+.dark body {
+  background: linear-gradient(
+    180deg,
+    var(--top-color) 0%,
+    var(--bot-color) var(--fade-mid, 28rem),
+    hsl(240 6% 4%) var(--fade-end, 44rem)
+  );
+}

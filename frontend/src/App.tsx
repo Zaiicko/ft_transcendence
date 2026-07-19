@@ -4,6 +4,7 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import Layout from './components/Layout';
 import ForgotPassword from './pages/ForgotPassword';
 import Friends from './pages/Friends';
+import Game from './pages/Game';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -20,6 +21,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/game/:id" element={<Game />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
