@@ -15,10 +15,14 @@ export default function PlayedButton({
   gameId,
   onDark = false,
   showCount = false,
+  refreshKey = 0,
 }: {
   gameId: number;
   onDark?: boolean;
   showCount?: boolean;
+  // Incrémenté par le parent (ex : après avoir posté un avis, qui marque le jeu
+  // "fait" côté serveur) pour forcer un rechargement de l'état "fait".
+  refreshKey?: number;
 }) {
   const { user } = useAuth();
   const [played, setPlayed] = useState<PlayedInfo | null>(null);
@@ -34,7 +38,7 @@ export default function PlayedButton({
     return () => {
       cancelled = true;
     };
-  }, [gameId, user?.id]);
+  }, [gameId, user?.id, refreshKey]);
 
   const marked = played?.mine?.status === 'PLAYED';
 

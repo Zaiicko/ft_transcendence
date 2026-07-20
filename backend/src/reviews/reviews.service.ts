@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { PlayStatus, Prisma } from '@prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -64,6 +64,10 @@ export class ReviewsService {
         include: reviewInclude(),
       });
       this.gateway.emitToTarget(target, 'review:created', review);
+      // Reviewing a game implies you played it: mark it PLAYED (idempotent —
+      // keep the original date if already marked, so the completion calendar
+      // doesn't drift). Studio reviews have no "played" notion.
+      if (target.gameId) await this.ensurePlayed(userId, target.gameId);
       return review;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -77,6 +81,21 @@ export class ReviewsService {
       }
       throw e;
     }
+  }
+
+  // Mark a game PLAYED for a user, keeping the original playedAt if it was
+  // already marked (same idempotence rule as GamesService.markPlayed).
+  private async ensurePlayed(userId: number, gameId: number) {
+    const current = await this.prisma.playedGame.findUnique({
+      where: { userId_gameId: { userId, gameId } },
+      select: { status: true },
+    });
+    if (current?.status === PlayStatus.PLAYED) return;
+    await this.prisma.playedGame.upsert({
+      where: { userId_gameId: { userId, gameId } },
+      update: { status: PlayStatus.PLAYED, playedAt: new Date() },
+      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: new Date() },
+    });
   }
 
   async findForGame(

@@ -56,6 +56,9 @@ export default function Game() {
   const [openThreads, setOpenThreads] = useState<Set<number>>(new Set());
   const [commentVersions, setCommentVersions] = useState<Record<number, number>>({});
   const [editingId, setEditingId] = useState<number | null>(null); // avis en cours d'édition
+  // Bumpé quand on poste un avis : le back marque alors le jeu "fait"
+  // automatiquement, ce compteur force PlayedButton à recharger son état.
+  const [playedRefresh, setPlayedRefresh] = useState(0);
   const reviewRef = useRef<HTMLElement>(null);
 
   const toggleThread = (id: number) =>
@@ -250,7 +253,7 @@ export default function Game() {
         )}
       </div>
       <div className="mt-4">
-        <PlayedButton gameId={gameId} onDark={onDark} showCount />
+        <PlayedButton gameId={gameId} onDark={onDark} showCount refreshKey={playedRefresh} />
       </div>
     </>
   );
@@ -324,6 +327,7 @@ export default function Game() {
                 .then(setReviews)
                 .catch(() => {});
               refreshStats();
+              setPlayedRefresh((n) => n + 1);
             }}
           />
         )}
