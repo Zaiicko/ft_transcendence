@@ -117,14 +117,17 @@ function CompletionCalendar({ entries }: { entries: Profile['calendar'] }) {
             const key = dateKey(d);
             const games = byDay.get(key);
             const n = games?.length ?? 0;
+            // Une seule couleur (l'accent), l'opacité monte avec le nombre de
+            // jeux faits ce jour-là : plus tu as joué, moins la case est
+            // transparente (0 = case grise inerte).
             const shade =
               n === 0
                 ? 'bg-zinc-200 dark:bg-zinc-800'
                 : n === 1
-                  ? 'bg-emerald-700'
+                  ? 'bg-accent/30'
                   : n === 2
-                    ? 'bg-emerald-500'
-                    : 'bg-emerald-400';
+                    ? 'bg-accent/60'
+                    : 'bg-accent';
             // Empty days are inert; days with completions are hover/click targets
             if (!games) return <span key={i} className={`h-3 w-3 rounded-sm ${shade}`} />;
             return (
@@ -135,7 +138,7 @@ function CompletionCalendar({ entries }: { entries: Profile['calendar'] }) {
                 onMouseEnter={() => setHoveredKey(key)}
                 onClick={() => setPinnedKey((k) => (k === key ? null : key))}
                 className={`h-3 w-3 rounded-sm ${shade} ${
-                  key === pinnedKey ? 'ring-2 ring-emerald-400 ring-offset-1 dark:ring-offset-zinc-900' : ''
+                  key === pinnedKey ? 'ring-2 ring-accent ring-offset-1 dark:ring-offset-zinc-900' : ''
                 }`}
               />
             );
