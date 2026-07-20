@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { basename, join } from 'path';
 import { AVATARS_DIR } from '../common/uploads';
+import { ListsService } from '../lists/lists.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 // Viewer's relationship with the profile owner, so the frontend can show the
@@ -15,7 +16,10 @@ const gameRef = { select: { id: true, title: true, coverUrl: true } } as const;
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly lists: ListsService,
+  ) {}
 
   // Used by AuthModule (local signup + OAuth provisioning)
   create(data: Prisma.UserCreateInput) {
@@ -49,8 +53,15 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({ where: { username } });
     if (!user) return null;
 
-    const [reviewCount, playedCount, topReviews, recentReviews, playedDated, friendState] =
-      await Promise.all([
+    const [
+      reviewCount,
+      playedCount,
+      topReviews,
+      recentReviews,
+      playedDated,
+      friendState,
+      publicLists,
+    ] = await Promise.all([
         this.prisma.review.count({ where: { userId: user.id, gameId: { not: null } } }),
         this.prisma.playedGame.count({ where: { userId: user.id } }),
         // Top 5 games by the rating this user gave them
@@ -82,6 +93,8 @@ export class UsersService {
           select: { playedAt: true, game: gameRef },
         }),
         this.friendState(user.id, viewerId),
+        // Listes publiques : les privées ne sont jamais exposées ici
+        this.lists.publicListsOf(user.id),
       ]);
 
     return {
@@ -100,6 +113,7 @@ export class UsersService {
       recentReviews,
       calendar: playedDated.map((p) => ({ playedAt: p.playedAt!, game: p.game })),
       friendState,
+      publicLists,
     };
   }
 

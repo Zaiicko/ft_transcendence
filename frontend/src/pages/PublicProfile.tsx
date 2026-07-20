@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import EmptyState, { CalendarIcon, PencilIcon } from '../components/EmptyState';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import ProfileLists from '../components/ProfileLists';
 import Skeleton from '../components/Skeleton';
 import Stars from '../components/Stars';
 import SteamBadge from '../components/SteamBadge';
@@ -342,6 +343,13 @@ export default function PublicProfile() {
           </div>
         </section>
       )}
+
+      {/* Lists / playlists — gestion complète pour le propriétaire, publiques
+          seulement pour un visiteur (le composant se masque si rien à montrer) */}
+      <ProfileLists
+        isSelf={profile.friendState === 'self'}
+        publicLists={profile.publicLists}
+      />
 
       {/* Completion calendar */}
       <section className="mb-10">

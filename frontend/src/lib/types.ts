@@ -59,6 +59,25 @@ export interface GameFacets {
   companies: GameFacet[];
 }
 
+// Résumé d'une liste (carte) — GET /lists/mine, profil public, etc.
+export interface GameListSummary {
+  id: number;
+  name: string;
+  isPublic: boolean;
+  gameCount: number;
+  covers: string[]; // jusqu'à 5 jaquettes pour l'aperçu empilé
+  contains?: boolean; // présent quand /lists/mine est appelé avec ?gameId=
+}
+
+// Détail d'une liste — GET /lists/:id
+export interface GameListDetail {
+  id: number;
+  name: string;
+  isPublic: boolean;
+  owner: { id: number; username: string; avatarUrl: string | null };
+  games: { id: number; title: string; coverUrl: string | null; releaseDate: string | null }[];
+}
+
 // Item de GET /reviews/highlights — user null = compte supprimé,
 // exactement un de game/company est non-null
 export interface ReviewHighlight {
@@ -101,6 +120,7 @@ export interface PublicProfile {
   }[];
   calendar: { playedAt: string; game: GameRef }[];
   friendState: FriendState;
+  publicLists: GameListSummary[];
 }
 
 export interface PublicUser {

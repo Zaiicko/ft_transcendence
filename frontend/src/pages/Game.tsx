@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import AddToListButton from '../components/AddToListButton';
 import PlayedButton from '../components/PlayedButton';
 import ReviewsSection, { ReviewStats } from '../components/ReviewsSection';
 import Skeleton from '../components/Skeleton';
@@ -128,8 +129,9 @@ export default function Game() {
           </span>
         )}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 flex items-center gap-3">
         <PlayedButton gameId={gameId} onDark={onDark} showCount refreshKey={playedRefresh} />
+        <AddToListButton gameId={gameId} onDark={onDark} />
       </div>
     </>
   );
