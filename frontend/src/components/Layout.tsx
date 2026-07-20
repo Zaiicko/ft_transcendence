@@ -195,17 +195,27 @@ export default function Layout() {
       </main>
 
       {/* Privacy Policy and ToS must be reachable from the footer (subject requirement) */}
-      <footer className="border-t border-zinc-900/10 px-6 py-4 text-sm text-zinc-500 dark:border-zinc-100/10 dark:text-zinc-400">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <span>ft_transcendence — 42</span>
-          <div className="flex gap-4">
-            <Link to="/privacy-policy" className="hover:opacity-70">
+      <footer className="mt-10 border-t border-zinc-900/10 px-6 py-8 dark:border-zinc-100/10">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
+          <div className="flex flex-col items-center gap-1 sm:items-start">
+            <Link to="/" className="font-display text-lg font-bold tracking-tight">
+              <span className="text-accent">Save</span>boxd
+            </Link>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              Le Letterboxd des jeux vidéo · projet 42
+            </p>
+          </div>
+          <nav className="flex items-center gap-6 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <Link to="/privacy-policy" className="transition hover:text-accent">
               Privacy Policy
             </Link>
-            <Link to="/terms-of-service" className="hover:opacity-70">
+            <Link to="/terms-of-service" className="transition hover:text-accent">
               Terms of Service
             </Link>
-          </div>
+            <span className="font-normal normal-case text-zinc-400 dark:text-zinc-600">
+              © {new Date().getFullYear()}
+            </span>
+          </nav>
         </div>
       </footer>
     </div>
