@@ -7,6 +7,7 @@ import EmptyState, { PencilIcon } from '../components/EmptyState';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
 import Skeleton from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
+import { useGameSocket } from '../games/useGameSocket';
 import { ApiError, apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
 
@@ -118,6 +119,40 @@ export default function Game() {
     setReviews((list) => list.filter((r) => r.id !== review.id));
     refreshStats();
   }
+
+  // Re-fetch ciblé d'une review (édition/commentaire d'un autre onglet) —
+  // jamais la liste entière, sinon les threads ouverts se referment (piège #4).
+  function replaceReview(reviewId: number) {
+    apiFetch<GameReview>(`/reviews/${reviewId}`)
+      .then((fresh) =>
+        setReviews((list) => list.map((r) => (r.id === reviewId ? { ...r, ...fresh } : r))),
+      )
+      .catch(() => {});
+  }
+
+  // Temps réel : les 6 évènements de la room du jeu (docs/reviews-api.md §3).
+  // Les payloads de réaction portent les compteurs absolus → on les pose tels
+  // quels (idempotent avec le patch optimiste local, pas de double comptage).
+  useGameSocket(gameId, {
+    onReviewCreated: (raw) => {
+      const created = raw as GameReview;
+      setReviews((list) => (list.some((r) => r.id === created.id) ? list : [created, ...list]));
+      refreshStats();
+    },
+    onReviewUpdated: replaceReview,
+    onReviewDeleted: (reviewId) => {
+      setReviews((list) => list.filter((r) => r.id !== reviewId));
+      refreshStats();
+    },
+    onReviewReaction: ({ reviewId, likes, dislikes }) =>
+      setReviews((list) =>
+        list.map((r) =>
+          r.id === reviewId ? { ...r, _count: { ...r._count, likes, dislikes } } : r,
+        ),
+      ),
+    onCommentChanged: replaceReview,
+    onCommentReaction: () => {},
+  });
 
   const game = loaded?.id === gameId ? loaded.game : undefined;
   const alreadyReviewed = user != null && reviews.some((r) => r.user?.id === user.id);
