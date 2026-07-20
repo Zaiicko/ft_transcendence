@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
+import EmptyState, { GamepadIcon, UsersIcon } from '../components/EmptyState';
 import Skeleton from '../components/Skeleton';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
@@ -144,8 +145,55 @@ export default function SteamLibrary() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-bold tracking-tight">Steam library</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Steam library</h1>
 
+      {/* Amis d'abord : la biblio de jeux peut être immense, les amis se
+          retrouveraient sinon enterrés tout en bas */}
+      <section className="mb-10">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          Steam friends on Saveboxd
+        </h2>
+        {suggestions?.private && (
+          <p className="text-zinc-400">
+            Your Steam friend list is private, so we cannot suggest friends.
+          </p>
+        )}
+        {suggestions && !suggestions.private && suggestions.suggestions.length === 0 && (
+          <EmptyState
+            icon={<UsersIcon />}
+            title="No Steam friends here yet"
+            description="None of your Steam friends are on Saveboxd yet — invite them!"
+          />
+        )}
+        {requestError && <p className="mb-3 text-sm text-red-400">{requestError}</p>}
+        {suggestions && suggestions.suggestions.length > 0 && (
+          <ul className="flex flex-col gap-3">
+            {suggestions.suggestions.map((s) => (
+              <li key={s.id} className="card flex items-center gap-3 p-3">
+                <Avatar username={s.username} avatarUrl={s.avatarUrl} size={40} />
+                <span className="font-medium">{s.username}</span>
+                <div className="ml-auto">
+                  {requested.has(s.id) ? (
+                    <span className="text-sm text-zinc-400">Request sent</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleAddFriend(s.id)}
+                      className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
+                    >
+                      Add friend
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        Your games
+      </h2>
       {library?.private ? (
         <p className="mb-8 text-zinc-400">
           Your Steam game details are private. Set{' '}
@@ -239,41 +287,14 @@ export default function SteamLibrary() {
               ))}
             </ul>
           ) : (
-            <p className="mb-10 text-zinc-400">None of your Steam games are in our catalog yet.</p>
+            <EmptyState
+              className="mb-10"
+              icon={<GamepadIcon />}
+              title="No matched games yet"
+              description="None of your Steam games are in our catalog for now."
+            />
           )}
         </>
-      )}
-
-      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Steam friends on Saveboxd</h2>
-      {suggestions?.private && (
-        <p className="text-zinc-400">Your Steam friend list is private, so we cannot suggest friends.</p>
-      )}
-      {suggestions && !suggestions.private && suggestions.suggestions.length === 0 && (
-        <p className="text-zinc-400">None of your Steam friends are on Saveboxd yet.</p>
-      )}
-      {requestError && <p className="mb-3 text-sm text-red-400">{requestError}</p>}
-      {suggestions && suggestions.suggestions.length > 0 && (
-        <ul className="flex flex-col gap-3">
-          {suggestions.suggestions.map((s) => (
-            <li key={s.id} className="card flex items-center gap-3 p-3">
-              <Avatar username={s.username} avatarUrl={s.avatarUrl} size={40} />
-              <span className="font-medium">{s.username}</span>
-              <div className="ml-auto">
-                {requested.has(s.id) ? (
-                  <span className="text-sm text-zinc-400">Request sent</span>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleAddFriend(s.id)}
-                    className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
-                  >
-                    Add friend
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
       )}
 
       <p className="mt-10 text-sm text-zinc-400">

@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
+import EmptyState, { PencilIcon } from '../components/EmptyState';
 import PlayedButton from '../components/PlayedButton';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
 import { CoverGridSkeleton } from '../components/Skeleton';
@@ -193,7 +194,13 @@ export default function Home() {
           Critiques populaires
         </h2>
         {highlights.length === 0 ? (
-          <p className="text-zinc-500">Aucune critique récente — soyez la première !</p>
+          loading ? null : (
+            <EmptyState
+              icon={<PencilIcon />}
+              title="Aucune critique pour l'instant"
+              description="Sois le premier à noter un jeu — les meilleures critiques apparaîtront ici."
+            />
+          )
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

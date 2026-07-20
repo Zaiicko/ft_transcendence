@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import PlayedButton from '../components/PlayedButton';
+import EmptyState, { PencilIcon } from '../components/EmptyState';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
 import Skeleton from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
@@ -271,7 +272,15 @@ export default function Game() {
         )}
 
         {reviews.length === 0 ? (
-          <p className="text-zinc-500">Aucune critique pour ce jeu — sois la première !</p>
+          <EmptyState
+            icon={<PencilIcon />}
+            title="Pas encore de critique"
+            description={
+              user
+                ? 'Sois le premier à partager ton avis sur ce jeu.'
+                : 'Connecte-toi pour être le premier à noter ce jeu.'
+            }
+          />
         ) : (
           <div className="flex flex-col gap-4">
             {reviews.map((r) => (

@@ -1,5 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import Avatar from '../components/Avatar';
+import EmptyState, { UsersIcon } from '../components/EmptyState';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
@@ -255,7 +256,11 @@ export default function Friends() {
       <section className="mt-6">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Your friends</h2>
         {friends.length === 0 ? (
-          <p className="text-sm text-zinc-500">No friends yet — add one by username above.</p>
+          <EmptyState
+            icon={<UsersIcon />}
+            title="No friends yet"
+            description="Add someone by username above, or check the suggestions."
+          />
         ) : (
           <ul className="flex flex-col gap-2">
             {friends.map((f) => (

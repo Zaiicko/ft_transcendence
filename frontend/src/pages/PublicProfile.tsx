@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
+import EmptyState, { CalendarIcon, PencilIcon } from '../components/EmptyState';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import Skeleton from '../components/Skeleton';
 import Stars from '../components/Stars';
@@ -57,7 +58,13 @@ function CompletionCalendar({ entries }: { entries: Profile['calendar'] }) {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   if (entries.length === 0) {
-    return <p className="text-sm text-zinc-500 dark:text-zinc-400">No completion dates recorded yet.</p>;
+    return (
+      <EmptyState
+        icon={<CalendarIcon />}
+        title="No completion dates yet"
+        description="Games marked as done will fill this yearly calendar."
+      />
+    );
   }
 
   const y = Number(year);
@@ -343,7 +350,7 @@ export default function PublicProfile() {
       <section>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Recent reviews</h2>
         {profile.recentReviews.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">No reviews yet.</p>
+          <EmptyState icon={<PencilIcon />} title="No reviews yet" description="This player hasn't reviewed any game yet." />
         ) : (
           <ul className="flex flex-col gap-3">
             {profile.recentReviews.map((r) => {
