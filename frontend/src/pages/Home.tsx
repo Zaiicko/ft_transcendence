@@ -145,11 +145,11 @@ export default function Home() {
       {featured ? (
         <Hero game={featured} />
       ) : (
-        // Réserve l'emplacement de la bannière pendant la recherche du
+        // Réserve l'emplacement de la carte hero pendant la recherche du
         // screenshot 1080p : sans ça, les sections du dessous se câblent en
         // haut de page (→ animations déclenchées à tort au chargement) puis
-        // sont poussées vers le bas quand la bannière s'insère (double saut)
-        <div className="relative left-1/2 -mt-8 h-[42vh] w-screen -translate-x-1/2 animate-pulse bg-zinc-200 md:h-[52vh] dark:bg-zinc-900" />
+        // sont poussées vers le bas quand la carte s'insère (double saut)
+        <div className="h-[42vh] animate-pulse rounded-xl bg-zinc-200 md:h-[52vh] dark:bg-zinc-900" />
       )}
       {popular.length > 0 && (
         <section>
@@ -205,16 +205,23 @@ export default function Home() {
   );
 }
 
+// "2023 · RPG · Aventure" — l'année de sortie et jusqu'à trois genres
+function heroMeta(game: GameSummary): string {
+  const year = game.releaseDate?.slice(0, 4);
+  const genres = game.genres
+    ?.slice(0, 3)
+    .map((g) => g.name)
+    .join(' · ');
+  return [year, genres].filter(Boolean).join(' · ');
+}
+
 function Hero({ game }: { game: GameSummary }) {
-  // Bannière "70mm" : pleine largeur d'écran (elle s'échappe du conteneur
-  // centré via le w-screen + translate) et ~70% de la hauteur du viewport
+  // Carte "cinéma" façon TiMN : l'image vit dans un grand cadre arrondi et
+  // bordé qui respire dans le conteneur, au lieu d'une bannière pleine largeur
   const banner = screenshot1080(game);
   return (
-    <a
-      href={gameHref(game.id)}
-      data-anim="hero"
-      className="relative left-1/2 -mt-8 block w-screen -translate-x-1/2 overflow-hidden"
-    >
+    <div data-anim="hero" className="relative">
+      <div className="relative overflow-hidden rounded-xl border border-zinc-900/10 dark:border-zinc-100/10">
       {banner ? (
         <img
           data-anim="hero-bg"
@@ -229,26 +236,59 @@ function Hero({ game }: { game: GameSummary }) {
           style={game.coverUrl ? { backgroundImage: `url(${game.coverUrl})` } : undefined}
         />
       )}
+      <span className="absolute left-4 top-4 rounded-full border border-zinc-100/15 bg-zinc-950/40 px-3 py-1 text-xs text-zinc-200 backdrop-blur">
+        Jeu à la une
+      </span>
       <div
         className={
           banner
-            ? 'absolute inset-x-0 bottom-0 flex items-end gap-4 bg-gradient-to-t from-zinc-950/90 to-transparent p-6 md:p-10'
+            ? 'absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/90 via-zinc-950/35 to-transparent p-6 md:p-10'
             : 'relative flex flex-col items-center gap-4 py-10'
         }
       >
-        {game.coverUrl && (
-          <img
-            src={game.coverUrl}
-            alt={game.title}
-            className={banner ? 'h-40 rounded-lg shadow-2xl md:h-52' : 'h-80 rounded-xl shadow-2xl'}
-          />
+        {banner ? (
+          <>
+            {/* La jaquette officielle en grand : certains screenshots IGDB ne
+                ressemblent pas au jeu, elle fait foi */}
+            {game.coverUrl && (
+              <img
+                src={game.coverUrl}
+                alt=""
+                className="h-40 w-auto shrink-0 rounded-lg border border-zinc-100/15 shadow-2xl md:h-56"
+              />
+            )}
+            <div className="min-w-0 pb-1">
+              <h1 className="max-w-2xl text-balance text-3xl font-bold tracking-tight text-zinc-100 md:text-4xl">
+                {game.title}
+              </h1>
+              <div className="mt-2 flex items-center gap-3 text-sm text-zinc-300">
+                {game.score !== undefined && <ScoreBadge score={game.score} />}
+                {heroMeta(game) && <span>{heroMeta(game)}</span>}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {game.coverUrl && (
+              <img src={game.coverUrl} alt={game.title} className="h-80 rounded-xl shadow-2xl" />
+            )}
+            <div className="flex items-center gap-3 rounded-full bg-zinc-950/70 px-5 py-2 text-zinc-100 backdrop-blur">
+              <span className="font-semibold">{game.title}</span>
+              {game.score !== undefined && <ScoreBadge score={game.score} />}
+            </div>
+          </>
         )}
-        <div className="flex items-center gap-3 rounded-full bg-zinc-950/70 px-5 py-2 text-zinc-100 backdrop-blur">
-          <span className="font-semibold">{game.title}</span>
-          {game.score !== undefined && <ScoreBadge score={game.score} />}
-        </div>
       </div>
-    </a>
+      </div>
+      {/* Seul point d'entrée vers la fiche : la bannière elle-même n'est pas
+          cliquable, le CTA garde tout son sens */}
+      <a
+        href={gameHref(game.id)}
+        className="absolute bottom-6 right-6 rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 shadow-lg transition hover:brightness-110 md:bottom-10 md:right-10"
+      >
+        Écrire une critique
+      </a>
+    </div>
   );
 }
 
