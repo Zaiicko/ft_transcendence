@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { GameType, Prisma } from '@prisma/client';
+import { GameType, PlayStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { GameSort, ListGamesDto } from './dto/list-games.dto';
 import { GamesSyncService } from './games-sync.service';
@@ -174,6 +174,48 @@ export class GamesService {
     });
     if (!game) throw new NotFoundException(`Game ${id} not found`);
     return game;
+  }
+
+  // "I played it" — the per-game heart count + the viewer's own mark (null
+  // when anonymous or not marked). Backs the game page toggle button.
+  async playedStatus(gameId: number, viewerId?: number) {
+    const [count, mine] = await Promise.all([
+      this.prisma.playedGame.count({
+        where: { gameId, status: PlayStatus.PLAYED },
+      }),
+      viewerId
+        ? this.prisma.playedGame.findUnique({
+            where: { userId_gameId: { userId: viewerId, gameId } },
+            select: { status: true, playedAt: true },
+          })
+        : null,
+    ]);
+    return { count, mine };
+  }
+
+  // Idempotent: re-marking an already-played game keeps its original date
+  // (the completion calendar must not drift on double clicks)
+  async markPlayed(userId: number, gameId: number) {
+    const exists = await this.prisma.game.findUnique({ where: { id: gameId }, select: { id: true } });
+    if (!exists) throw new NotFoundException(`Game ${gameId} not found`);
+    const current = await this.prisma.playedGame.findUnique({
+      where: { userId_gameId: { userId, gameId } },
+      select: { status: true },
+    });
+    const row = await this.prisma.playedGame.upsert({
+      where: { userId_gameId: { userId, gameId } },
+      update:
+        current?.status === PlayStatus.PLAYED
+          ? {}
+          : { status: PlayStatus.PLAYED, playedAt: new Date() },
+      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: new Date() },
+    });
+    return { status: row.status, playedAt: row.playedAt };
+  }
+
+  // 204 even when nothing was marked (same idempotence rule as reactions)
+  async unmarkPlayed(userId: number, gameId: number) {
+    await this.prisma.playedGame.deleteMany({ where: { userId, gameId } });
   }
 
   // Local search always; the IGDB on-demand import only runs when the caller

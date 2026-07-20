@@ -2,9 +2,7 @@ import { FormEvent, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
 
-// La fiche jeu React n'existe pas encore : les avis vivent sur la page de
-// test (deep link #game-<id>) en attendant
-const gameHref = (id: number) => `/test-api.html#game-${id}`;
+const gameHref = (id: number) => `/game/${id}`;
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');

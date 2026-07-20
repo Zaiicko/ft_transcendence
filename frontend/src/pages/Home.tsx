@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import PlayedButton from '../components/PlayedButton';
 import { apiFetch } from '../lib/api';
 import { imageSize } from '../lib/theme';
 import { GameSummary, ReviewHighlight } from '../lib/types';
@@ -12,9 +13,9 @@ const POPULAR_STEP = 6;
 // 6 jeux au départ + 2 clics sur ⌄ maximum
 const POPULAR_MAX = POPULAR_STEP * 3;
 
-// La fiche jeu React n'existe pas encore : les avis vivent sur la page de
-// test (deep links #game-<id> / #company-<id>) en attendant
-const gameHref = (id: number) => `/test-api.html#game-${id}`;
+// La fiche studio React n'existe pas encore : les avis de studios vivent sur
+// la page de test (deep link #company-<id>) en attendant
+const gameHref = (id: number) => `/game/${id}`;
 const companyHref = (id: number) => `/test-api.html#company-${id}`;
 
 const screenshot1080 = (g: GameSummary) =>
@@ -282,12 +283,15 @@ function Hero({ game }: { game: GameSummary }) {
       </div>
       {/* Seul point d'entrée vers la fiche : la bannière elle-même n'est pas
           cliquable, le CTA garde tout son sens */}
-      <a
-        href={gameHref(game.id)}
-        className="absolute bottom-6 right-6 rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 shadow-lg transition hover:brightness-110 md:bottom-10 md:right-10"
-      >
-        Écrire une critique
-      </a>
+      <div className="absolute bottom-6 right-6 flex items-center gap-3 md:bottom-10 md:right-10">
+        <PlayedButton gameId={game.id} onDark />
+        <a
+          href={gameHref(game.id)}
+          className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 shadow-lg transition hover:brightness-110"
+        >
+          Écrire une critique
+        </a>
+      </div>
     </div>
   );
 }

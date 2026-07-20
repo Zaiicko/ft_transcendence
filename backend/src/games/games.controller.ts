@@ -1,10 +1,18 @@
 import {
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
+  Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtPayload } from '../auth/auth.service';
+import { CurrentUser } from '../auth/current-user.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { ListGamesDto } from './dto/list-games.dto';
 import { SearchGamesDto } from './dto/search-games.dto';
 import { GamesService } from './games.service';
@@ -29,5 +37,25 @@ export class GamesController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.gamesService.findById(id);
+  }
+
+  // "I played it" — public count + the viewer's own mark when authenticated
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get(':id/played')
+  playedStatus(@Param('id', ParseIntPipe) id: number, @CurrentUser() viewer?: JwtPayload) {
+    return this.gamesService.playedStatus(id, viewer?.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/played')
+  markPlayed(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: JwtPayload) {
+    return this.gamesService.markPlayed(user.sub, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/played')
+  @HttpCode(204)
+  unmarkPlayed(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: JwtPayload) {
+    return this.gamesService.unmarkPlayed(user.sub, id);
   }
 }
