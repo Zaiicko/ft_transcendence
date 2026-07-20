@@ -313,7 +313,21 @@ export default function Settings() {
       </form>
 
       <div className="card mb-10 p-4">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Two-factor authentication</h2>
+        <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          {/* Bouclier + coche filaire (trait 1.6, style TiMN) : sécurité 2FA */}
+          <svg
+            viewBox="0 0 24 24"
+            className="h-4 w-4 shrink-0 fill-none stroke-current"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          Two-factor authentication
+        </h2>
         {user.twoFactorEnabled ? (
           <>
             <p className="mb-3 text-sm text-zinc-400">Enabled. Enter a code to disable it.</p>
