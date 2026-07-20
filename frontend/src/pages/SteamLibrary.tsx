@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import Avatar from '../components/Avatar';
 import Skeleton from '../components/Skeleton';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
@@ -255,11 +256,7 @@ export default function SteamLibrary() {
         <ul className="flex flex-col gap-3">
           {suggestions.suggestions.map((s) => (
             <li key={s.id} className="card flex items-center gap-3 p-3">
-              {s.avatarUrl ? (
-                <img src={s.avatarUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
-              ) : (
-                <div className="h-10 w-10 rounded-full bg-zinc-800" />
-              )}
+              <Avatar username={s.username} avatarUrl={s.avatarUrl} size={40} />
               <span className="font-medium">{s.username}</span>
               <div className="ml-auto">
                 {requested.has(s.id) ? (

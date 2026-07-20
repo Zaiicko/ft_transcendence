@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import Avatar from '../components/Avatar';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
@@ -218,11 +219,7 @@ export default function Settings() {
       )}
 
       <div className="mb-4 flex items-center gap-4">
-        {user.avatarUrl ? (
-          <img src={user.avatarUrl} alt="" className="h-20 w-20 rounded-full object-cover" />
-        ) : (
-          <div className="h-20 w-20 rounded-full bg-zinc-800" />
-        )}
+        <Avatar username={user.username} avatarUrl={user.avatarUrl} size={80} />
         <div>
           <p className="flex items-center gap-2 font-medium">
             {user.username}

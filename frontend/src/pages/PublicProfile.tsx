@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import Avatar from '../components/Avatar';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import Skeleton from '../components/Skeleton';
 import Stars from '../components/Stars';
@@ -263,11 +264,7 @@ export default function PublicProfile() {
     <div className="mx-auto max-w-3xl">
       {/* Header */}
       <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-        {profile.avatarUrl ? (
-          <img src={profile.avatarUrl} alt="" className="h-24 w-24 rounded-full object-cover" />
-        ) : (
-          <div className="h-24 w-24 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-        )}
+        <Avatar username={profile.username} avatarUrl={profile.avatarUrl} size={96} />
         <div className="flex-1">
           <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
             {profile.username}

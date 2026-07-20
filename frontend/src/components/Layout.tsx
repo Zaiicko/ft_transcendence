@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import Avatar from './Avatar';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
 import SearchBar from './SearchBar';
 
@@ -106,11 +107,7 @@ export default function Layout() {
           <div className="flex shrink-0 items-center gap-4 text-sm">
             {user ? (
               <Link to={`/u/${user.username}`} className="flex items-center gap-2 hover:opacity-70">
-                {user.avatarUrl ? (
-                  <img src={user.avatarUrl} alt="" className="h-6 w-6 rounded-full object-cover" />
-                ) : (
-                  <span className="h-6 w-6 rounded-full bg-zinc-300 dark:bg-zinc-800" />
-                )}
+                <Avatar username={user.username} avatarUrl={user.avatarUrl} size={24} />
                 {user.username}
               </Link>
             ) : (

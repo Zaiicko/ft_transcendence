@@ -2,6 +2,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
+import Avatar from '../components/Avatar';
 import PlayedButton from '../components/PlayedButton';
 import { CoverGridSkeleton } from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
@@ -388,11 +389,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
             <Stars rating={review.rating} showValue={false} />
             {review.user ? (
               <span className="flex items-center gap-1.5">
-                {review.user.avatarUrl ? (
-                  <img src={review.user.avatarUrl} alt="" className="h-4 w-4 rounded-full object-cover" />
-                ) : (
-                  <span className="inline-block h-4 w-4 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-                )}
+                <Avatar username={review.user.username} avatarUrl={review.user.avatarUrl} size={16} />
                 {review.user.username}
               </span>
             ) : (

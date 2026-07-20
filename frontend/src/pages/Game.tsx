@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import Avatar from '../components/Avatar';
 import PlayedButton from '../components/PlayedButton';
 import Skeleton from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
@@ -278,19 +279,33 @@ export default function Game() {
                 className="card p-4"
               >
                 <div className="flex items-center gap-3">
-                  {r.user?.avatarUrl ? (
-                    <img src={r.user.avatarUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
+                  {r.user ? (
+                    // Auteur cliquable → son profil public (sauf compte supprimé)
+                    <Link
+                      to={`/u/${r.user.username}`}
+                      className="flex min-w-0 items-center gap-3 hover:opacity-80"
+                    >
+                      <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={32} />
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-semibold">{r.user.username}</div>
+                        <div className="text-xs text-zinc-500">
+                          {new Date(r.createdAt).toLocaleDateString('fr')}
+                        </div>
+                      </div>
+                    </Link>
                   ) : (
-                    <span className="inline-block h-8 w-8 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                    <div className="flex min-w-0 items-center gap-3">
+                      <Avatar username="?" size={32} />
+                      <div className="min-w-0">
+                        <div className="truncate text-sm">
+                          <em>[utilisateur supprimé]</em>
+                        </div>
+                        <div className="text-xs text-zinc-500">
+                          {new Date(r.createdAt).toLocaleDateString('fr')}
+                        </div>
+                      </div>
+                    </div>
                   )}
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-semibold">
-                      {r.user?.username ?? <em className="font-normal">[utilisateur supprimé]</em>}
-                    </div>
-                    <div className="text-xs text-zinc-500">
-                      {new Date(r.createdAt).toLocaleDateString('fr')}
-                    </div>
-                  </div>
                   <Stars rating={r.rating} className="ml-auto" />
                 </div>
                 <div className="mt-3 text-sm font-semibold">« {r.title} »</div>
