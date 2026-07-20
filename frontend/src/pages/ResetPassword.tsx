@@ -55,7 +55,7 @@ export default function ResetPassword() {
           placeholder="New password (min. 8 characters)"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
         {error && <p className="text-sm text-red-400">{error}</p>}
         <button

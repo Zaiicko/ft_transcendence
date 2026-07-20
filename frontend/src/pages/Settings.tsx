@@ -209,7 +209,7 @@ export default function Settings() {
       <h1 className="mb-6 text-2xl font-bold tracking-tight">Account settings</h1>
 
       {isWelcome && (
-        <div className="mb-6 rounded border border-zinc-700 bg-zinc-900 p-4">
+        <div className="card mb-6 p-4">
           <p className="font-medium">Welcome to Saveboxd!</p>
           <p className="mt-1 text-sm text-zinc-400">
             We picked <span className="text-zinc-200">{user.username}</span> as your username — change it
@@ -277,7 +277,7 @@ export default function Settings() {
           autoFocus={isWelcome}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
 
         <label className="mt-2 text-sm text-zinc-400" htmlFor="bio">
@@ -289,7 +289,7 @@ export default function Settings() {
           onChange={(e) => setBio(e.target.value)}
           maxLength={280}
           rows={3}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field rounded-xl px-4 py-2"
         />
         {profileError && <p className="text-sm text-red-400">{profileError}</p>}
         <div className="flex items-center gap-4">
@@ -327,7 +327,7 @@ export default function Settings() {
                 placeholder="123456"
                 value={twoFactorCode}
                 onChange={(e) => setTwoFactorCode(e.target.value)}
-                className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+                className="field px-4 py-1.5"
               />
               <button
                 type="submit"
@@ -356,7 +356,7 @@ export default function Settings() {
                 placeholder="123456"
                 value={twoFactorCode}
                 onChange={(e) => setTwoFactorCode(e.target.value)}
-                className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+                className="field px-4 py-1.5"
               />
               <button
                 type="submit"
@@ -453,7 +453,7 @@ export default function Settings() {
               placeholder="Current password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+              className="field px-4 py-1.5"
             />
           )}
           <input
@@ -463,7 +463,7 @@ export default function Settings() {
             placeholder="New password (min. 8 characters)"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+            className="field px-4 py-1.5"
           />
           {passwordError && <p className="text-sm text-red-400">{passwordError}</p>}
           {passwordSaved && <p className="text-sm text-green-400">Password saved!</p>}
@@ -498,7 +498,7 @@ export default function Settings() {
                 placeholder="Confirm your password"
                 value={deletePassword}
                 onChange={(e) => setDeletePassword(e.target.value)}
-                className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+                className="field px-4 py-1.5"
               />
             )}
             {deleteError && <p className="text-sm text-red-400">{deleteError}</p>}
@@ -514,7 +514,7 @@ export default function Settings() {
               <button
                 type="button"
                 onClick={() => setConfirmingDelete(false)}
-                className="rounded border border-zinc-700 px-3 py-1.5 text-sm"
+                className="rounded-full border border-zinc-400/60 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent dark:border-zinc-600"
               >
                 Cancel
               </button>

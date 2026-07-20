@@ -81,7 +81,7 @@ export default function Login() {
             placeholder="123456"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-center tracking-widest"
+            className="field px-4 py-1.5 text-center tracking-widest"
           />
           {error && <p className="text-sm text-red-400">{error}</p>}
           <button
@@ -111,7 +111,7 @@ export default function Login() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
         <input
           type="password"
@@ -119,7 +119,7 @@ export default function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
         {error && <p className="text-sm text-red-400">{error}</p>}
         <button

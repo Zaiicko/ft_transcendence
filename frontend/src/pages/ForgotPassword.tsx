@@ -43,7 +43,7 @@ export default function ForgotPassword() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
         {error && <p className="text-sm text-red-400">{error}</p>}
         <button

@@ -90,6 +90,27 @@ body {
     border-color: color-mix(in oklab, var(--color-zinc-100) 10%, transparent);
     background-color: var(--color-zinc-900);
   }
+
+  /* Champ de saisie unifié (style « pill fantôme » de la recherche Friends) :
+     quasi transparent au repos, bordure ambre au focus. Corrige aussi le mode
+     jour (les anciens champs étaient en bg-zinc-900 sombre codé en dur). */
+  .field {
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklab, var(--color-zinc-400) 40%, transparent);
+    background-color: color-mix(in oklab, var(--color-zinc-900) 5%, transparent);
+    font-size: 0.875rem; /* text-sm — tous les champs à la même taille */
+  }
+  .field::placeholder {
+    color: var(--color-zinc-500);
+  }
+  .dark .field {
+    border-color: color-mix(in oklab, var(--color-zinc-100) 10%, transparent);
+    background-color: color-mix(in oklab, var(--color-zinc-100) 5%, transparent);
+  }
+  .field:focus {
+    border-color: var(--color-accent);
+    outline: none;
+  }
 }
 
 /* Menu déroulant (recherche) : petit slide + fondu à l'ouverture */

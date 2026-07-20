@@ -74,7 +74,7 @@ export default function Signup() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
         <input
           type="text"
@@ -86,7 +86,7 @@ export default function Signup() {
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
         <input
           type="password"
@@ -95,7 +95,7 @@ export default function Signup() {
           placeholder={steamPending ? 'Password (optional)' : 'Password (min. 8 characters)'}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="field px-4 py-1.5"
         />
         {steamPending && (
           <p className="-mt-2 text-xs text-zinc-500">

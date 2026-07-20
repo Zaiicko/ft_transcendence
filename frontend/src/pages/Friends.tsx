@@ -145,7 +145,7 @@ export default function Friends() {
           placeholder="Username to add"
           value={targetUsername}
           onChange={(e) => setTargetUsername(e.target.value)}
-          className="flex-1 rounded-full border border-zinc-400/40 bg-zinc-900/5 px-4 py-1.5 text-sm placeholder-zinc-500 focus:border-accent focus:outline-none dark:border-zinc-100/10 dark:bg-zinc-100/5"
+          className="field flex-1 px-4 py-1.5"
         />
         <button
           type="submit"
