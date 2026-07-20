@@ -312,7 +312,7 @@ export default function Settings() {
         </div>
       </form>
 
-      <div className="mb-10 rounded border border-zinc-800 p-4">
+      <div className="card mb-10 p-4">
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Two-factor authentication</h2>
         {user.twoFactorEnabled ? (
           <>
@@ -385,8 +385,10 @@ export default function Settings() {
         {twoFactorError && <p className="mt-2 text-sm text-red-400">{twoFactorError}</p>}
       </div>
 
-      <div className="mb-10 rounded border border-zinc-800 p-4">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Steam</h2>
+      <div className="card mb-10 p-4">
+        <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <SteamBadge /> Steam
+        </h2>
         {steamNotice === 'taken' && (
           <p className="mb-3 text-sm text-red-400">
             This Steam account is already linked to another user.
@@ -434,7 +436,7 @@ export default function Settings() {
         )}
       </div>
 
-      <form onSubmit={handlePasswordSubmit} className="mb-10 rounded border border-zinc-800 p-4">
+      <form onSubmit={handlePasswordSubmit} className="card mb-10 p-4">
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           {user.hasPassword ? 'Change password' : 'Add a password'}
         </h2>

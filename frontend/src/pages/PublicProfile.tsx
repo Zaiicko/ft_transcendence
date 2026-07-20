@@ -280,8 +280,24 @@ export default function PublicProfile() {
         </div>
         <div className="sm:self-start">
           {profile.friendState === 'self' ? (
-            <Link to="/settings" className="text-sm text-zinc-500 underline dark:text-zinc-400">
-              Edit profile
+            <Link
+              to="/settings"
+              title="Edit profile"
+              aria-label="Edit profile"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+            >
+              {/* Rouage filaire (trait 1.6, style TiMN) */}
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4 fill-none stroke-current"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
             </Link>
           ) : user ? (
             <FriendAction
@@ -332,23 +348,43 @@ export default function PublicProfile() {
           <ul className="flex flex-col gap-3">
             {profile.recentReviews.map((r) => {
               const name = r.game?.title ?? r.company?.name ?? 'Unknown';
+              const cover = r.game?.coverUrl ?? r.company?.logoUrl ?? null;
               return (
-                <li
-                  key={r.id}
-                  className="rounded border border-zinc-200 p-3 dark:border-zinc-800"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    {r.game ? (
-                      <Link to={`/game/${r.game.id}`} className="font-medium hover:underline">
-                        {name}
-                      </Link>
-                    ) : (
-                      <span className="font-medium">{name}</span>
-                    )}
-                    <Stars rating={r.rating} />
+                <li key={r.id} className="card flex gap-3 p-3">
+                  {/* Petite jaquette du jeu (ou logo du studio) noté */}
+                  {r.game ? (
+                    <Link to={`/game/${r.game.id}`} className="shrink-0">
+                      {cover ? (
+                        <img
+                          src={cover}
+                          alt=""
+                          className="h-16 w-11 rounded object-cover transition hover:opacity-80"
+                        />
+                      ) : (
+                        <span className="block h-16 w-11 rounded bg-zinc-200 dark:bg-zinc-800" />
+                      )}
+                    </Link>
+                  ) : cover ? (
+                    <img src={cover} alt="" className="h-16 w-11 shrink-0 rounded object-cover" />
+                  ) : (
+                    <span className="block h-16 w-11 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      {r.game ? (
+                        <Link to={`/game/${r.game.id}`} className="font-medium hover:underline">
+                          {name}
+                        </Link>
+                      ) : (
+                        <span className="font-medium">{name}</span>
+                      )}
+                      <Stars rating={r.rating} />
+                    </div>
+                    {r.title && <p className="mt-1 text-sm font-medium">{r.title}</p>}
+                    <p className="mt-1 line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      {r.text}
+                    </p>
                   </div>
-                  {r.title && <p className="mt-1 text-sm font-medium">{r.title}</p>}
-                  <p className="mt-1 line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">{r.text}</p>
                 </li>
               );
             })}
