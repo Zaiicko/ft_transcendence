@@ -29,12 +29,24 @@
 
   /* Accent ambre/or — signature du design (brand, CTA, hovers) */
   --color-accent: #e0a355;
+
+  /* Fonte display self-hostée (Sora) : titres + nom du site. Le texte
+     courant reste en fonte système. La classe `font-display` en découle. */
+  --font-display: 'Sora Variable', ui-sans-serif, system-ui, sans-serif;
 }
 
 /* La bannière pleine largeur (w-screen) compte la scrollbar : sans ceci,
    un défilement horizontal fantôme de quelques pixels apparaît */
 html {
   overflow-x: hidden;
+}
+
+/* Titres en fonte display partout, sans toucher chaque page (le texte
+   courant garde la fonte système) */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
 }
 
 /* Fond TiMN : uni quasi-noir chaud (nuit) / blanc cassé chaud (jour), avec

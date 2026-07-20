@@ -80,7 +80,7 @@ export default function Layout() {
     <div className="flex min-h-screen flex-col text-zinc-900 dark:text-zinc-100">
       <header className="px-6 pb-4 pt-5">
         <nav className="mx-auto flex max-w-6xl items-center gap-8">
-          <Link to="/" className="flex shrink-0 items-baseline gap-2 text-xl font-bold tracking-tight">
+          <Link to="/" className="font-display flex shrink-0 items-baseline gap-2 text-xl font-bold tracking-tight">
             <span>
               <span className="text-accent">Save</span>boxd
             </span>

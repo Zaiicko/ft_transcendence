@@ -1,3 +1,4 @@
+import '@fontsource-variable/sora'; // fonte display self-hostée (aucun CDN)
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
