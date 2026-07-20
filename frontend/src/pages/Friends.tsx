@@ -164,26 +164,50 @@ export default function Friends() {
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Pending requests</h2>
           <ul className="flex flex-col gap-2">
             {incoming.map((r) => (
-              <li key={r.id} className="card flex items-center justify-between px-3 py-2">
+              <li key={r.id} className="card flex items-center gap-3 px-3 py-2">
+                <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
                 <span className="flex items-center gap-2">
                   {r.user.username}
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {r.user.steamId && <SteamBadge />}
                 </span>
-                <div className="flex gap-2">
+                <div className="ml-auto flex gap-2">
                   <button
                     type="button"
                     onClick={() => respond(r.id, 'accept')}
-                    className="rounded-full bg-accent px-3 py-1 text-sm font-medium text-zinc-950 transition hover:brightness-110"
+                    title="Accepter"
+                    aria-label={`Accepter ${r.user.username}`}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-zinc-950 transition hover:brightness-110"
                   >
-                    Accept
+                    {/* Coche "v" filaire */}
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4 fill-none stroke-current"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12l5 5 9-11" />
+                    </svg>
                   </button>
                   <button
                     type="button"
                     onClick={() => respond(r.id, 'decline')}
-                    className="rounded border border-zinc-700 px-2 py-1 text-sm"
+                    title="Refuser"
+                    aria-label={`Refuser ${r.user.username}`}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
                   >
-                    Decline
+                    {/* Croix filaire */}
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-3.5 w-3.5 fill-none stroke-current"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M6 6l12 12M18 6L6 18" />
+                    </svg>
                   </button>
                 </div>
               </li>
@@ -234,7 +258,8 @@ export default function Friends() {
         {suggestions.length > 0 && (
           <ul className="flex flex-col gap-2">
             {suggestions.map((s) => (
-              <li key={s.id} className="card flex items-center justify-between px-3 py-2">
+              <li key={s.id} className="card flex items-center gap-3 px-3 py-2">
+                <Avatar username={s.username} avatarUrl={s.avatarUrl} size={28} />
                 <span className="flex items-center gap-2">
                   {s.username}
                   {s.provider === 'FORTYTWO' && <FortyTwoBadge />}
@@ -243,7 +268,7 @@ export default function Friends() {
                 <button
                   type="button"
                   onClick={() => sendRequest(s.username)}
-                  className="rounded-full bg-accent px-3 py-1 text-sm font-medium text-zinc-950 transition hover:brightness-110"
+                  className="ml-auto rounded-full bg-accent px-3 py-1 text-sm font-medium text-zinc-950 transition hover:brightness-110"
                 >
                   Add
                 </button>
@@ -264,12 +289,18 @@ export default function Friends() {
         ) : (
           <ul className="flex flex-col gap-2">
             {friends.map((f) => (
-              <li key={f.id} className="card flex items-center justify-between px-3 py-2">
-                <span className="flex items-center gap-2">
+              <li key={f.id} className="card flex items-center gap-3 px-3 py-2">
+                {/* Avatar + pastille de présence posée sur son coin bas-droit */}
+                <span className="relative shrink-0">
+                  <Avatar username={f.username} avatarUrl={f.avatarUrl} size={32} />
                   <span
-                    className={`h-2 w-2 rounded-full ${f.isOnline ? 'bg-green-500' : 'bg-zinc-600'}`}
+                    className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-zinc-50 dark:border-zinc-900 ${
+                      f.isOnline ? 'bg-green-500' : 'bg-zinc-400 dark:bg-zinc-600'
+                    }`}
                     title={f.isOnline ? 'Online' : 'Offline'}
                   />
+                </span>
+                <span className="flex items-center gap-2">
                   {f.username}
                   {f.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {f.steamId && <SteamBadge />}
@@ -277,9 +308,24 @@ export default function Friends() {
                 <button
                   type="button"
                   onClick={() => unfriend(f.id)}
-                  className="text-sm text-zinc-500 hover:text-red-400"
+                  title="Retirer des amis"
+                  aria-label={`Retirer ${f.username} des amis`}
+                  className="ml-auto flex h-8 w-8 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
                 >
-                  Remove
+                  {/* Poubelle filaire */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4 fill-none stroke-current"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                    <path d="M10 11v6M14 11v6" />
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                  </svg>
                 </button>
               </li>
             ))}
