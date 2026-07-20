@@ -3,21 +3,10 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import Skeleton from '../components/Skeleton';
+import Stars from '../components/Stars';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
 import type { FriendState, PublicProfile as Profile } from '../lib/types';
-
-// 0–10 rating shown as a compact star row (halves supported)
-function Stars({ rating }: { rating: number }) {
-  const outOfFive = rating / 2;
-  return (
-    <span className="whitespace-nowrap text-amber-500" title={`${rating}/10`}>
-      {'★'.repeat(Math.floor(outOfFive))}
-      {outOfFive % 1 >= 0.5 ? '½' : ''}
-      <span className="ml-1 text-xs text-zinc-500 dark:text-zinc-400">{rating}/10</span>
-    </span>
-  );
-}
 
 function memberSince(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });

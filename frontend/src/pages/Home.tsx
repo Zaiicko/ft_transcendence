@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import PlayedButton from '../components/PlayedButton';
 import { CoverGridSkeleton } from '../components/Skeleton';
+import Stars, { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
 import { imageSize } from '../lib/theme';
 import { GameSummary, ReviewHighlight } from '../lib/types';
@@ -354,11 +355,12 @@ function GameCard({ game }: { game: GameSummary }) {
 function ScoreBadge({ score, small = false }: { score: number; small?: boolean }) {
   return (
     <span
-      className={`shrink-0 rounded font-bold text-amber-600 dark:text-amber-300 ${
+      className={`inline-flex shrink-0 items-center gap-1 rounded font-bold text-amber-600 dark:text-amber-300 ${
         small ? 'text-xs' : 'bg-zinc-950/40 px-2 py-0.5 text-sm text-amber-300'
       }`}
     >
-      ★ {score.toFixed(1)}
+      <StarIcon className={small ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
+      {score.toFixed(1)}
     </span>
   );
 }
@@ -383,9 +385,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold">{target.name}</div>
           <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-            <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-sm font-bold text-amber-600 dark:bg-zinc-800 dark:text-amber-300">
-              {review.rating}
-            </span>
+            <Stars rating={review.rating} showValue={false} />
             {review.user ? (
               <span className="flex items-center gap-1.5">
                 {review.user.avatarUrl ? (

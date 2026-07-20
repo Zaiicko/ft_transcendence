@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import PlayedButton from '../components/PlayedButton';
 import Skeleton from '../components/Skeleton';
+import Stars, { StarIcon } from '../components/Stars';
 import { ApiError, apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
 
@@ -167,8 +168,9 @@ export default function Game() {
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
         {stats && stats._count > 0 && stats._avg.rating != null && (
-          <span className="font-semibold text-amber-600 dark:text-amber-300">
-            ★ {stats._avg.rating.toFixed(1)}/10
+          <span className="inline-flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-300">
+            <StarIcon className="h-3.5 w-3.5" />
+            {stats._avg.rating.toFixed(1)}/10
             <span
               className={`ml-1 font-normal ${onDark ? 'text-zinc-300' : 'text-zinc-500 dark:text-zinc-400'}`}
             >
@@ -289,9 +291,7 @@ export default function Game() {
                       {new Date(r.createdAt).toLocaleDateString('fr')}
                     </div>
                   </div>
-                  <span className="ml-auto shrink-0 rounded bg-zinc-100 px-2 py-0.5 text-sm font-bold text-amber-600 dark:bg-zinc-800 dark:text-amber-300">
-                    {r.rating}/10
-                  </span>
+                  <Stars rating={r.rating} className="ml-auto" />
                 </div>
                 <div className="mt-3 text-sm font-semibold">« {r.title} »</div>
                 <p className="mt-1 whitespace-pre-line text-sm text-zinc-600 dark:text-zinc-300">
