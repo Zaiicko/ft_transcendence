@@ -5,6 +5,7 @@ import Avatar from '../components/Avatar';
 import PlayedButton from '../components/PlayedButton';
 import EmptyState, { PencilIcon } from '../components/EmptyState';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
+import ReviewComments from '../components/ReviewComments';
 import Skeleton from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
 import { useGameSocket } from '../games/useGameSocket';
@@ -49,7 +50,21 @@ export default function Game() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [reviews, setReviews] = useState<GameReview[]>([]);
   const [sort, setSort] = useState<Sort>('recent');
+  // Threads ouverts (id des avis dépliés) + version par avis, bumpée par le
+  // temps réel (comment:changed) pour refetch un thread ouvert.
+  const [openThreads, setOpenThreads] = useState<Set<number>>(new Set());
+  const [commentVersions, setCommentVersions] = useState<Record<number, number>>({});
   const reviewRef = useRef<HTMLElement>(null);
+
+  const toggleThread = (id: number) =>
+    setOpenThreads((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  const bumpVersion = (id: number) =>
+    setCommentVersions((v) => ({ ...v, [id]: (v[id] ?? 0) + 1 }));
 
   useEffect(() => {
     let cancelled = false;
@@ -93,12 +108,13 @@ export default function Game() {
       .catch(() => {});
   }
 
-  // 👍/👎 exclusifs et idempotents côté serveur (204 sans payload) : les
-  // compteurs sont patchés localement, le temps réel viendra en passe B
+  // 👍/👎 exclusifs et idempotents côté serveur (204 sans payload). Patch
+  // optimiste AVANT l'await : sinon l'event socket `review:reaction` (compteur
+  // absolu) arrive pendant l'await et le patch se cumule dessus → double
+  // comptage. L'event réconcilie ensuite les compteurs à la valeur serveur.
   async function react(review: GameReview, kind: 'like' | 'dislike') {
     if (!user) return;
     const removing = review.myReaction === kind;
-    await apiFetch(`/reviews/${review.id}/${kind}`, { method: removing ? 'DELETE' : 'POST' });
     setReviews((list) =>
       list.map((r) => {
         if (r.id !== review.id) return r;
@@ -112,6 +128,11 @@ export default function Game() {
         return { ...r, _count: counts, myReaction: kind };
       }),
     );
+    try {
+      await apiFetch(`/reviews/${review.id}/${kind}`, { method: removing ? 'DELETE' : 'POST' });
+    } catch {
+      replaceReview(review.id); // échec → on resynchronise sur le serveur
+    }
   }
 
   async function removeOwn(review: GameReview) {
@@ -150,7 +171,10 @@ export default function Game() {
           r.id === reviewId ? { ...r, _count: { ...r._count, likes, dislikes } } : r,
         ),
       ),
-    onCommentChanged: replaceReview,
+    onCommentChanged: (reviewId) => {
+      replaceReview(reviewId); // met à jour le compteur 💬
+      bumpVersion(reviewId); // rafraîchit le thread s'il est ouvert
+    },
     onCommentReaction: () => {},
   });
 
@@ -382,9 +406,17 @@ export default function Game() {
                   >
                     <ThumbsDownIcon className="h-3.5 w-3.5" /> {r._count.dislikes}
                   </button>
-                  <span className="inline-flex items-center gap-1.5 text-zinc-500">
+                  <button
+                    type="button"
+                    onClick={() => toggleThread(r.id)}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 transition ${
+                      openThreads.has(r.id)
+                        ? 'border-accent text-accent'
+                        : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+                    }`}
+                  >
                     <CommentIcon className="h-3.5 w-3.5" /> {r._count.comments}
-                  </span>
+                  </button>
                   {user && r.user?.id === user.id && (
                     <button
                       type="button"
@@ -395,6 +427,14 @@ export default function Game() {
                     </button>
                   )}
                 </div>
+                {openThreads.has(r.id) && (
+                  <ReviewComments
+                    reviewId={r.id}
+                    currentUserId={user?.id ?? null}
+                    version={commentVersions[r.id] ?? 0}
+                    onChanged={() => replaceReview(r.id)}
+                  />
+                )}
               </article>
             ))}
           </div>
