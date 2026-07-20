@@ -55,6 +55,7 @@ export default function Game() {
   // temps réel (comment:changed) pour refetch un thread ouvert.
   const [openThreads, setOpenThreads] = useState<Set<number>>(new Set());
   const [commentVersions, setCommentVersions] = useState<Record<number, number>>({});
+  const [editingId, setEditingId] = useState<number | null>(null); // avis en cours d'édition
   const reviewRef = useRef<HTMLElement>(null);
 
   const toggleThread = (id: number) =>
@@ -377,8 +378,22 @@ export default function Game() {
                       </div>
                     </div>
                   )}
-                  <Stars rating={r.rating} className="ml-auto" />
+                  {editingId !== r.id && <Stars rating={r.rating} className="ml-auto" />}
                 </div>
+                {editingId === r.id ? (
+                  <EditReviewForm
+                    review={r}
+                    onCancel={() => setEditingId(null)}
+                    onSaved={(u) => {
+                      setEditingId(null);
+                      setReviews((list) =>
+                        list.map((x) => (x.id === r.id ? { ...x, ...u } : x)),
+                      );
+                      refreshStats();
+                    }}
+                  />
+                ) : (
+                  <>
                 <div className="mt-3 text-sm font-semibold">« {r.title} »</div>
                 <p className="mt-1 whitespace-pre-line text-sm text-zinc-600 dark:text-zinc-300">
                   {r.text}
@@ -420,15 +435,26 @@ export default function Game() {
                     <CommentIcon className="h-3.5 w-3.5" /> {r._count.comments}
                   </button>
                   {user && r.user?.id === user.id && (
-                    <button
-                      type="button"
-                      onClick={() => removeOwn(r)}
-                      className="ml-auto text-zinc-500 transition hover:text-red-400"
-                    >
-                      Supprimer
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(r.id)}
+                        className="ml-auto text-zinc-500 transition hover:text-accent"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeOwn(r)}
+                        className="text-zinc-500 transition hover:text-red-400"
+                      >
+                        Supprimer
+                      </button>
+                    </>
                   )}
                 </div>
+                  </>
+                )}
                 {openThreads.has(r.id) && (
                   <ReviewComments
                     reviewId={r.id}
@@ -528,6 +554,105 @@ function ReviewForm({ gameId, onCreated }: { gameId: number; onCreated: () => vo
       >
         Publier la critique
       </button>
+    </form>
+  );
+}
+
+// Édition d'un avis existant (PATCH /reviews/:id) — même contrôles que le
+// formulaire de création, pré-remplis. onSaved patche l'avis dans la liste ;
+// l'event socket review:updated réconcilie ensuite les autres onglets.
+function EditReviewForm({
+  review,
+  onCancel,
+  onSaved,
+}: {
+  review: GameReview;
+  onCancel: () => void;
+  onSaved: (u: { rating: number; title: string; text: string }) => void;
+}) {
+  const [rating, setRating] = useState<number>(review.rating);
+  const [title, setTitle] = useState(review.title);
+  const [text, setText] = useState(review.text);
+  const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    const t = title.trim();
+    const body = text.trim();
+    if (!t || !body) {
+      setError('Titre et texte obligatoires.');
+      return;
+    }
+    setSending(true);
+    setError(null);
+    try {
+      await apiFetch(`/reviews/${review.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ title: t, rating, text: body }),
+      });
+      onSaved({ rating, title: t, text: body });
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Erreur inattendue.');
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="mt-3 flex flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">Note :</span>
+        {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+          <button
+            key={n}
+            type="button"
+            onClick={() => setRating(n)}
+            aria-label={`${n} sur 10`}
+            className={`h-8 w-8 rounded-full border text-xs transition ${
+              n <= rating
+                ? 'border-accent bg-accent font-bold text-zinc-950'
+                : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+            }`}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+      <input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Titre de ta critique"
+        maxLength={120}
+        required
+        className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+      />
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Ton avis (sans spoiler…)"
+        maxLength={5000}
+        required
+        rows={4}
+        className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+      />
+      {error && <p className="text-sm text-red-400">{error}</p>}
+      <div className="flex items-center gap-2 self-end text-sm">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-full px-4 py-2 text-zinc-500 transition hover:text-accent"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          disabled={sending}
+          className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+        >
+          Enregistrer
+        </button>
+      </div>
     </form>
   );
 }
