@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import PlayedButton from '../components/PlayedButton';
+import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
 import Skeleton from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
 import { ApiError, apiFetch } from '../lib/api';
@@ -169,7 +170,7 @@ export default function Game() {
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
         {stats && stats._count > 0 && stats._avg.rating != null && (
-          <span className="inline-flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-300">
+          <span className="inline-flex items-center gap-1 font-semibold text-amber-500">
             <StarIcon className="h-3.5 w-3.5" />
             {stats._avg.rating.toFixed(1)}/10
             <span
@@ -317,27 +318,29 @@ export default function Game() {
                     type="button"
                     disabled={!user}
                     onClick={() => react(r, 'like')}
-                    className={`rounded-full border px-2.5 py-1 transition disabled:cursor-default disabled:opacity-60 ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 transition disabled:cursor-default disabled:opacity-60 ${
                       r.myReaction === 'like'
                         ? 'border-accent text-accent'
                         : 'border-zinc-400/60 text-zinc-500 enabled:hover:border-accent enabled:hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                     }`}
                   >
-                    👍 {r._count.likes}
+                    <ThumbsUpIcon className="h-3.5 w-3.5" /> {r._count.likes}
                   </button>
                   <button
                     type="button"
                     disabled={!user}
                     onClick={() => react(r, 'dislike')}
-                    className={`rounded-full border px-2.5 py-1 transition disabled:cursor-default disabled:opacity-60 ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 transition disabled:cursor-default disabled:opacity-60 ${
                       r.myReaction === 'dislike'
                         ? 'border-accent text-accent'
                         : 'border-zinc-400/60 text-zinc-500 enabled:hover:border-accent enabled:hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                     }`}
                   >
-                    👎 {r._count.dislikes}
+                    <ThumbsDownIcon className="h-3.5 w-3.5" /> {r._count.dislikes}
                   </button>
-                  <span className="text-zinc-500">💬 {r._count.comments}</span>
+                  <span className="inline-flex items-center gap-1.5 text-zinc-500">
+                    <CommentIcon className="h-3.5 w-3.5" /> {r._count.comments}
+                  </span>
                   {user && r.user?.id === user.id && (
                     <button
                       type="button"

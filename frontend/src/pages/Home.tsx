@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import PlayedButton from '../components/PlayedButton';
+import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
 import { CoverGridSkeleton } from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
@@ -356,8 +357,8 @@ function GameCard({ game }: { game: GameSummary }) {
 function ScoreBadge({ score, small = false }: { score: number; small?: boolean }) {
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1 rounded font-bold text-amber-600 dark:text-amber-300 ${
-        small ? 'text-xs' : 'bg-zinc-950/40 px-2 py-0.5 text-sm text-amber-300'
+      className={`inline-flex shrink-0 items-center gap-1 rounded font-bold text-amber-500 ${
+        small ? 'text-xs' : 'bg-zinc-950/40 px-2 py-0.5 text-sm'
       }`}
     >
       <StarIcon className={small ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
@@ -401,9 +402,15 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
       <div className="text-sm font-semibold">« {review.title} »</div>
       <p className="line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">{review.text}</p>
       <div className="mt-auto flex items-center gap-3 pt-1 text-xs text-zinc-500">
-        <span>👍 {review._count.likes}</span>
-        <span>👎 {review._count.dislikes}</span>
-        <span>💬 {review._count.comments}</span>
+        <span className="inline-flex items-center gap-1">
+          <ThumbsUpIcon className="h-3.5 w-3.5" /> {review._count.likes}
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <ThumbsDownIcon className="h-3.5 w-3.5" /> {review._count.dislikes}
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <CommentIcon className="h-3.5 w-3.5" /> {review._count.comments}
+        </span>
         <span className="ml-auto">{new Date(review.createdAt).toLocaleDateString('fr')}</span>
       </div>
     </a>

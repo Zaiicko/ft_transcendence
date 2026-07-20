@@ -1,4 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
+import Avatar from '../components/Avatar';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
@@ -195,13 +196,32 @@ export default function Friends() {
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Sent requests</h2>
           <ul className="flex flex-col gap-2">
             {outgoing.map((r) => (
-              <li key={r.id} className="card flex items-center justify-between px-3 py-2">
+              <li key={r.id} className="card flex items-center gap-3 px-3 py-2">
+                <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
                 <span className="flex items-center gap-2">
                   {r.user.username}
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {r.user.steamId && <SteamBadge />}
                 </span>
-                <span className="text-sm text-zinc-500">Pending</span>
+                <span className="ml-auto text-sm text-zinc-500">Pending</span>
+                <button
+                  type="button"
+                  onClick={() => respond(r.id, 'decline')}
+                  title="Annuler la demande"
+                  aria-label={`Annuler la demande à ${r.user.username}`}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
+                >
+                  {/* Croix filaire (trait 2) : annuler */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-3.5 w-3.5 fill-none stroke-current"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </button>
               </li>
             ))}
           </ul>
