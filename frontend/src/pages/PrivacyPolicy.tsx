@@ -4,7 +4,7 @@
 export default function PrivacyPolicy() {
   return (
     <article className="prose prose-invert mx-auto max-w-3xl">
-      <h1 className="mb-6 text-3xl font-bold">Privacy Policy</h1>
+      <h1 className="mb-6 text-3xl font-bold tracking-tight">Privacy Policy</h1>
       <p className="text-zinc-300">
         Saveboxd collects the data you provide when creating an account (email,
         username, avatar) and the activity you generate on the platform

@@ -2,7 +2,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { apiFetch } from '../lib/api';
-import { applyEdgeColors, extractEdgeColors, imageSize } from '../lib/theme';
+import { imageSize } from '../lib/theme';
 import { GameSummary, ReviewHighlight } from '../lib/types';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -37,7 +37,6 @@ export default function Home() {
   const [shown, setShown] = useState(HIGHLIGHTS_STEP);
   const [shownPopular, setShownPopular] = useState(POPULAR_STEP);
   const rootRef = useRef<HTMLDivElement>(null);
-  const popularRef = useRef<HTMLElement>(null);
   const revealTriggers = useRef<ScrollTrigger[]>([]);
 
   const visiblePopular = popular.slice(0, shownPopular);
@@ -77,31 +76,6 @@ export default function Home() {
       cancelled = true;
     };
   }, []);
-
-  // Module couleur : le fond raccorde exactement les bords de la bannière —
-  // première ligne de pixels en haut de page, dernière ligne pour "Populaires"
-  useEffect(() => {
-    const image = featured?.screenshots?.[0] ?? featured?.coverUrl;
-    if (!image) return;
-    let cancelled = false;
-    extractEdgeColors(image).then((colors) => {
-      if (!cancelled && colors) applyEdgeColors(colors);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [featured]);
-
-  // Les deux arrêts du dégradé (index.css) suivent la vraie géométrie :
-  // la couleur du bas arrive au HAUT de "Populaires", le fondu vers
-  // blanc/noir se termine à son BAS
-  useEffect(() => {
-    if (visiblePopular.length === 0 || !popularRef.current) return;
-    const rect = popularRef.current.getBoundingClientRect();
-    const root = document.documentElement.style;
-    root.setProperty('--fade-mid', `${Math.round(rect.top + window.scrollY)}px`);
-    root.setProperty('--fade-end', `${Math.round(rect.bottom + window.scrollY)}px`);
-  }, [visiblePopular]);
 
   // La bannière est visible dès l'arrivée : elle s'anime au chargement, et sa
   // parallaxe (l'image défile plus lentement que la page) est pilotée par le
@@ -178,7 +152,7 @@ export default function Home() {
         <div className="relative left-1/2 -mt-8 h-[42vh] w-screen -translate-x-1/2 animate-pulse bg-zinc-200 md:h-[52vh] dark:bg-zinc-900" />
       )}
       {popular.length > 0 && (
-        <section ref={popularRef}>
+        <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Populaires en ce moment
           </h2>

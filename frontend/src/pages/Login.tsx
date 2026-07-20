@@ -67,7 +67,7 @@ export default function Login() {
   if (needsTwoFactor) {
     return (
       <div className="mx-auto max-w-sm">
-        <h1 className="mb-2 text-2xl font-bold">Two-factor code</h1>
+        <h1 className="mb-2 text-2xl font-bold tracking-tight">Two-factor code</h1>
         <p className="mb-6 text-sm text-zinc-400">Enter the 6-digit code from your authenticator app.</p>
         <form onSubmit={handleCodeSubmit} className="flex flex-col gap-4">
           <input
@@ -86,7 +86,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded bg-zinc-100 px-3 py-2 font-medium text-zinc-950 disabled:opacity-50"
+            className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
             {submitting ? 'Verifying…' : 'Verify'}
           </button>
@@ -97,7 +97,7 @@ export default function Login() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold">Log in</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Log in</h1>
       {oauthErrorMessage && (
         <p className="mb-4 rounded border border-red-900/50 bg-red-950/50 px-3 py-2 text-sm text-red-400">
           {oauthErrorMessage}
@@ -124,7 +124,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-zinc-100 px-3 py-2 font-medium text-zinc-950 disabled:opacity-50"
+          className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           {submitting ? 'Logging in…' : 'Log in'}
         </button>

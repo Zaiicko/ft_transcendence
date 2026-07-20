@@ -25,7 +25,7 @@ export default function ForgotPassword() {
   if (submitted) {
     return (
       <div className="mx-auto max-w-sm text-center">
-        <h1 className="mb-4 text-2xl font-bold">Check your email</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">Check your email</h1>
         <p className="text-zinc-400">
           If that address is registered, a password reset link is on its way.
         </p>
@@ -35,7 +35,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold">Forgot your password?</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Forgot your password?</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="email"
@@ -49,7 +49,7 @@ export default function ForgotPassword() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-zinc-100 px-3 py-2 font-medium text-zinc-950 disabled:opacity-50"
+          className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           {submitting ? 'Sending…' : 'Send reset link'}
         </button>

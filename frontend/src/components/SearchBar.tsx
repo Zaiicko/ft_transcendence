@@ -29,8 +29,9 @@ export default function SearchBar() {
     if (data[0]) window.location.href = gameHref(data[0].id);
   }
 
+  // Pill fantôme façon TiMN : quasi invisible au repos, bordure ambre au focus
   const field =
-    'rounded-lg border border-zinc-400/60 bg-white/60 dark:border-zinc-600 dark:bg-zinc-900/60';
+    'rounded-full border border-zinc-400/40 bg-zinc-900/5 dark:border-zinc-100/10 dark:bg-zinc-100/5';
 
   return (
     <div className="relative min-w-0 flex-1">
@@ -39,17 +40,33 @@ export default function SearchBar() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher un jeu…"
-            className={`${field} w-full px-3 py-1.5 text-sm placeholder-zinc-500 backdrop-blur focus:border-zinc-500 focus:outline-none`}
+            placeholder="Search"
+            className={`${field} w-full px-4 py-1.5 text-sm placeholder-zinc-500 focus:border-accent focus:outline-none`}
           />
         </form>
         <button
           type="button"
           onClick={randomGame}
           title="Jeu au hasard"
-          className={`${field} px-3 py-1.5 text-sm backdrop-blur hover:opacity-70`}
+          aria-label="Jeu au hasard"
+          className={`${field} flex items-center px-3 text-zinc-500 transition hover:border-accent hover:text-accent dark:text-zinc-400`}
         >
-          🎲
+          {/* Dé filaire (trait 1.6, style TiMN) — face à cinq points */}
+          <svg
+            viewBox="0 0 24 24"
+            className="h-4 w-4 shrink-0"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="3.5" y="3.5" width="17" height="17" rx="4" className="fill-none stroke-current" />
+            <circle cx="8.5" cy="8.5" r="1.1" className="fill-current" />
+            <circle cx="15.5" cy="8.5" r="1.1" className="fill-current" />
+            <circle cx="12" cy="12" r="1.1" className="fill-current" />
+            <circle cx="8.5" cy="15.5" r="1.1" className="fill-current" />
+            <circle cx="15.5" cy="15.5" r="1.1" className="fill-current" />
+          </svg>
         </button>
       </div>
       {results.length > 0 && (

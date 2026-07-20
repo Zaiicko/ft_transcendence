@@ -29,7 +29,7 @@ export default function VerifyEmail() {
       {status === 'pending' && <p className="text-zinc-400">Verifying your email…</p>}
       {status === 'success' && (
         <>
-          <h1 className="mb-4 text-2xl font-bold">Email verified</h1>
+          <h1 className="mb-4 text-2xl font-bold tracking-tight">Email verified</h1>
           <p className="mb-6 text-zinc-400">Your address is confirmed — you're all set.</p>
           <Link to="/profile" className="underline">
             Go to your profile
@@ -38,7 +38,7 @@ export default function VerifyEmail() {
       )}
       {status === 'error' && (
         <>
-          <h1 className="mb-4 text-2xl font-bold text-red-400">Verification failed</h1>
+          <h1 className="mb-4 text-2xl font-bold tracking-tight text-red-400">Verification failed</h1>
           <p className="mb-6 text-zinc-400">{error}</p>
           <Link to="/profile" className="underline">
             Back to your profile

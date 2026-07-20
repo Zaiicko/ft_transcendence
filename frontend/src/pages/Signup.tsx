@@ -57,7 +57,7 @@ export default function Signup() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold">
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">
         {steamPending ? 'Finish your Steam sign-up' : 'Sign up'}
       </h1>
       {steamPending && (
@@ -111,7 +111,7 @@ export default function Signup() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-zinc-100 px-3 py-2 font-medium text-zinc-950 disabled:opacity-50"
+          className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           {submitting ? 'Creating account…' : steamPending ? 'Create account' : 'Sign up'}
         </button>

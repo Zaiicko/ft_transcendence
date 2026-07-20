@@ -4,7 +4,7 @@
 export default function TermsOfService() {
   return (
     <article className="prose prose-invert mx-auto max-w-3xl">
-      <h1 className="mb-6 text-3xl font-bold">Terms of Service</h1>
+      <h1 className="mb-6 text-3xl font-bold tracking-tight">Terms of Service</h1>
       <p className="text-zinc-300">
         By using Saveboxd you agree to publish only content you own and to
         remain respectful in your reviews and messages. Accounts that post

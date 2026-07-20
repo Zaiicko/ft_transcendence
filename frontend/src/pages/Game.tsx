@@ -47,7 +47,7 @@ export default function Game() {
         <img src={game.coverUrl} alt={game.title} className="h-72 self-start rounded-xl shadow-xl" />
       )}
       <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-bold">{game.title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{game.title}</h1>
         <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
           {game.releaseDate && <span>{new Date(game.releaseDate).getFullYear()}</span>}
           {game.genres?.map((g) => (

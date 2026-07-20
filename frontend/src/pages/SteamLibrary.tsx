@@ -79,7 +79,7 @@ export default function SteamLibrary() {
   if (!steamLinked) {
     return (
       <div className="mx-auto max-w-lg text-center">
-        <h1 className="mb-4 text-2xl font-bold">Steam library</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">Steam library</h1>
         <p className="mb-6 text-zinc-400">
           Link your Steam account to import your game library and find your Steam friends.
         </p>
@@ -98,7 +98,7 @@ export default function SteamLibrary() {
   if (error) {
     return (
       <div className="mx-auto max-w-lg">
-        <h1 className="mb-4 text-2xl font-bold">Steam library</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">Steam library</h1>
         <p className="text-red-400">{error}</p>
       </div>
     );
@@ -106,7 +106,7 @@ export default function SteamLibrary() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-bold">Steam library</h1>
+      <h1 className="mb-2 text-2xl font-bold tracking-tight">Steam library</h1>
 
       {library?.private ? (
         <p className="mb-8 text-zinc-400">
@@ -148,7 +148,7 @@ export default function SteamLibrary() {
         </>
       )}
 
-      <h2 className="mb-2 text-xl font-bold">Steam friends on Saveboxd</h2>
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Steam friends on Saveboxd</h2>
       {suggestions?.private && (
         <p className="text-zinc-400">Your Steam friend list is private, so we cannot suggest friends.</p>
       )}
@@ -173,7 +173,7 @@ export default function SteamLibrary() {
                   <button
                     type="button"
                     onClick={() => handleAddFriend(s.id)}
-                    className="rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900"
+                    className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
                   >
                     Add friend
                   </button>

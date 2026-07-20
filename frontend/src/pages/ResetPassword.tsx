@@ -35,7 +35,7 @@ export default function ResetPassword() {
   if (!token) {
     return (
       <div className="mx-auto max-w-sm text-center">
-        <h1 className="mb-4 text-2xl font-bold text-red-400">Invalid link</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight text-red-400">Invalid link</h1>
         <p className="mb-6 text-zinc-400">This password reset link is missing its token.</p>
         <Link to="/forgot-password" className="underline">
           Request a new one
@@ -46,7 +46,7 @@ export default function ResetPassword() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold">Choose a new password</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Choose a new password</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="password"
@@ -61,7 +61,7 @@ export default function ResetPassword() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-zinc-100 px-3 py-2 font-medium text-zinc-950 disabled:opacity-50"
+          className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           {submitting ? 'Resetting…' : 'Reset password'}
         </button>

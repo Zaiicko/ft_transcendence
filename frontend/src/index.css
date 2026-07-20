@@ -4,52 +4,51 @@
    (toggle jour/nuit) au lieu de la préférence système seule */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Module couleur : --accent-h/--accent-s = teinte dominante de la cover
-   vedette (posées par lib/theme.ts). Le fond du site part de cette couleur
-   et fond vers le blanc (jour) ou le noir (nuit). */
-:root {
-  --top-color: #26262b;
-  --bot-color: #26262b;
+/* Design "TiMN" : toute l'app parle en zinc-* — on redéfinit la gamme ici
+   (gris chauds, quasi-noir chaud) et le site entier bascule sans toucher
+   aux pages. Les rôles restent monotones (950 le plus sombre → 50 le plus
+   clair) pour que jour/nuit gardent leurs contrastes. */
+@theme {
+  --color-zinc-50: #faf9f7;
+  --color-zinc-100: #f2f1ee;
+  --color-zinc-200: #e4e1db;
+  --color-zinc-300: #c9c5be;
+  --color-zinc-400: #a6a29b;
+  --color-zinc-500: #807c75;
+  --color-zinc-600: #55534e;
+  --color-zinc-700: #3a3a40;
+  --color-zinc-800: #1e1e22;
+  --color-zinc-900: #131316;
+  --color-zinc-950: #0c0c0e;
+
+  /* Coins doux façon TiMN : `rounded` nu (boutons/inputs) suit --radius */
+  --radius: 0.625rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+
+  /* Accent ambre/or — signature du design (brand, CTA, hovers) */
+  --color-accent: #e0a355;
 }
 
-/* --fade-end : hauteur où la teinte a fini de fondre — mesurée par la home
-   sur la position réelle de la section "Populaires en ce moment" */
-/* Pas de background-attachment: fixed — le dégradé doit défiler avec le
-   contenu pour que sa fin coïncide avec la section mesurée */
 /* La bannière pleine largeur (w-screen) compte la scrollbar : sans ceci,
    un défilement horizontal fantôme de quelques pixels apparaît */
 html {
   overflow-x: hidden;
 }
 
-/* Header caméléon : posé sur la couleur du bord haut de l'image, son texte
-   s'inverse selon la luminance de celle-ci — quel que soit le mode jour/nuit */
-.header-on-dark header {
-  color: #fafafa;
-}
-.header-on-light header {
-  color: #18181b;
-}
-
-/* Raccord "ambilight" : la couleur exacte du bord HAUT du screenshot coiffe
-   la page, celle du bord BAS règne au niveau de "Populaires en ce moment"
-   (--fade-mid), puis fondu vers crème (jour) ou noir (nuit), terminé au bas
-   de la section (--fade-end). Les deux positions sont mesurées dans le DOM. */
+/* Fond TiMN : uni quasi-noir chaud (nuit) / blanc cassé chaud (jour), avec
+   un léger halo ambre en haut à droite. Remplace l'ancien raccord "ambilight"
+   (dégradé tiré des bords de la cover vedette) — le code d'extraction reste
+   dans lib/theme.ts si on veut le rebrancher. */
 body {
-  background: linear-gradient(
-    180deg,
-    var(--top-color) 0%,
-    var(--bot-color) var(--fade-mid, 28rem),
-    #ffffff var(--fade-end, 44rem)
-  );
-  transition: background 0.8s ease;
+  background:
+    radial-gradient(75rem 38rem at 78% -8%, rgba(224, 163, 85, 0.07), transparent 60%),
+    #faf9f7;
 }
 
 .dark body {
-  background: linear-gradient(
-    180deg,
-    var(--top-color) 0%,
-    var(--bot-color) var(--fade-mid, 28rem),
-    hsl(240 6% 4%) var(--fade-end, 44rem)
-  );
+  background:
+    radial-gradient(75rem 38rem at 78% -8%, rgba(224, 163, 85, 0.1), transparent 60%),
+    #0e0e10;
 }

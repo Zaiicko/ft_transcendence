@@ -124,7 +124,7 @@ export default function Friends() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold">Friends</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Friends</h1>
       {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
 
       <form onSubmit={handleSendRequest} className="mb-2 flex gap-2">
@@ -138,7 +138,7 @@ export default function Friends() {
         <button
           type="submit"
           disabled={sending}
-          className="rounded bg-zinc-100 px-4 py-2 font-medium text-zinc-950 disabled:opacity-50"
+          className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           Add
         </button>
@@ -147,7 +147,7 @@ export default function Friends() {
 
       {incoming.length > 0 && (
         <section className="mb-8 mt-6">
-          <h2 className="mb-3 font-medium text-zinc-300">Pending requests</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Pending requests</h2>
           <ul className="flex flex-col gap-2">
             {incoming.map((r) => (
               <li key={r.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
@@ -160,7 +160,7 @@ export default function Friends() {
                   <button
                     type="button"
                     onClick={() => respond(r.id, 'accept')}
-                    className="rounded bg-zinc-100 px-2 py-1 text-sm text-zinc-950"
+                    className="rounded-full bg-accent px-3 py-1 text-sm font-medium text-zinc-950 transition hover:brightness-110"
                   >
                     Accept
                   </button>
@@ -180,7 +180,7 @@ export default function Friends() {
 
       {outgoing.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-3 font-medium text-zinc-300">Sent requests</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Sent requests</h2>
           <ul className="flex flex-col gap-2">
             {outgoing.map((r) => (
               <li key={r.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
@@ -197,7 +197,7 @@ export default function Friends() {
       )}
 
       <section className="mb-8">
-        <h2 className="mb-3 font-medium text-zinc-300">Suggested friends</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Suggested friends</h2>
         {suggestions.length > 0 && (
           <ul className="flex flex-col gap-2">
             {suggestions.map((s) => (
@@ -210,7 +210,7 @@ export default function Friends() {
                 <button
                   type="button"
                   onClick={() => sendRequest(s.username)}
-                  className="rounded bg-zinc-100 px-2 py-1 text-sm text-zinc-950"
+                  className="rounded-full bg-accent px-3 py-1 text-sm font-medium text-zinc-950 transition hover:brightness-110"
                 >
                   Add
                 </button>
@@ -221,7 +221,7 @@ export default function Friends() {
       </section>
 
       <section className="mt-6">
-        <h2 className="mb-3 font-medium text-zinc-300">Your friends</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Your friends</h2>
         {friends.length === 0 ? (
           <p className="text-sm text-zinc-500">No friends yet — add one by username above.</p>
         ) : (

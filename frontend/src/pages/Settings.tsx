@@ -205,7 +205,7 @@ export default function Settings() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <h1 className="mb-6 text-2xl font-bold">Account settings</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Account settings</h1>
 
       {isWelcome && (
         <div className="mb-6 rounded border border-zinc-700 bg-zinc-900 p-4">
@@ -299,7 +299,7 @@ export default function Settings() {
           <button
             type="submit"
             disabled={savingProfile}
-            className="self-start rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+            className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
             {savingProfile ? 'Saving…' : 'Save profile'}
           </button>
@@ -316,7 +316,7 @@ export default function Settings() {
       </form>
 
       <div className="mb-10 rounded border border-zinc-800 p-4">
-        <h2 className="mb-2 font-medium">Two-factor authentication</h2>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Two-factor authentication</h2>
         {user.twoFactorEnabled ? (
           <>
             <p className="mb-3 text-sm text-zinc-400">Enabled. Enter a code to disable it.</p>
@@ -364,7 +364,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={twoFactorBusy}
-                className="rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+                className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
               >
                 {twoFactorBusy ? 'Confirming…' : 'Confirm'}
               </button>
@@ -379,7 +379,7 @@ export default function Settings() {
               type="button"
               onClick={handleStartTwoFactorSetup}
               disabled={twoFactorBusy}
-              className="rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+              className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
             >
               {twoFactorBusy ? 'Starting…' : 'Enable 2FA'}
             </button>
@@ -389,7 +389,7 @@ export default function Settings() {
       </div>
 
       <div className="mb-10 rounded border border-zinc-800 p-4">
-        <h2 className="mb-2 font-medium">Steam</h2>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Steam</h2>
         {steamNotice === 'taken' && (
           <p className="mb-3 text-sm text-red-400">
             This Steam account is already linked to another user.
@@ -407,7 +407,7 @@ export default function Settings() {
             <div className="flex gap-3">
               <Link
                 to="/steam"
-                className="rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900"
+                className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
               >
                 View my Steam library
               </Link>
@@ -415,7 +415,7 @@ export default function Settings() {
                 type="button"
                 onClick={handleUnlinkSteam}
                 disabled={unlinking}
-                className="rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900 disabled:opacity-50"
+                className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent disabled:opacity-50"
               >
                 {unlinking ? 'Unlinking…' : 'Unlink Steam'}
               </button>
@@ -429,7 +429,7 @@ export default function Settings() {
             </p>
             <a
               href="/api/auth/steam"
-              className="self-start rounded border border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-900"
+              className="self-start rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
             >
               Link my Steam account
             </a>
@@ -438,7 +438,7 @@ export default function Settings() {
       </div>
 
       <form onSubmit={handlePasswordSubmit} className="mb-10 rounded border border-zinc-800 p-4">
-        <h2 className="mb-2 font-medium">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           {user.hasPassword ? 'Change password' : 'Add a password'}
         </h2>
         {!user.hasPassword && (
@@ -473,7 +473,7 @@ export default function Settings() {
           <button
             type="submit"
             disabled={savingPassword}
-            className="self-start rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+            className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
             {savingPassword ? 'Saving…' : user.hasPassword ? 'Change password' : 'Add password'}
           </button>
@@ -481,7 +481,7 @@ export default function Settings() {
       </form>
 
       <div className="rounded border border-red-900/50 p-4">
-        <h2 className="mb-2 font-medium text-red-400">Delete account</h2>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-red-400">Delete account</h2>
         <p className="mb-3 text-sm text-zinc-400">
           This permanently deletes your account, reviews, friendships and messages. This cannot be undone.
         </p>

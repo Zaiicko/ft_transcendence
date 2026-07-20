@@ -214,7 +214,7 @@ function FriendAction({
         type="button"
         onClick={add}
         disabled={busy}
-        className="rounded bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-950 disabled:opacity-50"
+        className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
       >
         {busy ? 'Sending…' : 'Add friend'}
       </button>
@@ -261,7 +261,7 @@ export default function PublicProfile() {
           <div className="h-24 w-24 rounded-full bg-zinc-200 dark:bg-zinc-800" />
         )}
         <div className="flex-1">
-          <h1 className="flex items-center gap-2 text-2xl font-bold">
+          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
             {profile.username}
             {profile.provider === 'FORTYTWO' && <FortyTwoBadge />}
             {profile.steamId && <SteamBadge />}
@@ -291,7 +291,7 @@ export default function PublicProfile() {
       {/* Top 5 games */}
       {profile.topGames.length > 0 && (
         <section className="mb-10">
-          <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Top rated games</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Top rated games</h2>
           <div className="grid grid-cols-3 gap-4 sm:grid-cols-5">
             {profile.topGames.map(({ game, rating }) => (
               <Link key={game.id} to={`/game/${game.id}`} className="group">
@@ -314,13 +314,13 @@ export default function PublicProfile() {
 
       {/* Completion calendar */}
       <section className="mb-10">
-        <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Completion calendar</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Completion calendar</h2>
         <CompletionCalendar entries={profile.calendar} />
       </section>
 
       {/* Recent reviews */}
       <section>
-        <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Recent reviews</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Recent reviews</h2>
         {profile.recentReviews.length === 0 ? (
           <p className="text-sm text-zinc-500 dark:text-zinc-400">No reviews yet.</p>
         ) : (
