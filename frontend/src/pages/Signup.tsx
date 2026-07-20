@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import OAuthButtons from '../components/OAuthButtons';
 import { apiFetch, ApiError } from '../lib/api';
 
 // Steam personas allow spaces/emojis; our usernames don't. Prefill what we can
@@ -125,17 +126,7 @@ export default function Signup() {
             <div className="h-px flex-1 bg-zinc-800" />
           </div>
 
-          <div className="flex flex-col gap-3">
-            <a href="/api/auth/google" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
-              Continue with Google
-            </a>
-            <a href="/api/auth/42" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
-              Continue with 42
-            </a>
-            <a href="/api/auth/steam" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
-              Continue with Steam
-            </a>
-          </div>
+          <OAuthButtons />
         </>
       )}
 

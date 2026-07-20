@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import OAuthButtons from '../components/OAuthButtons';
 import { ApiError } from '../lib/api';
 
 const OAUTH_ERROR_MESSAGES: Record<string, string> = {
@@ -142,17 +143,7 @@ export default function Login() {
         <div className="h-px flex-1 bg-zinc-800" />
       </div>
 
-      <div className="flex flex-col gap-3">
-        <a href="/api/auth/google" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
-          Continue with Google
-        </a>
-        <a href="/api/auth/42" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
-          Continue with 42
-        </a>
-        <a href="/api/auth/steam" className="rounded border border-zinc-700 px-3 py-2 text-center hover:bg-zinc-900">
-          Continue with Steam
-        </a>
-      </div>
+      <OAuthButtons />
 
       <p className="mt-6 text-sm text-zinc-400">
         No account?{' '}
