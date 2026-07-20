@@ -8,6 +8,7 @@ import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/Reactio
 import ReviewComments from '../components/ReviewComments';
 import Skeleton from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
+import { emitCommentReaction } from '../games/commentBus';
 import { useGameSocket } from '../games/useGameSocket';
 import { ApiError, apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
@@ -175,7 +176,8 @@ export default function Game() {
       replaceReview(reviewId); // met à jour le compteur 💬
       bumpVersion(reviewId); // rafraîchit le thread s'il est ouvert
     },
-    onCommentReaction: () => {},
+    onCommentReaction: ({ commentId, likes, dislikes }) =>
+      emitCommentReaction({ commentId, likes, dislikes }),
   });
 
   const game = loaded?.id === gameId ? loaded.game : undefined;

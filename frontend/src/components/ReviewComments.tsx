@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
 import { ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
+import { onCommentReaction } from '../games/commentBus';
 import { apiFetch } from '../lib/api';
 
 // Thread de commentaires d'un avis (docs/reviews-api.md §2). Récursif jusqu'à
@@ -138,6 +139,8 @@ function CommentNode({
   const [seen, setSeen] = useState(comment);
   const [replies, setReplies] = useState<CommentT[] | null>(null); // null = pas encore chargées
   const [replying, setReplying] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState(comment.text);
 
   // Resync sans effet : quand le parent refetch, il passe un nouvel objet
   // `comment` → on réaligne l'état local (pattern « ajuster pendant le rendu »).
@@ -146,16 +149,28 @@ function CommentNode({
     setC(comment);
   }
 
+  // Temps réel des réactions de commentaire : le bus porte les compteurs
+  // absolus (docs §3), on pose la valeur serveur telle quelle pour cet id.
+  useEffect(
+    () =>
+      onCommentReaction(({ commentId, likes, dislikes }) => {
+        if (commentId === comment.id)
+          setC((prev) => ({ ...prev, _count: { ...prev._count, likes, dislikes } }));
+      }),
+    [comment.id],
+  );
+
   function loadReplies() {
     apiFetch<CommentT[]>(`/comments/${c.id}/replies?limit=50`)
       .then(setReplies)
       .catch(() => {});
   }
 
+  // Optimiste AVANT l'await (même piège que les avis : l'event `comment:reaction`
+  // absolu arrive pendant l'await et se cumulerait avec le patch local).
   async function react(kind: 'like' | 'dislike') {
     if (currentUserId == null || c.deleted) return;
     const removing = c.myReaction === kind;
-    await apiFetch(`/comments/${c.id}/${kind}`, { method: removing ? 'DELETE' : 'POST' });
     setC((prev) => {
       const counts = { ...prev._count };
       if (removing) {
@@ -166,6 +181,23 @@ function CommentNode({
       if (prev.myReaction) counts[`${prev.myReaction}s`] -= 1;
       return { ...prev, _count: counts, myReaction: kind };
     });
+    await apiFetch(`/comments/${c.id}/${kind}`, { method: removing ? 'DELETE' : 'POST' }).catch(
+      () => reload(),
+    );
+  }
+
+  async function saveEdit() {
+    const body = editText.trim();
+    if (!body || body === c.text) {
+      setEditing(false);
+      return;
+    }
+    setC((prev) => ({ ...prev, text: body })); // optimiste
+    setEditing(false);
+    await apiFetch(`/comments/${c.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ text: body }),
+    }).catch(() => reload());
   }
 
   async function remove() {
@@ -202,9 +234,37 @@ function CommentNode({
                   <span className="text-xs italic text-zinc-500">[utilisateur supprimé]</span>
                 )}
               </div>
-              <p className="mt-0.5 whitespace-pre-line text-sm text-zinc-700 dark:text-zinc-200">
-                {c.text}
-              </p>
+              {editing ? (
+                <div className="mt-1 flex flex-col gap-2">
+                  <textarea
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    maxLength={5000}
+                    rows={2}
+                    className="field w-full resize-none px-4 py-2"
+                  />
+                  <div className="flex items-center gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={saveEdit}
+                      className="rounded-full bg-accent px-3 py-1 font-medium text-zinc-950 transition hover:brightness-110"
+                    >
+                      Enregistrer
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(false)}
+                      className="text-zinc-500 transition hover:text-accent"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-0.5 whitespace-pre-line text-sm text-zinc-700 dark:text-zinc-200">
+                  {c.text}
+                </p>
+              )}
               <div className="mt-1 flex items-center gap-3 text-xs text-zinc-500">
                 <button
                   type="button"
@@ -233,6 +293,18 @@ function CommentNode({
                     className="inline-flex items-center gap-1 transition hover:text-accent"
                   >
                     <ReplyIcon /> Répondre
+                  </button>
+                )}
+                {mine && !editing && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditText(c.text);
+                      setEditing(true);
+                    }}
+                    className="transition hover:text-accent"
+                  >
+                    Modifier
                   </button>
                 )}
                 {mine && (
