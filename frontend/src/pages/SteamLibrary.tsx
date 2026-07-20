@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import Skeleton from '../components/Skeleton';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
 
@@ -112,7 +113,24 @@ export default function SteamLibrary() {
     );
   }
 
-  if (loading) return <p className="text-zinc-400">Loading your Steam library…</p>;
+  if (loading)
+    return (
+      <div>
+        <Skeleton className="mb-3 h-8 w-52" />
+        <Skeleton className="mb-6 h-4 w-72" />
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <li key={i} className="card overflow-hidden">
+              <Skeleton className="aspect-[3/4] w-full rounded-none" />
+              <div className="flex flex-col gap-2 p-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
 
   if (error) {
     return (

@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import PlayedButton from '../components/PlayedButton';
+import Skeleton from '../components/Skeleton';
 import { ApiError, apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
 
@@ -119,7 +120,17 @@ export default function Game() {
 
   if (game === null) return <p className="py-24 text-center text-zinc-400">Jeu introuvable.</p>;
   if (!game)
-    return <div className="h-[38vh] animate-pulse rounded-xl bg-zinc-200 md:h-[46vh] dark:bg-zinc-900" />;
+    return (
+      <div className="flex flex-col gap-10">
+        <Skeleton className="h-[38vh] w-full rounded-xl md:h-[46vh]" />
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-4 w-40" />
+          {Array.from({ length: 2 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
 
   const banner = screenshot1080(game);
   const year = game.releaseDate ? new Date(game.releaseDate).getFullYear() : null;

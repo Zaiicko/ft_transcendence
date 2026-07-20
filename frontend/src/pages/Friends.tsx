@@ -1,5 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
 import { usePresenceSocket } from '../friends/usePresenceSocket';
 import { apiFetch, ApiError } from '../lib/api';
@@ -120,7 +121,18 @@ export default function Friends() {
     await load();
   }
 
-  if (loading) return <p className="text-zinc-400">Loading…</p>;
+  if (loading)
+    return (
+      <div className="mx-auto max-w-2xl">
+        <Skeleton className="mb-6 h-8 w-32" />
+        <Skeleton className="mb-6 h-9 w-full rounded-full" />
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-14 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
 
   return (
     <div className="mx-auto max-w-2xl">

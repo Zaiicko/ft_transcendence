@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import PlayedButton from '../components/PlayedButton';
+import { CoverGridSkeleton } from '../components/Skeleton';
 import { apiFetch } from '../lib/api';
 import { imageSize } from '../lib/theme';
 import { GameSummary, ReviewHighlight } from '../lib/types';
@@ -38,6 +39,7 @@ export default function Home() {
   const [highlights, setHighlights] = useState<ReviewHighlight[]>([]);
   const [shown, setShown] = useState(HIGHLIGHTS_STEP);
   const [shownPopular, setShownPopular] = useState(POPULAR_STEP);
+  const [loading, setLoading] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
   const revealTriggers = useRef<ScrollTrigger[]>([]);
 
@@ -56,6 +58,7 @@ export default function Home() {
       // la home est différente à chaque visite
       setPopular(pickRandom(games.data, POPULAR_MAX));
       setHighlights(feed);
+      setLoading(false);
       // Vedette : on sonde des candidats mélangés jusqu'à un screenshot en
       // VRAI 1920×1080 (taille naturelle — le 720p d'un CoD4 pixelise déjà
       // en bannière plein écran). 25 essais max, sinon tant pis.
@@ -153,16 +156,20 @@ export default function Home() {
         // sont poussées vers le bas quand la carte s'insère (double saut)
         <div className="h-[42vh] animate-pulse rounded-xl bg-zinc-200 md:h-[52vh] dark:bg-zinc-900" />
       )}
-      {popular.length > 0 && (
+      {(popular.length > 0 || loading) && (
         <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Populaires en ce moment
           </h2>
-          <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
-            {visiblePopular.map((g) => (
-              <GameCard key={g.id} game={g} />
-            ))}
-          </div>
+          {popular.length > 0 ? (
+            <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+              {visiblePopular.map((g) => (
+                <GameCard key={g.id} game={g} />
+              ))}
+            </div>
+          ) : (
+            <CoverGridSkeleton count={6} />
+          )}
           {shownPopular < popular.length && (
             <button
               type="button"

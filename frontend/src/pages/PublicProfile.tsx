@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
 import type { FriendState, PublicProfile as Profile } from '../lib/types';
@@ -248,7 +249,25 @@ export default function PublicProfile() {
     void load();
   }, [load]);
 
-  if (loading) return <p className="text-zinc-500 dark:text-zinc-400">Loading…</p>;
+  if (loading)
+    return (
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <Skeleton className="h-24 w-24 rounded-full" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-7 w-48" />
+            <Skeleton className="h-4 w-72" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+        </div>
+        <Skeleton className="mb-3 h-4 w-40" />
+        <div className="grid grid-cols-3 gap-4 sm:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="aspect-[3/4] w-full rounded-lg" />
+          ))}
+        </div>
+      </div>
+    );
   if (error || !profile) return <p className="text-red-400">{error ?? 'Profile not found'}</p>;
 
   return (
