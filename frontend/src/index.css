@@ -44,6 +44,14 @@ html {
   overflow-x: hidden;
 }
 
+/* Accessibilité clavier : anneau de focus ambre visible uniquement au clavier
+   (navigation Tab), jamais au clic souris — grâce à :focus-visible. Règle hors
+   @layer pour l'emporter sur les `focus:outline-none` des champs/boutons. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 /* Titres en fonte display partout, sans toucher chaque page (le texte
    courant garde la fonte système) */
 h1,

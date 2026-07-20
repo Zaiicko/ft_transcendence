@@ -2,7 +2,7 @@
 // aux couleurs de chaque marque pour que le logo contraste en jour comme en
 // nuit. Partagé par Login et Signup.
 const BASE =
-  'flex h-11 flex-1 items-center justify-center rounded-full border transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent';
+  'flex h-11 flex-1 items-center justify-center rounded-full border transition hover:brightness-110';
 
 export default function OAuthButtons() {
   return (
