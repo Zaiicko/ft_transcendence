@@ -133,12 +133,12 @@ export default function Friends() {
           placeholder="Username to add"
           value={targetUsername}
           onChange={(e) => setTargetUsername(e.target.value)}
-          className="flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-2"
+          className="flex-1 rounded-full border border-zinc-400/40 bg-zinc-900/5 px-4 py-1.5 text-sm placeholder-zinc-500 focus:border-accent focus:outline-none dark:border-zinc-100/10 dark:bg-zinc-100/5"
         />
         <button
           type="submit"
           disabled={sending}
-          className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+          className="rounded-full bg-accent px-5 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           Add
         </button>
@@ -150,7 +150,7 @@ export default function Friends() {
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Pending requests</h2>
           <ul className="flex flex-col gap-2">
             {incoming.map((r) => (
-              <li key={r.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
+              <li key={r.id} className="card flex items-center justify-between px-3 py-2">
                 <span className="flex items-center gap-2">
                   {r.user.username}
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
@@ -183,7 +183,7 @@ export default function Friends() {
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Sent requests</h2>
           <ul className="flex flex-col gap-2">
             {outgoing.map((r) => (
-              <li key={r.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
+              <li key={r.id} className="card flex items-center justify-between px-3 py-2">
                 <span className="flex items-center gap-2">
                   {r.user.username}
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
@@ -201,7 +201,7 @@ export default function Friends() {
         {suggestions.length > 0 && (
           <ul className="flex flex-col gap-2">
             {suggestions.map((s) => (
-              <li key={s.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
+              <li key={s.id} className="card flex items-center justify-between px-3 py-2">
                 <span className="flex items-center gap-2">
                   {s.username}
                   {s.provider === 'FORTYTWO' && <FortyTwoBadge />}
@@ -227,7 +227,7 @@ export default function Friends() {
         ) : (
           <ul className="flex flex-col gap-2">
             {friends.map((f) => (
-              <li key={f.id} className="flex items-center justify-between rounded border border-zinc-800 px-3 py-2">
+              <li key={f.id} className="card flex items-center justify-between px-3 py-2">
                 <span className="flex items-center gap-2">
                   <span
                     className={`h-2 w-2 rounded-full ${f.isOnline ? 'bg-green-500' : 'bg-zinc-600'}`}

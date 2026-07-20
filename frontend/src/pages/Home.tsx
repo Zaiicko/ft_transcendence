@@ -363,7 +363,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
     <a
       href={target.href}
       data-anim="card"
-      className="flex flex-col gap-2 rounded-xl border border-zinc-300 bg-white/70 p-4 transition hover:border-zinc-500 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
+      className="card flex flex-col gap-2 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600"
     >
       <div className="flex items-center gap-3">
         {target.cover && <img src={target.cover} alt="" className="h-14 w-10 rounded object-cover" />}

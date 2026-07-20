@@ -13,9 +13,12 @@
   --color-zinc-100: #f2f1ee;
   --color-zinc-200: #e4e1db;
   --color-zinc-300: #c9c5be;
-  --color-zinc-400: #a6a29b;
-  --color-zinc-500: #807c75;
-  --color-zinc-600: #55534e;
+  /* 400/500 = gris "atténués" (texte secondaire) sans variante dark: dans le
+     code. Valeurs JOUR ici (plus foncées, lisibles sur blanc) ; les valeurs
+     NUIT sont restaurées sous .dark plus bas. */
+  --color-zinc-400: #74706a;
+  --color-zinc-500: #5f5b54;
+  --color-zinc-600: #4a4844;
   --color-zinc-700: #3a3a40;
   --color-zinc-800: #1e1e22;
   --color-zinc-900: #131316;
@@ -63,6 +66,30 @@ body {
   background:
     radial-gradient(75rem 38rem at 78% -8%, rgba(224, 163, 85, 0.1), transparent 60%),
     #0e0e10;
+}
+
+/* Valeurs NUIT des gris atténués : plus claires que le jour, pour rester
+   lisibles sur fond sombre (le jour, plus foncé, est défini dans @theme). */
+.dark {
+  --color-zinc-400: #a6a29b;
+  --color-zinc-500: #807c75;
+  --color-zinc-600: #55534e;
+}
+
+/* Panneau unifié TiMN : bordure fine + fond + coins doux, un seul style pour
+   toutes les cartes (reviews, amis, suggestions, biblio…). Dans @layer
+   components pour que les utilitaires (hover:border-*, p-*) gardent la main.
+   Le padding reste au cas par cas — les cartes n'ont pas la même densité. */
+@layer components {
+  .card {
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-zinc-200);
+    background-color: color-mix(in oklab, #ffffff 70%, transparent);
+  }
+  .dark .card {
+    border-color: color-mix(in oklab, var(--color-zinc-100) 10%, transparent);
+    background-color: var(--color-zinc-900);
+  }
 }
 
 /* Menu déroulant (recherche) : petit slide + fondu à l'ouverture */

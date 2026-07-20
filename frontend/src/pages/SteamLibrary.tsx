@@ -143,7 +143,7 @@ export default function SteamLibrary() {
           {library && library.matched.length > 0 ? (
             <ul className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {library.matched.map((game) => (
-                <li key={game.id} className="flex flex-col overflow-hidden rounded border border-zinc-800">
+                <li key={game.id} className="card flex flex-col overflow-hidden">
                   {/* Jaquette + titre cliquables → fiche du jeu (consultation) */}
                   <Link to={`/game/${game.id}`} className="group flex flex-1 flex-col">
                     {game.coverUrl ? (
@@ -236,7 +236,7 @@ export default function SteamLibrary() {
       {suggestions && suggestions.suggestions.length > 0 && (
         <ul className="flex flex-col gap-3">
           {suggestions.suggestions.map((s) => (
-            <li key={s.id} className="flex items-center gap-3 rounded border border-zinc-800 p-3">
+            <li key={s.id} className="card flex items-center gap-3 p-3">
               {s.avatarUrl ? (
                 <img src={s.avatarUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
               ) : (

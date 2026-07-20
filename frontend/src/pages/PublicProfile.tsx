@@ -147,7 +147,7 @@ function CompletionCalendar({ entries }: { entries: Profile['calendar'] }) {
 
       {/* Games completed on the hovered/clicked day */}
       {activeGames && activeKey ? (
-        <div className="mt-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+        <div className="card mt-3 p-3">
           <p className="mb-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">{formatDay(activeKey)}</p>
           <ul className="flex flex-wrap gap-3">
             {activeGames.map((g) => (

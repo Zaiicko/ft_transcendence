@@ -196,7 +196,7 @@ export default function Game() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-6 rounded-xl border border-zinc-300 bg-white/70 p-6 sm:flex-row dark:border-zinc-100/10 dark:bg-zinc-900">
+        <div className="card flex flex-col gap-6 p-6 sm:flex-row">
           {game.coverUrl && (
             <img
               src={game.coverUrl}
@@ -262,7 +262,7 @@ export default function Game() {
             {reviews.map((r) => (
               <article
                 key={r.id}
-                className="rounded-xl border border-zinc-300 bg-white/70 p-4 dark:border-zinc-100/10 dark:bg-zinc-900"
+                className="card p-4"
               >
                 <div className="flex items-center gap-3">
                   {r.user?.avatarUrl ? (
@@ -368,7 +368,7 @@ function ReviewForm({ gameId, onCreated }: { gameId: number; onCreated: () => vo
   return (
     <form
       onSubmit={submit}
-      className="mb-6 flex flex-col gap-3 rounded-xl border border-zinc-300 bg-white/70 p-4 dark:border-zinc-100/10 dark:bg-zinc-900"
+      className="mb-6 flex flex-col gap-3 card p-4"
     >
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">Note :</span>
