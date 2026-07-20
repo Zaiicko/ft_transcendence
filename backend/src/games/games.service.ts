@@ -146,6 +146,34 @@ export class GamesService {
     return { data, total, page, limit };
   }
 
+  // Filter options for the catalog: only genres/platforms/studios actually
+  // attached to at least one game, most-used first. Genres/platforms are small
+  // enumerable sets (rendered as chips/dropdowns); studios can be numerous, so
+  // we cap them at the top ones by game count — the `company` substring filter
+  // still matches anything typed.
+  async facets() {
+    const [genres, platforms, companies] = await Promise.all([
+      this.prisma.genre.findMany({
+        select: { id: true, name: true, _count: { select: { games: true } } },
+        orderBy: { games: { _count: 'desc' } },
+      }),
+      this.prisma.platform.findMany({
+        select: { id: true, name: true, _count: { select: { games: true } } },
+        orderBy: { games: { _count: 'desc' } },
+      }),
+      this.prisma.company.findMany({
+        select: { id: true, name: true, _count: { select: { games: true } } },
+        orderBy: { games: { _count: 'desc' } },
+        take: 60,
+      }),
+    ]);
+    const clean = (rows: { id: number; name: string; _count: { games: number } }[]) =>
+      rows
+        .filter((r) => r._count.games > 0)
+        .map((r) => ({ id: r.id, name: r.name, count: r._count.games }));
+    return { genres: clean(genres), platforms: clean(platforms), companies: clean(companies) };
+  }
+
   async findById(id: number) {
     const game = await this.prisma.game.findUnique({
       where: { id },

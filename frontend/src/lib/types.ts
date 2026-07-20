@@ -16,6 +16,19 @@ export interface GameSummary {
   genres?: { id: number; name: string }[];
 }
 
+// GET /games/facets — filtres disponibles pour le catalogue (seulement ceux
+// réellement rattachés à des jeux, les plus utilisés d'abord)
+export interface GameFacet {
+  id: number;
+  name: string;
+  count: number;
+}
+export interface GameFacets {
+  genres: GameFacet[];
+  platforms: GameFacet[];
+  companies: GameFacet[];
+}
+
 // Item de GET /reviews/highlights — user null = compte supprimé,
 // exactement un de game/company est non-null
 export interface ReviewHighlight {

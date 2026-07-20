@@ -34,6 +34,12 @@ export class GamesController {
     return this.gamesService.search(query.q, query.igdb);
   }
 
+  // Declared before ':id' so "facets" is not parsed as an id.
+  @Get('facets')
+  facets() {
+    return this.gamesService.facets();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.gamesService.findById(id);

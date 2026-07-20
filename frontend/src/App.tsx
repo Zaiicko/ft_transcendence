@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Layout from './components/Layout';
+import Catalog from './pages/Catalog';
 import ForgotPassword from './pages/ForgotPassword';
 import Friends from './pages/Friends';
 import Game from './pages/Game';
@@ -30,6 +31,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/games" element={<Catalog />} />
           <Route path="/game/:id" element={<Game />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
