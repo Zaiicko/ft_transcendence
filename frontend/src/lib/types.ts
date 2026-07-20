@@ -14,6 +14,20 @@ export interface GameSummary {
   userRatingCount?: number;
   igdbRating?: number | null;
   genres?: { id: number; name: string }[];
+  // Présents uniquement sur GET /games/:id (fiche) : le jeu parent si ce jeu
+  // est un DLC/extension, et la liste de ses propres DLC/extensions.
+  parent?: { id: number; title: string; coverUrl: string | null } | null;
+  dlcs?: GameDlc[];
+}
+
+// Contenu additionnel rattaché à un jeu (DLC, extension, standalone)
+export interface GameDlc {
+  id: number;
+  title: string;
+  coverUrl: string | null;
+  releaseDate?: string | null;
+  gameType: string;
+  igdbRating?: number | null;
 }
 
 // GET /games/facets — filtres disponibles pour le catalogue (seulement ceux

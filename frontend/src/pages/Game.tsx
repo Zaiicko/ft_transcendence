@@ -11,7 +11,7 @@ import Stars, { StarIcon } from '../components/Stars';
 import { emitCommentReaction } from '../games/commentBus';
 import { useGameSocket } from '../games/useGameSocket';
 import { ApiError, apiFetch } from '../lib/api';
-import { GameSummary } from '../lib/types';
+import { GameDlc, GameSummary } from '../lib/types';
 
 type Stats = { _avg: { rating: number | null }; _count: number };
 
@@ -289,11 +289,25 @@ export default function Game() {
         </div>
       )}
 
+      {/* Ce jeu est lui-même un DLC/extension : lien retour vers le jeu de base */}
+      {game.parent && (
+        <Link
+          to={`/game/${game.parent.id}`}
+          className="inline-flex items-center gap-2 self-start text-sm text-zinc-500 transition hover:text-accent dark:text-zinc-400"
+        >
+          <span aria-hidden>←</span>
+          Contenu de <span className="font-medium">{game.parent.title}</span>
+        </Link>
+      )}
+
       {game.summary && (
         <p className="max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
           {game.summary}
         </p>
       )}
+
+      {/* Extensions & DLC rattachés : choix dans un menu, puis note / "fait" */}
+      {game.dlcs && game.dlcs.length > 0 && <DlcSelector dlcs={game.dlcs} />}
 
       <section ref={reviewRef} id="review" className="scroll-mt-24">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -660,3 +674,97 @@ function EditReviewForm({
     </form>
   );
 }
+
+// Libellé FR du type de contenu additionnel
+function dlcTypeLabel(type: string): string {
+  if (type === 'EXPANSION') return 'Extension';
+  if (type === 'STANDALONE') return 'Standalone';
+  return 'DLC';
+}
+
+const dlcYear = (d: GameDlc) => d.releaseDate?.slice(0, 4);
+
+// Petit lien "Noter" → ouvre la fiche du DLC sur le formulaire de critique
+function RateLink({ id }: { id: number }) {
+  return (
+    <Link
+      to={`/game/${id}#review`}
+      className="inline-flex items-center gap-1.5 rounded-full border border-zinc-400/60 px-3 py-1 text-xs text-zinc-600 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        className="h-3.5 w-3.5 fill-none stroke-current"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+      </svg>
+      Noter
+    </Link>
+  );
+}
+
+// Variante A : un menu déroulant pour choisir un DLC, puis un panneau avec le
+// toggle "fait" (sur place) et le bouton "Noter" pour le DLC sélectionné.
+function DlcSelector({ dlcs }: { dlcs: GameDlc[] }) {
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const selected = dlcs.find((d) => d.id === selectedId) ?? null;
+
+  return (
+    <section>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        Extensions & DLC ({dlcs.length})
+      </h2>
+      <select
+        value={selectedId ?? ''}
+        onChange={(e) => setSelectedId(e.target.value ? Number(e.target.value) : null)}
+        aria-label="Choisir un DLC"
+        className="field w-full max-w-md cursor-pointer px-4 py-2"
+      >
+        <option value="">Choisir un DLC…</option>
+        {dlcs.map((d) => (
+          <option key={d.id} value={d.id}>
+            {dlcTypeLabel(d.gameType)} · {d.title}
+            {dlcYear(d) ? ` (${dlcYear(d)})` : ''}
+          </option>
+        ))}
+      </select>
+
+      {selected && (
+        <div className="card mt-3 flex items-center gap-4 p-4">
+          {selected.coverUrl ? (
+            <img
+              src={selected.coverUrl}
+              alt=""
+              className="h-24 w-auto shrink-0 rounded-lg object-cover"
+            />
+          ) : (
+            <div className="flex h-24 w-16 shrink-0 items-center justify-center rounded-lg bg-zinc-200 text-center text-[10px] text-zinc-500 dark:bg-zinc-800">
+              {dlcTypeLabel(selected.gameType)}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <Link
+              to={`/game/${selected.id}`}
+              className="line-clamp-2 font-semibold transition hover:text-accent"
+            >
+              {selected.title}
+            </Link>
+            <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+              {dlcTypeLabel(selected.gameType)}
+              {dlcYear(selected) ? ` · ${dlcYear(selected)}` : ''}
+            </div>
+            <div className="mt-3 flex items-center gap-3">
+              <PlayedButton gameId={selected.id} />
+              <RateLink id={selected.id} />
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
