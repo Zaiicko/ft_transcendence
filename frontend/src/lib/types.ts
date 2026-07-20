@@ -14,10 +14,26 @@ export interface GameSummary {
   userRatingCount?: number;
   igdbRating?: number | null;
   genres?: { id: number; name: string }[];
+  companies?: { id: number; name: string; logoUrl: string | null }[];
   // Présents uniquement sur GET /games/:id (fiche) : le jeu parent si ce jeu
   // est un DLC/extension, et la liste de ses propres DLC/extensions.
   parent?: { id: number; title: string; coverUrl: string | null } | null;
   dlcs?: GameDlc[];
+}
+
+// GET /companies/:id — fiche studio + ses jeux principaux
+export interface CompanyDetail {
+  id: number;
+  name: string;
+  logoUrl: string | null;
+  games: {
+    id: number;
+    title: string;
+    coverUrl: string | null;
+    releaseDate: string | null;
+    igdbRating: number | null;
+  }[];
+  _count: { games: number; reviews: number };
 }
 
 // Contenu additionnel rattaché à un jeu (DLC, extension, standalone)

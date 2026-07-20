@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
-// Temps réel de la fiche jeu (docs/reviews-api.md §3). Une page = une room.
-// On rejoint au montage ET à chaque `connect` (reconnexion auto). Les payloads
-// de réaction portent les compteurs à jour → setState ciblés, aucun re-fetch.
-export interface GameSocketHandlers {
+// Temps réel des pages jeu ET studio (docs/reviews-api.md §3). Une page = une
+// room (`game:<id>` ou `company:<id>`). On rejoint au montage ET à chaque
+// `connect` (reconnexion auto). Les payloads de réaction portent les compteurs
+// à jour → setState ciblés, aucun re-fetch.
+export interface ReviewSocketHandlers {
   onReviewCreated: (review: unknown) => void;
   onReviewUpdated: (reviewId: number) => void;
   onReviewDeleted: (reviewId: number) => void;
@@ -18,19 +19,26 @@ export interface GameSocketHandlers {
   }) => void;
 }
 
-// "Latest ref" : la socket s'abonne une fois par gameId, mais appelle toujours
-// les handlers les plus frais — pas de ré-abonnement, pas de closure périmée.
-export function useGameSocket(gameId: number, handlers: GameSocketHandlers): void {
+export type ReviewTargetKind = 'game' | 'company';
+
+// "Latest ref" : la socket s'abonne une fois par (kind, id), mais appelle
+// toujours les handlers les plus frais — pas de ré-abonnement, pas de closure
+// périmée.
+export function useReviewSocket(
+  kind: ReviewTargetKind,
+  id: number,
+  handlers: ReviewSocketHandlers,
+): void {
   const ref = useRef(handlers);
   useEffect(() => {
     ref.current = handlers;
   });
 
   useEffect(() => {
-    if (!Number.isFinite(gameId)) return;
+    if (!Number.isFinite(id)) return;
 
     const socket = io({ path: '/socket.io', withCredentials: true });
-    const join = () => socket.emit('game:join', gameId);
+    const join = () => socket.emit(`${kind}:join`, id);
     socket.on('connect', join); // couvre le 1er connect + les reconnexions
 
     socket.on('review:created', (r) => ref.current.onReviewCreated(r));
@@ -55,5 +63,5 @@ export function useGameSocket(gameId: number, handlers: GameSocketHandlers): voi
     return () => {
       socket.disconnect();
     };
-  }, [gameId]);
+  }, [kind, id]);
 }

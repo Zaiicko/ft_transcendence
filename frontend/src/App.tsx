@@ -3,6 +3,7 @@ import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Layout from './components/Layout';
 import Catalog from './pages/Catalog';
+import Company from './pages/Company';
 import ForgotPassword from './pages/ForgotPassword';
 import Friends from './pages/Friends';
 import Game from './pages/Game';
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/games" element={<Catalog />} />
           <Route path="/game/:id" element={<Game />} />
+          <Route path="/company/:id" element={<Company />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -374,8 +374,19 @@ export default function PublicProfile() {
                         <span className="block h-16 w-11 rounded bg-zinc-200 dark:bg-zinc-800" />
                       )}
                     </Link>
-                  ) : cover ? (
-                    <img src={cover} alt="" className="h-16 w-11 shrink-0 rounded object-cover" />
+                  ) : r.company ? (
+                    // Logo studio : object-contain (sinon rogné/zoomé) + fond clair
+                    <Link to={`/company/${r.company.id}`} className="shrink-0">
+                      {cover ? (
+                        <img
+                          src={cover}
+                          alt=""
+                          className="h-16 w-11 rounded bg-white object-contain p-0.5 transition hover:opacity-80"
+                        />
+                      ) : (
+                        <span className="block h-16 w-11 rounded bg-zinc-200 dark:bg-zinc-800" />
+                      )}
+                    </Link>
                   ) : (
                     <span className="block h-16 w-11 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
                   )}

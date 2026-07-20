@@ -19,10 +19,8 @@ const POPULAR_STEP = 6;
 // 6 jeux au départ + 2 clics sur ⌄ maximum
 const POPULAR_MAX = POPULAR_STEP * 3;
 
-// La fiche studio React n'existe pas encore : les avis de studios vivent sur
-// la page de test (deep link #company-<id>) en attendant
 const gameHref = (id: number) => `/game/${id}`;
-const companyHref = (id: number) => `/test-api.html#company-${id}`;
+const companyHref = (id: number) => `/company/${id}`;
 
 const screenshot1080 = (g: GameSummary) =>
   g.screenshots?.[0]?.replace(/t_[a-z0-9_]+/, 't_1080p') ?? null;
@@ -376,11 +374,17 @@ function ScoreBadge({ score, small = false }: { score: number; small?: boolean }
 
 function ReviewCard({ review }: { review: ReviewHighlight }) {
   const target = review.game
-    ? { name: review.game.title, cover: review.game.coverUrl, href: gameHref(review.game.id) }
+    ? {
+        name: review.game.title,
+        cover: review.game.coverUrl,
+        href: gameHref(review.game.id),
+        isCompany: false,
+      }
     : {
         name: review.company?.name ?? '?',
         cover: review.company?.logoUrl ?? null,
         href: review.company ? companyHref(review.company.id) : '/',
+        isCompany: true,
       };
 
   return (
@@ -390,7 +394,17 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
       className="card flex flex-col gap-2 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600"
     >
       <div className="flex items-center gap-3">
-        {target.cover && <img src={target.cover} alt="" className="h-14 w-10 rounded object-cover" />}
+        {target.cover && (
+          <img
+            src={target.cover}
+            alt=""
+            className={
+              target.isCompany
+                ? 'h-14 w-10 shrink-0 rounded bg-white object-contain p-0.5'
+                : 'h-14 w-10 shrink-0 rounded object-cover'
+            }
+          />
+        )}
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold">{target.name}</div>
           <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
