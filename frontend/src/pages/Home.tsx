@@ -222,7 +222,12 @@ function Hero({ game }: { game: GameSummary }) {
   const banner = screenshot1080(game);
   return (
     <div data-anim="hero" className="relative">
-      <div className="relative overflow-hidden rounded-xl border border-zinc-900/10 dark:border-zinc-100/10">
+      {/* Toute la carte est cliquable → fiche du jeu (simple consultation) */}
+      <a
+        href={gameHref(game.id)}
+        aria-label={`Voir ${game.title}`}
+        className="group relative block overflow-hidden rounded-xl border border-zinc-900/10 dark:border-zinc-100/10"
+      >
       {banner ? (
         <img
           data-anim="hero-bg"
@@ -280,15 +285,28 @@ function Hero({ game }: { game: GameSummary }) {
           </>
         )}
       </div>
-      </div>
-      {/* Seul point d'entrée vers la fiche : la bannière elle-même n'est pas
-          cliquable, le CTA garde tout son sens */}
+      </a>
+      {/* Posés par-dessus le lien de la carte (sortis du <a>, plus haut dans
+          l'empilement) : le knob "fait" et le raccourci direct vers le champ
+          de critique (#review défile en bas de la fiche) */}
       <div className="absolute bottom-6 right-6 flex items-center gap-3 md:bottom-10 md:right-10">
         <PlayedButton gameId={game.id} onDark />
         <a
-          href={gameHref(game.id)}
-          className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 shadow-lg transition hover:brightness-110"
+          href={`${gameHref(game.id)}#review`}
+          className="flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 shadow-lg transition hover:brightness-110"
         >
+          {/* Crayon filaire (trait 1.6, style TiMN) : critique */}
+          <svg
+            viewBox="0 0 24 24"
+            className="h-4 w-4 shrink-0 fill-none stroke-current"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+          </svg>
           Écrire une critique
         </a>
       </div>

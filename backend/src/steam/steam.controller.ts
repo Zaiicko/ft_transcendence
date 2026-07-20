@@ -60,14 +60,21 @@ export class SteamController {
           where: { userId: current.sub },
           select: { status: true, playedAt: true },
         },
+        // Whether the user already reviewed it (fills the review shortcut)
+        reviews: {
+          where: { userId: current.sub },
+          select: { id: true },
+          take: 1,
+        },
       },
     });
 
     const matched = games
-      .map(({ playedBy, ...game }) => ({
+      .map(({ playedBy, reviews, ...game }) => ({
         ...game,
         playtimeMinutes: byAppId.get(game.steamAppId!)?.playtime_forever ?? 0,
         playedStatus: playedBy[0]?.status ?? null,
+        reviewed: reviews.length > 0,
       }))
       .sort((a, b) => b.playtimeMinutes - a.playtimeMinutes);
 

@@ -88,21 +88,18 @@ export default function Layout() {
               beta
             </span>
           </Link>
-          <div className="hidden items-center gap-7 text-sm sm:flex">
-            <NavLink to="/" end className={navLink}>
-              Home
-            </NavLink>
-            {user && (
-              <>
-                <NavLink to="/friends" className={navLink}>
-                  Friends
-                </NavLink>
-                <NavLink to="/steam" className={navLink}>
-                  Steam
-                </NavLink>
-              </>
-            )}
-          </div>
+          {/* Le nom du site (à gauche) renvoie déjà à l'accueil — pas de lien
+              "Home" redondant */}
+          {user && (
+            <div className="hidden items-center gap-7 text-sm sm:flex">
+              <NavLink to="/friends" className={navLink}>
+                Friends
+              </NavLink>
+              <NavLink to="/steam" className={navLink}>
+                Steam
+              </NavLink>
+            </div>
+          )}
           <div className="ml-auto w-56 min-w-0 max-w-full">
             <SearchBar />
           </div>

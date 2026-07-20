@@ -15,6 +15,7 @@ interface SteamLibraryGame {
   releaseDate: string | null;
   playtimeMinutes: number;
   playedStatus: string | null;
+  reviewed: boolean;
 }
 
 interface LibraryResponse {
@@ -65,6 +66,24 @@ export default function SteamLibrary() {
       })
       .finally(() => setLoading(false));
   }, [steamLinked]);
+
+  // Coche "fait" directement depuis la bibliothèque : l'API renvoie déjà
+  // playedStatus par jeu, on patche l'état local au lieu de re-fetcher
+  // (la liste peut compter des centaines de jeux)
+  async function togglePlayed(game: SteamLibraryGame) {
+    const marked = game.playedStatus === 'PLAYED';
+    await apiFetch(`/games/${game.id}/played`, { method: marked ? 'DELETE' : 'PUT' });
+    setLibrary((lib) =>
+      lib
+        ? {
+            ...lib,
+            matched: lib.matched.map((m) =>
+              m.id === game.id ? { ...m, playedStatus: marked ? null : 'PLAYED' } : m,
+            ),
+          }
+        : lib,
+    );
+  }
 
   async function handleAddFriend(userId: number) {
     setRequestError(null);
@@ -125,19 +144,77 @@ export default function SteamLibrary() {
             <ul className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {library.matched.map((game) => (
                 <li key={game.id} className="flex flex-col overflow-hidden rounded border border-zinc-800">
-                  {game.coverUrl ? (
-                    <img src={game.coverUrl} alt="" className="aspect-[3/4] w-full object-cover" />
-                  ) : (
-                    <div className="aspect-[3/4] w-full bg-zinc-800" />
-                  )}
-                  <div className="flex flex-1 flex-col gap-1 p-2">
-                    <p className="text-sm font-medium leading-tight">{game.title}</p>
+                  {/* Jaquette + titre cliquables → fiche du jeu (consultation) */}
+                  <Link to={`/game/${game.id}`} className="group flex flex-1 flex-col">
+                    {game.coverUrl ? (
+                      <img
+                        src={game.coverUrl}
+                        alt=""
+                        className="aspect-[3/4] w-full object-cover transition group-hover:opacity-80"
+                      />
+                    ) : (
+                      <div className="aspect-[3/4] w-full bg-zinc-800" />
+                    )}
+                    <p className="p-2 pb-0 text-sm font-medium leading-tight">{game.title}</p>
+                  </Link>
+                  <div className="flex flex-1 flex-col gap-1 p-2 pt-1">
                     <p className="mt-auto text-xs text-zinc-400">{formatPlaytime(game.playtimeMinutes)}</p>
-                    {game.playedStatus && (
+                    {/* PLAYED est porté par le knob ambre ; seuls les autres
+                        statuts (playing/backlog) gardent leur étiquette */}
+                    {game.playedStatus && game.playedStatus !== 'PLAYED' && (
                       <span className="self-start rounded bg-zinc-800 px-1.5 py-0.5 text-xs capitalize text-zinc-300">
                         {game.playedStatus.toLowerCase()}
                       </span>
                     )}
+                    <div className="mt-1 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => togglePlayed(game)}
+                        title={game.playedStatus === 'PLAYED' ? 'Fait — cliquer pour retirer' : "Je l'ai fait"}
+                        aria-label={game.playedStatus === 'PLAYED' ? 'Retirer la marque "fait"' : 'Marquer comme fait'}
+                        className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
+                          game.playedStatus === 'PLAYED'
+                            ? 'border-accent bg-accent text-zinc-950'
+                            : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+                        }`}
+                      >
+                        {/* Coche cerclée filaire (trait 1.6) : "fait" */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-4 w-4 fill-none stroke-current"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <circle cx="12" cy="12" r="9" />
+                          <path d="m8.5 12.5 2.5 2.5 4.5-5.5" />
+                        </svg>
+                      </button>
+                      <Link
+                        to={`/game/${game.id}#review`}
+                        title={game.reviewed ? 'Critique écrite — voir/modifier' : 'Écrire une critique'}
+                        aria-label={`${game.reviewed ? 'Voir ta critique de' : 'Écrire une critique de'} ${game.title}`}
+                        className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
+                          game.reviewed
+                            ? 'border-accent bg-accent text-zinc-950'
+                            : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+                        }`}
+                      >
+                        {/* Crayon filaire (trait 1.6) : critique */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-4 w-4 fill-none stroke-current"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M12 20h9" />
+                          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
                 </li>
               ))}

@@ -1,5 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import PlayedButton from '../components/PlayedButton';
 import { ApiError, apiFetch } from '../lib/api';
@@ -34,6 +34,7 @@ export default function Game() {
   const { id } = useParams();
   const gameId = Number(id);
   const { user } = useAuth();
+  const { hash } = useLocation();
 
   // Résultats tagués par id : au changement de jeu, l'ancien contenu est
   // ignoré sans setState synchrone dans l'effet (règle set-state-in-effect).
@@ -42,6 +43,7 @@ export default function Game() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [reviews, setReviews] = useState<GameReview[]>([]);
   const [sort, setSort] = useState<Sort>('recent');
+  const reviewRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,6 +72,14 @@ export default function Game() {
       cancelled = true;
     };
   }, [gameId, sort]);
+
+  // Arrivée via "Écrire une critique" (lien #review) : on défile jusqu'au
+  // bloc critiques une fois le jeu chargé (la section n'existe pas avant)
+  useEffect(() => {
+    if (hash === '#review' && loaded?.game) {
+      reviewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [hash, loaded]);
 
   function refreshStats() {
     apiFetch<Stats>(`/games/${gameId}/reviews/stats`)
@@ -204,7 +214,7 @@ export default function Game() {
         </p>
       )}
 
-      <section>
+      <section ref={reviewRef} id="review" className="scroll-mt-24">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Critiques{stats && stats._count > 0 ? ` (${stats._count})` : ''}
