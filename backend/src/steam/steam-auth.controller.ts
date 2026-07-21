@@ -12,9 +12,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ModuleRef } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthProvider } from '@prisma/client';
 import { Request, Response } from 'express';
+import { FriendsService } from '../friends/friends.service';
 import { setAuthCookies } from '../auth/auth-cookies.util';
 import { AuthService, JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -49,6 +51,8 @@ export class SteamAuthController {
     private readonly webApi: SteamWebApiService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
+    // Lazy (via ModuleRef) pour éviter un cycle Steam ↔ Friends
+    private readonly moduleRef: ModuleRef,
   ) {}
 
   private frontendUrl(): string {
@@ -174,6 +178,11 @@ export class SteamAuthController {
 
     res.clearCookie(PENDING_COOKIE, { path: PENDING_COOKIE_PATH });
     setAuthCookies(res, await this.auth.issueTokens(user));
+    // Prévient les amis Steam déjà inscrits que ce contact a rejoint (best-effort)
+    this.moduleRef
+      .get(FriendsService, { strict: false })
+      .notifyContactJoined(user.id)
+      .catch(() => {});
     return toPublicUser(user);
   }
 

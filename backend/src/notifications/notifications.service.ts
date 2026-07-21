@@ -177,6 +177,18 @@ export class NotificationsService {
     }
   }
 
+  // Un contact (ami Steam / camarade 42) vient de s'inscrire
+  async friendJoined(actorId: number, recipientId: number, via: 'steam' | '42'): Promise<void> {
+    try {
+      await this.deliver(recipientId, NotificationType.FRIEND_JOINED, {
+        ...(await this.actorPayload(actorId)),
+        via,
+      });
+    } catch (err) {
+      this.logger.warn(`friendJoined notification failed: ${(err as Error).message}`);
+    }
+  }
+
   private async actorPayload(actorId: number) {
     const actor = await this.prisma.user.findUnique({
       where: { id: actorId },

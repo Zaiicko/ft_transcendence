@@ -132,6 +132,55 @@ export class FriendsService {
   // friendship or pending request with (in either direction). Two sources:
   // your Steam friends who are on Saveboxd (if your Steam is linked), and —
   // when you signed in with 42 — other 42-authenticated users.
+  // À l'inscription d'un nouvel utilisateur : prévient ses contacts déjà
+  // présents (amis Steam via la liste Steam, camarades 42 via le provider) que
+  // « X a rejoint ». Steam prioritaire (lien perso > école). Best-effort.
+  async notifyContactJoined(newUserId: number): Promise<void> {
+    try {
+      const nu = await this.prisma.user.findUnique({
+        where: { id: newUserId },
+        select: { steamId: true, provider: true },
+      });
+      if (!nu) return;
+
+      const steamRecipients = new Set<number>();
+      if (nu.steamId) {
+        try {
+          const friendSteamIds = await this.steamWebApi.getFriendIds(nu.steamId);
+          if (friendSteamIds && friendSteamIds.length > 0) {
+            const users = await this.prisma.user.findMany({
+              where: { steamId: { in: friendSteamIds }, id: { not: newUserId } },
+              select: { id: true },
+            });
+            for (const u of users) steamRecipients.add(u.id);
+          }
+        } catch {
+          // Pas de STEAM_API_KEY / Steam injoignable — on saute les contacts Steam
+        }
+      }
+
+      const fortytwoRecipients = new Set<number>();
+      if (nu.provider === AuthProvider.FORTYTWO) {
+        const users = await this.prisma.user.findMany({
+          where: { provider: AuthProvider.FORTYTWO, id: { not: newUserId } },
+          select: { id: true },
+        });
+        for (const u of users) if (!steamRecipients.has(u.id)) fortytwoRecipients.add(u.id);
+      }
+
+      await Promise.all([
+        ...[...steamRecipients].map((id) =>
+          this.notifications.friendJoined(newUserId, id, 'steam'),
+        ),
+        ...[...fortytwoRecipients].map((id) =>
+          this.notifications.friendJoined(newUserId, id, '42'),
+        ),
+      ]);
+    } catch {
+      // Jamais bloquant pour l'inscription
+    }
+  }
+
   async suggestFriends(userId: number): Promise<FriendSuggestion[]> {
     const me = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!me) return [];
