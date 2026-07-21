@@ -156,11 +156,30 @@ export interface ReviewHighlight {
 export type FeedActor = { id: number; username: string; avatarUrl: string | null };
 export type FeedGameRef = { id: number; title: string; coverUrl: string | null };
 
-// `id` unique tous types confondus (préfixé "review-"/"played-"), `at` = date
-// de l'action (tri + curseur "charger plus")
+type FeedCompanyRef = { id: number; name: string; logoUrl: string | null };
+
+// Avis/commentaire cible d'un « like » (assez pour libellé + lien)
+export interface FeedReviewTarget {
+  id: number;
+  title: string;
+  user: FeedActor | null;
+  game: FeedGameRef | null;
+  company: FeedCompanyRef | null;
+}
+export interface FeedCommentTarget {
+  id: number;
+  text: string;
+  user: FeedActor | null;
+  review: { id: number; game: FeedGameRef | null; company: FeedCompanyRef | null };
+}
+
+// `id` unique tous types confondus (préfixé), `at` = date de l'action
+// (tri + curseur "charger plus")
 export type FeedItem =
   | { id: string; kind: 'review'; at: string; review: ReviewHighlight }
-  | { id: string; kind: 'played'; at: string; actor: FeedActor; game: FeedGameRef };
+  | { id: string; kind: 'played'; at: string; actor: FeedActor; game: FeedGameRef }
+  | { id: string; kind: 'review-like'; at: string; actor: FeedActor; review: FeedReviewTarget }
+  | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: FeedCommentTarget };
 
 export interface FeedPage {
   items: FeedItem[];

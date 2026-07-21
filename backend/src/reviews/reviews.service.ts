@@ -342,6 +342,7 @@ export class ReviewsService {
       ]);
       await this.emitReaction(reviewId);
       await this.notifications.reviewLiked(userId, reviewId);
+      void this.feed.onReviewLiked(userId, reviewId);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Already liked — idempotent, not an error

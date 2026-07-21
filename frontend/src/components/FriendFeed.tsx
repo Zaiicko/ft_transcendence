@@ -99,13 +99,18 @@ export default function FriendFeed() {
 
   return (
     <div className="flex flex-col gap-3">
-      {items.map((item) =>
-        item.kind === 'review' ? (
-          <ReviewItem key={item.id} item={item} />
-        ) : (
-          <PlayedItem key={item.id} item={item} />
-        ),
-      )}
+      {items.map((item) => {
+        switch (item.kind) {
+          case 'review':
+            return <ReviewItem key={item.id} item={item} />;
+          case 'played':
+            return <PlayedItem key={item.id} item={item} />;
+          case 'review-like':
+            return <ReviewLikeItem key={item.id} item={item} />;
+          case 'comment-like':
+            return <CommentLikeItem key={item.id} item={item} />;
+        }
+      })}
       {cursor && (
         <button
           type="button"
@@ -183,6 +188,111 @@ function PlayedItem({ item }: { item: Extract<FeedItem, { kind: 'played' }> }) {
         <CheckIcon />
       </span>
     </Link>
+  );
+}
+
+function ReviewLikeItem({ item }: { item: Extract<FeedItem, { kind: 'review-like' }> }) {
+  const r = item.review;
+  const t = target(r.game, r.company, r.id);
+  return (
+    <Link to={t.href} className="card flex gap-3 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600">
+      {t.cover && (
+        <img
+          src={t.cover}
+          alt=""
+          className={
+            t.isCompany
+              ? 'h-16 w-11 shrink-0 rounded bg-white object-contain p-0.5'
+              : 'h-16 w-11 shrink-0 rounded object-cover'
+          }
+        />
+      )}
+      <div className="min-w-0 flex-1">
+        <LikeLine actor={item.actor} author={r.user} at={item.at} what="l'avis" />
+        <div className="mt-1 truncate text-sm font-semibold">« {r.title} »</div>
+        <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">sur {t.name}</div>
+      </div>
+    </Link>
+  );
+}
+
+function CommentLikeItem({ item }: { item: Extract<FeedItem, { kind: 'comment-like' }> }) {
+  const c = item.comment;
+  const t = target(c.review.game, c.review.company, c.review.id);
+  return (
+    <Link to={t.href} className="card flex gap-3 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600">
+      {t.cover && (
+        <img
+          src={t.cover}
+          alt=""
+          className={
+            t.isCompany
+              ? 'h-16 w-11 shrink-0 rounded bg-white object-contain p-0.5'
+              : 'h-16 w-11 shrink-0 rounded object-cover'
+          }
+        />
+      )}
+      <div className="min-w-0 flex-1">
+        <LikeLine actor={item.actor} author={c.user} at={item.at} what="le commentaire" />
+        <p className="mt-1 line-clamp-2 text-sm italic text-zinc-600 dark:text-zinc-400">
+          « {c.text} »
+        </p>
+        <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">sur {t.name}</div>
+      </div>
+    </Link>
+  );
+}
+
+// Libellé « X a aimé <what> de Y » (Y = auteur de l'avis/commentaire)
+function LikeLine({
+  actor,
+  author,
+  at,
+  what,
+}: {
+  actor: { username: string; avatarUrl: string | null };
+  author: { username: string; avatarUrl: string | null } | null;
+  at: string;
+  what: string;
+}) {
+  return (
+    <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+      <Avatar username={actor.username} avatarUrl={actor.avatarUrl} size={20} />
+      <span className="min-w-0 truncate">
+        <span className="font-semibold text-zinc-900 dark:text-zinc-100">{actor.username}</span> a
+        aimé {what} de{' '}
+        <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+          {author?.username ?? '[supprimé]'}
+        </span>
+      </span>
+      <HeartIcon />
+      <span className="ml-auto shrink-0 text-xs text-zinc-400">{relativeTime(at)}</span>
+    </div>
+  );
+}
+
+// Cible (jeu OU studio) → libellé, jaquette et lien deep vers l'avis
+function target(
+  game: { id: number; title: string; coverUrl: string | null } | null,
+  company: { id: number; name: string; logoUrl: string | null } | null,
+  reviewId: number,
+) {
+  if (game) {
+    return { name: game.title, cover: game.coverUrl, href: `${gameHref(game.id)}#review-${reviewId}`, isCompany: false };
+  }
+  return {
+    name: company?.name ?? '?',
+    cover: company?.logoUrl ?? null,
+    href: company ? `${companyHref(company.id)}#review-${reviewId}` : '/',
+    isCompany: true,
+  };
+}
+
+function HeartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0 fill-accent stroke-accent" aria-hidden="true">
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+    </svg>
   );
 }
 

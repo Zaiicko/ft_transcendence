@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { FeedService } from '../../feed/feed.service';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ReviewsGateway } from '../reviews.gateway';
@@ -49,6 +50,7 @@ export class ReviewCommentsService {
     private readonly prisma: PrismaService,
     private readonly gateway: ReviewsGateway,
     private readonly notifications: NotificationsService,
+    private readonly feed: FeedService,
   ) {}
 
   async create(userId: number, reviewId: number, dto: CreateCommentDto) {
@@ -212,6 +214,7 @@ export class ReviewCommentsService {
         this.prisma.reviewCommentLike.create({ data: { userId, commentId } }),
       ]);
       await this.emitReaction(commentId);
+      void this.feed.onCommentLiked(userId, commentId);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') return;
