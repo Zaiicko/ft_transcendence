@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import Avatar from './Avatar';
 import ChatWidget from './ChatWidget';
 import NotificationBell from './NotificationBell';
+import { BellIcon, NotificationPrefsList } from './NotificationSettings';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
 import SearchBar from './SearchBar';
 
@@ -78,6 +79,7 @@ export default function Layout() {
   const [mode, setMode] = useState<ThemeMode>(storedMode);
   const [menuOpen, setMenuOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
+  const [notifPrefsOpen, setNotifPrefsOpen] = useState(false);
 
   // Referme le menu burger à chaque changement de page
   useEffect(() => {
@@ -251,14 +253,27 @@ export default function Layout() {
                     className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-lg border border-zinc-900/10 bg-white py-1 shadow-lg dark:border-zinc-100/10 dark:bg-zinc-900"
                   >
                     {user && (
-                      <Link
-                        to="/settings"
-                        role="menuitem"
-                        onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
-                      >
-                        <Icon>{gearIcon}</Icon> Settings
-                      </Link>
+                      <>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            setNotifPrefsOpen(true);
+                          }}
+                          className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                        >
+                          <BellIcon className="h-4 w-4" /> Notifications
+                        </button>
+                        <Link
+                          to="/settings"
+                          role="menuitem"
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                        >
+                          <Icon>{gearIcon}</Icon> Settings
+                        </Link>
+                      </>
                     )}
                     <button
                       type="button"
@@ -315,6 +330,42 @@ export default function Layout() {
           </nav>
         </div>
       </footer>
+
+      {/* Fenêtre de préférences de notifications (ouverte depuis le menu rouage) */}
+      {notifPrefsOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-zinc-950/40 p-4 pt-20 backdrop-blur-sm"
+          onClick={() => setNotifPrefsOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Préférences de notifications"
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-xl border border-zinc-900/10 bg-white p-5 shadow-2xl dark:border-zinc-100/10 dark:bg-zinc-900"
+          >
+            <div className="mb-1 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-base font-semibold">
+                <BellIcon className="h-5 w-5" /> Notifications
+              </h2>
+              <button
+                type="button"
+                aria-label="Fermer"
+                onClick={() => setNotifPrefsOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-900/5 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-100/10 dark:hover:text-zinc-100"
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2" aria-hidden="true">
+                  <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+            <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
+              Choisis les notifications que tu veux recevoir (cloche + temps réel).
+            </p>
+            <NotificationPrefsList />
+          </div>
+        </div>
+      )}
 
       {/* Messagerie flottante (bas-droite) — visible uniquement connecté */}
       <ChatWidget />
