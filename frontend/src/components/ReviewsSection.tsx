@@ -8,6 +8,7 @@ import Avatar from './Avatar';
 import EmptyState, { PencilIcon } from './EmptyState';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import ReviewComments from './ReviewComments';
+import ShareButton from './ShareButton';
 import Stars from './Stars';
 
 export type ReviewStats = { _avg: { rating: number | null }; _count: number };
@@ -379,6 +380,11 @@ export default function ReviewsSection({
                     >
                       <CommentIcon className="h-3.5 w-3.5" /> {r._count.comments}
                     </button>
+                    <ShareButton
+                      target={{ type: 'REVIEW', reviewId: r.id }}
+                      title="Partager cet avis à un ami"
+                      triggerClassName="inline-flex items-center justify-center rounded-full border border-zinc-400/60 px-2.5 py-1 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+                    />
                     {user && r.user?.id === user.id && (
                       <>
                         <button

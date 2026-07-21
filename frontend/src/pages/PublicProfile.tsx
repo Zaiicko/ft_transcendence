@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useFriendSocket } from '../friends/useFriendSocket';
 import Avatar from '../components/Avatar';
+import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import ProfileLists from '../components/ProfileLists';
@@ -295,7 +296,15 @@ export default function PublicProfile() {
             {profile.playedCount === 1 ? '' : 's'} played
           </p>
         </div>
-        <div className="sm:self-start">
+        <div className="flex items-center gap-2 sm:self-start">
+          {/* Partager ce profil à un ami */}
+          {user && (
+            <ShareButton
+              target={{ type: 'PROFILE', sharedUserId: profile.id }}
+              title="Partager ce profil à un ami"
+              triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+            />
+          )}
           {profile.friendState === 'self' ? (
             <Link
               to="/settings"

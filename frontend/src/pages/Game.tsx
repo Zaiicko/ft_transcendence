@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import AddToListButton from '../components/AddToListButton';
 import PlayedButton from '../components/PlayedButton';
+import ShareButton from '../components/ShareButton';
 import ReviewsSection, { ReviewStats } from '../components/ReviewsSection';
 import Select from '../components/Select';
 import Skeleton from '../components/Skeleton';
@@ -133,6 +134,16 @@ export default function Game() {
       <div className="mt-4 flex items-center gap-3">
         <PlayedButton gameId={gameId} onDark={onDark} showCount refreshKey={playedRefresh} />
         <AddToListButton gameId={gameId} onDark={onDark} />
+        <ShareButton
+          target={{ type: 'GAME', gameId }}
+          dropUp={onDark}
+          title="Partager ce jeu à un ami"
+          triggerClassName={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition ${
+            onDark
+              ? 'border-zinc-100/25 bg-zinc-950/30 text-zinc-200 backdrop-blur hover:border-accent hover:text-accent'
+              : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+          }`}
+        />
       </div>
     </>
   );
