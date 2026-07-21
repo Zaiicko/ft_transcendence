@@ -1,6 +1,25 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import i18n, { LanguageCode, SUPPORTED_LANGUAGES } from '../i18n';
 import { apiFetch } from '../lib/api';
 import type { PublicUser } from '../lib/types';
+
+// Applique la langue enregistrée sur le profil, pour la retrouver d'un
+// appareil à l'autre une fois connecté. 'en' est ignoré : c'est aussi la
+// valeur par défaut en base pour un compte qui n'a jamais choisi de langue
+// explicitement (via le sélecteur, qui PATCH /users/me à chaque changement)
+// — le traiter comme "non défini" laisse la détection navigateur/
+// localStorage gagner pour un nouvel inscrit dont le compte est encore à
+// sa valeur par défaut, au lieu d'écraser à tort un français auto-détecté.
+function applyUserLanguage(user: PublicUser): void {
+  const code = user.language as LanguageCode;
+  if (
+    code !== 'en' &&
+    SUPPORTED_LANGUAGES.some((l) => l.code === code) &&
+    i18n.resolvedLanguage !== code
+  ) {
+    void i18n.changeLanguage(code);
+  }
+}
 
 type LoginResult = PublicUser | { requiresTwoFactor: true };
 
@@ -24,49 +43,63 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const applyUser = useCallback((me: PublicUser) => {
+    setUser(me);
+    applyUserLanguage(me);
+  }, []);
+
   const refreshUser = useCallback(async () => {
     try {
-      setUser(await apiFetch<PublicUser>('/auth/me'));
+      applyUser(await apiFetch<PublicUser>('/auth/me'));
     } catch {
       setUser(null);
     }
-  }, []);
+  }, [applyUser]);
 
   useEffect(() => {
     // setState only happens in the promise callbacks (async), never in the
     // effect's synchronous body — see react-hooks/set-state-in-effect
     apiFetch<PublicUser>('/auth/me')
-      .then((me) => setUser(me))
+      .then(applyUser)
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
-  }, []);
+  }, [applyUser]);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const result = await apiFetch<LoginResult>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
-    if (isTwoFactorChallenge(result)) return result;
-    setUser(result);
-  }, []);
-
-  const completeTwoFactorLogin = useCallback(async (code: string) => {
-    setUser(
-      await apiFetch<PublicUser>('/auth/2fa/verify-login', {
+  const login = useCallback(
+    async (email: string, password: string) => {
+      const result = await apiFetch<LoginResult>('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ code }),
-      }),
-    );
-  }, []);
+        body: JSON.stringify({ email, password }),
+      });
+      if (isTwoFactorChallenge(result)) return result;
+      applyUser(result);
+    },
+    [applyUser],
+  );
 
-  const signup = useCallback(async (email: string, username: string, password: string) => {
-    setUser(
-      await apiFetch<PublicUser>('/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify({ email, username, password }),
-      }),
-    );
-  }, []);
+  const completeTwoFactorLogin = useCallback(
+    async (code: string) => {
+      applyUser(
+        await apiFetch<PublicUser>('/auth/2fa/verify-login', {
+          method: 'POST',
+          body: JSON.stringify({ code }),
+        }),
+      );
+    },
+    [applyUser],
+  );
+
+  const signup = useCallback(
+    async (email: string, username: string, password: string) => {
+      applyUser(
+        await apiFetch<PublicUser>('/auth/signup', {
+          method: 'POST',
+          body: JSON.stringify({ email, username, password }),
+        }),
+      );
+    },
+    [applyUser],
+  );
 
   const logout = useCallback(async () => {
     await apiFetch('/auth/logout', { method: 'POST' });

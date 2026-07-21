@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "Wczytywanie…",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "cancel": "Anuluj",
+    "add": "Dodaj",
+    "back": "Wstecz",
+    "close": "Zamknij",
+    "retry": "Spróbuj ponownie",
+    "delete": "Usuń",
+    "confirm": "Potwierdź",
+    "edit": "Edytuj",
+    "skip": "Pomiń",
+    "error": "Coś poszło nie tak",
+    "yes": "Tak",
+    "no": "Nie"
+  },
+  "nav": {
+    "catalog": "Katalog",
+    "feed": "Feed",
+    "friends": "Znajomi",
+    "steam": "Steam",
+    "login": "Zaloguj się",
+    "signup": "Zarejestruj się"
+  },
+  "menu": {
+    "notifications": "Powiadomienia",
+    "settings": "Ustawienia",
+    "language": "Język",
+    "lightMode": "Jasny motyw",
+    "darkMode": "Ciemny motyw",
+    "logout": "Wyloguj się"
+  },
+  "footer": {
+    "tagline": "Letterboxd dla gier wideo · projekt 42"
+  },
+  "languagePicker": {
+    "title": "Język"
+  },
+  "oauth": {
+    "continueWithGoogle": "Kontynuuj z Google",
+    "continueWithFortyTwo": "Kontynuuj z 42",
+    "continueWithSteam": "Kontynuuj ze Steam",
+    "continueWithDiscord": "Kontynuuj z Discordem",
+    "or": "lub"
+  },
+  "auth": {
+    "login": {
+      "title": "Zaloguj się",
+      "emailPlaceholder": "E-mail",
+      "passwordPlaceholder": "Hasło",
+      "submit": "Zaloguj się",
+      "submitting": "Logowanie…",
+      "forgotPassword": "Nie pamiętasz hasła?",
+      "noAccount": "Nie masz konta?",
+      "signupLink": "Zarejestruj się",
+      "genericError": "Logowanie nie powiodło się",
+      "errorEmailInUse": "Konto z tym adresem e-mail już istnieje. Zaloguj się hasłem albo użyj innego adresu e-mail dla tego dostawcy.",
+      "errorGeneric": "Coś poszło nie tak podczas logowania — spróbuj ponownie.",
+      "steamFailed": "Logowanie przez Steam nie powiodło się — spróbuj ponownie"
+    },
+    "twoFactor": {
+      "title": "Kod dwuskładnikowy",
+      "description": "Wpisz 6-cyfrowy kod z aplikacji uwierzytelniającej.",
+      "verify": "Zweryfikuj",
+      "verifying": "Weryfikowanie…",
+      "invalidCode": "Nieprawidłowy kod"
+    },
+    "signup": {
+      "title": "Zarejestruj się",
+      "titleSteam": "Dokończ rejestrację przez Steam",
+      "steamIntro": "Twoje konto Steam zostało zweryfikowane — wybierz e-mail i potwierdź nazwę użytkownika, aby utworzyć konto Saveboxd.",
+      "emailPlaceholder": "E-mail",
+      "usernamePlaceholder": "Nazwa użytkownika",
+      "usernameHint": "Tylko litery, cyfry i podkreślenia",
+      "passwordPlaceholder": "Hasło (min. 8 znaków)",
+      "passwordPlaceholderSteam": "Hasło (opcjonalnie)",
+      "passwordHintSteam": "Bez hasła logowanie będzie możliwe tylko przez Steam. Hasło będzie można dodać później w profilu.",
+      "submit": "Zarejestruj się",
+      "submitSteam": "Utwórz konto",
+      "submitting": "Tworzenie konta…",
+      "sessionExpired": "Sesja wygasła — zaloguj się ponownie przez Steam",
+      "genericError": "Rejestracja nie powiodła się",
+      "alreadyHaveAccount": "Masz już konto?",
+      "loginLink": "Zaloguj się"
+    },
+    "forgotPassword": {
+      "title": "Nie pamiętasz hasła?",
+      "emailPlaceholder": "E-mail",
+      "submit": "Wyślij link resetujący",
+      "submitting": "Wysyłanie…",
+      "checkEmailTitle": "Sprawdź swoją skrzynkę e-mail",
+      "checkEmailBody": "Jeśli ten adres jest zarejestrowany, link do zresetowania hasła już do Ciebie zmierza.",
+      "backToLogin": "Powrót do logowania",
+      "genericError": "Coś poszło nie tak"
+    },
+    "resetPassword": {
+      "title": "Wybierz nowe hasło",
+      "invalidLinkTitle": "Nieprawidłowy link",
+      "invalidLinkBody": "W tym linku do resetowania hasła brakuje tokenu.",
+      "requestNewLink": "Poproś o nowy",
+      "missingToken": "Brak tokenu resetującego.",
+      "newPasswordPlaceholder": "Nowe hasło (min. 8 znaków)",
+      "submit": "Zresetuj hasło",
+      "submitting": "Resetowanie…",
+      "genericError": "Nie udało się zresetować hasła"
+    },
+    "verifyEmail": {
+      "verifying": "Weryfikowanie adresu e-mail…",
+      "successTitle": "E-mail zweryfikowany",
+      "successBody": "Twój adres został potwierdzony — wszystko gotowe.",
+      "goToProfile": "Przejdź do profilu",
+      "failedTitle": "Weryfikacja nie powiodła się",
+      "backToProfile": "Powrót do profilu",
+      "missingToken": "Brak tokenu weryfikacyjnego.",
+      "genericError": "Weryfikacja nie powiodła się"
+    }
+  },
+  "settings": {
+    "title": "Ustawienia konta",
+    "welcomeTitle": "Witaj w Saveboxd!",
+    "welcomeBody": "Wybraliśmy dla Ciebie nazwę użytkownika {{username}} — zmień ją poniżej, jeśli chcesz, albo zostaw bez zmian.",
+    "changeAvatar": "Zmień awatar",
+    "uploadingAvatar": "Przesyłanie…",
+    "avatarError": "Przesyłanie nie powiodło się",
+    "emailVerified": "E-mail zweryfikowany",
+    "emailNotVerified": "E-mail niezweryfikowany",
+    "resendVerification": "Wyślij ponownie e-mail weryfikacyjny",
+    "resendSending": "Wysyłanie…",
+    "resendSent": "Wysłano e-mail weryfikacyjny — sprawdź swoją skrzynkę odbiorczą.",
+    "resendError": "Nie udało się ponownie wysłać e-maila weryfikacyjnego",
+    "usernameLabel": "Nazwa użytkownika",
+    "bioLabel": "Opis profilu",
+    "saveProfile": "Zapisz profil",
+    "saving": "Zapisywanie…",
+    "skipForNow": "Pomiń na razie",
+    "profileError": "Nie udało się zapisać profilu",
+    "signInVia": "Twoje konto nie ma hasła — logujesz się przez {{provider}}. Dodaj hasło, aby móc logować się też e-mailem.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "Uwierzytelnianie dwuskładnikowe",
+      "enabledDescription": "Włączone. Wpisz kod, aby je wyłączyć.",
+      "disable": "Wyłącz",
+      "disabling": "Wyłączanie…",
+      "scanQr": "Zeskanuj ten kod QR aplikacją uwierzytelniającą:",
+      "manualKeyPrefix": "Albo wpisz ten klucz ręcznie:",
+      "confirm": "Potwierdź",
+      "confirming": "Potwierdzanie…",
+      "notEnabledDescription": "Nieaktywne. Dodaj dodatkowy krok logowania za pomocą aplikacji takiej jak Google Authenticator.",
+      "enable": "Włącz 2FA",
+      "starting": "Uruchamianie…",
+      "invalidCode": "Nieprawidłowy kod",
+      "startError": "Nie udało się rozpocząć konfiguracji 2FA"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "To konto Steam jest już połączone z innym użytkownikiem.",
+      "linkedSuccess": "Konto Steam połączone!",
+      "linkedDescription": "Połączone — możesz logować się przez Steam i importować swoją bibliotekę gier.",
+      "viewLibrary": "Zobacz moją bibliotekę Steam",
+      "unlink": "Odłącz Steam",
+      "unlinking": "Odłączanie…",
+      "unlinkError": "Nie udało się odłączyć Steam",
+      "notLinkedDescription": "Połącz swoje konto Steam, aby logować się przez Steam, importować bibliotekę i znaleźć znajomych ze Steam.",
+      "linkAccount": "Połącz moje konto Steam"
+    },
+    "password": {
+      "changeTitle": "Zmień hasło",
+      "addTitle": "Dodaj hasło",
+      "currentPasswordPlaceholder": "Obecne hasło",
+      "newPasswordPlaceholder": "Nowe hasło (min. 8 znaków)",
+      "save": "Zmień hasło",
+      "add": "Dodaj hasło",
+      "saving": "Zapisywanie…",
+      "saved": "Hasło zapisane!",
+      "error": "Nie udało się zapisać hasła"
+    },
+    "delete": {
+      "title": "Usuń konto",
+      "warning": "To trwale usunie Twoje konto, recenzje, znajomości i wiadomości. Tej operacji nie można cofnąć.",
+      "button": "Usuń konto",
+      "confirmPasswordPlaceholder": "Potwierdź swoje hasło",
+      "confirmButton": "Usuń na stałe",
+      "deleting": "Usuwanie…",
+      "cancel": "Anuluj",
+      "error": "Nie udało się usunąć konta"
+    }
+  },
+  "friends": {
+    "title": "Znajomi",
+    "addPlaceholder": "Nazwa użytkownika do dodania",
+    "add": "Dodaj",
+    "enterUsernameError": "Wpisz nazwę użytkownika",
+    "sendError": "Nie udało się wysłać zaproszenia",
+    "loadError": "Nie udało się wczytać znajomych",
+    "pendingRequests": "Oczekujące zaproszenia",
+    "sentRequests": "Wysłane zaproszenia",
+    "suggestedFriends": "Sugerowani znajomi",
+    "yourFriends": "Twoi znajomi",
+    "pending": "Oczekujące",
+    "online": "Online",
+    "offline": "Offline",
+    "noFriendsTitle": "Jeszcze brak znajomych",
+    "noFriendsDescription": "Dodaj kogoś, wpisując nazwę użytkownika powyżej, albo sprawdź sugestie.",
+    "accept": "Akceptuj",
+    "decline": "Odrzuć",
+    "cancelRequest": "Anuluj zaproszenie",
+    "removeFriend": "Usuń znajomego"
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "empty": "Brak powiadomień.",
+    "prefsDescription": "Wybierz, jakie powiadomienia chcesz otrzymywać (dzwonek + na żywo)."
+  },
+  "home": {
+    "featuredBadge": "Polecana gra",
+    "writeReview": "Napisz recenzję",
+    "popularNow": "Popularne teraz",
+    "showMorePopular": "Pokaż więcej popularnych gier",
+    "popularReviews": "Popularne recenzje",
+    "noReviewsTitle": "Jeszcze brak recenzji",
+    "noReviewsDescription": "Bądź pierwszą osobą, która oceni grę — najlepsze recenzje pojawią się tutaj.",
+    "showMoreReviews": "Pokaż więcej recenzji",
+    "deletedUser": "[usunięty użytkownik]",
+    "viewGame": "Zobacz {{title}}"
+  }
+}

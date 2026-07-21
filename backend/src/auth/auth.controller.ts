@@ -186,6 +186,16 @@ export class AuthController {
     await this.completeOAuth(AuthProvider.FORTYTWO, req.user as OAuthProfile, res);
   }
 
+  @Get('discord')
+  @UseGuards(AuthGuard('discord'))
+  discordLogin() {}
+
+  @Get('discord/callback')
+  @UseGuards(AuthGuard('discord'))
+  async discordCallback(@Req() req: Request, @Res() res: Response) {
+    await this.completeOAuth(AuthProvider.DISCORD, req.user as OAuthProfile, res);
+  }
+
   private async completeOAuth(provider: AuthProvider, profile: OAuthProfile, res: Response) {
     let user: User;
     let isNewUser: boolean;

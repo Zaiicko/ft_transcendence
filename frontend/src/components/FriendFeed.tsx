@@ -45,10 +45,19 @@ function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
 
 export default function FriendFeed() {
   const [filter, setFilter] = useState<Filter>('all');
+  // Repère le changement d'onglet pendant le rendu (plutôt qu'un setState
+  // synchrone dans l'effet ci-dessous) pour passer loading à true sans
+  // rendu intermédiaire superflu — voir react-hooks/set-state-in-effect
+  const [appliedFilter, setAppliedFilter] = useState<Filter>('all');
   const [items, setItems] = useState<FeedItem[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  if (filter !== appliedFilter) {
+    setAppliedFilter(filter);
+    setLoading(true);
+  }
 
   const query = (cur?: string) =>
     `/feed?limit=${PAGE}` +
@@ -58,7 +67,6 @@ export default function FriendFeed() {
   // Recharge à chaque changement d'onglet (repart de zéro)
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     apiFetch<FeedPage>(query())
       .then((page) => {
         if (cancelled) return;

@@ -1,15 +1,12 @@
 import { FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import OAuthButtons from '../components/OAuthButtons';
 import { ApiError } from '../lib/api';
 
-const OAUTH_ERROR_MESSAGES: Record<string, string> = {
-  email_in_use:
-    'An account already exists with this email. Log in with your password instead, or use a different email for that provider.',
-};
-
 export default function Login() {
+  const { t } = useTranslation();
   const { login, completeTwoFactorLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,8 +17,11 @@ export default function Login() {
   const rawFrom = (location.state as { from?: string } | null)?.from;
   const from = rawFrom && !['/login', '/signup'].includes(rawFrom) ? rawFrom : '/';
   const oauthError = searchParams.get('error');
+  const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+    email_in_use: t('auth.login.errorEmailInUse'),
+  };
   const oauthErrorMessage = oauthError
-    ? (OAUTH_ERROR_MESSAGES[oauthError] ?? 'Something went wrong signing in — please try again.')
+    ? (OAUTH_ERROR_MESSAGES[oauthError] ?? t('auth.login.errorGeneric'))
     : null;
 
   const [email, setEmail] = useState('');
@@ -31,9 +31,7 @@ export default function Login() {
   // The Steam callback lands here with ?steam=failed when OpenID verification
   // fails (cancelled login, bad assertion…)
   const [error, setError] = useState<string | null>(() =>
-    new URLSearchParams(location.search).get('steam') === 'failed'
-      ? 'Steam sign-in failed — please try again'
-      : null,
+    new URLSearchParams(location.search).get('steam') === 'failed' ? t('auth.login.steamFailed') : null,
   );
   const [submitting, setSubmitting] = useState(false);
 
@@ -49,7 +47,7 @@ export default function Login() {
         navigate(from, { replace: true });
       }
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Login failed');
+      setError(err instanceof ApiError ? err.message : t('auth.login.genericError'));
     } finally {
       setSubmitting(false);
     }
@@ -63,7 +61,7 @@ export default function Login() {
       await completeTwoFactorLogin(code);
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Invalid code');
+      setError(err instanceof ApiError ? err.message : t('auth.twoFactor.invalidCode'));
     } finally {
       setSubmitting(false);
     }
@@ -72,8 +70,8 @@ export default function Login() {
   if (needsTwoFactor) {
     return (
       <div className="mx-auto max-w-sm">
-        <h1 className="mb-2 text-2xl font-bold tracking-tight">Two-factor code</h1>
-        <p className="mb-6 text-sm text-zinc-400">Enter the 6-digit code from your authenticator app.</p>
+        <h1 className="mb-2 text-2xl font-bold tracking-tight">{t('auth.twoFactor.title')}</h1>
+        <p className="mb-6 text-sm text-zinc-400">{t('auth.twoFactor.description')}</p>
         <form onSubmit={handleCodeSubmit} className="flex flex-col gap-4">
           <input
             type="text"
@@ -93,7 +91,7 @@ export default function Login() {
             disabled={submitting}
             className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
-            {submitting ? 'Verifying…' : 'Verify'}
+            {submitting ? t('auth.twoFactor.verifying') : t('auth.twoFactor.verify')}
           </button>
         </form>
       </div>
@@ -102,7 +100,7 @@ export default function Login() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Log in</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('auth.login.title')}</h1>
       {oauthErrorMessage && (
         <p className="mb-4 rounded border border-red-900/50 bg-red-950/50 px-3 py-2 text-sm text-red-400">
           {oauthErrorMessage}
@@ -112,7 +110,7 @@ export default function Login() {
         <input
           type="email"
           required
-          placeholder="Email"
+          placeholder={t('auth.login.emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="field px-4 py-1.5"
@@ -120,7 +118,7 @@ export default function Login() {
         <input
           type="password"
           required
-          placeholder="Password"
+          placeholder={t('auth.login.passwordPlaceholder')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="field px-4 py-1.5"
@@ -131,28 +129,28 @@ export default function Login() {
           disabled={submitting}
           className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
-          {submitting ? 'Logging in…' : 'Log in'}
+          {submitting ? t('auth.login.submitting') : t('auth.login.submit')}
         </button>
       </form>
 
       <p className="mt-3 text-sm text-zinc-400">
         <Link to="/forgot-password" className="underline">
-          Forgot your password?
+          {t('auth.login.forgotPassword')}
         </Link>
       </p>
 
       <div className="my-6 flex items-center gap-3 text-zinc-500">
         <div className="h-px flex-1 bg-zinc-800" />
-        or
+        {t('oauth.or')}
         <div className="h-px flex-1 bg-zinc-800" />
       </div>
 
       <OAuthButtons />
 
       <p className="mt-6 text-sm text-zinc-400">
-        No account?{' '}
+        {t('auth.login.noAccount')}{' '}
         <Link to="/signup" className="underline">
-          Sign up
+          {t('auth.login.signupLink')}
         </Link>
       </p>
     </div>

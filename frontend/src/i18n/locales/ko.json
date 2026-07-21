@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "로딩 중…",
+    "save": "저장",
+    "saving": "저장 중…",
+    "cancel": "취소",
+    "add": "추가",
+    "back": "뒤로",
+    "close": "닫기",
+    "retry": "다시 시도",
+    "delete": "삭제",
+    "confirm": "확인",
+    "edit": "편집",
+    "skip": "건너뛰기",
+    "error": "문제가 발생했습니다",
+    "yes": "예",
+    "no": "아니요"
+  },
+  "nav": {
+    "catalog": "카탈로그",
+    "feed": "피드",
+    "friends": "친구",
+    "steam": "Steam",
+    "login": "로그인",
+    "signup": "회원가입"
+  },
+  "menu": {
+    "notifications": "알림",
+    "settings": "설정",
+    "language": "언어",
+    "lightMode": "라이트 모드",
+    "darkMode": "다크 모드",
+    "logout": "로그아웃"
+  },
+  "footer": {
+    "tagline": "비디오 게임의 Letterboxd · 42 프로젝트"
+  },
+  "languagePicker": {
+    "title": "언어"
+  },
+  "oauth": {
+    "continueWithGoogle": "Google로 계속하기",
+    "continueWithFortyTwo": "42로 계속하기",
+    "continueWithSteam": "Steam으로 계속하기",
+    "continueWithDiscord": "Discord로 계속하기",
+    "or": "또는"
+  },
+  "auth": {
+    "login": {
+      "title": "로그인",
+      "emailPlaceholder": "이메일",
+      "passwordPlaceholder": "비밀번호",
+      "submit": "로그인",
+      "submitting": "로그인 중…",
+      "forgotPassword": "비밀번호를 잊으셨나요?",
+      "noAccount": "계정이 없으신가요?",
+      "signupLink": "회원가입",
+      "genericError": "로그인에 실패했습니다",
+      "errorEmailInUse": "이 이메일로 이미 계정이 존재합니다. 대신 비밀번호로 로그인하거나 해당 제공자에 다른 이메일을 사용하세요.",
+      "errorGeneric": "로그인 중 문제가 발생했습니다. 다시 시도해 주세요.",
+      "steamFailed": "Steam 로그인에 실패했습니다. 다시 시도해 주세요"
+    },
+    "twoFactor": {
+      "title": "2단계 인증 코드",
+      "description": "인증 앱에 표시된 6자리 코드를 입력하세요.",
+      "verify": "확인",
+      "verifying": "확인 중…",
+      "invalidCode": "잘못된 코드입니다"
+    },
+    "signup": {
+      "title": "회원가입",
+      "titleSteam": "Steam 가입 완료하기",
+      "steamIntro": "Steam 계정이 확인되었습니다. 이메일을 선택하고 사용자 이름을 확인하여 Saveboxd 계정을 만드세요.",
+      "emailPlaceholder": "이메일",
+      "usernamePlaceholder": "사용자 이름",
+      "usernameHint": "영문, 숫자, 밑줄만 사용 가능합니다",
+      "passwordPlaceholder": "비밀번호 (최소 8자)",
+      "passwordPlaceholderSteam": "비밀번호 (선택 사항)",
+      "passwordHintSteam": "비밀번호를 설정하지 않으면 Steam으로만 로그인할 수 있습니다. 나중에 프로필에서 추가할 수 있습니다.",
+      "submit": "회원가입",
+      "submitSteam": "계정 만들기",
+      "submitting": "계정 생성 중…",
+      "sessionExpired": "세션이 만료되었습니다. Steam으로 다시 로그인해 주세요",
+      "genericError": "회원가입에 실패했습니다",
+      "alreadyHaveAccount": "이미 계정이 있으신가요?",
+      "loginLink": "로그인"
+    },
+    "forgotPassword": {
+      "title": "비밀번호를 잊으셨나요?",
+      "emailPlaceholder": "이메일",
+      "submit": "재설정 링크 보내기",
+      "submitting": "전송 중…",
+      "checkEmailTitle": "이메일을 확인하세요",
+      "checkEmailBody": "해당 주소가 등록되어 있다면 비밀번호 재설정 링크가 곧 전송됩니다.",
+      "backToLogin": "로그인으로 돌아가기",
+      "genericError": "문제가 발생했습니다"
+    },
+    "resetPassword": {
+      "title": "새 비밀번호 설정",
+      "invalidLinkTitle": "잘못된 링크",
+      "invalidLinkBody": "이 비밀번호 재설정 링크에 토큰이 없습니다.",
+      "requestNewLink": "새 링크 요청하기",
+      "missingToken": "재설정 토큰이 없습니다.",
+      "newPasswordPlaceholder": "새 비밀번호 (최소 8자)",
+      "submit": "비밀번호 재설정",
+      "submitting": "재설정 중…",
+      "genericError": "비밀번호를 재설정할 수 없습니다"
+    },
+    "verifyEmail": {
+      "verifying": "이메일 확인 중…",
+      "successTitle": "이메일이 확인되었습니다",
+      "successBody": "이메일 주소가 확인되었습니다. 모든 준비가 완료되었습니다.",
+      "goToProfile": "프로필로 이동",
+      "failedTitle": "인증에 실패했습니다",
+      "backToProfile": "프로필로 돌아가기",
+      "missingToken": "인증 토큰이 없습니다.",
+      "genericError": "인증에 실패했습니다"
+    }
+  },
+  "settings": {
+    "title": "계정 설정",
+    "welcomeTitle": "Saveboxd에 오신 것을 환영합니다!",
+    "welcomeBody": "사용자 이름으로 {{username}}을(를) 선택했습니다. 원하시면 아래에서 변경하거나 그대로 두세요.",
+    "changeAvatar": "아바타 변경",
+    "uploadingAvatar": "업로드 중…",
+    "avatarError": "업로드에 실패했습니다",
+    "emailVerified": "이메일 인증됨",
+    "emailNotVerified": "이메일 미인증",
+    "resendVerification": "인증 이메일 다시 보내기",
+    "resendSending": "전송 중…",
+    "resendSent": "인증 이메일을 보냈습니다. 받은 편지함을 확인하세요.",
+    "resendError": "인증 이메일을 다시 보낼 수 없습니다",
+    "usernameLabel": "사용자 이름",
+    "bioLabel": "자기소개",
+    "saveProfile": "프로필 저장",
+    "saving": "저장 중…",
+    "skipForNow": "나중에 하기",
+    "profileError": "프로필을 저장할 수 없습니다",
+    "signInVia": "계정에 비밀번호가 설정되어 있지 않습니다. {{provider}}로 로그인하고 있습니다. 비밀번호를 추가하면 이메일로도 로그인할 수 있습니다.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "2단계 인증",
+      "enabledDescription": "사용 중입니다. 비활성화하려면 코드를 입력하세요.",
+      "disable": "비활성화",
+      "disabling": "비활성화 중…",
+      "scanQr": "인증 앱으로 이 QR 코드를 스캔하세요:",
+      "manualKeyPrefix": "또는 이 키를 직접 입력하세요:",
+      "confirm": "확인",
+      "confirming": "확인 중…",
+      "notEnabledDescription": "사용하지 않는 상태입니다. Google Authenticator 같은 앱으로 로그인에 2단계 인증을 추가하세요.",
+      "enable": "2단계 인증 활성화",
+      "starting": "시작 중…",
+      "invalidCode": "잘못된 코드입니다",
+      "startError": "2단계 인증 설정을 시작할 수 없습니다"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "이 Steam 계정은 이미 다른 사용자와 연결되어 있습니다.",
+      "linkedSuccess": "Steam 계정이 연결되었습니다!",
+      "linkedDescription": "연결됨 — Steam으로 로그인하고 게임 라이브러리를 가져올 수 있습니다.",
+      "viewLibrary": "내 Steam 라이브러리 보기",
+      "unlink": "Steam 연결 해제",
+      "unlinking": "연결 해제 중…",
+      "unlinkError": "Steam 연결을 해제할 수 없습니다",
+      "notLinkedDescription": "Steam 계정을 연결하면 Steam으로 로그인하고 라이브러리를 가져오며 Steam 친구를 찾을 수 있습니다.",
+      "linkAccount": "내 Steam 계정 연결하기"
+    },
+    "password": {
+      "changeTitle": "비밀번호 변경",
+      "addTitle": "비밀번호 추가",
+      "currentPasswordPlaceholder": "현재 비밀번호",
+      "newPasswordPlaceholder": "새 비밀번호 (최소 8자)",
+      "save": "비밀번호 변경",
+      "add": "비밀번호 추가",
+      "saving": "저장 중…",
+      "saved": "비밀번호가 저장되었습니다!",
+      "error": "비밀번호를 저장할 수 없습니다"
+    },
+    "delete": {
+      "title": "계정 삭제",
+      "warning": "이 작업은 계정, 리뷰, 친구 관계, 메시지를 영구적으로 삭제합니다. 되돌릴 수 없습니다.",
+      "button": "계정 삭제",
+      "confirmPasswordPlaceholder": "비밀번호 확인",
+      "confirmButton": "영구 삭제",
+      "deleting": "삭제 중…",
+      "cancel": "취소",
+      "error": "계정을 삭제할 수 없습니다"
+    }
+  },
+  "friends": {
+    "title": "친구",
+    "addPlaceholder": "추가할 사용자 이름",
+    "add": "추가",
+    "enterUsernameError": "사용자 이름을 입력하세요",
+    "sendError": "요청을 보낼 수 없습니다",
+    "loadError": "친구 목록을 불러올 수 없습니다",
+    "pendingRequests": "대기 중인 요청",
+    "sentRequests": "보낸 요청",
+    "suggestedFriends": "추천 친구",
+    "yourFriends": "내 친구",
+    "pending": "대기 중",
+    "online": "온라인",
+    "offline": "오프라인",
+    "noFriendsTitle": "아직 친구가 없습니다",
+    "noFriendsDescription": "위에서 사용자 이름으로 친구를 추가하거나 추천 목록을 확인하세요.",
+    "accept": "수락",
+    "decline": "거절",
+    "cancelRequest": "요청 취소",
+    "removeFriend": "친구 삭제"
+  },
+  "notifications": {
+    "title": "알림",
+    "markAllRead": "모두 읽음으로 표시",
+    "empty": "알림이 없습니다.",
+    "prefsDescription": "받고 싶은 알림 종류를 선택하세요 (알림 벨 + 실시간)."
+  },
+  "home": {
+    "featuredBadge": "추천 게임",
+    "writeReview": "리뷰 작성",
+    "popularNow": "지금 인기 있는",
+    "showMorePopular": "인기 게임 더 보기",
+    "popularReviews": "인기 리뷰",
+    "noReviewsTitle": "아직 리뷰가 없습니다",
+    "noReviewsDescription": "가장 먼저 게임을 평가해 보세요. 훌륭한 리뷰가 여기에 표시됩니다.",
+    "showMoreReviews": "리뷰 더 보기",
+    "deletedUser": "[삭제된 사용자]",
+    "viewGame": "{{title}} 보기"
+  }
+}

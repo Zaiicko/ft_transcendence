@@ -1,8 +1,10 @@
 import { FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiFetch, ApiError } from '../lib/api';
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ export default function ResetPassword() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!token) {
-      setError('Missing reset token.');
+      setError(t('auth.resetPassword.missingToken'));
       return;
     }
     setError(null);
@@ -26,7 +28,7 @@ export default function ResetPassword() {
       });
       navigate('/login', { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not reset password');
+      setError(err instanceof ApiError ? err.message : t('auth.resetPassword.genericError'));
     } finally {
       setSubmitting(false);
     }
@@ -35,10 +37,12 @@ export default function ResetPassword() {
   if (!token) {
     return (
       <div className="mx-auto max-w-sm text-center">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight text-red-400">Invalid link</h1>
-        <p className="mb-6 text-zinc-400">This password reset link is missing its token.</p>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight text-red-400">
+          {t('auth.resetPassword.invalidLinkTitle')}
+        </h1>
+        <p className="mb-6 text-zinc-400">{t('auth.resetPassword.invalidLinkBody')}</p>
         <Link to="/forgot-password" className="underline">
-          Request a new one
+          {t('auth.resetPassword.requestNewLink')}
         </Link>
       </div>
     );
@@ -46,13 +50,13 @@ export default function ResetPassword() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Choose a new password</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('auth.resetPassword.title')}</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="password"
           required
           minLength={8}
-          placeholder="New password (min. 8 characters)"
+          placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="field px-4 py-1.5"
@@ -63,7 +67,7 @@ export default function ResetPassword() {
           disabled={submitting}
           className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
-          {submitting ? 'Resetting…' : 'Reset password'}
+          {submitting ? t('auth.resetPassword.submitting') : t('auth.resetPassword.submit')}
         </button>
       </form>
     </div>

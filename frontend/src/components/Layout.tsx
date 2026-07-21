@@ -1,8 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from './Avatar';
 import ChatWidget from './ChatWidget';
+import LanguageSwitcher from './LanguageSwitcher';
 import NotificationBell from './NotificationBell';
 import { BellIcon, NotificationPrefsList } from './NotificationSettings';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
@@ -55,6 +57,14 @@ const menuIcon = (
   </>
 );
 
+const globeIcon = (
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </>
+);
+
 const logoutIcon = (
   <>
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -73,6 +83,7 @@ const navLink = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 export default function Layout() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -80,11 +91,16 @@ export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [notifPrefsOpen, setNotifPrefsOpen] = useState(false);
+  const [languagePickerOpen, setLanguagePickerOpen] = useState(false);
 
-  // Referme le menu burger à chaque changement de page
-  useEffect(() => {
+  // Referme le menu burger à chaque changement de page — comparé pendant le
+  // rendu plutôt que dans un effet (setState synchrone dans un effet
+  // déclenche un rendu en cascade, voir react-hooks/set-state-in-effect)
+  const [lastPathname, setLastPathname] = useState(location.pathname);
+  if (location.pathname !== lastPathname) {
+    setLastPathname(location.pathname);
     setNavOpen(false);
-  }, [location.pathname]);
+  }
 
   // Synchronise la classe .dark de <html> (et localStorage) avec l'état React
   useEffect(() => {
@@ -131,7 +147,7 @@ export default function Layout() {
                     onClick={() => setNavOpen(false)}
                     className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                   >
-                    Catalogue
+                    {t('nav.catalog')}
                   </NavLink>
                   {user && (
                     <>
@@ -141,7 +157,7 @@ export default function Layout() {
                         onClick={() => setNavOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                       >
-                        Feed
+                        {t('nav.feed')}
                       </NavLink>
                       <NavLink
                         to="/friends"
@@ -149,7 +165,7 @@ export default function Layout() {
                         onClick={() => setNavOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                       >
-                        Friends
+                        {t('nav.friends')}
                       </NavLink>
                       <NavLink
                         to="/steam"
@@ -157,7 +173,7 @@ export default function Layout() {
                         onClick={() => setNavOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                       >
-                        Steam
+                        {t('nav.steam')}
                       </NavLink>
                     </>
                   )}
@@ -177,18 +193,18 @@ export default function Layout() {
               "Home" redondant */}
           <div className="hidden items-center gap-7 text-sm sm:flex">
             <NavLink to="/games" className={navLink}>
-              Catalogue
+              {t('nav.catalog')}
             </NavLink>
             {user && (
               <>
                 <NavLink to="/feed" className={navLink}>
-                  Feed
+                  {t('nav.feed')}
                 </NavLink>
                 <NavLink to="/friends" className={navLink}>
-                  Friends
+                  {t('nav.friends')}
                 </NavLink>
                 <NavLink to="/steam" className={navLink}>
-                  Steam
+                  {t('nav.steam')}
                 </NavLink>
               </>
             )}
@@ -215,13 +231,13 @@ export default function Layout() {
                   state={{ from: location.pathname + location.search }}
                   className="text-zinc-500 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                 >
-                  Log in
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/signup"
                   className="rounded-full border border-zinc-400/60 px-4 py-1.5 transition hover:border-accent hover:text-accent dark:border-zinc-600"
                 >
-                  Sign up
+                  {t('nav.signup')}
                 </Link>
               </>
             )}
@@ -263,7 +279,7 @@ export default function Layout() {
                           }}
                           className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                         >
-                          <BellIcon className="h-4 w-4" /> Notifications
+                          <BellIcon className="h-4 w-4" /> {t('menu.notifications')}
                         </button>
                         <Link
                           to="/settings"
@@ -271,10 +287,21 @@ export default function Layout() {
                           onClick={() => setMenuOpen(false)}
                           className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                         >
-                          <Icon>{gearIcon}</Icon> Settings
+                          <Icon>{gearIcon}</Icon> {t('menu.settings')}
                         </Link>
                       </>
                     )}
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setLanguagePickerOpen(true);
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                    >
+                      <Icon>{globeIcon}</Icon> {t('menu.language')}
+                    </button>
                     <button
                       type="button"
                       role="menuitem"
@@ -282,7 +309,7 @@ export default function Layout() {
                       className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                     >
                       <Icon>{mode === 'dark' ? sunIcon : moonIcon}</Icon>
-                      {mode === 'dark' ? 'Mode jour' : 'Mode nuit'}
+                      {mode === 'dark' ? t('menu.lightMode') : t('menu.darkMode')}
                     </button>
                     {user && (
                       <button
@@ -291,7 +318,7 @@ export default function Layout() {
                         onClick={handleLogout}
                         className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                       >
-                        <Icon>{logoutIcon}</Icon> Log out
+                        <Icon>{logoutIcon}</Icon> {t('menu.logout')}
                       </button>
                     )}
                   </div>
@@ -313,9 +340,7 @@ export default function Layout() {
             <Link to="/" className="font-display text-lg font-bold tracking-tight">
               <span className="text-accent">Save</span>boxd
             </Link>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Le Letterboxd des jeux vidéo · projet 42
-            </p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">{t('footer.tagline')}</p>
           </div>
           <nav className="flex items-center gap-6 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             <Link to="/privacy-policy" className="transition hover:text-accent">
@@ -359,10 +384,41 @@ export default function Layout() {
                 </svg>
               </button>
             </div>
-            <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-              Choisis les notifications que tu veux recevoir (cloche + temps réel).
-            </p>
+            <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">{t('notifications.prefsDescription')}</p>
             <NotificationPrefsList />
+          </div>
+        </div>
+      )}
+
+      {/* Fenêtre du sélecteur de langue (ouverte depuis le menu rouage) */}
+      {languagePickerOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-zinc-950/40 p-4 pt-20 backdrop-blur-sm"
+          onClick={() => setLanguagePickerOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('languagePicker.title')}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-xs rounded-xl border border-zinc-900/10 bg-white p-5 shadow-2xl dark:border-zinc-100/10 dark:bg-zinc-900"
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-base font-semibold">
+                <Icon className="h-5 w-5">{globeIcon}</Icon> {t('languagePicker.title')}
+              </h2>
+              <button
+                type="button"
+                aria-label={t('common.close')}
+                onClick={() => setLanguagePickerOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-900/5 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-100/10 dark:hover:text-zinc-100"
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2" aria-hidden="true">
+                  <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+            <LanguageSwitcher />
           </div>
         </div>
       )}

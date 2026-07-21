@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import EmptyState, { PencilIcon } from '../components/EmptyState';
@@ -36,6 +37,7 @@ function pickRandom<T>(pool: T[], n: number): T[] {
 }
 
 export default function Home() {
+  const { t } = useTranslation();
   const [popular, setPopular] = useState<GameSummary[]>([]);
   const [featured, setFeatured] = useState<GameSummary | null>(null);
   const [highlights, setHighlights] = useState<ReviewHighlight[]>([]);
@@ -138,7 +140,7 @@ export default function Home() {
   useEffect(() => {
     const root = rootRef.current;
     return () => {
-      revealTriggers.current.forEach((t) => t.kill());
+      revealTriggers.current.forEach((trigger) => trigger.kill());
       revealTriggers.current = [];
       root?.querySelectorAll<HTMLElement>('[data-revealed]').forEach((el) => {
         delete el.dataset.revealed;
@@ -161,7 +163,7 @@ export default function Home() {
       {(popular.length > 0 || loading) && (
         <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            Populaires en ce moment
+            {t('home.popularNow')}
           </h2>
           {popular.length > 0 ? (
             <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
@@ -176,8 +178,8 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setShownPopular(shownPopular + POPULAR_STEP)}
-              aria-label="Voir plus de jeux populaires"
-              title="Voir plus de jeux populaires"
+              aria-label={t('home.showMorePopular')}
+              title={t('home.showMorePopular')}
               className="mx-auto mt-4 flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400 hover:opacity-70 dark:border-zinc-700"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2">
@@ -189,14 +191,14 @@ export default function Home() {
       )}
       <section>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          Critiques populaires
+          {t('home.popularReviews')}
         </h2>
         {highlights.length === 0 ? (
           loading ? null : (
             <EmptyState
               icon={<PencilIcon />}
-              title="Aucune critique pour l'instant"
-              description="Sois le premier à noter un jeu — les meilleures critiques apparaîtront ici."
+              title={t('home.noReviewsTitle')}
+              description={t('home.noReviewsDescription')}
             />
           )
         ) : (
@@ -212,7 +214,7 @@ export default function Home() {
                 onClick={() => setShown(shown + HIGHLIGHTS_STEP)}
                 className="mx-auto mt-6 block rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 dark:border-zinc-700"
               >
-                Voir plus de critiques
+                {t('home.showMoreReviews')}
               </button>
             )}
           </>
@@ -235,6 +237,7 @@ function heroMeta(game: GameSummary): string {
 function Hero({ game }: { game: GameSummary }) {
   // Carte "cinéma" façon TiMN : l'image vit dans un grand cadre arrondi et
   // bordé qui respire dans le conteneur, au lieu d'une bannière pleine largeur
+  const { t } = useTranslation();
   const { user } = useAuth();
   const banner = screenshot1080(game);
   return (
@@ -242,7 +245,7 @@ function Hero({ game }: { game: GameSummary }) {
       {/* Toute la carte est cliquable → fiche du jeu (simple consultation) */}
       <a
         href={gameHref(game.id)}
-        aria-label={`Voir ${game.title}`}
+        aria-label={t('home.viewGame', { title: game.title })}
         className="group relative block overflow-hidden rounded-xl border border-zinc-900/10 dark:border-zinc-100/10"
       >
       {banner ? (
@@ -260,7 +263,7 @@ function Hero({ game }: { game: GameSummary }) {
         />
       )}
       <span className="absolute left-4 top-4 rounded-full border border-zinc-100/15 bg-zinc-950/40 px-3 py-1 text-xs text-zinc-200 backdrop-blur">
-        Jeu à la une
+        {t('home.featuredBadge')}
       </span>
       <div
         className={
@@ -327,7 +330,7 @@ function Hero({ game }: { game: GameSummary }) {
               <path d="M12 20h9" />
               <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
             </svg>
-            Écrire une critique
+            {t('home.writeReview')}
           </a>
         </div>
       )}
@@ -373,6 +376,7 @@ function ScoreBadge({ score, small = false }: { score: number; small?: boolean }
 }
 
 function ReviewCard({ review }: { review: ReviewHighlight }) {
+  const { t } = useTranslation();
   // Le lien pointe sur l'avis précis (#review-<id>) : la fiche jeu/studio défile
   // dessus et l'encadre, comme depuis un profil (l'épinglage gère le cas où il
   // n'est pas dans le premier lot chargé).
@@ -418,7 +422,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
                 {review.user.username}
               </span>
             ) : (
-              <em>[utilisateur supprimé]</em>
+              <em>{t('home.deletedUser')}</em>
             )}
           </div>
         </div>

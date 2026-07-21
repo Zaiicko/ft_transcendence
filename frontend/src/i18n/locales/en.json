@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "add": "Add",
+    "back": "Back",
+    "close": "Close",
+    "retry": "Retry",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "skip": "Skip",
+    "error": "Something went wrong",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "catalog": "Catalog",
+    "feed": "Feed",
+    "friends": "Friends",
+    "steam": "Steam",
+    "login": "Log in",
+    "signup": "Sign up"
+  },
+  "menu": {
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "language": "Language",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "logout": "Log out"
+  },
+  "footer": {
+    "tagline": "The Letterboxd of video games · 42 project"
+  },
+  "languagePicker": {
+    "title": "Language"
+  },
+  "oauth": {
+    "continueWithGoogle": "Continue with Google",
+    "continueWithFortyTwo": "Continue with 42",
+    "continueWithSteam": "Continue with Steam",
+    "continueWithDiscord": "Continue with Discord",
+    "or": "or"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "No account?",
+      "signupLink": "Sign up",
+      "genericError": "Login failed",
+      "errorEmailInUse": "An account already exists with this email. Log in with your password instead, or use a different email for that provider.",
+      "errorGeneric": "Something went wrong signing in — please try again.",
+      "steamFailed": "Steam sign-in failed — please try again"
+    },
+    "twoFactor": {
+      "title": "Two-factor code",
+      "description": "Enter the 6-digit code from your authenticator app.",
+      "verify": "Verify",
+      "verifying": "Verifying…",
+      "invalidCode": "Invalid code"
+    },
+    "signup": {
+      "title": "Sign up",
+      "titleSteam": "Finish your Steam sign-up",
+      "steamIntro": "Your Steam account is verified — pick an email and confirm your username to create your Saveboxd account.",
+      "emailPlaceholder": "Email",
+      "usernamePlaceholder": "Username",
+      "usernameHint": "Letters, numbers and underscores only",
+      "passwordPlaceholder": "Password (min. 8 characters)",
+      "passwordPlaceholderSteam": "Password (optional)",
+      "passwordHintSteam": "Without a password you will sign in with Steam only. You can add one later from your profile.",
+      "submit": "Sign up",
+      "submitSteam": "Create account",
+      "submitting": "Creating account…",
+      "sessionExpired": "Session expired — sign in through Steam again",
+      "genericError": "Signup failed",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "emailPlaceholder": "Email",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "checkEmailTitle": "Check your email",
+      "checkEmailBody": "If that address is registered, a password reset link is on its way.",
+      "backToLogin": "Back to log in",
+      "genericError": "Something went wrong"
+    },
+    "resetPassword": {
+      "title": "Choose a new password",
+      "invalidLinkTitle": "Invalid link",
+      "invalidLinkBody": "This password reset link is missing its token.",
+      "requestNewLink": "Request a new one",
+      "missingToken": "Missing reset token.",
+      "newPasswordPlaceholder": "New password (min. 8 characters)",
+      "submit": "Reset password",
+      "submitting": "Resetting…",
+      "genericError": "Could not reset password"
+    },
+    "verifyEmail": {
+      "verifying": "Verifying your email…",
+      "successTitle": "Email verified",
+      "successBody": "Your address is confirmed — you're all set.",
+      "goToProfile": "Go to your profile",
+      "failedTitle": "Verification failed",
+      "backToProfile": "Back to your profile",
+      "missingToken": "Missing verification token.",
+      "genericError": "Verification failed"
+    }
+  },
+  "settings": {
+    "title": "Account settings",
+    "welcomeTitle": "Welcome to Saveboxd!",
+    "welcomeBody": "We picked {{username}} as your username — change it below if you'd like, or leave it as is.",
+    "changeAvatar": "Change avatar",
+    "uploadingAvatar": "Uploading…",
+    "avatarError": "Upload failed",
+    "emailVerified": "Email verified",
+    "emailNotVerified": "Email not verified",
+    "resendVerification": "Resend verification email",
+    "resendSending": "Sending…",
+    "resendSent": "Verification email sent — check your inbox.",
+    "resendError": "Could not resend verification email",
+    "usernameLabel": "Username",
+    "bioLabel": "Bio",
+    "saveProfile": "Save profile",
+    "saving": "Saving…",
+    "skipForNow": "Skip for now",
+    "profileError": "Could not save profile",
+    "signInVia": "Your account has no password — you sign in through {{provider}}. Add one to also log in with your email.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "Two-factor authentication",
+      "enabledDescription": "Enabled. Enter a code to disable it.",
+      "disable": "Disable",
+      "disabling": "Disabling…",
+      "scanQr": "Scan this QR code with your authenticator app:",
+      "manualKeyPrefix": "Or enter this key manually:",
+      "confirm": "Confirm",
+      "confirming": "Confirming…",
+      "notEnabledDescription": "Not enabled. Add a second step at login using an app like Google Authenticator.",
+      "enable": "Enable 2FA",
+      "starting": "Starting…",
+      "invalidCode": "Invalid code",
+      "startError": "Could not start 2FA setup"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "This Steam account is already linked to another user.",
+      "linkedSuccess": "Steam account linked!",
+      "linkedDescription": "Linked — you can sign in with Steam and import your game library.",
+      "viewLibrary": "View my Steam library",
+      "unlink": "Unlink Steam",
+      "unlinking": "Unlinking…",
+      "unlinkError": "Could not unlink Steam",
+      "notLinkedDescription": "Link your Steam account to sign in with Steam, import your library and find your Steam friends.",
+      "linkAccount": "Link my Steam account"
+    },
+    "password": {
+      "changeTitle": "Change password",
+      "addTitle": "Add a password",
+      "currentPasswordPlaceholder": "Current password",
+      "newPasswordPlaceholder": "New password (min. 8 characters)",
+      "save": "Change password",
+      "add": "Add password",
+      "saving": "Saving…",
+      "saved": "Password saved!",
+      "error": "Could not save password"
+    },
+    "delete": {
+      "title": "Delete account",
+      "warning": "This permanently deletes your account, reviews, friendships and messages. This cannot be undone.",
+      "button": "Delete account",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "confirmButton": "Permanently delete",
+      "deleting": "Deleting…",
+      "cancel": "Cancel",
+      "error": "Could not delete account"
+    }
+  },
+  "friends": {
+    "title": "Friends",
+    "addPlaceholder": "Username to add",
+    "add": "Add",
+    "enterUsernameError": "Enter a username",
+    "sendError": "Could not send request",
+    "loadError": "Could not load friends",
+    "pendingRequests": "Pending requests",
+    "sentRequests": "Sent requests",
+    "suggestedFriends": "Suggested friends",
+    "yourFriends": "Your friends",
+    "pending": "Pending",
+    "online": "Online",
+    "offline": "Offline",
+    "noFriendsTitle": "No friends yet",
+    "noFriendsDescription": "Add someone by username above, or check the suggestions.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "cancelRequest": "Cancel request",
+    "removeFriend": "Remove friend"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications.",
+    "prefsDescription": "Choose which notifications you want to receive (bell + real-time)."
+  },
+  "home": {
+    "featuredBadge": "Featured game",
+    "writeReview": "Write a review",
+    "popularNow": "Popular right now",
+    "showMorePopular": "Show more popular games",
+    "popularReviews": "Popular reviews",
+    "noReviewsTitle": "No reviews yet",
+    "noReviewsDescription": "Be the first to rate a game — the best reviews will show up here.",
+    "showMoreReviews": "Show more reviews",
+    "deletedUser": "[deleted user]",
+    "viewGame": "View {{title}}"
+  }
+}

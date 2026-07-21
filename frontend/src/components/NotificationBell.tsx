@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch } from '../lib/api';
@@ -9,6 +10,7 @@ import Avatar from './Avatar';
 // Cloche de notifications (navbar) : pastille de non-lus + panneau déroulant.
 // Temps réel via `notification:new`. Rendue uniquement pour un user connecté.
 export default function NotificationBell() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<AppNotification[]>([]);
@@ -74,7 +76,7 @@ export default function NotificationBell() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Notifications"
+        aria-label={t('notifications.title')}
         aria-expanded={open}
         className="relative flex h-9 w-9 items-center justify-center rounded-full text-zinc-500 transition hover:text-accent dark:text-zinc-400"
       >
@@ -89,21 +91,21 @@ export default function NotificationBell() {
       {open && (
         <div className="absolute right-0 z-30 mt-2 w-80 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
           <header className="flex items-center justify-between border-b border-zinc-200 px-4 py-2.5 dark:border-zinc-700">
-            <h2 className="text-sm font-semibold">Notifications</h2>
+            <h2 className="text-sm font-semibold">{t('notifications.title')}</h2>
             {unread > 0 && (
               <button
                 type="button"
                 onClick={markAllRead}
                 className="text-xs text-accent transition hover:brightness-110"
               >
-                Tout marquer lu
+                {t('notifications.markAllRead')}
               </button>
             )}
           </header>
           <div className="max-h-96 overflow-y-auto">
             {items.length === 0 ? (
               <p className="px-4 py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
-                Aucune notification.
+                {t('notifications.empty')}
               </p>
             ) : (
               <ul>

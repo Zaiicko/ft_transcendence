@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "Yükleniyor…",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "cancel": "İptal",
+    "add": "Ekle",
+    "back": "Geri",
+    "close": "Kapat",
+    "retry": "Tekrar dene",
+    "delete": "Sil",
+    "confirm": "Onayla",
+    "edit": "Düzenle",
+    "skip": "Atla",
+    "error": "Bir şeyler ters gitti",
+    "yes": "Evet",
+    "no": "Hayır"
+  },
+  "nav": {
+    "catalog": "Katalog",
+    "feed": "Akış",
+    "friends": "Arkadaşlar",
+    "steam": "Steam",
+    "login": "Giriş yap",
+    "signup": "Kaydol"
+  },
+  "menu": {
+    "notifications": "Bildirimler",
+    "settings": "Ayarlar",
+    "language": "Dil",
+    "lightMode": "Açık mod",
+    "darkMode": "Koyu mod",
+    "logout": "Çıkış yap"
+  },
+  "footer": {
+    "tagline": "Video oyunlarının Letterboxd'u · 42 projesi"
+  },
+  "languagePicker": {
+    "title": "Dil"
+  },
+  "oauth": {
+    "continueWithGoogle": "Google ile devam et",
+    "continueWithFortyTwo": "42 ile devam et",
+    "continueWithSteam": "Steam ile devam et",
+    "continueWithDiscord": "Discord ile devam et",
+    "or": "veya"
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş yap",
+      "emailPlaceholder": "E-posta",
+      "passwordPlaceholder": "Şifre",
+      "submit": "Giriş yap",
+      "submitting": "Giriş yapılıyor…",
+      "forgotPassword": "Şifreni mi unuttun?",
+      "noAccount": "Hesabın yok mu?",
+      "signupLink": "Kaydol",
+      "genericError": "Giriş başarısız oldu",
+      "errorEmailInUse": "Bu e-posta ile zaten bir hesap var. Şifrenle giriş yap ya da bu sağlayıcı için farklı bir e-posta kullan.",
+      "errorGeneric": "Giriş yapılırken bir şeyler ters gitti — lütfen tekrar dene.",
+      "steamFailed": "Steam ile giriş başarısız oldu — lütfen tekrar dene"
+    },
+    "twoFactor": {
+      "title": "İki faktörlü kod",
+      "description": "Kimlik doğrulama uygulamandaki 6 haneli kodu gir.",
+      "verify": "Doğrula",
+      "verifying": "Doğrulanıyor…",
+      "invalidCode": "Geçersiz kod"
+    },
+    "signup": {
+      "title": "Kaydol",
+      "titleSteam": "Steam kaydını tamamla",
+      "steamIntro": "Steam hesabın doğrulandı — Saveboxd hesabını oluşturmak için bir e-posta seç ve kullanıcı adını onayla.",
+      "emailPlaceholder": "E-posta",
+      "usernamePlaceholder": "Kullanıcı adı",
+      "usernameHint": "Sadece harf, rakam ve alt çizgi",
+      "passwordPlaceholder": "Şifre (en az 8 karakter)",
+      "passwordPlaceholderSteam": "Şifre (isteğe bağlı)",
+      "passwordHintSteam": "Şifre olmadan yalnızca Steam ile giriş yaparsın. Daha sonra profilinden bir şifre ekleyebilirsin.",
+      "submit": "Kaydol",
+      "submitSteam": "Hesap oluştur",
+      "submitting": "Hesap oluşturuluyor…",
+      "sessionExpired": "Oturum süresi doldu — Steam ile tekrar giriş yap",
+      "genericError": "Kayıt başarısız oldu",
+      "alreadyHaveAccount": "Zaten hesabın var mı?",
+      "loginLink": "Giriş yap"
+    },
+    "forgotPassword": {
+      "title": "Şifreni mi unuttun?",
+      "emailPlaceholder": "E-posta",
+      "submit": "Sıfırlama bağlantısı gönder",
+      "submitting": "Gönderiliyor…",
+      "checkEmailTitle": "E-postanı kontrol et",
+      "checkEmailBody": "Bu adres kayıtlıysa, bir şifre sıfırlama bağlantısı yolda.",
+      "backToLogin": "Girişe dön",
+      "genericError": "Bir şeyler ters gitti"
+    },
+    "resetPassword": {
+      "title": "Yeni bir şifre seç",
+      "invalidLinkTitle": "Geçersiz bağlantı",
+      "invalidLinkBody": "Bu şifre sıfırlama bağlantısında jeton eksik.",
+      "requestNewLink": "Yeni bir tane iste",
+      "missingToken": "Sıfırlama jetonu eksik.",
+      "newPasswordPlaceholder": "Yeni şifre (en az 8 karakter)",
+      "submit": "Şifreyi sıfırla",
+      "submitting": "Sıfırlanıyor…",
+      "genericError": "Şifre sıfırlanamadı"
+    },
+    "verifyEmail": {
+      "verifying": "E-postan doğrulanıyor…",
+      "successTitle": "E-posta doğrulandı",
+      "successBody": "Adresin onaylandı — her şey hazır.",
+      "goToProfile": "Profiline git",
+      "failedTitle": "Doğrulama başarısız oldu",
+      "backToProfile": "Profiline dön",
+      "missingToken": "Doğrulama jetonu eksik.",
+      "genericError": "Doğrulama başarısız oldu"
+    }
+  },
+  "settings": {
+    "title": "Hesap ayarları",
+    "welcomeTitle": "Saveboxd'a hoş geldin!",
+    "welcomeBody": "Kullanıcı adın olarak {{username}} seçtik — istersen aşağıdan değiştir, ya da olduğu gibi bırak.",
+    "changeAvatar": "Avatarı değiştir",
+    "uploadingAvatar": "Yükleniyor…",
+    "avatarError": "Yükleme başarısız oldu",
+    "emailVerified": "E-posta doğrulandı",
+    "emailNotVerified": "E-posta doğrulanmadı",
+    "resendVerification": "Doğrulama e-postasını yeniden gönder",
+    "resendSending": "Gönderiliyor…",
+    "resendSent": "Doğrulama e-postası gönderildi — gelen kutunu kontrol et.",
+    "resendError": "Doğrulama e-postası yeniden gönderilemedi",
+    "usernameLabel": "Kullanıcı adı",
+    "bioLabel": "Biyografi",
+    "saveProfile": "Profili kaydet",
+    "saving": "Kaydediliyor…",
+    "skipForNow": "Şimdilik atla",
+    "profileError": "Profil kaydedilemedi",
+    "signInVia": "Hesabının şifresi yok — {{provider}} ile giriş yapıyorsun. E-postanla da giriş yapabilmek için bir şifre ekle.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "İki faktörlü kimlik doğrulama",
+      "enabledDescription": "Etkin. Devre dışı bırakmak için bir kod gir.",
+      "disable": "Devre dışı bırak",
+      "disabling": "Devre dışı bırakılıyor…",
+      "scanQr": "Bu QR kodunu kimlik doğrulama uygulamanla tara:",
+      "manualKeyPrefix": "Ya da bu anahtarı elle gir:",
+      "confirm": "Onayla",
+      "confirming": "Onaylanıyor…",
+      "notEnabledDescription": "Etkin değil. Google Authenticator gibi bir uygulama kullanarak girişe ikinci bir adım ekle.",
+      "enable": "2FA'yı etkinleştir",
+      "starting": "Başlatılıyor…",
+      "invalidCode": "Geçersiz kod",
+      "startError": "2FA kurulumu başlatılamadı"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "Bu Steam hesabı zaten başka bir kullanıcıya bağlı.",
+      "linkedSuccess": "Steam hesabı bağlandı!",
+      "linkedDescription": "Bağlandı — Steam ile giriş yapabilir ve oyun kütüphaneni içe aktarabilirsin.",
+      "viewLibrary": "Steam kütüphanemi görüntüle",
+      "unlink": "Steam bağlantısını kaldır",
+      "unlinking": "Bağlantı kaldırılıyor…",
+      "unlinkError": "Steam bağlantısı kaldırılamadı",
+      "notLinkedDescription": "Steam ile giriş yapmak, kütüphaneni içe aktarmak ve Steam arkadaşlarını bulmak için Steam hesabını bağla.",
+      "linkAccount": "Steam hesabımı bağla"
+    },
+    "password": {
+      "changeTitle": "Şifreyi değiştir",
+      "addTitle": "Şifre ekle",
+      "currentPasswordPlaceholder": "Mevcut şifre",
+      "newPasswordPlaceholder": "Yeni şifre (en az 8 karakter)",
+      "save": "Şifreyi değiştir",
+      "add": "Şifre ekle",
+      "saving": "Kaydediliyor…",
+      "saved": "Şifre kaydedildi!",
+      "error": "Şifre kaydedilemedi"
+    },
+    "delete": {
+      "title": "Hesabı sil",
+      "warning": "Bu işlem hesabını, incelemelerini, arkadaşlıklarını ve mesajlarını kalıcı olarak siler. Bu işlem geri alınamaz.",
+      "button": "Hesabı sil",
+      "confirmPasswordPlaceholder": "Şifreni onayla",
+      "confirmButton": "Kalıcı olarak sil",
+      "deleting": "Siliniyor…",
+      "cancel": "İptal",
+      "error": "Hesap silinemedi"
+    }
+  },
+  "friends": {
+    "title": "Arkadaşlar",
+    "addPlaceholder": "Eklenecek kullanıcı adı",
+    "add": "Ekle",
+    "enterUsernameError": "Bir kullanıcı adı gir",
+    "sendError": "İstek gönderilemedi",
+    "loadError": "Arkadaşlar yüklenemedi",
+    "pendingRequests": "Bekleyen istekler",
+    "sentRequests": "Gönderilen istekler",
+    "suggestedFriends": "Önerilen arkadaşlar",
+    "yourFriends": "Arkadaşların",
+    "pending": "Beklemede",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "noFriendsTitle": "Henüz arkadaşın yok",
+    "noFriendsDescription": "Yukarıdan kullanıcı adıyla birini ekle, ya da önerilere göz at.",
+    "accept": "Kabul et",
+    "decline": "Reddet",
+    "cancelRequest": "İsteği iptal et",
+    "removeFriend": "Arkadaşlıktan çıkar"
+  },
+  "notifications": {
+    "title": "Bildirimler",
+    "markAllRead": "Tümünü okundu işaretle",
+    "empty": "Bildirim yok.",
+    "prefsDescription": "Almak istediğin bildirimleri seç (zil + gerçek zamanlı)."
+  },
+  "home": {
+    "featuredBadge": "Öne çıkan oyun",
+    "writeReview": "İnceleme yaz",
+    "popularNow": "Şu anda popüler",
+    "showMorePopular": "Daha fazla popüler oyun göster",
+    "popularReviews": "Popüler incelemeler",
+    "noReviewsTitle": "Henüz inceleme yok",
+    "noReviewsDescription": "Bir oyunu ilk değerlendiren sen ol — en iyi incelemeler burada görünecek.",
+    "showMoreReviews": "Daha fazla inceleme göster",
+    "deletedUser": "[silinmiş kullanıcı]",
+    "viewGame": "{{title}} oyununu görüntüle"
+  }
+}

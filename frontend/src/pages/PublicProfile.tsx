@@ -5,6 +5,7 @@ import { useFriendSocket } from '../friends/useFriendSocket';
 import Avatar from '../components/Avatar';
 import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
+import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import ProfileLists from '../components/ProfileLists';
 import ProfileReviews from '../components/ProfileReviews';
@@ -287,6 +288,7 @@ export default function PublicProfile() {
           <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
             {profile.username}
             {profile.provider === 'FORTYTWO' && <FortyTwoBadge />}
+            {profile.provider === 'DISCORD' && <DiscordBadge />}
             {profile.steamId && <SteamBadge />}
           </h1>
           {profile.bio && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{profile.bio}</p>}

@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "Загрузка…",
+    "save": "Сохранить",
+    "saving": "Сохранение…",
+    "cancel": "Отмена",
+    "add": "Добавить",
+    "back": "Назад",
+    "close": "Закрыть",
+    "retry": "Повторить",
+    "delete": "Удалить",
+    "confirm": "Подтвердить",
+    "edit": "Редактировать",
+    "skip": "Пропустить",
+    "error": "Что-то пошло не так",
+    "yes": "Да",
+    "no": "Нет"
+  },
+  "nav": {
+    "catalog": "Каталог",
+    "feed": "Лента",
+    "friends": "Друзья",
+    "steam": "Steam",
+    "login": "Войти",
+    "signup": "Регистрация"
+  },
+  "menu": {
+    "notifications": "Уведомления",
+    "settings": "Настройки",
+    "language": "Язык",
+    "lightMode": "Светлая тема",
+    "darkMode": "Тёмная тема",
+    "logout": "Выйти"
+  },
+  "footer": {
+    "tagline": "Letterboxd для видеоигр · проект 42"
+  },
+  "languagePicker": {
+    "title": "Язык"
+  },
+  "oauth": {
+    "continueWithGoogle": "Продолжить с Google",
+    "continueWithFortyTwo": "Продолжить с 42",
+    "continueWithSteam": "Продолжить со Steam",
+    "continueWithDiscord": "Продолжить с Discord",
+    "or": "или"
+  },
+  "auth": {
+    "login": {
+      "title": "Войти",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Пароль",
+      "submit": "Войти",
+      "submitting": "Вход…",
+      "forgotPassword": "Забыл пароль?",
+      "noAccount": "Нет аккаунта?",
+      "signupLink": "Зарегистрироваться",
+      "genericError": "Не удалось войти",
+      "errorEmailInUse": "Аккаунт с таким email уже существует. Войди с паролем или используй другой email для этого способа входа.",
+      "errorGeneric": "Что-то пошло не так при входе — попробуй ещё раз.",
+      "steamFailed": "Не удалось войти через Steam — попробуй ещё раз"
+    },
+    "twoFactor": {
+      "title": "Код двухфакторной аутентификации",
+      "description": "Введи 6-значный код из приложения-аутентификатора.",
+      "verify": "Подтвердить",
+      "verifying": "Проверка…",
+      "invalidCode": "Неверный код"
+    },
+    "signup": {
+      "title": "Регистрация",
+      "titleSteam": "Заверши регистрацию через Steam",
+      "steamIntro": "Твой аккаунт Steam подтверждён — выбери email и подтверди имя пользователя, чтобы создать аккаунт Saveboxd.",
+      "emailPlaceholder": "Email",
+      "usernamePlaceholder": "Имя пользователя",
+      "usernameHint": "Только буквы, цифры и подчёркивания",
+      "passwordPlaceholder": "Пароль (минимум 8 символов)",
+      "passwordPlaceholderSteam": "Пароль (необязательно)",
+      "passwordHintSteam": "Без пароля ты сможешь входить только через Steam. Позже можно добавить его в профиле.",
+      "submit": "Зарегистрироваться",
+      "submitSteam": "Создать аккаунт",
+      "submitting": "Создание аккаунта…",
+      "sessionExpired": "Сессия истекла — снова войди через Steam",
+      "genericError": "Не удалось зарегистрироваться",
+      "alreadyHaveAccount": "Уже есть аккаунт?",
+      "loginLink": "Войти"
+    },
+    "forgotPassword": {
+      "title": "Забыл пароль?",
+      "emailPlaceholder": "Email",
+      "submit": "Отправить ссылку для сброса",
+      "submitting": "Отправка…",
+      "checkEmailTitle": "Проверь почту",
+      "checkEmailBody": "Если этот адрес зарегистрирован, ссылка для сброса пароля уже в пути.",
+      "backToLogin": "Назад ко входу",
+      "genericError": "Что-то пошло не так"
+    },
+    "resetPassword": {
+      "title": "Придумай новый пароль",
+      "invalidLinkTitle": "Недействительная ссылка",
+      "invalidLinkBody": "В этой ссылке для сброса пароля отсутствует токен.",
+      "requestNewLink": "Запросить новую",
+      "missingToken": "Отсутствует токен сброса.",
+      "newPasswordPlaceholder": "Новый пароль (минимум 8 символов)",
+      "submit": "Сбросить пароль",
+      "submitting": "Сброс…",
+      "genericError": "Не удалось сбросить пароль"
+    },
+    "verifyEmail": {
+      "verifying": "Подтверждаем твой email…",
+      "successTitle": "Email подтверждён",
+      "successBody": "Твой адрес подтверждён — всё готово.",
+      "goToProfile": "Перейти в профиль",
+      "failedTitle": "Не удалось подтвердить",
+      "backToProfile": "Назад в профиль",
+      "missingToken": "Отсутствует токен подтверждения.",
+      "genericError": "Не удалось подтвердить"
+    }
+  },
+  "settings": {
+    "title": "Настройки аккаунта",
+    "welcomeTitle": "Добро пожаловать в Saveboxd!",
+    "welcomeBody": "Мы выбрали {{username}} в качестве твоего имени пользователя — измени его ниже, если хочешь, или оставь как есть.",
+    "changeAvatar": "Изменить аватар",
+    "uploadingAvatar": "Загрузка…",
+    "avatarError": "Не удалось загрузить",
+    "emailVerified": "Email подтверждён",
+    "emailNotVerified": "Email не подтверждён",
+    "resendVerification": "Отправить письмо с подтверждением ещё раз",
+    "resendSending": "Отправка…",
+    "resendSent": "Письмо с подтверждением отправлено — проверь почту.",
+    "resendError": "Не удалось отправить письмо с подтверждением",
+    "usernameLabel": "Имя пользователя",
+    "bioLabel": "О себе",
+    "saveProfile": "Сохранить профиль",
+    "saving": "Сохранение…",
+    "skipForNow": "Пропустить пока",
+    "profileError": "Не удалось сохранить профиль",
+    "signInVia": "У твоего аккаунта нет пароля — ты входишь через {{provider}}. Добавь пароль, чтобы также входить по email.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "Двухфакторная аутентификация",
+      "enabledDescription": "Включена. Введи код, чтобы отключить.",
+      "disable": "Отключить",
+      "disabling": "Отключение…",
+      "scanQr": "Отсканируй этот QR-код в приложении-аутентификаторе:",
+      "manualKeyPrefix": "Или введи этот ключ вручную:",
+      "confirm": "Подтвердить",
+      "confirming": "Подтверждение…",
+      "notEnabledDescription": "Не включена. Добавь дополнительный шаг при входе с помощью приложения вроде Google Authenticator.",
+      "enable": "Включить 2FA",
+      "starting": "Запуск…",
+      "invalidCode": "Неверный код",
+      "startError": "Не удалось запустить настройку 2FA"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "Этот аккаунт Steam уже привязан к другому пользователю.",
+      "linkedSuccess": "Аккаунт Steam привязан!",
+      "linkedDescription": "Привязан — ты можешь входить через Steam и импортировать свою библиотеку игр.",
+      "viewLibrary": "Посмотреть мою библиотеку Steam",
+      "unlink": "Отвязать Steam",
+      "unlinking": "Отвязка…",
+      "unlinkError": "Не удалось отвязать Steam",
+      "notLinkedDescription": "Привяжи аккаунт Steam, чтобы входить через Steam, импортировать библиотеку и находить друзей из Steam.",
+      "linkAccount": "Привязать мой аккаунт Steam"
+    },
+    "password": {
+      "changeTitle": "Изменить пароль",
+      "addTitle": "Добавить пароль",
+      "currentPasswordPlaceholder": "Текущий пароль",
+      "newPasswordPlaceholder": "Новый пароль (минимум 8 символов)",
+      "save": "Изменить пароль",
+      "add": "Добавить пароль",
+      "saving": "Сохранение…",
+      "saved": "Пароль сохранён!",
+      "error": "Не удалось сохранить пароль"
+    },
+    "delete": {
+      "title": "Удалить аккаунт",
+      "warning": "Это навсегда удалит твой аккаунт, рецензии, друзей и сообщения. Это действие нельзя отменить.",
+      "button": "Удалить аккаунт",
+      "confirmPasswordPlaceholder": "Подтверди свой пароль",
+      "confirmButton": "Удалить навсегда",
+      "deleting": "Удаление…",
+      "cancel": "Отмена",
+      "error": "Не удалось удалить аккаунт"
+    }
+  },
+  "friends": {
+    "title": "Друзья",
+    "addPlaceholder": "Имя пользователя для добавления",
+    "add": "Добавить",
+    "enterUsernameError": "Введи имя пользователя",
+    "sendError": "Не удалось отправить запрос",
+    "loadError": "Не удалось загрузить друзей",
+    "pendingRequests": "Входящие запросы",
+    "sentRequests": "Отправленные запросы",
+    "suggestedFriends": "Рекомендуемые друзья",
+    "yourFriends": "Твои друзья",
+    "pending": "В ожидании",
+    "online": "В сети",
+    "offline": "Не в сети",
+    "noFriendsTitle": "Пока нет друзей",
+    "noFriendsDescription": "Добавь кого-нибудь по имени пользователя выше или посмотри рекомендации.",
+    "accept": "Принять",
+    "decline": "Отклонить",
+    "cancelRequest": "Отменить запрос",
+    "removeFriend": "Удалить из друзей"
+  },
+  "notifications": {
+    "title": "Уведомления",
+    "markAllRead": "Отметить все как прочитанные",
+    "empty": "Нет уведомлений.",
+    "prefsDescription": "Выбери, какие уведомления ты хочешь получать (колокольчик + в реальном времени)."
+  },
+  "home": {
+    "featuredBadge": "Рекомендуемая игра",
+    "writeReview": "Написать рецензию",
+    "popularNow": "Популярно сейчас",
+    "showMorePopular": "Показать больше популярных игр",
+    "popularReviews": "Популярные рецензии",
+    "noReviewsTitle": "Пока нет рецензий",
+    "noReviewsDescription": "Стань первым, кто оценит игру — лучшие рецензии появятся здесь.",
+    "showMoreReviews": "Показать больше рецензий",
+    "deletedUser": "[удалённый пользователь]",
+    "viewGame": "Посмотреть {{title}}"
+  }
+}

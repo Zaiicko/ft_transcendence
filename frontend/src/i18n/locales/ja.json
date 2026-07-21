@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "読み込み中…",
+    "save": "保存",
+    "saving": "保存中…",
+    "cancel": "キャンセル",
+    "add": "追加",
+    "back": "戻る",
+    "close": "閉じる",
+    "retry": "再試行",
+    "delete": "削除",
+    "confirm": "確認",
+    "edit": "編集",
+    "skip": "スキップ",
+    "error": "エラーが発生しました",
+    "yes": "はい",
+    "no": "いいえ"
+  },
+  "nav": {
+    "catalog": "カタログ",
+    "feed": "フィード",
+    "friends": "フレンド",
+    "steam": "Steam",
+    "login": "ログイン",
+    "signup": "新規登録"
+  },
+  "menu": {
+    "notifications": "通知",
+    "settings": "設定",
+    "language": "言語",
+    "lightMode": "ライトモード",
+    "darkMode": "ダークモード",
+    "logout": "ログアウト"
+  },
+  "footer": {
+    "tagline": "ビデオゲーム版 Letterboxd ・ 42 プロジェクト"
+  },
+  "languagePicker": {
+    "title": "言語"
+  },
+  "oauth": {
+    "continueWithGoogle": "Google で続ける",
+    "continueWithFortyTwo": "42 で続ける",
+    "continueWithSteam": "Steam で続ける",
+    "continueWithDiscord": "Discord で続ける",
+    "or": "または"
+  },
+  "auth": {
+    "login": {
+      "title": "ログイン",
+      "emailPlaceholder": "メールアドレス",
+      "passwordPlaceholder": "パスワード",
+      "submit": "ログイン",
+      "submitting": "ログイン中…",
+      "forgotPassword": "パスワードをお忘れですか？",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "signupLink": "新規登録",
+      "genericError": "ログインに失敗しました",
+      "errorEmailInUse": "このメールアドレスは既に登録されています。パスワードでログインするか、別のメールアドレスをご利用ください。",
+      "errorGeneric": "サインイン中に問題が発生しました。もう一度お試しください。",
+      "steamFailed": "Steam でのサインインに失敗しました。もう一度お試しください"
+    },
+    "twoFactor": {
+      "title": "二段階認証コード",
+      "description": "認証アプリに表示されている6桁のコードを入力してください。",
+      "verify": "確認",
+      "verifying": "確認中…",
+      "invalidCode": "コードが無効です"
+    },
+    "signup": {
+      "title": "新規登録",
+      "titleSteam": "Steam 登録を完了する",
+      "steamIntro": "Steam アカウントの確認が完了しました。メールアドレスを選び、ユーザー名を確認して Saveboxd アカウントを作成してください。",
+      "emailPlaceholder": "メールアドレス",
+      "usernamePlaceholder": "ユーザー名",
+      "usernameHint": "英字・数字・アンダースコアのみ使用できます",
+      "passwordPlaceholder": "パスワード（8文字以上）",
+      "passwordPlaceholderSteam": "パスワード（任意）",
+      "passwordHintSteam": "パスワードを設定しない場合、Steam でのみサインインできます。後でプロフィールから追加できます。",
+      "submit": "新規登録",
+      "submitSteam": "アカウントを作成",
+      "submitting": "アカウントを作成中…",
+      "sessionExpired": "セッションの有効期限が切れました。もう一度 Steam でサインインしてください",
+      "genericError": "登録に失敗しました",
+      "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "ログイン"
+    },
+    "forgotPassword": {
+      "title": "パスワードをお忘れですか？",
+      "emailPlaceholder": "メールアドレス",
+      "submit": "リセットリンクを送信",
+      "submitting": "送信中…",
+      "checkEmailTitle": "メールをご確認ください",
+      "checkEmailBody": "そのアドレスが登録されている場合、パスワードリセットリンクをお送りします。",
+      "backToLogin": "ログインに戻る",
+      "genericError": "エラーが発生しました"
+    },
+    "resetPassword": {
+      "title": "新しいパスワードを設定",
+      "invalidLinkTitle": "無効なリンク",
+      "invalidLinkBody": "このパスワードリセットリンクにはトークンが含まれていません。",
+      "requestNewLink": "新しいリンクをリクエスト",
+      "missingToken": "リセットトークンがありません。",
+      "newPasswordPlaceholder": "新しいパスワード（8文字以上）",
+      "submit": "パスワードをリセット",
+      "submitting": "リセット中…",
+      "genericError": "パスワードをリセットできませんでした"
+    },
+    "verifyEmail": {
+      "verifying": "メールアドレスを確認中…",
+      "successTitle": "メールアドレスが確認されました",
+      "successBody": "メールアドレスの確認が完了しました。準備は万端です。",
+      "goToProfile": "プロフィールへ移動",
+      "failedTitle": "確認に失敗しました",
+      "backToProfile": "プロフィールに戻る",
+      "missingToken": "確認トークンがありません。",
+      "genericError": "確認に失敗しました"
+    }
+  },
+  "settings": {
+    "title": "アカウント設定",
+    "welcomeTitle": "Saveboxd へようこそ！",
+    "welcomeBody": "ユーザー名として {{username}} を選びました。変更したい場合は下記で変更できます。そのままでも構いません。",
+    "changeAvatar": "アバターを変更",
+    "uploadingAvatar": "アップロード中…",
+    "avatarError": "アップロードに失敗しました",
+    "emailVerified": "メールアドレス確認済み",
+    "emailNotVerified": "メールアドレス未確認",
+    "resendVerification": "確認メールを再送信",
+    "resendSending": "送信中…",
+    "resendSent": "確認メールを送信しました。受信トレイをご確認ください。",
+    "resendError": "確認メールを再送信できませんでした",
+    "usernameLabel": "ユーザー名",
+    "bioLabel": "自己紹介",
+    "saveProfile": "プロフィールを保存",
+    "saving": "保存中…",
+    "skipForNow": "後で行う",
+    "profileError": "プロフィールを保存できませんでした",
+    "signInVia": "このアカウントにはパスワードが設定されていません。{{provider}} でサインインしています。パスワードを追加するとメールアドレスでもログインできます。",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "二段階認証",
+      "enabledDescription": "有効になっています。無効にするにはコードを入力してください。",
+      "disable": "無効にする",
+      "disabling": "無効にしています…",
+      "scanQr": "認証アプリでこの QR コードをスキャンしてください：",
+      "manualKeyPrefix": "または、このキーを手動で入力してください：",
+      "confirm": "確認",
+      "confirming": "確認中…",
+      "notEnabledDescription": "無効になっています。Google Authenticator などのアプリでログイン時の第2段階を追加できます。",
+      "enable": "2段階認証を有効にする",
+      "starting": "開始しています…",
+      "invalidCode": "コードが無効です",
+      "startError": "2段階認証の設定を開始できませんでした"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "この Steam アカウントは既に別のユーザーに連携されています。",
+      "linkedSuccess": "Steam アカウントを連携しました！",
+      "linkedDescription": "連携済みです。Steam でサインインし、ゲームライブラリをインポートできます。",
+      "viewLibrary": "自分の Steam ライブラリを見る",
+      "unlink": "Steam の連携を解除",
+      "unlinking": "連携を解除中…",
+      "unlinkError": "Steam の連携を解除できませんでした",
+      "notLinkedDescription": "Steam アカウントを連携すると、Steam でサインインしたり、ライブラリをインポートしたり、Steam フレンドを見つけたりできます。",
+      "linkAccount": "自分の Steam アカウントを連携する"
+    },
+    "password": {
+      "changeTitle": "パスワードを変更",
+      "addTitle": "パスワードを追加",
+      "currentPasswordPlaceholder": "現在のパスワード",
+      "newPasswordPlaceholder": "新しいパスワード（8文字以上）",
+      "save": "パスワードを変更",
+      "add": "パスワードを追加",
+      "saving": "保存中…",
+      "saved": "パスワードを保存しました！",
+      "error": "パスワードを保存できませんでした"
+    },
+    "delete": {
+      "title": "アカウントを削除",
+      "warning": "この操作を行うと、アカウント、レビュー、フレンド関係、メッセージが完全に削除されます。元に戻すことはできません。",
+      "button": "アカウントを削除",
+      "confirmPasswordPlaceholder": "パスワードを確認",
+      "confirmButton": "完全に削除する",
+      "deleting": "削除中…",
+      "cancel": "キャンセル",
+      "error": "アカウントを削除できませんでした"
+    }
+  },
+  "friends": {
+    "title": "フレンド",
+    "addPlaceholder": "追加するユーザー名",
+    "add": "追加",
+    "enterUsernameError": "ユーザー名を入力してください",
+    "sendError": "リクエストを送信できませんでした",
+    "loadError": "フレンドを読み込めませんでした",
+    "pendingRequests": "保留中のリクエスト",
+    "sentRequests": "送信済みリクエスト",
+    "suggestedFriends": "おすすめのフレンド",
+    "yourFriends": "自分のフレンド",
+    "pending": "保留中",
+    "online": "オンライン",
+    "offline": "オフライン",
+    "noFriendsTitle": "まだフレンドがいません",
+    "noFriendsDescription": "上のユーザー名からフレンドを追加するか、おすすめをご確認ください。",
+    "accept": "承認",
+    "decline": "拒否",
+    "cancelRequest": "リクエストを取り消す",
+    "removeFriend": "フレンドを削除"
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "すべて既読にする",
+    "empty": "通知はありません。",
+    "prefsDescription": "受け取りたい通知の種類を選んでください（ベル通知＋リアルタイム）。"
+  },
+  "home": {
+    "featuredBadge": "注目のゲーム",
+    "writeReview": "レビューを書く",
+    "popularNow": "今人気",
+    "showMorePopular": "人気のゲームをもっと見る",
+    "popularReviews": "人気のレビュー",
+    "noReviewsTitle": "まだレビューがありません",
+    "noReviewsDescription": "最初にゲームを評価してみましょう。優れたレビューはここに表示されます。",
+    "showMoreReviews": "レビューをもっと見る",
+    "deletedUser": "[削除されたユーザー]",
+    "viewGame": "{{title}} を見る"
+  }
+}

@@ -1,4 +1,4 @@
-export type AuthProvider = 'LOCAL' | 'FORTYTWO' | 'GOOGLE' | 'STEAM';
+export type AuthProvider = 'LOCAL' | 'FORTYTWO' | 'GOOGLE' | 'STEAM' | 'DISCORD';
 
 // Ligne renvoyée par GET /games (liste/recherche) — score = mélange bayésien
 // note IGDB + notes utilisateurs (voir docs/reviews-api.md)

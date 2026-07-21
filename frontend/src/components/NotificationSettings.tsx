@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../lib/api';
 
 // Types personnalisables + libellés FR (doivent matcher NotificationsService.CUSTOMIZABLE)
@@ -88,15 +89,14 @@ export function NotificationPrefsList() {
 
 // Section "Notifications" des réglages (page Settings)
 export default function NotificationSettings() {
+  const { t } = useTranslation();
   return (
     <div className="card mb-10 p-4">
       <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
         <BellIcon />
-        Notifications
+        {t('notifications.title')}
       </h2>
-      <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-        Choisis les notifications que tu veux recevoir (cloche + temps réel).
-      </p>
+      <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">{t('notifications.prefsDescription')}</p>
       <NotificationPrefsList />
     </div>
   );

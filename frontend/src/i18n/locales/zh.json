@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "加载中…",
+    "save": "保存",
+    "saving": "保存中…",
+    "cancel": "取消",
+    "add": "添加",
+    "back": "返回",
+    "close": "关闭",
+    "retry": "重试",
+    "delete": "删除",
+    "confirm": "确认",
+    "edit": "编辑",
+    "skip": "跳过",
+    "error": "出错了",
+    "yes": "是",
+    "no": "否"
+  },
+  "nav": {
+    "catalog": "目录",
+    "feed": "动态",
+    "friends": "好友",
+    "steam": "Steam",
+    "login": "登录",
+    "signup": "注册"
+  },
+  "menu": {
+    "notifications": "通知",
+    "settings": "设置",
+    "language": "语言",
+    "lightMode": "浅色模式",
+    "darkMode": "深色模式",
+    "logout": "退出登录"
+  },
+  "footer": {
+    "tagline": "电子游戏版的 Letterboxd · 42 项目"
+  },
+  "languagePicker": {
+    "title": "语言"
+  },
+  "oauth": {
+    "continueWithGoogle": "使用 Google 继续",
+    "continueWithFortyTwo": "使用 42 继续",
+    "continueWithSteam": "使用 Steam 继续",
+    "continueWithDiscord": "使用 Discord 继续",
+    "or": "或"
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "emailPlaceholder": "邮箱",
+      "passwordPlaceholder": "密码",
+      "submit": "登录",
+      "submitting": "登录中…",
+      "forgotPassword": "忘记密码？",
+      "noAccount": "还没有账号？",
+      "signupLink": "注册",
+      "genericError": "登录失败",
+      "errorEmailInUse": "该邮箱已被注册。请改用密码登录，或为该登录方式使用其他邮箱。",
+      "errorGeneric": "登录时出现问题，请重试。",
+      "steamFailed": "Steam 登录失败，请重试"
+    },
+    "twoFactor": {
+      "title": "双重验证码",
+      "description": "请输入身份验证器应用中的 6 位数验证码。",
+      "verify": "验证",
+      "verifying": "验证中…",
+      "invalidCode": "验证码无效"
+    },
+    "signup": {
+      "title": "注册",
+      "titleSteam": "完成 Steam 注册",
+      "steamIntro": "您的 Steam 账号已验证——请选择邮箱并确认用户名，以创建您的 Saveboxd 账号。",
+      "emailPlaceholder": "邮箱",
+      "usernamePlaceholder": "用户名",
+      "usernameHint": "仅限字母、数字和下划线",
+      "passwordPlaceholder": "密码（至少 8 个字符）",
+      "passwordPlaceholderSteam": "密码（可选）",
+      "passwordHintSteam": "不设置密码则只能通过 Steam 登录。您之后可以在个人资料中添加密码。",
+      "submit": "注册",
+      "submitSteam": "创建账号",
+      "submitting": "创建账号中…",
+      "sessionExpired": "会话已过期，请重新通过 Steam 登录",
+      "genericError": "注册失败",
+      "alreadyHaveAccount": "已有账号？",
+      "loginLink": "登录"
+    },
+    "forgotPassword": {
+      "title": "忘记密码？",
+      "emailPlaceholder": "邮箱",
+      "submit": "发送重置链接",
+      "submitting": "发送中…",
+      "checkEmailTitle": "请查收邮件",
+      "checkEmailBody": "如果该邮箱已注册，密码重置链接即将发送至该邮箱。",
+      "backToLogin": "返回登录",
+      "genericError": "出错了"
+    },
+    "resetPassword": {
+      "title": "设置新密码",
+      "invalidLinkTitle": "链接无效",
+      "invalidLinkBody": "此密码重置链接缺少令牌。",
+      "requestNewLink": "重新申请链接",
+      "missingToken": "缺少重置令牌。",
+      "newPasswordPlaceholder": "新密码（至少 8 个字符）",
+      "submit": "重置密码",
+      "submitting": "重置中…",
+      "genericError": "无法重置密码"
+    },
+    "verifyEmail": {
+      "verifying": "正在验证邮箱…",
+      "successTitle": "邮箱验证成功",
+      "successBody": "您的邮箱地址已确认，一切就绪。",
+      "goToProfile": "前往个人资料",
+      "failedTitle": "验证失败",
+      "backToProfile": "返回个人资料",
+      "missingToken": "缺少验证令牌。",
+      "genericError": "验证失败"
+    }
+  },
+  "settings": {
+    "title": "账号设置",
+    "welcomeTitle": "欢迎来到 Saveboxd！",
+    "welcomeBody": "我们为您选择了用户名 {{username}}——如需修改可在下方更改，或保持不变。",
+    "changeAvatar": "更换头像",
+    "uploadingAvatar": "上传中…",
+    "avatarError": "上传失败",
+    "emailVerified": "邮箱已验证",
+    "emailNotVerified": "邮箱未验证",
+    "resendVerification": "重新发送验证邮件",
+    "resendSending": "发送中…",
+    "resendSent": "验证邮件已发送，请查收。",
+    "resendError": "无法重新发送验证邮件",
+    "usernameLabel": "用户名",
+    "bioLabel": "个人简介",
+    "saveProfile": "保存资料",
+    "saving": "保存中…",
+    "skipForNow": "暂时跳过",
+    "profileError": "无法保存资料",
+    "signInVia": "您的账号未设置密码——目前通过 {{provider}} 登录。添加密码后即可同时使用邮箱登录。",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "双重验证",
+      "enabledDescription": "已启用。输入验证码即可关闭。",
+      "disable": "禁用",
+      "disabling": "禁用中…",
+      "scanQr": "请使用身份验证器应用扫描此二维码：",
+      "manualKeyPrefix": "或手动输入此密钥：",
+      "confirm": "确认",
+      "confirming": "确认中…",
+      "notEnabledDescription": "尚未启用。使用 Google Authenticator 等应用为登录增加第二重验证。",
+      "enable": "启用双重验证",
+      "starting": "启动中…",
+      "invalidCode": "验证码无效",
+      "startError": "无法开始设置双重验证"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "此 Steam 账号已关联至其他用户。",
+      "linkedSuccess": "Steam 账号已关联！",
+      "linkedDescription": "已关联——您可以使用 Steam 登录并导入游戏库。",
+      "viewLibrary": "查看我的 Steam 游戏库",
+      "unlink": "取消关联 Steam",
+      "unlinking": "取消关联中…",
+      "unlinkError": "无法取消关联 Steam",
+      "notLinkedDescription": "关联您的 Steam 账号，即可使用 Steam 登录、导入游戏库并查找 Steam 好友。",
+      "linkAccount": "关联我的 Steam 账号"
+    },
+    "password": {
+      "changeTitle": "修改密码",
+      "addTitle": "添加密码",
+      "currentPasswordPlaceholder": "当前密码",
+      "newPasswordPlaceholder": "新密码（至少 8 个字符）",
+      "save": "修改密码",
+      "add": "添加密码",
+      "saving": "保存中…",
+      "saved": "密码已保存！",
+      "error": "无法保存密码"
+    },
+    "delete": {
+      "title": "删除账号",
+      "warning": "此操作将永久删除您的账号、评论、好友关系和消息，且无法撤销。",
+      "button": "删除账号",
+      "confirmPasswordPlaceholder": "确认您的密码",
+      "confirmButton": "永久删除",
+      "deleting": "删除中…",
+      "cancel": "取消",
+      "error": "无法删除账号"
+    }
+  },
+  "friends": {
+    "title": "好友",
+    "addPlaceholder": "要添加的用户名",
+    "add": "添加",
+    "enterUsernameError": "请输入用户名",
+    "sendError": "无法发送请求",
+    "loadError": "无法加载好友",
+    "pendingRequests": "待处理请求",
+    "sentRequests": "已发送请求",
+    "suggestedFriends": "推荐好友",
+    "yourFriends": "我的好友",
+    "pending": "待处理",
+    "online": "在线",
+    "offline": "离线",
+    "noFriendsTitle": "还没有好友",
+    "noFriendsDescription": "在上方通过用户名添加好友，或查看推荐列表。",
+    "accept": "接受",
+    "decline": "拒绝",
+    "cancelRequest": "取消请求",
+    "removeFriend": "删除好友"
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "全部标为已读",
+    "empty": "暂无通知。",
+    "prefsDescription": "选择您想要接收的通知类型（通知铃铛 + 实时推送）。"
+  },
+  "home": {
+    "featuredBadge": "精选游戏",
+    "writeReview": "撰写评论",
+    "popularNow": "当前热门",
+    "showMorePopular": "查看更多热门游戏",
+    "popularReviews": "热门评论",
+    "noReviewsTitle": "暂无评论",
+    "noReviewsDescription": "成为第一个评分的人——精彩评论将在此展示。",
+    "showMoreReviews": "查看更多评论",
+    "deletedUser": "[已删除用户]",
+    "viewGame": "查看 {{title}}"
+  }
+}

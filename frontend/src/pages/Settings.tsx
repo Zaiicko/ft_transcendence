@@ -1,11 +1,15 @@
+import type { TFunction } from 'i18next';
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
+import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import NotificationSettings from '../components/NotificationSettings';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
+import type { AuthProvider } from '../lib/types';
 
 interface TwoFactorSetup {
   otpauthUrl: string;
@@ -20,7 +24,23 @@ function secretFromOtpauthUrl(otpauthUrl: string): string {
   }
 }
 
+// Displayed provider name for "you sign in through {{provider}}" — only
+// reachable for OAuth-only accounts (no password), so LOCAL never appears.
+function providerLabel(provider: AuthProvider, t: TFunction): string {
+  switch (provider) {
+    case 'STEAM':
+      return t('settings.providerSteam');
+    case 'GOOGLE':
+      return t('settings.providerGoogle');
+    case 'DISCORD':
+      return t('settings.providerDiscord');
+    default:
+      return t('settings.providerFortyTwo');
+  }
+}
+
 export default function Settings() {
+  const { t } = useTranslation();
   const { user, refreshUser, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -71,7 +91,7 @@ export default function Settings() {
       await refreshUser();
       if (isWelcome) navigate('/settings', { replace: true });
     } catch (err) {
-      setProfileError(err instanceof ApiError ? err.message : 'Could not save profile');
+      setProfileError(err instanceof ApiError ? err.message : t('settings.profileError'));
     } finally {
       setSavingProfile(false);
     }
@@ -88,7 +108,7 @@ export default function Settings() {
       await apiFetch('/users/me/avatar', { method: 'POST', body: formData });
       await refreshUser();
     } catch (err) {
-      setAvatarError(err instanceof ApiError ? err.message : 'Upload failed');
+      setAvatarError(err instanceof ApiError ? err.message : t('settings.avatarError'));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -101,9 +121,9 @@ export default function Settings() {
     setResendingVerification(true);
     try {
       await apiFetch('/auth/resend-verification', { method: 'POST' });
-      setResendMessage('Verification email sent — check your inbox.');
+      setResendMessage(t('settings.resendSent'));
     } catch (err) {
-      setResendError(err instanceof ApiError ? err.message : 'Could not resend verification email');
+      setResendError(err instanceof ApiError ? err.message : t('settings.resendError'));
     } finally {
       setResendingVerification(false);
     }
@@ -115,7 +135,7 @@ export default function Settings() {
     try {
       setTwoFactorSetup(await apiFetch<TwoFactorSetup>('/auth/2fa/setup', { method: 'POST' }));
     } catch (err) {
-      setTwoFactorError(err instanceof ApiError ? err.message : 'Could not start 2FA setup');
+      setTwoFactorError(err instanceof ApiError ? err.message : t('settings.twoFactor.startError'));
     } finally {
       setTwoFactorBusy(false);
     }
@@ -131,7 +151,7 @@ export default function Settings() {
       setTwoFactorCode('');
       await refreshUser();
     } catch (err) {
-      setTwoFactorError(err instanceof ApiError ? err.message : 'Invalid code');
+      setTwoFactorError(err instanceof ApiError ? err.message : t('settings.twoFactor.invalidCode'));
     } finally {
       setTwoFactorBusy(false);
     }
@@ -146,7 +166,7 @@ export default function Settings() {
       setTwoFactorCode('');
       await refreshUser();
     } catch (err) {
-      setTwoFactorError(err instanceof ApiError ? err.message : 'Invalid code');
+      setTwoFactorError(err instanceof ApiError ? err.message : t('settings.twoFactor.invalidCode'));
     } finally {
       setTwoFactorBusy(false);
     }
@@ -159,7 +179,7 @@ export default function Settings() {
       await apiFetch('/auth/steam/link', { method: 'DELETE' });
       await refreshUser();
     } catch (err) {
-      setSteamError(err instanceof ApiError ? err.message : 'Could not unlink Steam');
+      setSteamError(err instanceof ApiError ? err.message : t('settings.steam.unlinkError'));
     } finally {
       setUnlinking(false);
     }
@@ -183,7 +203,7 @@ export default function Settings() {
       setPasswordSaved(true);
       await refreshUser();
     } catch (err) {
-      setPasswordError(err instanceof ApiError ? err.message : 'Could not save password');
+      setPasswordError(err instanceof ApiError ? err.message : t('settings.password.error'));
     } finally {
       setSavingPassword(false);
     }
@@ -200,21 +220,20 @@ export default function Settings() {
       await logout();
       navigate('/');
     } catch (err) {
-      setDeleteError(err instanceof ApiError ? err.message : 'Could not delete account');
+      setDeleteError(err instanceof ApiError ? err.message : t('settings.delete.error'));
       setDeleting(false);
     }
   }
 
   return (
     <div className="mx-auto max-w-lg">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Account settings</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('settings.title')}</h1>
 
       {isWelcome && (
         <div className="card mb-6 p-4">
-          <p className="font-medium">Welcome to Saveboxd!</p>
+          <p className="font-medium">{t('settings.welcomeTitle')}</p>
           <p className="mt-1 text-sm text-zinc-400">
-            We picked <span className="text-zinc-200">{user.username}</span> as your username — change it
-            below if you'd like, or leave it as is.
+            {t('settings.welcomeBody', { username: user.username })}
           </p>
         </div>
       )}
@@ -225,11 +244,12 @@ export default function Settings() {
           <p className="flex items-center gap-2 font-medium">
             {user.username}
             {user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+            {user.provider === 'DISCORD' && <DiscordBadge />}
             {user.steamId && <SteamBadge />}
           </p>
           <p className="text-sm text-zinc-400">{user.email}</p>
           <label className="mt-2 inline-block cursor-pointer text-sm text-zinc-300 underline">
-            {uploading ? 'Uploading…' : 'Change avatar'}
+            {uploading ? t('settings.uploadingAvatar') : t('settings.changeAvatar')}
             <input
               ref={fileInputRef}
               type="file"
@@ -245,17 +265,17 @@ export default function Settings() {
 
       <div className="mb-8 text-sm">
         {user.emailVerifiedAt ? (
-          <span className="text-green-400">✓ Email verified</span>
+          <span className="text-green-400">✓ {t('settings.emailVerified')}</span>
         ) : (
           <div className="flex items-center gap-3">
-            <span className="text-zinc-400">Email not verified</span>
+            <span className="text-zinc-400">{t('settings.emailNotVerified')}</span>
             <button
               type="button"
               onClick={handleResendVerification}
               disabled={resendingVerification}
               className="text-zinc-300 underline disabled:opacity-50"
             >
-              {resendingVerification ? 'Sending…' : 'Resend verification email'}
+              {resendingVerification ? t('settings.resendSending') : t('settings.resendVerification')}
             </button>
           </div>
         )}
@@ -265,7 +285,7 @@ export default function Settings() {
 
       <form onSubmit={handleProfileSubmit} className="mb-10 flex flex-col gap-3">
         <label className="text-sm text-zinc-400" htmlFor="username">
-          Username
+          {t('settings.usernameLabel')}
         </label>
         <input
           id="username"
@@ -274,7 +294,7 @@ export default function Settings() {
           minLength={3}
           maxLength={24}
           pattern="[a-zA-Z0-9_]+"
-          title="Letters, numbers and underscores only"
+          title={t('auth.signup.usernameHint')}
           autoFocus={isWelcome}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -282,7 +302,7 @@ export default function Settings() {
         />
 
         <label className="mt-2 text-sm text-zinc-400" htmlFor="bio">
-          Bio
+          {t('settings.bioLabel')}
         </label>
         <textarea
           id="bio"
@@ -299,7 +319,7 @@ export default function Settings() {
             disabled={savingProfile}
             className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
-            {savingProfile ? 'Saving…' : 'Save profile'}
+            {savingProfile ? t('settings.saving') : t('settings.saveProfile')}
           </button>
           {isWelcome && (
             <button
@@ -307,7 +327,7 @@ export default function Settings() {
               onClick={() => navigate('/settings', { replace: true })}
               className="text-sm text-zinc-400 underline"
             >
-              Skip for now
+              {t('settings.skipForNow')}
             </button>
           )}
         </div>
@@ -329,11 +349,11 @@ export default function Settings() {
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             <path d="m9 12 2 2 4-4" />
           </svg>
-          Two-factor authentication
+          {t('settings.twoFactor.title')}
         </h2>
         {user.twoFactorEnabled ? (
           <>
-            <p className="mb-3 text-sm text-zinc-400">Enabled. Enter a code to disable it.</p>
+            <p className="mb-3 text-sm text-zinc-400">{t('settings.twoFactor.enabledDescription')}</p>
             <form onSubmit={handleDisableTwoFactor} className="flex gap-2">
               <input
                 type="text"
@@ -351,16 +371,16 @@ export default function Settings() {
                 disabled={twoFactorBusy}
                 className="rounded border border-red-800 px-3 py-1.5 text-sm text-red-400 hover:bg-red-950 disabled:opacity-50"
               >
-                {twoFactorBusy ? 'Disabling…' : 'Disable'}
+                {twoFactorBusy ? t('settings.twoFactor.disabling') : t('settings.twoFactor.disable')}
               </button>
             </form>
           </>
         ) : twoFactorSetup ? (
           <div className="flex flex-col gap-3">
-            <p className="text-sm text-zinc-400">Scan this QR code with your authenticator app:</p>
+            <p className="text-sm text-zinc-400">{t('settings.twoFactor.scanQr')}</p>
             <img src={twoFactorSetup.qrCodeDataUrl} alt="2FA QR code" className="h-40 w-40 self-start" />
             <p className="text-xs text-zinc-500">
-              Or enter this key manually: <code>{secretFromOtpauthUrl(twoFactorSetup.otpauthUrl)}</code>
+              {t('settings.twoFactor.manualKeyPrefix')} <code>{secretFromOtpauthUrl(twoFactorSetup.otpauthUrl)}</code>
             </p>
             <form onSubmit={handleConfirmTwoFactor} className="flex gap-2">
               <input
@@ -380,14 +400,14 @@ export default function Settings() {
                 disabled={twoFactorBusy}
                 className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
               >
-                {twoFactorBusy ? 'Confirming…' : 'Confirm'}
+                {twoFactorBusy ? t('settings.twoFactor.confirming') : t('settings.twoFactor.confirm')}
               </button>
             </form>
           </div>
         ) : (
           <>
             <p className="mb-3 text-sm text-zinc-400">
-              Not enabled. Add a second step at login using an app like Google Authenticator.
+              {t('settings.twoFactor.notEnabledDescription')}
             </p>
             <button
               type="button"
@@ -395,7 +415,7 @@ export default function Settings() {
               disabled={twoFactorBusy}
               className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
             >
-              {twoFactorBusy ? 'Starting…' : 'Enable 2FA'}
+              {twoFactorBusy ? t('settings.twoFactor.starting') : t('settings.twoFactor.enable')}
             </button>
           </>
         )}
@@ -404,20 +424,20 @@ export default function Settings() {
 
       <div className="card mb-10 p-4">
         <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          <SteamBadge /> Steam
+          <SteamBadge /> {t('settings.steam.title')}
         </h2>
         {steamNotice === 'taken' && (
           <p className="mb-3 text-sm text-red-400">
-            This Steam account is already linked to another user.
+            {t('settings.steam.alreadyLinkedError')}
           </p>
         )}
         {steamNotice === 'linked' && (
-          <p className="mb-3 text-sm text-green-400">Steam account linked!</p>
+          <p className="mb-3 text-sm text-green-400">{t('settings.steam.linkedSuccess')}</p>
         )}
         {user.steamId ? (
           <div className="flex flex-col gap-3">
             <p className="text-sm text-zinc-400">
-              Linked — you can sign in with Steam and import your game library.
+              {t('settings.steam.linkedDescription')}
             </p>
             {steamError && <p className="text-sm text-red-400">{steamError}</p>}
             <div className="flex gap-3">
@@ -425,7 +445,7 @@ export default function Settings() {
                 to="/steam"
                 className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
               >
-                View my Steam library
+                {t('settings.steam.viewLibrary')}
               </Link>
               <button
                 type="button"
@@ -433,21 +453,20 @@ export default function Settings() {
                 disabled={unlinking}
                 className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent disabled:opacity-50"
               >
-                {unlinking ? 'Unlinking…' : 'Unlink Steam'}
+                {unlinking ? t('settings.steam.unlinking') : t('settings.steam.unlink')}
               </button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
             <p className="text-sm text-zinc-400">
-              Link your Steam account to sign in with Steam, import your library and find
-              your Steam friends.
+              {t('settings.steam.notLinkedDescription')}
             </p>
             <a
               href="/api/auth/steam"
               className="self-start rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
             >
-              Link my Steam account
+              {t('settings.steam.linkAccount')}
             </a>
           </div>
         )}
@@ -455,13 +474,11 @@ export default function Settings() {
 
       <form onSubmit={handlePasswordSubmit} className="card mb-10 p-4">
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {user.hasPassword ? 'Change password' : 'Add a password'}
+          {user.hasPassword ? t('settings.password.changeTitle') : t('settings.password.addTitle')}
         </h2>
         {!user.hasPassword && (
           <p className="mb-3 text-sm text-zinc-400">
-            Your account has no password — you sign in through{' '}
-            {user.provider === 'STEAM' ? 'Steam' : user.provider === 'GOOGLE' ? 'Google' : '42'}.
-            Add one to also log in with your email.
+            {t('settings.signInVia', { provider: providerLabel(user.provider, t) })}
           </p>
         )}
         <div className="flex flex-col gap-3">
@@ -469,7 +486,7 @@ export default function Settings() {
             <input
               type="password"
               required
-              placeholder="Current password"
+              placeholder={t('settings.password.currentPasswordPlaceholder')}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               className="field px-4 py-1.5"
@@ -479,27 +496,31 @@ export default function Settings() {
             type="password"
             required
             minLength={8}
-            placeholder="New password (min. 8 characters)"
+            placeholder={t('settings.password.newPasswordPlaceholder')}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="field px-4 py-1.5"
           />
           {passwordError && <p className="text-sm text-red-400">{passwordError}</p>}
-          {passwordSaved && <p className="text-sm text-green-400">Password saved!</p>}
+          {passwordSaved && <p className="text-sm text-green-400">{t('settings.password.saved')}</p>}
           <button
             type="submit"
             disabled={savingPassword}
             className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
-            {savingPassword ? 'Saving…' : user.hasPassword ? 'Change password' : 'Add password'}
+            {savingPassword
+              ? t('settings.password.saving')
+              : user.hasPassword
+                ? t('settings.password.save')
+                : t('settings.password.add')}
           </button>
         </div>
       </form>
 
       <div className="rounded border border-red-900/50 p-4">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-red-400">Delete account</h2>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-red-400">{t('settings.delete.title')}</h2>
         <p className="mb-3 text-sm text-zinc-400">
-          This permanently deletes your account, reviews, friendships and messages. This cannot be undone.
+          {t('settings.delete.warning')}
         </p>
         {!confirmingDelete ? (
           <button
@@ -507,14 +528,14 @@ export default function Settings() {
             onClick={() => setConfirmingDelete(true)}
             className="rounded border border-red-800 px-3 py-1.5 text-sm text-red-400 hover:bg-red-950"
           >
-            Delete account
+            {t('settings.delete.button')}
           </button>
         ) : (
           <div className="flex flex-col gap-3">
             {user.hasPassword && (
               <input
                 type="password"
-                placeholder="Confirm your password"
+                placeholder={t('settings.delete.confirmPasswordPlaceholder')}
                 value={deletePassword}
                 onChange={(e) => setDeletePassword(e.target.value)}
                 className="field px-4 py-1.5"
@@ -528,14 +549,14 @@ export default function Settings() {
                 disabled={deleting}
                 className="rounded bg-red-700 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
               >
-                {deleting ? 'Deleting…' : 'Permanently delete'}
+                {deleting ? t('settings.delete.deleting') : t('settings.delete.confirmButton')}
               </button>
               <button
                 type="button"
                 onClick={() => setConfirmingDelete(false)}
                 className="rounded-full border border-zinc-400/60 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent dark:border-zinc-600"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </div>

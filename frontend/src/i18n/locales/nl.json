@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "Laden…",
+    "save": "Opslaan",
+    "saving": "Bezig met opslaan…",
+    "cancel": "Annuleren",
+    "add": "Toevoegen",
+    "back": "Terug",
+    "close": "Sluiten",
+    "retry": "Opnieuw proberen",
+    "delete": "Verwijderen",
+    "confirm": "Bevestigen",
+    "edit": "Bewerken",
+    "skip": "Overslaan",
+    "error": "Er is iets misgegaan",
+    "yes": "Ja",
+    "no": "Nee"
+  },
+  "nav": {
+    "catalog": "Catalogus",
+    "feed": "Feed",
+    "friends": "Vrienden",
+    "steam": "Steam",
+    "login": "Inloggen",
+    "signup": "Registreren"
+  },
+  "menu": {
+    "notifications": "Meldingen",
+    "settings": "Instellingen",
+    "language": "Taal",
+    "lightMode": "Lichte modus",
+    "darkMode": "Donkere modus",
+    "logout": "Uitloggen"
+  },
+  "footer": {
+    "tagline": "De Letterboxd van videogames · 42-project"
+  },
+  "languagePicker": {
+    "title": "Taal"
+  },
+  "oauth": {
+    "continueWithGoogle": "Doorgaan met Google",
+    "continueWithFortyTwo": "Doorgaan met 42",
+    "continueWithSteam": "Doorgaan met Steam",
+    "continueWithDiscord": "Doorgaan met Discord",
+    "or": "of"
+  },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "emailPlaceholder": "E-mail",
+      "passwordPlaceholder": "Wachtwoord",
+      "submit": "Inloggen",
+      "submitting": "Bezig met inloggen…",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "noAccount": "Nog geen account?",
+      "signupLink": "Registreren",
+      "genericError": "Inloggen mislukt",
+      "errorEmailInUse": "Er bestaat al een account met dit e-mailadres. Log in met je wachtwoord, of gebruik een ander e-mailadres voor die provider.",
+      "errorGeneric": "Er ging iets mis bij het inloggen — probeer het opnieuw.",
+      "steamFailed": "Inloggen met Steam mislukt — probeer het opnieuw"
+    },
+    "twoFactor": {
+      "title": "Tweestapsverificatiecode",
+      "description": "Voer de 6-cijferige code van je authenticator-app in.",
+      "verify": "Verifiëren",
+      "verifying": "Bezig met verifiëren…",
+      "invalidCode": "Ongeldige code"
+    },
+    "signup": {
+      "title": "Registreren",
+      "titleSteam": "Rond je Steam-registratie af",
+      "steamIntro": "Je Steam-account is geverifieerd — kies een e-mailadres en bevestig je gebruikersnaam om je Saveboxd-account aan te maken.",
+      "emailPlaceholder": "E-mail",
+      "usernamePlaceholder": "Gebruikersnaam",
+      "usernameHint": "Alleen letters, cijfers en underscores",
+      "passwordPlaceholder": "Wachtwoord (min. 8 tekens)",
+      "passwordPlaceholderSteam": "Wachtwoord (optioneel)",
+      "passwordHintSteam": "Zonder wachtwoord kun je alleen inloggen met Steam. Je kunt er later een toevoegen via je profiel.",
+      "submit": "Registreren",
+      "submitSteam": "Account aanmaken",
+      "submitting": "Account wordt aangemaakt…",
+      "sessionExpired": "Sessie verlopen — log opnieuw in via Steam",
+      "genericError": "Registreren mislukt",
+      "alreadyHaveAccount": "Heb je al een account?",
+      "loginLink": "Inloggen"
+    },
+    "forgotPassword": {
+      "title": "Wachtwoord vergeten?",
+      "emailPlaceholder": "E-mail",
+      "submit": "Resetlink versturen",
+      "submitting": "Bezig met versturen…",
+      "checkEmailTitle": "Controleer je e-mail",
+      "checkEmailBody": "Als dat adres geregistreerd is, is er een link onderweg om je wachtwoord opnieuw in te stellen.",
+      "backToLogin": "Terug naar inloggen",
+      "genericError": "Er is iets misgegaan"
+    },
+    "resetPassword": {
+      "title": "Kies een nieuw wachtwoord",
+      "invalidLinkTitle": "Ongeldige link",
+      "invalidLinkBody": "Deze link om je wachtwoord opnieuw in te stellen mist een token.",
+      "requestNewLink": "Vraag een nieuwe aan",
+      "missingToken": "Reset-token ontbreekt.",
+      "newPasswordPlaceholder": "Nieuw wachtwoord (min. 8 tekens)",
+      "submit": "Wachtwoord opnieuw instellen",
+      "submitting": "Bezig met opnieuw instellen…",
+      "genericError": "Kon wachtwoord niet opnieuw instellen"
+    },
+    "verifyEmail": {
+      "verifying": "Je e-mail wordt geverifieerd…",
+      "successTitle": "E-mail geverifieerd",
+      "successBody": "Je adres is bevestigd — je bent klaar.",
+      "goToProfile": "Ga naar je profiel",
+      "failedTitle": "Verificatie mislukt",
+      "backToProfile": "Terug naar je profiel",
+      "missingToken": "Verificatietoken ontbreekt.",
+      "genericError": "Verificatie mislukt"
+    }
+  },
+  "settings": {
+    "title": "Accountinstellingen",
+    "welcomeTitle": "Welkom bij Saveboxd!",
+    "welcomeBody": "We hebben {{username}} als gebruikersnaam gekozen — pas dit hieronder aan als je wilt, of laat het zo.",
+    "changeAvatar": "Avatar wijzigen",
+    "uploadingAvatar": "Bezig met uploaden…",
+    "avatarError": "Uploaden mislukt",
+    "emailVerified": "E-mail geverifieerd",
+    "emailNotVerified": "E-mail niet geverifieerd",
+    "resendVerification": "Verificatie-e-mail opnieuw versturen",
+    "resendSending": "Bezig met versturen…",
+    "resendSent": "Verificatie-e-mail verstuurd — controleer je inbox.",
+    "resendError": "Kon verificatie-e-mail niet opnieuw versturen",
+    "usernameLabel": "Gebruikersnaam",
+    "bioLabel": "Bio",
+    "saveProfile": "Profiel opslaan",
+    "saving": "Bezig met opslaan…",
+    "skipForNow": "Voorlopig overslaan",
+    "profileError": "Kon profiel niet opslaan",
+    "signInVia": "Je account heeft geen wachtwoord — je logt in via {{provider}}. Voeg er een toe om ook met je e-mail te kunnen inloggen.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "Tweestapsverificatie",
+      "enabledDescription": "Ingeschakeld. Voer een code in om het uit te schakelen.",
+      "disable": "Uitschakelen",
+      "disabling": "Bezig met uitschakelen…",
+      "scanQr": "Scan deze QR-code met je authenticator-app:",
+      "manualKeyPrefix": "Of voer deze sleutel handmatig in:",
+      "confirm": "Bevestigen",
+      "confirming": "Bezig met bevestigen…",
+      "notEnabledDescription": "Niet ingeschakeld. Voeg een extra stap toe bij het inloggen met een app zoals Google Authenticator.",
+      "enable": "2FA inschakelen",
+      "starting": "Bezig met starten…",
+      "invalidCode": "Ongeldige code",
+      "startError": "Kon 2FA-instelling niet starten"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "Dit Steam-account is al gekoppeld aan een andere gebruiker.",
+      "linkedSuccess": "Steam-account gekoppeld!",
+      "linkedDescription": "Gekoppeld — je kunt inloggen met Steam en je gamebibliotheek importeren.",
+      "viewLibrary": "Bekijk mijn Steam-bibliotheek",
+      "unlink": "Steam ontkoppelen",
+      "unlinking": "Bezig met ontkoppelen…",
+      "unlinkError": "Kon Steam niet ontkoppelen",
+      "notLinkedDescription": "Koppel je Steam-account om in te loggen met Steam, je bibliotheek te importeren en je Steam-vrienden te vinden.",
+      "linkAccount": "Koppel mijn Steam-account"
+    },
+    "password": {
+      "changeTitle": "Wachtwoord wijzigen",
+      "addTitle": "Wachtwoord toevoegen",
+      "currentPasswordPlaceholder": "Huidig wachtwoord",
+      "newPasswordPlaceholder": "Nieuw wachtwoord (min. 8 tekens)",
+      "save": "Wachtwoord wijzigen",
+      "add": "Wachtwoord toevoegen",
+      "saving": "Bezig met opslaan…",
+      "saved": "Wachtwoord opgeslagen!",
+      "error": "Kon wachtwoord niet opslaan"
+    },
+    "delete": {
+      "title": "Account verwijderen",
+      "warning": "Dit verwijdert je account, recensies, vriendschappen en berichten permanent. Dit kan niet ongedaan worden gemaakt.",
+      "button": "Account verwijderen",
+      "confirmPasswordPlaceholder": "Bevestig je wachtwoord",
+      "confirmButton": "Definitief verwijderen",
+      "deleting": "Bezig met verwijderen…",
+      "cancel": "Annuleren",
+      "error": "Kon account niet verwijderen"
+    }
+  },
+  "friends": {
+    "title": "Vrienden",
+    "addPlaceholder": "Gebruikersnaam om toe te voegen",
+    "add": "Toevoegen",
+    "enterUsernameError": "Voer een gebruikersnaam in",
+    "sendError": "Kon verzoek niet versturen",
+    "loadError": "Kon vrienden niet laden",
+    "pendingRequests": "Openstaande verzoeken",
+    "sentRequests": "Verzonden verzoeken",
+    "suggestedFriends": "Voorgestelde vrienden",
+    "yourFriends": "Jouw vrienden",
+    "pending": "In behandeling",
+    "online": "Online",
+    "offline": "Offline",
+    "noFriendsTitle": "Nog geen vrienden",
+    "noFriendsDescription": "Voeg iemand toe via gebruikersnaam hierboven, of bekijk de suggesties.",
+    "accept": "Accepteren",
+    "decline": "Weigeren",
+    "cancelRequest": "Verzoek annuleren",
+    "removeFriend": "Vriend verwijderen"
+  },
+  "notifications": {
+    "title": "Meldingen",
+    "markAllRead": "Alles als gelezen markeren",
+    "empty": "Geen meldingen.",
+    "prefsDescription": "Kies welke meldingen je wilt ontvangen (bel + realtime)."
+  },
+  "home": {
+    "featuredBadge": "Uitgelichte game",
+    "writeReview": "Schrijf een recensie",
+    "popularNow": "Nu populair",
+    "showMorePopular": "Meer populaire games tonen",
+    "popularReviews": "Populaire recensies",
+    "noReviewsTitle": "Nog geen recensies",
+    "noReviewsDescription": "Wees de eerste die een game beoordeelt — de beste recensies verschijnen hier.",
+    "showMoreReviews": "Meer recensies tonen",
+    "deletedUser": "[verwijderde gebruiker]",
+    "viewGame": "Bekijk {{title}}"
+  }
+}
