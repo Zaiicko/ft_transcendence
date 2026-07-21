@@ -121,6 +121,24 @@ body {
     border-color: var(--color-accent);
     outline: none;
   }
+  /* Menus déroulants natifs (tri catalogue, DLC…) : sans ça la liste d'options
+     s'ouvre en blanc car le fond du select est quasi transparent. color-scheme
+     pilote le rendu natif de la popup ; on force aussi un fond opaque + couleur
+     de texte sur les <option> pour Chrome/Firefox. */
+  select.field {
+    color-scheme: light;
+  }
+  select.field option {
+    background-color: var(--color-zinc-50);
+    color: var(--color-zinc-900);
+  }
+  .dark select.field {
+    color-scheme: dark;
+  }
+  .dark select.field option {
+    background-color: var(--color-zinc-900);
+    color: var(--color-zinc-100);
+  }
 }
 
 /* Menu déroulant (recherche) : petit slide + fondu à l'ouverture */

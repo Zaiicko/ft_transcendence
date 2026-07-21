@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import AddToListButton from '../components/AddToListButton';
 import PlayedButton from '../components/PlayedButton';
 import ReviewsSection, { ReviewStats } from '../components/ReviewsSection';
+import Select from '../components/Select';
 import Skeleton from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
@@ -239,20 +240,19 @@ function DlcSelector({ dlcs }: { dlcs: GameDlc[] }) {
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
         Extensions & DLC ({dlcs.length})
       </h2>
-      <select
-        value={selectedId ?? ''}
-        onChange={(e) => setSelectedId(e.target.value ? Number(e.target.value) : null)}
-        aria-label="Choisir un DLC"
-        className="field w-full max-w-md cursor-pointer px-4 py-2"
-      >
-        <option value="">Choisir un DLC…</option>
-        {dlcs.map((d) => (
-          <option key={d.id} value={d.id}>
-            {dlcTypeLabel(d.gameType)} · {d.title}
-            {dlcYear(d) ? ` (${dlcYear(d)})` : ''}
-          </option>
-        ))}
-      </select>
+      <Select
+        label="Choisir un DLC"
+        value={selectedId?.toString() ?? ''}
+        onChange={(v) => setSelectedId(v ? Number(v) : null)}
+        className="w-full max-w-md"
+        options={[
+          { value: '', label: 'Choisir un DLC…' },
+          ...dlcs.map((d) => ({
+            value: String(d.id),
+            label: `${dlcTypeLabel(d.gameType)} · ${d.title}${dlcYear(d) ? ` (${dlcYear(d)})` : ''}`,
+          })),
+        ]}
+      />
 
       {selected && (
         <div className="card mt-3 flex items-center gap-4 p-4">

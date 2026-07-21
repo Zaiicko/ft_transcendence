@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import Select from '../components/Select';
 import { CoverGridSkeleton } from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
@@ -252,33 +253,6 @@ function Chip({
     >
       {children}
     </button>
-  );
-}
-
-function Select({
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  options: { value: string; label: string }[];
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      aria-label={label}
-      className="field w-auto cursor-pointer px-4 py-2 text-center"
-    >
-      {options.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
   );
 }
 
