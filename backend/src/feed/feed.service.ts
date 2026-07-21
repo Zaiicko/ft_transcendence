@@ -31,6 +31,9 @@ const reviewTargetSelect = {
 
 export type FeedActor = { id: number; username: string; avatarUrl: string | null };
 
+// Filtre optionnel du feed (onglets en haut de la page). Absent = tout.
+export type FeedFilter = 'reviews' | 'played' | 'likes';
+
 // Un événement du feed. `at` sert au tri chronologique et de curseur « charger
 // plus ». `id` est unique tous types confondus (préfixé) pour dédupliquer côté
 // front lors du push temps réel.
@@ -65,11 +68,13 @@ export class FeedService {
   }
 
   // Feed paginé par curseur (timestamp ISO) : les items strictement plus
-  // anciens que `cursor`. Fusionne avis, jeux faits et likes des amis.
+  // anciens que `cursor`. Fusionne avis, jeux faits et likes des amis. `filter`
+  // (onglet) restreint aux sources voulues pour que la pagination reste juste.
   async getFeed(
     viewerId: number,
     cursor: string | undefined,
     limit = DEFAULT_LIMIT,
+    filter?: FeedFilter,
   ): Promise<{ items: FeedItem[]; nextCursor: string | null }> {
     limit = Math.min(Math.max(limit, 1), MAX_LIMIT);
     const friends = await this.friendIds(viewerId);
@@ -78,59 +83,70 @@ export class FeedService {
     const before = cursor ? new Date(cursor) : undefined;
     const olderThan = before ? { createdAt: { lt: before } } : {};
     const take = limit + 1; // +1 par source pour détecter s'il reste des items
+    const wantReviews = !filter || filter === 'reviews';
+    const wantPlayed = !filter || filter === 'played';
+    const wantLikes = !filter || filter === 'likes';
 
-    // On sur-échantillonne chaque source, on fusionne, on trie, on tronque.
+    // On sur-échantillonne chaque source demandée, on fusionne, on trie, on tronque.
     const [reviews, playedRaw, reviewLikes, commentLikes] = await Promise.all([
-      this.prisma.review.findMany({
-        where: { userId: { in: friends }, ...olderThan },
-        orderBy: { createdAt: 'desc' },
-        take,
-        select: reviewSelect,
-      }),
-      this.prisma.playedGame.findMany({
-        where: { userId: { in: friends }, status: PlayStatus.PLAYED, ...olderThan },
-        orderBy: { createdAt: 'desc' },
-        take,
-        select: {
-          id: true,
-          createdAt: true,
-          gameId: true,
-          userId: true,
-          user: { select: actorSelect },
-          game: { select: gameSelect },
-        },
-      }),
-      this.prisma.reviewLike.findMany({
-        where: { userId: { in: friends }, ...olderThan },
-        orderBy: { createdAt: 'desc' },
-        take,
-        select: {
-          id: true,
-          createdAt: true,
-          user: { select: actorSelect },
-          review: { select: reviewTargetSelect },
-        },
-      }),
-      this.prisma.reviewCommentLike.findMany({
-        where: { userId: { in: friends }, ...olderThan },
-        orderBy: { createdAt: 'desc' },
-        take,
-        select: {
-          id: true,
-          createdAt: true,
-          user: { select: actorSelect },
-          comment: {
+      wantReviews
+        ? this.prisma.review.findMany({
+            where: { userId: { in: friends }, ...olderThan },
+            orderBy: { createdAt: 'desc' },
+            take,
+            select: reviewSelect,
+          })
+        : [],
+      wantPlayed
+        ? this.prisma.playedGame.findMany({
+            where: { userId: { in: friends }, status: PlayStatus.PLAYED, ...olderThan },
+            orderBy: { createdAt: 'desc' },
+            take,
             select: {
               id: true,
-              text: true,
+              createdAt: true,
+              gameId: true,
+              userId: true,
               user: { select: actorSelect },
-              review: {
-                select: { id: true, game: { select: gameSelect }, company: { select: companySelect } },
+              game: { select: gameSelect },
+            },
+          })
+        : [],
+      wantLikes
+        ? this.prisma.reviewLike.findMany({
+            where: { userId: { in: friends }, ...olderThan },
+            orderBy: { createdAt: 'desc' },
+            take,
+            select: {
+              id: true,
+              createdAt: true,
+              user: { select: actorSelect },
+              review: { select: reviewTargetSelect },
+            },
+          })
+        : [],
+      wantLikes
+        ? this.prisma.reviewCommentLike.findMany({
+            where: { userId: { in: friends }, ...olderThan },
+            orderBy: { createdAt: 'desc' },
+            take,
+            select: {
+              id: true,
+              createdAt: true,
+              user: { select: actorSelect },
+              comment: {
+                select: {
+                  id: true,
+                  text: true,
+                  user: { select: actorSelect },
+                  review: {
+                    select: { id: true, game: { select: gameSelect }, company: { select: companySelect } },
+                  },
+                },
               },
             },
-          },
-        },
-      }),
+          })
+        : [],
     ]);
 
     // Déduplication : un « jeu fait » dont l'user a aussi écrit un avis est

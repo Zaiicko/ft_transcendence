@@ -26,15 +26,40 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('fr');
 }
 
+type Filter = 'all' | 'reviews' | 'played' | 'likes';
+
+const TABS: { key: Filter; label: string }[] = [
+  { key: 'all', label: 'Tout' },
+  { key: 'reviews', label: 'Avis' },
+  { key: 'played', label: 'Jeux' },
+  { key: 'likes', label: 'Likes' },
+];
+
+// Un item pushé en temps réel correspond-il à l'onglet courant ?
+function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
+  if (filter === 'all') return true;
+  if (filter === 'reviews') return kind === 'review';
+  if (filter === 'played') return kind === 'played';
+  return kind === 'review-like' || kind === 'comment-like';
+}
+
 export default function FriendFeed() {
+  const [filter, setFilter] = useState<Filter>('all');
   const [items, setItems] = useState<FeedItem[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const query = (cur?: string) =>
+    `/feed?limit=${PAGE}` +
+    (filter !== 'all' ? `&type=${filter}` : '') +
+    (cur ? `&cursor=${encodeURIComponent(cur)}` : '');
+
+  // Recharge à chaque changement d'onglet (repart de zéro)
   useEffect(() => {
     let cancelled = false;
-    apiFetch<FeedPage>(`/feed?limit=${PAGE}`)
+    setLoading(true);
+    apiFetch<FeedPage>(query())
       .then((page) => {
         if (cancelled) return;
         setItems(page.items);
@@ -45,10 +70,13 @@ export default function FriendFeed() {
     return () => {
       cancelled = true;
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
 
-  // Temps réel : un nouvel item d'un ami s'insère en tête (dédup par id)
+  // Temps réel : un nouvel item d'un ami s'insère en tête (si l'onglet le
+  // laisse passer, et sans doublon)
   useFeedSocket((item) => {
+    if (!inFilter(item.kind, filter)) return;
     setItems((prev) => (prev.some((i) => i.id === item.id) ? prev : [item, ...prev]));
   }, true);
 
@@ -56,7 +84,7 @@ export default function FriendFeed() {
     if (!cursor || loadingMore) return;
     setLoadingMore(true);
     try {
-      const page = await apiFetch<FeedPage>(`/feed?limit=${PAGE}&cursor=${encodeURIComponent(cursor)}`);
+      const page = await apiFetch<FeedPage>(query(cursor));
       // Dédup au cas où un push temps réel aurait déjà inséré un item
       setItems((prev) => {
         const seen = new Set(prev.map((i) => i.id));
@@ -70,56 +98,70 @@ export default function FriendFeed() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex flex-col gap-3">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="h-24 animate-pulse rounded-xl bg-zinc-200 dark:bg-zinc-900" />
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Onglets de filtre */}
+      <div className="flex gap-2">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setFilter(t.key)}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+              filter === t.key
+                ? 'bg-accent text-zinc-950'
+                : 'border border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+            }`}
+          >
+            {t.label}
+          </button>
         ))}
       </div>
-    );
-  }
 
-  if (items.length === 0) {
-    return (
-      <EmptyState
-        icon={<FeedIcon />}
-        title="Rien de neuf chez tes amis"
-        description="Ajoute des amis et suis leurs dernières critiques et jeux terminés ici."
-      >
-        <Link
-          to="/friends"
-          className="mt-2 rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110"
+      {loading ? (
+        <div className="flex flex-col gap-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-24 animate-pulse rounded-xl bg-zinc-200 dark:bg-zinc-900" />
+          ))}
+        </div>
+      ) : items.length === 0 ? (
+        <EmptyState
+          icon={<FeedIcon />}
+          title={filter === 'all' ? 'Rien de neuf chez tes amis' : 'Rien dans cet onglet'}
+          description="Ajoute des amis et suis leurs dernières critiques, jeux terminés et likes ici."
         >
-          Trouver des amis
-        </Link>
-      </EmptyState>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-3">
-      {items.map((item) => {
-        switch (item.kind) {
-          case 'review':
-            return <ReviewItem key={item.id} item={item} />;
-          case 'played':
-            return <PlayedItem key={item.id} item={item} />;
-          case 'review-like':
-            return <ReviewLikeItem key={item.id} item={item} />;
-          case 'comment-like':
-            return <CommentLikeItem key={item.id} item={item} />;
-        }
-      })}
-      {cursor && (
-        <button
-          type="button"
-          onClick={loadMore}
-          disabled={loadingMore}
-          className="mx-auto mt-2 rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
-        >
-          {loadingMore ? 'Chargement…' : 'Charger plus'}
-        </button>
+          <Link
+            to="/friends"
+            className="mt-2 rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110"
+          >
+            Trouver des amis
+          </Link>
+        </EmptyState>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {items.map((item) => {
+            switch (item.kind) {
+              case 'review':
+                return <ReviewItem key={item.id} item={item} />;
+              case 'played':
+                return <PlayedItem key={item.id} item={item} />;
+              case 'review-like':
+                return <ReviewLikeItem key={item.id} item={item} />;
+              case 'comment-like':
+                return <CommentLikeItem key={item.id} item={item} />;
+            }
+          })}
+          {cursor && (
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="mx-auto mt-2 rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
+            >
+              {loadingMore ? 'Chargement…' : 'Charger plus'}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
