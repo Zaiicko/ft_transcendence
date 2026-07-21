@@ -1,8 +1,19 @@
-import { Controller, Get, HttpCode, Param, ParseIntPipe, Patch, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ListNotificationsDto } from './dto/list-notifications.dto';
+import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { NotificationsService } from './notifications.service';
 
 // Tout est privé : une notification n'appartient qu'à son destinataire
@@ -19,6 +30,17 @@ export class NotificationsController {
   @Get('unread-count')
   unreadCount(@CurrentUser() user: JwtPayload) {
     return this.notifications.unreadCount(user.sub);
+  }
+
+  // Préférences par type (activé/désactivé) — opt-out
+  @Get('preferences')
+  getPreferences(@CurrentUser() user: JwtPayload) {
+    return this.notifications.getPreferences(user.sub);
+  }
+
+  @Patch('preferences')
+  updatePreferences(@CurrentUser() user: JwtPayload, @Body() dto: UpdatePreferencesDto) {
+    return this.notifications.updatePreferences(user.sub, dto as Record<string, boolean>);
   }
 
   @Patch('read-all')

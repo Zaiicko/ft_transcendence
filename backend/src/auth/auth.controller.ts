@@ -11,9 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ModuleRef } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthProvider, User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { FriendsService } from '../friends/friends.service';
 import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
 import { clearAuthCookies, REFRESH_COOKIE_PATH, setAuthCookies } from './auth-cookies.util';
@@ -38,6 +40,9 @@ export class AuthController {
     private readonly auth: AuthService,
     private readonly users: UsersService,
     private readonly config: ConfigService,
+    // Résolu en lazy pour notifier les contacts d'un nouvel inscrit sans créer
+    // de cycle de modules (Auth ↔ Friends ↔ Chat/Notifications).
+    private readonly moduleRef: ModuleRef,
   ) {}
 
   @Post('signup')
@@ -201,6 +206,13 @@ export class AuthController {
     }
 
     this.setAuthCookies(res, await this.auth.issueTokens(user));
+    if (isNewUser) {
+      // Prévient les camarades 42 / amis Steam déjà inscrits (best-effort)
+      this.moduleRef
+        .get(FriendsService, { strict: false })
+        .notifyContactJoined(user.id)
+        .catch(() => {});
+    }
     res.redirect(`${this.frontendUrl()}/profile${isNewUser ? '?welcome=1' : ''}`);
   }
 
