@@ -91,10 +91,12 @@ export class SteamAuthController {
       return res.redirect(`${front}/profile?steam=linked`);
     }
 
-    // Case 2 — this Steam account is already linked to a user: log them in
+    // Case 2 — this Steam account is already linked to a user: log them in.
+    // On passe par /profile (comme 42/Google) : le front y relit la page
+    // d'origine mémorisée au clic et y renvoie (sinon accueil).
     if (owner) {
       setAuthCookies(res, await this.auth.issueTokens(owner));
-      return res.redirect(front);
+      return res.redirect(`${front}/profile`);
     }
 
     // Case 3 — unknown Steam account: hand the verified steamId to the

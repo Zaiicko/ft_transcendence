@@ -14,7 +14,11 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const from = (location.state as { from?: string } | null)?.from ?? '/profile';
+  // Après connexion on revient là où l'utilisateur était (transmis via `from`
+  // par la navbar ou ProtectedRoute). À défaut → accueil, jamais les settings ;
+  // on évite aussi de reboucler sur les pages d'auth.
+  const rawFrom = (location.state as { from?: string } | null)?.from;
+  const from = rawFrom && !['/login', '/signup'].includes(rawFrom) ? rawFrom : '/';
   const oauthError = searchParams.get('error');
   const oauthErrorMessage = oauthError
     ? (OAUTH_ERROR_MESSAGES[oauthError] ?? 'Something went wrong signing in — please try again.')

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -21,8 +22,26 @@ import VerifyEmail from './pages/VerifyEmail';
 // The account page moved from /profile to /settings; backend OAuth/Steam
 // callbacks still redirect to /profile?welcome=1 or ?steam=…, so keep the old
 // path working and forward its query string.
+//
+// Retour post-login OAuth : au clic sur un bouton 42/Google, la page d'origine
+// est mémorisée dans sessionStorage. Ici, pour un compte EXISTANT (pas de
+// ?welcome), on y renvoie au lieu des settings. Un nouveau compte (?welcome=1)
+// garde l'écran de bienvenue pour choisir son pseudo.
 function LegacyProfileRedirect() {
   const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  // ?welcome=1 = nouveau compte (onboarding) ; ?steam=… = retour de liaison
+  // Steam depuis les settings : dans ces deux cas on reste sur les settings.
+  const keepSettings = params.has('welcome') || params.has('steam');
+  // Lu une seule fois (initializer) → stable même sous le double-render
+  // StrictMode ; le nettoyage se fait dans l'effet ci-dessous.
+  const [dest] = useState(() =>
+    keepSettings ? null : sessionStorage.getItem('postLoginRedirect'),
+  );
+  useEffect(() => {
+    sessionStorage.removeItem('postLoginRedirect');
+  }, []);
+  if (dest) return <Navigate to={dest} replace />;
   return <Navigate to={`/settings${search}`} replace />;
 }
 

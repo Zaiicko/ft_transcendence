@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+
 // Connexion via fournisseurs OAuth/OpenID : boutons logo (sans texte). Fond
 // aux couleurs de chaque marque pour que le logo contraste en jour comme en
 // nuit. Partagé par Login et Signup.
@@ -5,10 +7,22 @@ const BASE =
   'flex h-11 flex-1 items-center justify-center rounded-full border transition hover:brightness-110';
 
 export default function OAuthButtons() {
+  const location = useLocation();
+
+  // Le flux OAuth 42/Google est une redirection pleine page : on mémorise la
+  // page d'origine (transmise via location.state.from) dans sessionStorage, que
+  // LegacyProfileRedirect relira au retour pour un compte existant.
+  const rememberOrigin = () => {
+    const from = (location.state as { from?: string } | null)?.from;
+    const dest = from && !['/login', '/signup'].includes(from) ? from : '/';
+    sessionStorage.setItem('postLoginRedirect', dest);
+  };
+
   return (
     <div className="flex gap-3">
       <a
         href="/api/auth/google"
+        onClick={rememberOrigin}
         title="Continuer avec Google"
         aria-label="Continuer avec Google"
         className={`${BASE} border-zinc-300 bg-white`}
@@ -35,6 +49,7 @@ export default function OAuthButtons() {
 
       <a
         href="/api/auth/42"
+        onClick={rememberOrigin}
         title="Continuer avec 42"
         aria-label="Continuer avec 42"
         className={`${BASE} border-black bg-black text-base font-bold text-white`}
@@ -44,6 +59,7 @@ export default function OAuthButtons() {
 
       <a
         href="/api/auth/steam"
+        onClick={rememberOrigin}
         title="Continuer avec Steam"
         aria-label="Continuer avec Steam"
         className={`${BASE} border-[#1b2838] bg-[#1b2838] text-white`}

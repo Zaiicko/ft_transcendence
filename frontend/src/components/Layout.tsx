@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from './Avatar';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
@@ -64,6 +64,7 @@ const navLink = ({ isActive }: { isActive: boolean }) =>
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mode, setMode] = useState<ThemeMode>(storedMode);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -119,6 +120,7 @@ export default function Layout() {
               <>
                 <Link
                   to="/login"
+                  state={{ from: location.pathname + location.search }}
                   className="text-zinc-500 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                 >
                   Log in
