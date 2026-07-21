@@ -46,6 +46,14 @@ const sunIcon = (
 
 const moonIcon = <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />;
 
+const menuIcon = (
+  <>
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </>
+);
+
 const logoutIcon = (
   <>
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -69,6 +77,12 @@ export default function Layout() {
   const location = useLocation();
   const [mode, setMode] = useState<ThemeMode>(storedMode);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+
+  // Referme le menu burger à chaque changement de page
+  useEffect(() => {
+    setNavOpen(false);
+  }, [location.pathname]);
 
   // Synchronise la classe .dark de <html> (et localStorage) avec l'état React
   useEffect(() => {
@@ -82,8 +96,65 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col text-zinc-900 dark:text-zinc-100">
-      <header className="px-6 pb-4 pt-5">
-        <nav className="mx-auto flex max-w-6xl items-center gap-8">
+      <header className="px-4 pb-4 pt-5 sm:px-6">
+        <nav className="mx-auto flex max-w-6xl items-center gap-3 sm:gap-6">
+          {/* Burger : liens de nav sur petit écran (la barre inline est masquée < sm) */}
+          <div className="relative shrink-0 sm:hidden">
+            <button
+              type="button"
+              onClick={() => setNavOpen((o) => !o)}
+              aria-haspopup="menu"
+              aria-expanded={navOpen}
+              aria-label="Menu de navigation"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+            >
+              <Icon className="h-5 w-5">{menuIcon}</Icon>
+            </button>
+            {navOpen && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Fermer le menu"
+                  tabIndex={-1}
+                  onClick={() => setNavOpen(false)}
+                  className="fixed inset-0 z-10 cursor-default"
+                />
+                <div
+                  role="menu"
+                  className="absolute left-0 z-20 mt-2 w-44 overflow-hidden rounded-lg border border-zinc-900/10 bg-white py-1 text-sm shadow-lg dark:border-zinc-100/10 dark:bg-zinc-900"
+                >
+                  <NavLink
+                    to="/games"
+                    role="menuitem"
+                    onClick={() => setNavOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                  >
+                    Catalogue
+                  </NavLink>
+                  {user && (
+                    <>
+                      <NavLink
+                        to="/friends"
+                        role="menuitem"
+                        onClick={() => setNavOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                      >
+                        Friends
+                      </NavLink>
+                      <NavLink
+                        to="/steam"
+                        role="menuitem"
+                        onClick={() => setNavOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                      >
+                        Steam
+                      </NavLink>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
           <Link to="/" className="font-display flex shrink-0 items-baseline gap-2 text-xl font-bold tracking-tight">
             <span>
               <span className="text-accent">Save</span>boxd
@@ -109,16 +180,19 @@ export default function Layout() {
               </>
             )}
           </div>
-          <div className="ml-auto w-56 min-w-0 max-w-full">
+          <div className="ml-auto w-32 min-w-0 sm:w-44 lg:w-56">
             <SearchBar />
           </div>
-          <div className="flex shrink-0 items-center gap-4 text-sm">
+          <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
             {user ? (
               <>
                 <NotificationBell />
-                <Link to={`/u/${user.username}`} className="flex items-center gap-2 hover:opacity-70">
+                <Link
+                  to={`/u/${user.username}`}
+                  className="flex min-w-0 items-center gap-2 hover:opacity-70"
+                >
                   <Avatar username={user.username} avatarUrl={user.avatarUrl} size={24} />
-                  {user.username}
+                  <span className="hidden max-w-[8rem] truncate md:inline">{user.username}</span>
                 </Link>
               </>
             ) : (
