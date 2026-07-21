@@ -27,10 +27,13 @@ interface ReviewT {
 
 type Sort = 'recent' | 'popular' | 'discussed';
 const SORTS: { key: Sort; label: string }[] = [
-  { key: 'recent', label: 'Récentes' },
   { key: 'popular', label: 'Populaires' },
+  { key: 'recent', label: 'Récentes' },
   { key: 'discussed', label: 'Discutées' },
 ];
+
+// Avis chargés par lot, avec un bouton « Charger plus »
+const PAGE_SIZE = 10;
 
 // Section d'avis complète (liste + formulaire + likes + commentaires threadés +
 // temps réel), partagée par la fiche jeu et la fiche studio. Le back est
@@ -52,7 +55,12 @@ export default function ReviewsSection({
   const { hash } = useLocation();
 
   const [reviews, setReviews] = useState<ReviewT[]>([]);
-  const [sort, setSort] = useState<Sort>('recent');
+  const [sort, setSort] = useState<Sort>('popular');
+  // Pagination : page courante, fin atteinte (dernier lot < PAGE_SIZE), et
+  // état du bouton pendant le chargement du lot suivant.
+  const [page, setPage] = useState(1);
+  const [reachedEnd, setReachedEnd] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   // Threads ouverts (id des avis dépliés) + version par avis, bumpée par le
   // temps réel (comment:changed) pour refetch un thread ouvert.
   const [openThreads, setOpenThreads] = useState<Set<number>>(new Set());
@@ -70,6 +78,26 @@ export default function ReviewsSection({
   const bumpVersion = (rid: number) =>
     setCommentVersions((v) => ({ ...v, [rid]: (v[rid] ?? 0) + 1 }));
 
+  // Charge le lot suivant et l'ajoute à la suite. On dédoublonne : un avis déjà
+  // présent (ex. celui épinglé via #review-<id>) n'est pas ajouté deux fois.
+  async function loadMore() {
+    setLoadingMore(true);
+    const next = page + 1;
+    try {
+      const rows = await apiFetch<ReviewT[]>(
+        `${base}/reviews?sort=${sort}&page=${next}&limit=${PAGE_SIZE}`,
+      );
+      setReviews((cur) => {
+        const seen = new Set(cur.map((r) => r.id));
+        return [...cur, ...rows.filter((r) => !seen.has(r.id))];
+      });
+      setPage(next);
+      setReachedEnd(rows.length < PAGE_SIZE);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
   function refreshStats() {
     apiFetch<ReviewStats>(`${base}/reviews/stats`)
       .then((s) => onStats?.(s))
@@ -83,25 +111,53 @@ export default function ReviewsSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [base]);
 
+  // Chargement / rechargement de la première page (au montage, changement de
+  // tri, ou arrivée via un lien profond).
   useEffect(() => {
     let cancelled = false;
-    apiFetch<ReviewT[]>(`${base}/reviews?sort=${sort}&limit=50`)
+    const pinId = hash.startsWith('#review-') ? Number(hash.slice('#review-'.length)) : NaN;
+    apiFetch<ReviewT[]>(`${base}/reviews?sort=${sort}&page=1&limit=${PAGE_SIZE}`)
       .then((list) => {
-        if (!cancelled) setReviews(list);
+        if (cancelled) return;
+        setReviews(list);
+        setPage(1);
+        setReachedEnd(list.length < PAGE_SIZE);
+        // Avis ciblé (#review-<id>) absent du lot chargé : on le récupère seul
+        // et on l'épingle en tête, pour toujours atterrir dessus même sur un jeu
+        // très commenté. On vérifie qu'il appartient bien à cette cible.
+        if (!Number.isNaN(pinId) && !list.some((r) => r.id === pinId)) {
+          apiFetch<ReviewT & { game?: { id: number }; company?: { id: number } }>(
+            `/reviews/${pinId}`,
+          )
+            .then((r) => {
+              if (cancelled) return;
+              const belongs = kind === 'game' ? r.game?.id === id : r.company?.id === id;
+              if (belongs) {
+                setReviews((cur) => (cur.some((x) => x.id === r.id) ? cur : [r, ...cur]));
+              }
+            })
+            .catch(() => {});
+        }
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, [base, sort]);
+  }, [base, sort, hash, kind, id]);
 
-  // Arrivée via un lien #review : on défile jusqu'au bloc critiques une fois
-  // la liste montée.
+  // Arrivée via un lien #review (bloc critiques) ou #review-<id> (un avis
+  // précis, ex. depuis le profil). On défile une seule fois par hash, en
+  // retentant quand la liste finit de charger (l'ancre n'existe qu'ensuite).
+  const scrolledFor = useRef<string | null>(null);
   useEffect(() => {
-    if (hash === '#review') {
-      reviewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [hash]);
+    if (!hash.startsWith('#review')) return;
+    if (scrolledFor.current === hash) return;
+    const el = document.getElementById(hash.slice(1));
+    const target = el ?? (hash === '#review' ? reviewRef.current : null);
+    if (!target) return; // pas encore monté : on retentera au prochain rendu
+    scrolledFor.current = hash;
+    target.scrollIntoView({ behavior: 'smooth', block: el && hash !== '#review' ? 'center' : 'start' });
+  }, [hash, reviews]);
 
   // 👍/👎 exclusifs et idempotents côté serveur (204 sans payload). Patch
   // optimiste AVANT l'await : sinon l'event socket `review:reaction` (compteur
@@ -206,8 +262,12 @@ export default function ReviewsSection({
           noun={noun}
           onCreated={() => {
             setSort('recent');
-            apiFetch<ReviewT[]>(`${base}/reviews?sort=recent&limit=50`)
-              .then(setReviews)
+            apiFetch<ReviewT[]>(`${base}/reviews?sort=recent&page=1&limit=${PAGE_SIZE}`)
+              .then((list) => {
+                setReviews(list);
+                setPage(1);
+                setReachedEnd(list.length < PAGE_SIZE);
+              })
               .catch(() => {});
             refreshStats();
             onReviewCreated?.();
@@ -233,7 +293,11 @@ export default function ReviewsSection({
       ) : (
         <div className="flex flex-col gap-4">
           {reviews.map((r) => (
-            <article key={r.id} className="card p-4">
+            <article
+              key={r.id}
+              id={`review-${r.id}`}
+              className="card scroll-mt-24 p-4 transition target:ring-2 target:ring-accent"
+            >
               <div className="flex items-center gap-3">
                 {r.user ? (
                   <Link
@@ -346,6 +410,16 @@ export default function ReviewsSection({
               )}
             </article>
           ))}
+          {!reachedEnd && (
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="mx-auto mt-2 block rounded-lg border border-zinc-400 px-6 py-2 text-sm transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
+            >
+              {loadingMore ? 'Chargement…' : 'Charger plus'}
+            </button>
+          )}
         </div>
       )}
     </section>

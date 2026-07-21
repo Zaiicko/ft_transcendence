@@ -71,7 +71,8 @@ export class UsersService {
           take: 5,
           select: { rating: true, game: gameRef },
         }),
-        // Latest reviews (game or company)
+        // Latest reviews (game or company) — seed de la section avis (sort
+        // "recent", page 1) ; _count pour afficher likes/💬 (tri lisible)
         this.prisma.review.findMany({
           where: { userId: user.id },
           orderBy: { createdAt: 'desc' },
@@ -84,6 +85,9 @@ export class UsersService {
             createdAt: true,
             game: gameRef,
             company: { select: { id: true, name: true, logoUrl: true } },
+            _count: {
+              select: { likes: true, dislikes: true, comments: { where: { deletedAt: null } } },
+            },
           },
         }),
         // Completion calendar: only games with a recorded date

@@ -2,9 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
-import EmptyState, { CalendarIcon, PencilIcon } from '../components/EmptyState';
+import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import ProfileLists from '../components/ProfileLists';
+import ProfileReviews from '../components/ProfileReviews';
 import Skeleton from '../components/Skeleton';
 import Stars from '../components/Stars';
 import SteamBadge from '../components/SteamBadge';
@@ -357,69 +358,8 @@ export default function PublicProfile() {
         <CompletionCalendar entries={profile.calendar} />
       </section>
 
-      {/* Recent reviews */}
-      <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Recent reviews</h2>
-        {profile.recentReviews.length === 0 ? (
-          <EmptyState icon={<PencilIcon />} title="No reviews yet" description="This player hasn't reviewed any game yet." />
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {profile.recentReviews.map((r) => {
-              const name = r.game?.title ?? r.company?.name ?? 'Unknown';
-              const cover = r.game?.coverUrl ?? r.company?.logoUrl ?? null;
-              return (
-                <li key={r.id} className="card flex gap-3 p-3">
-                  {/* Petite jaquette du jeu (ou logo du studio) noté */}
-                  {r.game ? (
-                    <Link to={`/game/${r.game.id}`} className="shrink-0">
-                      {cover ? (
-                        <img
-                          src={cover}
-                          alt=""
-                          className="h-16 w-11 rounded object-cover transition hover:opacity-80"
-                        />
-                      ) : (
-                        <span className="block h-16 w-11 rounded bg-zinc-200 dark:bg-zinc-800" />
-                      )}
-                    </Link>
-                  ) : r.company ? (
-                    // Logo studio : object-contain (sinon rogné/zoomé) + fond clair
-                    <Link to={`/company/${r.company.id}`} className="shrink-0">
-                      {cover ? (
-                        <img
-                          src={cover}
-                          alt=""
-                          className="h-16 w-11 rounded bg-white object-contain p-0.5 transition hover:opacity-80"
-                        />
-                      ) : (
-                        <span className="block h-16 w-11 rounded bg-zinc-200 dark:bg-zinc-800" />
-                      )}
-                    </Link>
-                  ) : (
-                    <span className="block h-16 w-11 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      {r.game ? (
-                        <Link to={`/game/${r.game.id}`} className="font-medium hover:underline">
-                          {name}
-                        </Link>
-                      ) : (
-                        <span className="font-medium">{name}</span>
-                      )}
-                      <Stars rating={r.rating} />
-                    </div>
-                    {r.title && <p className="mt-1 text-sm font-medium">{r.title}</p>}
-                    <p className="mt-1 line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">
-                      {r.text}
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+      {/* Recent reviews — limitées à 10, triables, "Charger plus" */}
+      <ProfileReviews username={profile.username} seed={profile.recentReviews} />
     </div>
   );
 }

@@ -97,6 +97,19 @@ export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 
 type GameRef = { id: number; title: string; coverUrl: string | null };
 
+// Un avis tel qu'affiché sur le profil (seed du profil + GET
+// /users/profile/:username/reviews). Exactement un de game/company est non-null.
+export interface ProfileReview {
+  id: number;
+  title: string;
+  rating: number;
+  text: string;
+  createdAt: string;
+  game: GameRef | null;
+  company: { id: number; name: string; logoUrl: string | null } | null;
+  _count: { likes: number; dislikes: number; comments: number };
+}
+
 // GET /users/profile/:username — privacy-safe public profile (no email)
 export interface PublicProfile {
   id: number;
@@ -109,15 +122,7 @@ export interface PublicProfile {
   reviewCount: number;
   playedCount: number;
   topGames: { rating: number; game: GameRef }[];
-  recentReviews: {
-    id: number;
-    title: string;
-    rating: number;
-    text: string;
-    createdAt: string;
-    game: GameRef | null;
-    company: { id: number; name: string; logoUrl: string | null } | null;
-  }[];
+  recentReviews: ProfileReview[];
   calendar: { playedAt: string; game: GameRef }[];
   friendState: FriendState;
   publicLists: GameListSummary[];

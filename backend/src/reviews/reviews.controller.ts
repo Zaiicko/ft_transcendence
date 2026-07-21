@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -29,6 +30,27 @@ export class ReviewsController {
   @Get('highlights')
   highlights(@Query() query: HighlightsDto, @CurrentUser() viewer?: JwtPayload) {
     return this.reviewsService.highlights(query.days, query.page, query.limit, viewer?.sub);
+  }
+
+  // Avis d'un utilisateur (par pseudo), paginés + triés (récents / populaires /
+  // discutés) — alimente le "Charger plus" et le tri de la section avis du
+  // profil. Deux segments après /reviews : pas de collision avec @Get(':id').
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get('user/:username')
+  forUser(
+    @Param('username') username: string,
+    @Query('sort') sort: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @CurrentUser() viewer?: JwtPayload,
+  ) {
+    const safeSort = (['recent', 'popular', 'discussed'] as const).includes(
+      sort as 'recent' | 'popular' | 'discussed',
+    )
+      ? (sort as 'recent' | 'popular' | 'discussed')
+      : 'recent';
+    const safeLimit = Math.min(Math.max(limit, 1), 50);
+    return this.reviewsService.findForUsername(username, safeSort, page, safeLimit, viewer?.sub);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

@@ -373,17 +373,20 @@ function ScoreBadge({ score, small = false }: { score: number; small?: boolean }
 }
 
 function ReviewCard({ review }: { review: ReviewHighlight }) {
+  // Le lien pointe sur l'avis précis (#review-<id>) : la fiche jeu/studio défile
+  // dessus et l'encadre, comme depuis un profil (l'épinglage gère le cas où il
+  // n'est pas dans le premier lot chargé).
   const target = review.game
     ? {
         name: review.game.title,
         cover: review.game.coverUrl,
-        href: gameHref(review.game.id),
+        href: `${gameHref(review.game.id)}#review-${review.id}`,
         isCompany: false,
       }
     : {
         name: review.company?.name ?? '?',
         cover: review.company?.logoUrl ?? null,
-        href: review.company ? companyHref(review.company.id) : '/',
+        href: review.company ? `${companyHref(review.company.id)}#review-${review.id}` : '/',
         isCompany: true,
       };
 
