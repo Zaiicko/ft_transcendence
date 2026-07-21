@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { GameType, PlayStatus, Prisma } from '@prisma/client';
+import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { GameSort, ListGamesDto } from './dto/list-games.dto';
 import { GamesSyncService } from './games-sync.service';
@@ -37,6 +38,7 @@ export class GamesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly sync: GamesSyncService,
+    private readonly feed: FeedService,
   ) {}
 
   // Combinable filters (Prisma), then computed sorts (SQL aggregates: weighted
@@ -238,6 +240,9 @@ export class GamesService {
           : { status: PlayStatus.PLAYED, playedAt: new Date() },
       create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: new Date() },
     });
+    // Nouvelle transition vers « fait » → pousse dans le feed des amis
+    // (best-effort ; le service ignore le cas où un avis existe déjà)
+    if (current?.status !== PlayStatus.PLAYED) void this.feed.onGamePlayed(userId, gameId);
     return { status: row.status, playedAt: row.playedAt };
   }
 

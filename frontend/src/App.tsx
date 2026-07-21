@@ -5,6 +5,7 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import Layout from './components/Layout';
 import Catalog from './pages/Catalog';
 import Company from './pages/Company';
+import Feed from './pages/Feed';
 import ForgotPassword from './pages/ForgotPassword';
 import Friends from './pages/Friends';
 import Game from './pages/Game';
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/u/:username" element={<PublicProfile />} />
           <Route path="/profile" element={<LegacyProfileRedirect />} />
           <Route element={<ProtectedRoute />}>
+            <Route path="/feed" element={<Feed />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/steam" element={<SteamLibrary />} />

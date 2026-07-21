@@ -152,6 +152,21 @@ export interface ReviewHighlight {
   _count: { likes: number; dislikes: number; comments: number };
 }
 
+// ---- Feed d'activité des amis (GET /feed + event WS `feed:new`) ----
+export type FeedActor = { id: number; username: string; avatarUrl: string | null };
+export type FeedGameRef = { id: number; title: string; coverUrl: string | null };
+
+// `id` unique tous types confondus (préfixé "review-"/"played-"), `at` = date
+// de l'action (tri + curseur "charger plus")
+export type FeedItem =
+  | { id: string; kind: 'review'; at: string; review: ReviewHighlight }
+  | { id: string; kind: 'played'; at: string; actor: FeedActor; game: FeedGameRef };
+
+export interface FeedPage {
+  items: FeedItem[];
+  nextCursor: string | null;
+}
+
 // Viewer's relationship with the profile owner (drives the friend button)
 export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 

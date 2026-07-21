@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { FeedModule } from '../feed/feed.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { CommentsController } from './comments/comments.controller';
 import { ReviewCommentsController } from './comments/review-comments.controller';
@@ -10,7 +11,7 @@ import { ReviewsGateway } from './reviews.gateway';
 import { ReviewsService } from './reviews.service';
 
 @Module({
-  imports: [NotificationsModule], // notifie likes/commentaires/réponses
+  imports: [NotificationsModule, FeedModule], // notifs + push feed d'activité
   controllers: [
     GameReviewsController,
     CompanyReviewsController,

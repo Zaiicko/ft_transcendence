@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PlayStatus, Prisma } from '@prisma/client';
+import { FeedService } from '../feed/feed.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -47,6 +48,7 @@ export class ReviewsService {
     private readonly prisma: PrismaService,
     private readonly gateway: ReviewsGateway,
     private readonly notifications: NotificationsService,
+    private readonly feed: FeedService,
   ) {}
 
   create(userId: number, gameId: number, dto: CreateReviewDto) {
@@ -64,6 +66,8 @@ export class ReviewsService {
         include: reviewInclude(),
       });
       this.gateway.emitToTarget(target, 'review:created', review);
+      // Pousse l'avis dans le feed d'activité des amis (best-effort)
+      void this.feed.onReviewCreated(review.id);
       // Reviewing a game implies you played it: mark it PLAYED (idempotent —
       // keep the original date if already marked, so the completion calendar
       // doesn't drift). Studio reviews have no "played" notion.

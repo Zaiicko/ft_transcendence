@@ -134,6 +134,14 @@ export default function Layout() {
                   {user && (
                     <>
                       <NavLink
+                        to="/feed"
+                        role="menuitem"
+                        onClick={() => setNavOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                      >
+                        Feed
+                      </NavLink>
+                      <NavLink
                         to="/friends"
                         role="menuitem"
                         onClick={() => setNavOpen(false)}
@@ -171,6 +179,9 @@ export default function Layout() {
             </NavLink>
             {user && (
               <>
+                <NavLink to="/feed" className={navLink}>
+                  Feed
+                </NavLink>
                 <NavLink to="/friends" className={navLink}>
                   Friends
                 </NavLink>

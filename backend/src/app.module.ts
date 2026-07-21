@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { CompaniesModule } from './companies/companies.module';
+import { FeedModule } from './feed/feed.module';
 import { FriendsModule } from './friends/friends.module';
 import { GamesModule } from './games/games.module';
 import { ListsModule } from './lists/lists.module';
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     ListsModule,
     ChatModule,
     FriendsModule,
+    FeedModule,
     PresenceModule,
     NotificationsModule,
     SteamModule,
