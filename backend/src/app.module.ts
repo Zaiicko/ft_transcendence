@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 import { CompaniesModule } from './companies/companies.module';
 import { FriendsModule } from './friends/friends.module';
 import { GamesModule } from './games/games.module';
@@ -23,6 +24,7 @@ import { UsersModule } from './users/users.module';
     CompaniesModule,
     ReviewsModule,
     ListsModule,
+    ChatModule,
     FriendsModule,
     PresenceModule,
     NotificationsModule,

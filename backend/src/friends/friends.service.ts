@@ -1,5 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { AuthProvider, FriendshipStatus, User } from '@prisma/client';
+import { ChatGateway } from '../chat/chat.gateway';
 import { PrismaService } from '../prisma/prisma.service';
 import { SteamWebApiService } from '../steam/steam-web-api.service';
 import { UsersService } from '../users/users.service';
@@ -17,6 +18,7 @@ export class FriendsService {
     private readonly prisma: PrismaService,
     private readonly users: UsersService,
     private readonly steamWebApi: SteamWebApiService,
+    private readonly chatGateway: ChatGateway,
   ) {}
 
   async sendRequestByUsername(requesterId: number, username: string) {
@@ -43,7 +45,16 @@ export class FriendsService {
     if (existing) {
       throw new BadRequestException('A friend request already exists between these users');
     }
-    return this.prisma.friendship.create({ data: { requesterId, addresseeId } });
+    const created = await this.prisma.friendship.create({ data: { requesterId, addresseeId } });
+    this.notifyFriendUpdate(requesterId, addresseeId);
+    return created;
+  }
+
+  // Temps réel : prévient les users concernés qu'un lien d'amitié a changé
+  // (demande / acceptation / refus / suppression) → refetch côté profil, page
+  // Friends et widget de chat. Room "user:<id>" partagée (cf. ChatGateway).
+  private notifyFriendUpdate(...userIds: number[]) {
+    for (const id of userIds) this.chatGateway.emitToUser(id, 'friend:update', {});
   }
 
   async accept(requestId: number, currentUserId: number) {
@@ -51,10 +62,13 @@ export class FriendsService {
     if (!request || request.status !== FriendshipStatus.PENDING) throw new NotFoundException();
     if (request.addresseeId !== currentUserId) throw new ForbiddenException();
 
-    return this.prisma.friendship.update({
+    const updated = await this.prisma.friendship.update({
       where: { id: requestId },
       data: { status: FriendshipStatus.ACCEPTED },
     });
+    // Les deux côtés voient l'amitié + la nouvelle conversation sans refresh
+    this.notifyFriendUpdate(request.requesterId, request.addresseeId);
+    return updated;
   }
 
   // Decline an incoming request or cancel one you sent — same operation, ownership-checked either side
@@ -65,6 +79,7 @@ export class FriendsService {
       throw new ForbiddenException();
     }
     await this.prisma.friendship.delete({ where: { id: requestId } });
+    this.notifyFriendUpdate(request.requesterId, request.addresseeId);
   }
 
   async unfriend(currentUserId: number, friendUserId: number): Promise<void> {
@@ -79,6 +94,8 @@ export class FriendsService {
     });
     if (!friendship) throw new NotFoundException();
     await this.prisma.friendship.delete({ where: { id: friendship.id } });
+    // La conversation + les états d'amitié disparaissent des deux côtés en direct
+    this.notifyFriendUpdate(currentUserId, friendUserId);
   }
 
   async listFriends(userId: number) {

@@ -4,6 +4,7 @@ import EmptyState, { UsersIcon } from '../components/EmptyState';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
+import { useFriendSocket } from '../friends/useFriendSocket';
 import { usePresenceSocket } from '../friends/usePresenceSocket';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
@@ -74,6 +75,10 @@ export default function Friends() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  // Temps réel : demande reçue/acceptée/refusée/retirée → amis + demandes se
+  // mettent à jour sans refresh (l'autre côté aussi).
+  useFriendSocket(load, true);
 
   usePresenceSocket(
     {

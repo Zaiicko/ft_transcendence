@@ -78,6 +78,36 @@ export interface GameListDetail {
   games: { id: number; title: string; coverUrl: string | null; releaseDate: string | null }[];
 }
 
+// ---- Chat / messagerie ----
+export type MessageType = 'TEXT' | 'GAME' | 'REVIEW' | 'PROFILE';
+
+export interface ChatMessage {
+  id: number;
+  senderId: number;
+  recipientId: number;
+  type: MessageType;
+  content: string | null;
+  readAt: string | null;
+  createdAt: string;
+  sender: { id: number; username: string; avatarUrl: string | null };
+  // Aperçus de partage : au plus un non-null selon `type`
+  game: { id: number; title: string; coverUrl: string | null } | null;
+  review: {
+    id: number;
+    title: string;
+    rating: number;
+    game: { id: number; title: string; coverUrl: string | null } | null;
+    company: { id: number; name: string; logoUrl: string | null } | null;
+  } | null;
+  sharedUser: { id: number; username: string; avatarUrl: string | null } | null;
+}
+
+export interface ChatConversation {
+  friend: { id: number; username: string; avatarUrl: string | null; isOnline: boolean };
+  lastMessage: ChatMessage | null;
+  unread: number;
+}
+
 // Item de GET /reviews/highlights — user null = compte supprimé,
 // exactement un de game/company est non-null
 export interface ReviewHighlight {

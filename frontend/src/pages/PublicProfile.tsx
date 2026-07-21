@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { useFriendSocket } from '../friends/useFriendSocket';
 import Avatar from '../components/Avatar';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import FortyTwoBadge from '../components/FortyTwoBadge';
@@ -250,6 +251,10 @@ export default function PublicProfile() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  // Temps réel : demande envoyée/acceptée/refusée/retirée → le bouton d'amitié
+  // (Add friend / Request pending / ✓ Friends) se met à jour sans refresh.
+  useFriendSocket(load, !!user);
 
   if (loading)
     return (

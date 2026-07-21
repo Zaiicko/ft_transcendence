@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from './Avatar';
+import ChatWidget from './ChatWidget';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
 import SearchBar from './SearchBar';
 
@@ -225,6 +226,9 @@ export default function Layout() {
           </nav>
         </div>
       </footer>
+
+      {/* Messagerie flottante (bas-droite) — visible uniquement connecté */}
+      <ChatWidget />
     </div>
   );
 }

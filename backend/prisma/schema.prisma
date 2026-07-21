@@ -80,6 +80,7 @@ model User {
   receivedFriendships Friendship[]  @relation("FriendshipAddressee")
   sentMessages       Message[]      @relation("MessageSender")
   receivedMessages   Message[]      @relation("MessageRecipient")
+  sharedInMessages   Message[]      @relation("MessageSharedUser")
   notifications      Notification[]
   refreshTokens      RefreshToken[]
   verificationTokens VerificationToken[]
@@ -170,6 +171,7 @@ model Game {
   reviews   Review[]
   playedBy  PlayedGame[]
   listItems GameListItem[]
+  messages  Message[]
 }
 
 model Genre {
@@ -222,6 +224,7 @@ model Review {
   likes    ReviewLike[]
   dislikes ReviewDislike[]
   comments ReviewComment[]
+  messages Message[]
 
   // One review per user per target. NULLs never collide in a Postgres unique
   // index, so each constraint only bites for its own target kind.
@@ -353,15 +356,36 @@ model GameListItem {
 
 // ---------- Chat & notifications ----------
 
+enum MessageType {
+  TEXT
+  GAME
+  REVIEW
+  PROFILE
+}
+
 model Message {
-  id          Int       @id @default(autoincrement())
-  sender      User      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  id          Int         @id @default(autoincrement())
+  sender      User        @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
   senderId    Int
-  recipient   User      @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  recipient   User        @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
   recipientId Int
-  content     String
+  type        MessageType @default(TEXT)
+  // Texte du message (ou légende accompagnant un partage) — optionnel pour un
+  // partage sans commentaire.
+  content     String?
+  // Références de partage : au plus une non-nulle selon `type`. SetNull pour
+  // survivre à la suppression de la cible (le message reste, sans sa carte).
+  game         Game?   @relation(fields: [gameId], references: [id], onDelete: SetNull)
+  gameId       Int?
+  review       Review? @relation(fields: [reviewId], references: [id], onDelete: SetNull)
+  reviewId     Int?
+  sharedUser   User?   @relation("MessageSharedUser", fields: [sharedUserId], references: [id], onDelete: SetNull)
+  sharedUserId Int?
   readAt      DateTime?
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime    @default(now())
+
+  @@index([senderId, recipientId])
+  @@index([recipientId, senderId])
 }
 
 model Notification {
