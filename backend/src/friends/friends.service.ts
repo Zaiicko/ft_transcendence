@@ -1,6 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { AuthProvider, FriendshipStatus, User } from '@prisma/client';
 import { ChatGateway } from '../chat/chat.gateway';
+import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SteamWebApiService } from '../steam/steam-web-api.service';
 import { UsersService } from '../users/users.service';
@@ -19,6 +20,7 @@ export class FriendsService {
     private readonly users: UsersService,
     private readonly steamWebApi: SteamWebApiService,
     private readonly chatGateway: ChatGateway,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async sendRequestByUsername(requesterId: number, username: string) {
@@ -47,6 +49,7 @@ export class FriendsService {
     }
     const created = await this.prisma.friendship.create({ data: { requesterId, addresseeId } });
     this.notifyFriendUpdate(requesterId, addresseeId);
+    await this.notifications.friendRequested(requesterId, addresseeId);
     return created;
   }
 
@@ -68,6 +71,8 @@ export class FriendsService {
     });
     // Les deux côtés voient l'amitié + la nouvelle conversation sans refresh
     this.notifyFriendUpdate(request.requesterId, request.addresseeId);
+    // Le demandeur est notifié que sa demande a été acceptée
+    await this.notifications.friendAccepted(request.addresseeId, request.requesterId);
     return updated;
   }
 

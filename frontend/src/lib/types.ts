@@ -78,6 +78,36 @@ export interface GameListDetail {
   games: { id: number; title: string; coverUrl: string | null; releaseDate: string | null }[];
 }
 
+// ---- Notifications ----
+export type NotificationType =
+  | 'FRIEND_REQUEST'
+  | 'FRIEND_ACCEPT'
+  | 'REVIEW_LIKE'
+  | 'REVIEW_COMMENT'
+  | 'COMMENT_REPLY'
+  | 'NEW_MESSAGE'
+  | 'FRIEND_JOINED';
+
+// payload dépend du type ; tous les champs sont donc optionnels côté front
+export interface AppNotification {
+  id: number;
+  type: NotificationType;
+  payload: {
+    actorId?: number;
+    actorUsername?: string;
+    actorAvatarUrl?: string | null;
+    reviewId?: number;
+    reviewTitle?: string;
+    gameId?: number | null;
+    companyId?: number | null;
+    commentId?: number;
+    // FRIEND_JOINED : via quel réseau ce contact a rejoint
+    via?: 'steam' | '42';
+  };
+  readAt: string | null;
+  createdAt: string;
+}
+
 // ---- Chat / messagerie ----
 export type MessageType = 'TEXT' | 'GAME' | 'REVIEW' | 'PROFILE';
 

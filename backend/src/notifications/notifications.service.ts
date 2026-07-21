@@ -8,6 +8,7 @@ import { NotificationsGateway } from './notifications.gateway';
 type ReviewPayload = {
   actorId: number;
   actorUsername: string;
+  actorAvatarUrl: string | null;
   reviewId: number;
   reviewTitle: string;
   gameId: number | null;
@@ -132,11 +133,12 @@ export class NotificationsService {
   ): Promise<ReviewPayload> {
     const actor = await this.prisma.user.findUnique({
       where: { id: actorId },
-      select: { username: true },
+      select: { username: true, avatarUrl: true },
     });
     return {
       actorId,
       actorUsername: actor?.username ?? '[utilisateur supprimé]',
+      actorAvatarUrl: actor?.avatarUrl ?? null,
       reviewId,
       reviewTitle: review.title,
       gameId: review.gameId,
@@ -144,10 +146,99 @@ export class NotificationsService {
     };
   }
 
-  private async deliver(userId: number, type: NotificationType, payload: ReviewPayload) {
+  private async deliver(
+    userId: number,
+    type: NotificationType,
+    payload: Record<string, unknown>,
+  ) {
+    // Respecte les préférences du destinataire (opt-out par type)
+    if (!(await this.wants(userId, type))) return;
     const notification = await this.prisma.notification.create({
-      data: { userId, type, payload: payload as unknown as Prisma.InputJsonValue },
+      data: { userId, type, payload: payload as Prisma.InputJsonValue },
     });
     this.gateway.emitToUser(userId, 'notification:new', notification);
+  }
+
+  // ---- Notifications d'amitié (appelées par FriendsService) ----
+
+  async friendRequested(actorId: number, recipientId: number): Promise<void> {
+    try {
+      await this.deliver(recipientId, NotificationType.FRIEND_REQUEST, await this.actorPayload(actorId));
+    } catch (err) {
+      this.logger.warn(`friendRequested notification failed: ${(err as Error).message}`);
+    }
+  }
+
+  async friendAccepted(actorId: number, recipientId: number): Promise<void> {
+    try {
+      await this.deliver(recipientId, NotificationType.FRIEND_ACCEPT, await this.actorPayload(actorId));
+    } catch (err) {
+      this.logger.warn(`friendAccepted notification failed: ${(err as Error).message}`);
+    }
+  }
+
+  private async actorPayload(actorId: number) {
+    const actor = await this.prisma.user.findUnique({
+      where: { id: actorId },
+      select: { username: true, avatarUrl: true },
+    });
+    return {
+      actorId,
+      actorUsername: actor?.username ?? '[utilisateur supprimé]',
+      actorAvatarUrl: actor?.avatarUrl ?? null,
+    };
+  }
+
+  // ---- Préférences (opt-out par type) ----
+
+  // Types que l'utilisateur peut activer/désactiver (NEW_MESSAGE géré par le chat)
+  static readonly CUSTOMIZABLE: NotificationType[] = [
+    NotificationType.FRIEND_REQUEST,
+    NotificationType.FRIEND_ACCEPT,
+    NotificationType.REVIEW_LIKE,
+    NotificationType.REVIEW_COMMENT,
+    NotificationType.COMMENT_REPLY,
+    NotificationType.FRIEND_JOINED,
+  ];
+
+  private async wants(userId: number, type: NotificationType): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { notificationPrefs: true },
+    });
+    const prefs = (user?.notificationPrefs ?? {}) as Record<string, boolean>;
+    return prefs[type] !== false; // absent/true = activé
+  }
+
+  // Renvoie l'état (activé/désactivé) de chaque type personnalisable
+  async getPreferences(userId: number): Promise<Record<string, boolean>> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { notificationPrefs: true },
+    });
+    const prefs = (user?.notificationPrefs ?? {}) as Record<string, boolean>;
+    return Object.fromEntries(
+      NotificationsService.CUSTOMIZABLE.map((t) => [t, prefs[t] !== false]),
+    );
+  }
+
+  // Fusionne des changements (uniquement des types connus) dans les prefs
+  async updatePreferences(
+    userId: number,
+    changes: Record<string, boolean>,
+  ): Promise<Record<string, boolean>> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { notificationPrefs: true },
+    });
+    const prefs = { ...((user?.notificationPrefs ?? {}) as Record<string, boolean>) };
+    for (const [key, value] of Object.entries(changes)) {
+      if ((NotificationsService.CUSTOMIZABLE as string[]).includes(key)) prefs[key] = value;
+    }
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { notificationPrefs: prefs as Prisma.InputJsonValue },
+    });
+    return this.getPreferences(userId);
   }
 }

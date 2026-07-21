@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from '../auth/AuthContext';
 import Avatar from './Avatar';
 import ChatWidget from './ChatWidget';
+import NotificationBell from './NotificationBell';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
 import SearchBar from './SearchBar';
 
@@ -113,10 +114,13 @@ export default function Layout() {
           </div>
           <div className="flex shrink-0 items-center gap-4 text-sm">
             {user ? (
-              <Link to={`/u/${user.username}`} className="flex items-center gap-2 hover:opacity-70">
-                <Avatar username={user.username} avatarUrl={user.avatarUrl} size={24} />
-                {user.username}
-              </Link>
+              <>
+                <NotificationBell />
+                <Link to={`/u/${user.username}`} className="flex items-center gap-2 hover:opacity-70">
+                  <Avatar username={user.username} avatarUrl={user.avatarUrl} size={24} />
+                  {user.username}
+                </Link>
+              </>
             ) : (
               <>
                 <Link

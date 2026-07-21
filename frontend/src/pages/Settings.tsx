@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import NotificationSettings from '../components/NotificationSettings';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
 
@@ -311,6 +312,8 @@ export default function Settings() {
           )}
         </div>
       </form>
+
+      <NotificationSettings />
 
       <div className="card mb-10 p-4">
         <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
