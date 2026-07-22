@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Post,
@@ -12,10 +14,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthProvider, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { FriendsService } from '../friends/friends.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
 import { clearAuthCookies, REFRESH_COOKIE_PATH, setAuthCookies } from './auth-cookies.util';
@@ -34,12 +38,24 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 // never outlive the JWT it carries.
 const MFA_CHALLENGE_COOKIE_MAX_AGE_MS = 5 * 60 * 1000;
 
+// Preuve courte, signée, du user qui rattache son Discord — portée entre le
+// départ vers Discord et le callback. Le userId vient du JWT, jamais du query.
+const DISCORD_LINK_COOKIE = 'discord_link';
+const DISCORD_LINK_COOKIE_PATH = '/api/auth/discord';
+const DISCORD_LINK_TTL = '10m';
+interface DiscordLinkPayload {
+  purpose: 'discord_link';
+  userId: number;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly users: UsersService,
     private readonly config: ConfigService,
+    private readonly jwt: JwtService,
+    private readonly prisma: PrismaService,
     // Résolu en lazy pour notifier les contacts d'un nouvel inscrit sans créer
     // de cycle de modules (Auth ↔ Friends ↔ Chat/Notifications).
     private readonly moduleRef: ModuleRef,
@@ -190,10 +206,115 @@ export class AuthController {
   @UseGuards(AuthGuard('discord'))
   discordLogin() {}
 
+  // Rattachement d'un Discord à un compte déjà connecté. On mémorise le userId
+  // (issu du JWT, jamais du query/body) dans un cookie signé court, puis on
+  // envoie vers Discord — le callback distingue link vs login sur ce cookie.
+  @UseGuards(JwtAuthGuard)
+  @Get('discord/link')
+  async discordLinkStart(@CurrentUser() current: JwtPayload, @Res() res: Response) {
+    const token = await this.jwt.signAsync(
+      { purpose: 'discord_link', userId: current.sub } satisfies DiscordLinkPayload,
+      { expiresIn: DISCORD_LINK_TTL },
+    );
+    res.cookie(DISCORD_LINK_COOKIE, token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: DISCORD_LINK_COOKIE_PATH,
+      maxAge: 10 * 60_000,
+    });
+    res.redirect(this.discordAuthorizeUrl());
+  }
+
   @Get('discord/callback')
   @UseGuards(AuthGuard('discord'))
   async discordCallback(@Req() req: Request, @Res() res: Response) {
-    await this.completeOAuth(AuthProvider.DISCORD, req.user as OAuthProfile, res);
+    const profile = req.user as OAuthProfile;
+    const front = this.frontendUrl();
+    const intent = await this.readDiscordLinkIntent(req);
+
+    // Mode rattachement : on attache le discordId au compte courant.
+    if (intent) {
+      res.clearCookie(DISCORD_LINK_COOKIE, { path: DISCORD_LINK_COOKIE_PATH });
+      const owner = await this.prisma.user.findUnique({ where: { discordId: profile.providerId } });
+      if (owner && owner.id !== intent.userId) {
+        return res.redirect(`${front}/profile?link=discord_taken`);
+      }
+      await this.prisma.user.update({
+        where: { id: intent.userId },
+        data: { discordId: profile.providerId },
+      });
+      return res.redirect(`${front}/profile?link=discord_linked`);
+    }
+
+    // Mode connexion : on résout par discordId (comme Steam par steamId) ; sinon
+    // c'est une première connexion Discord → création via completeOAuth.
+    const owner = await this.prisma.user.findUnique({ where: { discordId: profile.providerId } });
+    if (owner) {
+      this.setAuthCookies(res, await this.auth.issueTokens(owner));
+      return res.redirect(`${front}/profile`);
+    }
+    await this.completeOAuth(AuthProvider.DISCORD, profile, res);
+  }
+
+  // Délie le Discord. Garde-fou anti-lock-out : interdit si c'est la seule façon
+  // de se connecter (compte né sur Discord sans mot de passe ni autre méthode).
+  @UseGuards(JwtAuthGuard)
+  @Delete('discord/link')
+  @HttpCode(204)
+  async unlinkDiscord(@CurrentUser() current: JwtPayload) {
+    const user = await this.users.findById(current.sub);
+    if (!user) throw new UnauthorizedException();
+    if (!user.discordId) return; // déjà délié — idempotent
+    if (!this.hasOtherLoginMethod(user, AuthProvider.DISCORD)) {
+      throw new BadRequestException(
+        'Add a password first — Discord is currently your only way to sign in',
+      );
+    }
+    await this.prisma.user.update({
+      where: { id: current.sub },
+      data: { discordId: null },
+    });
+  }
+
+  // URL d'autorisation Discord (identique au redirect_uri de la stratégie
+  // passport pour que Discord l'accepte), construite à la main car on doit
+  // poser le cookie d'intention avant la redirection.
+  private discordAuthorizeUrl(): string {
+    const params = new URLSearchParams({
+      response_type: 'code',
+      client_id: this.config.get<string>('DISCORD_CLIENT_ID') ?? '',
+      redirect_uri:
+        this.config.get<string>('DISCORD_CALLBACK_URL') ??
+        `${this.frontendUrl()}/api/auth/discord/callback`,
+      scope: 'identify email',
+    });
+    return `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+  }
+
+  private async readDiscordLinkIntent(req: Request): Promise<DiscordLinkPayload | null> {
+    const raw = (req.cookies as Record<string, string> | undefined)?.[DISCORD_LINK_COOKIE];
+    if (!raw) return null;
+    try {
+      const payload = await this.jwt.verifyAsync<DiscordLinkPayload>(raw);
+      return payload.purpose === 'discord_link' ? payload : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // Reste-t-il un moyen de se connecter si on retire `excluding` ?
+  private hasOtherLoginMethod(user: User, excluding: AuthProvider): boolean {
+    if (user.passwordHash) return true;
+    if (excluding !== AuthProvider.STEAM && user.steamId) return true;
+    // Google/42 restent utilisables via provider/providerId (pas de colonne dédiée)
+    if (
+      (user.provider === AuthProvider.GOOGLE || user.provider === AuthProvider.FORTYTWO) &&
+      user.providerId
+    ) {
+      return true;
+    }
+    return false;
   }
 
   private async completeOAuth(provider: AuthProvider, profile: OAuthProfile, res: Response) {
@@ -213,6 +334,15 @@ export class AuthController {
         return;
       }
       throw err;
+    }
+
+    // Un compte né sur Discord garde son id aussi dans `discordId` (comme
+    // steamId) : les connexions suivantes se résolvent par cette colonne.
+    if (provider === AuthProvider.DISCORD && !user.discordId) {
+      user = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { discordId: profile.providerId },
+      });
     }
 
     this.setAuthCookies(res, await this.auth.issueTokens(user));

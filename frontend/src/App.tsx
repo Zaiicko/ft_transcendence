@@ -31,9 +31,9 @@ import VerifyEmail from './pages/VerifyEmail';
 function LegacyProfileRedirect() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
-  // ?welcome=1 = nouveau compte (onboarding) ; ?steam=… = retour de liaison
-  // Steam depuis les settings : dans ces deux cas on reste sur les settings.
-  const keepSettings = params.has('welcome') || params.has('steam');
+  // ?welcome=1 = nouveau compte (onboarding) ; ?steam=… / ?link=… = retour de
+  // liaison d'un compte (Steam, Discord…) : dans ces cas on reste sur les settings.
+  const keepSettings = params.has('welcome') || params.has('steam') || params.has('link');
   // Lu une seule fois (initializer) → stable même sous le double-render
   // StrictMode ; le nettoyage se fait dans l'effet ci-dessous.
   const [dest] = useState(() =>

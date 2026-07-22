@@ -1,11 +1,12 @@
 import type { TFunction } from 'i18next';
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import LinkedAccounts from '../components/LinkedAccounts';
 import NotificationSettings from '../components/NotificationSettings';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
@@ -46,8 +47,6 @@ export default function Settings() {
   const [searchParams] = useSearchParams();
   const isWelcome = searchParams.get('welcome') === '1';
   const fileInputRef = useRef<HTMLInputElement>(null);
-  // Feedback from the Steam link callback: /profile?steam=linked|taken
-  const steamNotice = searchParams.get('steam');
 
   const [username, setUsername] = useState(user?.username ?? '');
   const [bio, setBio] = useState(user?.bio ?? '');
@@ -65,9 +64,6 @@ export default function Settings() {
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [twoFactorBusy, setTwoFactorBusy] = useState(false);
   const [twoFactorError, setTwoFactorError] = useState<string | null>(null);
-
-  const [unlinking, setUnlinking] = useState(false);
-  const [steamError, setSteamError] = useState<string | null>(null);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -169,19 +165,6 @@ export default function Settings() {
       setTwoFactorError(err instanceof ApiError ? err.message : t('settings.twoFactor.invalidCode'));
     } finally {
       setTwoFactorBusy(false);
-    }
-  }
-
-  async function handleUnlinkSteam() {
-    setSteamError(null);
-    setUnlinking(true);
-    try {
-      await apiFetch('/auth/steam/link', { method: 'DELETE' });
-      await refreshUser();
-    } catch (err) {
-      setSteamError(err instanceof ApiError ? err.message : t('settings.steam.unlinkError'));
-    } finally {
-      setUnlinking(false);
     }
   }
 
@@ -422,55 +405,7 @@ export default function Settings() {
         {twoFactorError && <p className="mt-2 text-sm text-red-400">{twoFactorError}</p>}
       </div>
 
-      <div className="card mb-10 p-4">
-        <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          <SteamBadge /> {t('settings.steam.title')}
-        </h2>
-        {steamNotice === 'taken' && (
-          <p className="mb-3 text-sm text-red-400">
-            {t('settings.steam.alreadyLinkedError')}
-          </p>
-        )}
-        {steamNotice === 'linked' && (
-          <p className="mb-3 text-sm text-green-400">{t('settings.steam.linkedSuccess')}</p>
-        )}
-        {user.steamId ? (
-          <div className="flex flex-col gap-3">
-            <p className="text-sm text-zinc-400">
-              {t('settings.steam.linkedDescription')}
-            </p>
-            {steamError && <p className="text-sm text-red-400">{steamError}</p>}
-            <div className="flex gap-3">
-              <Link
-                to="/steam"
-                className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
-              >
-                {t('settings.steam.viewLibrary')}
-              </Link>
-              <button
-                type="button"
-                onClick={handleUnlinkSteam}
-                disabled={unlinking}
-                className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent disabled:opacity-50"
-              >
-                {unlinking ? t('settings.steam.unlinking') : t('settings.steam.unlink')}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            <p className="text-sm text-zinc-400">
-              {t('settings.steam.notLinkedDescription')}
-            </p>
-            <a
-              href="/api/auth/steam"
-              className="self-start rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
-            >
-              {t('settings.steam.linkAccount')}
-            </a>
-          </div>
-        )}
-      </div>
+      <LinkedAccounts />
 
       <form onSubmit={handlePasswordSubmit} className="card mb-10 p-4">
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">

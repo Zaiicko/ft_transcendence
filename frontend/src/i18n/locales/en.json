@@ -188,6 +188,18 @@
       "deleting": "Deleting…",
       "cancel": "Cancel",
       "error": "Could not delete account"
+    },
+    "connections": {
+      "title": "Linked accounts",
+      "description": "Link your gaming accounts to sign in faster and find your friends.",
+      "connected": "Connected",
+      "link": "Link",
+      "unlink": "Unlink",
+      "unlinking": "Unlinking…",
+      "unlinkError": "Couldn't unlink this account",
+      "comingSoon": "Soon",
+      "discordLinked": "Discord account linked!",
+      "discordTaken": "This Discord account is already linked to another user."
     }
   },
   "friends": {

@@ -59,6 +59,9 @@ model User {
   provider         AuthProvider @default(LOCAL)
   providerId       String?
   steamId          String?      @unique
+  // Compte Discord rattaché (connexion secondaire, comme steamId). Sert aussi
+  // d'identifiant de login pour les comptes créés via Discord.
+  discordId        String?      @unique
   twoFactorSecret  String?
   twoFactorEnabled Boolean      @default(false)
   language         String       @default("en")

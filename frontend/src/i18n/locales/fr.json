@@ -188,6 +188,18 @@
       "deleting": "Suppression…",
       "cancel": "Annuler",
       "error": "Impossible de supprimer le compte"
+    },
+    "connections": {
+      "title": "Comptes liés",
+      "description": "Relie tes comptes de jeu pour te connecter plus vite et retrouver tes amis.",
+      "connected": "Connecté",
+      "link": "Lier",
+      "unlink": "Délier",
+      "unlinking": "Déliaison…",
+      "unlinkError": "Impossible de délier ce compte",
+      "comingSoon": "Bientôt",
+      "discordLinked": "Compte Discord lié !",
+      "discordTaken": "Ce compte Discord est déjà lié à un autre utilisateur."
     }
   },
   "friends": {

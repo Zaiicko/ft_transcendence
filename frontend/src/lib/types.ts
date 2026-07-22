@@ -230,6 +230,7 @@ export interface PublicUser {
   bio: string | null;
   provider: AuthProvider;
   steamId: string | null;
+  discordId: string | null;
   hasPassword: boolean;
   twoFactorEnabled: boolean;
   emailVerifiedAt: string | null;
