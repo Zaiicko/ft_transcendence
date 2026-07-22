@@ -33,7 +33,9 @@
     "logout": "Esci"
   },
   "footer": {
-    "tagline": "Il Letterboxd dei videogiochi · progetto 42"
+    "tagline": "Il Letterboxd dei videogiochi · progetto 42",
+    "privacyPolicy": "Informativa sulla privacy",
+    "termsOfService": "Condizioni d'uso"
   },
   "languagePicker": {
     "title": "Lingua"
@@ -229,5 +231,229 @@
     "showMoreReviews": "Mostra altre recensioni",
     "deletedUser": "[utente eliminato]",
     "viewGame": "Vedi {{title}}"
+  },
+  "legal": {
+    "privacy": {
+      "title": "Informativa sulla privacy",
+      "lastUpdated": "Ultimo aggiornamento: 22 luglio 2026",
+      "intro": "Saveboxd è un progetto studentesco realizzato nell'ambito del percorso 42: un sito di catalogazione e recensione di videogiochi con funzionalità sociali (amici, messaggistica, liste). Questa informativa spiega quali dati vengono raccolti quando utilizzi il sito, perché, e quali sono i tuoi diritti.",
+      "sections": {
+        "dataCollected": {
+          "title": "Dati raccolti",
+          "body": [
+            "Raccogliamo solo i dati necessari al funzionamento del sito:",
+            "• Durante la registrazione classica: il tuo indirizzo e-mail, un nome utente e una password (memorizzata in forma cifrata, mai in chiaro).",
+            "• Se accedi tramite Google, 42 (Intra), Discord o Steam: un identificatore fornito da quel servizio, il tuo indirizzo e-mail se il fornitore lo trasmette (Steam non trasmette mai un indirizzo e-mail), il tuo nome visualizzato e la tua foto profilo.",
+            "• Le informazioni di profilo che scegli di inserire: biografia, avatar, lingua preferita.",
+            "• La tua attività sul sito: recensioni e valutazioni di giochi, giochi contrassegnati come giocati, liste di giochi personalizzate, relazioni di amicizia, messaggi scambiati con i tuoi amici, «mi piace» e commenti.",
+            "• Cookie tecnici necessari per l'autenticazione (vedi la sezione Cookie).",
+            "• I registri tecnici standard del server (indirizzo IP, data e ora, pagina richiesta), generati automaticamente, come su praticamente tutti i siti web.",
+            "Non raccogliamo alcun dato bancario o di pagamento, alcun dato di geolocalizzazione precisa, e non utilizziamo alcuno strumento di analisi del pubblico o pubblicitario."
+          ]
+        },
+        "purposes": {
+          "title": "Perché utilizziamo questi dati",
+          "body": [
+            "I tuoi dati sono utilizzati esclusivamente per:",
+            "• creare e gestire il tuo account;",
+            "• autenticarti e proteggere la tua sessione (cookie, token, autenticazione a due fattori se attivata);",
+            "• mostrare il tuo profilo e le tue statistiche (giochi giocati, recensioni, liste);",
+            "• far funzionare le funzionalità sociali (richieste di amicizia, suggerimenti di amici tramite Steam o 42, messaggistica, notifiche);",
+            "• inviarti e-mail strettamente legate al funzionamento dell'account (verifica dell'indirizzo, reimpostazione della password);",
+            "• garantire la sicurezza del servizio e prevenire abusi.",
+            "Non vendiamo, affittiamo né condividiamo mai i tuoi dati per finalità commerciali o pubblicitarie."
+          ]
+        },
+        "discord": {
+          "title": "Accesso e collegamento con Discord",
+          "body": [
+            "Saveboxd consente di accedere o collegare il tuo account tramite Discord (OAuth2). Discord ci trasmette quindi: il tuo identificativo Discord, il tuo nome utente, il tuo indirizzo e-mail associato se il tuo account Discord lo rende disponibile, e l'URL del tuo avatar Discord.",
+            "Queste informazioni servono unicamente a creare il tuo account Saveboxd o a collegare un account esistente alla tua identità Discord, e a mostrare un badge Discord sul tuo profilo. Non riceviamo mai la tua password Discord, e non accediamo ad alcun altro dato del tuo account (server, messaggi, contatti).",
+            "Puoi scollegare il tuo account Discord in qualsiasi momento dalle tue impostazioni, a meno che non sia il tuo unico metodo di accesso."
+          ]
+        },
+        "retention": {
+          "title": "Durata di conservazione",
+          "body": [
+            "I tuoi dati sono conservati finché il tuo account esiste.",
+            "Quando elimini il tuo account dalle tue impostazioni:",
+            "• il tuo account, il tuo avatar, le tue amicizie, i tuoi giochi contrassegnati come giocati, le tue liste, le tue notifiche e i tuoi messaggi (inviati e ricevuti) vengono eliminati definitivamente;",
+            "• le tue recensioni e i tuoi commenti esistenti vengono conservati ma resi anonimi (mostrati come provenienti da un «utente eliminato»), per non interrompere le discussioni di altri utenti;",
+            "• alcuni dati possono rimanere temporaneamente in backup tecnici o registri del server, prima della loro eliminazione automatica.",
+            "Non conserviamo alcun dato oltre a quanto necessario per il funzionamento del sito o la sicurezza del servizio."
+          ]
+        },
+        "rights": {
+          "title": "I tuoi diritti",
+          "body": [
+            "In conformità al Regolamento Generale sulla Protezione dei Dati (GDPR), disponi dei seguenti diritti:",
+            "• diritto di accesso ai tuoi dati personali;",
+            "• diritto di rettifica dei dati inesatti (modificabile direttamente dalle tue impostazioni);",
+            "• diritto alla cancellazione: eliminazione del tuo account in qualsiasi momento dalle tue impostazioni;",
+            "• diritto alla limitazione del trattamento in determinati casi;",
+            "• diritto di opposizione a determinati trattamenti, ad esempio tramite le tue preferenze di notifica;",
+            "• diritto alla portabilità dei tuoi dati in un formato strutturato;",
+            "• diritto di revocare il tuo consenso in qualsiasi momento quando il trattamento si basa su di esso (ad esempio l'accesso tramite un fornitore terzo);",
+            "• diritto di presentare un reclamo all'autorità di protezione dei dati competente (in Francia, la CNIL — cnil.fr).",
+            "Per esercitare uno di questi diritti, contattaci all'indirizzo indicato nella sezione Contatto."
+          ]
+        },
+        "cookies": {
+          "title": "Cookie e archiviazione locale",
+          "body": [
+            "Saveboxd utilizza esclusivamente cookie strettamente necessari al funzionamento del sito, tutti tecnici, mai pubblicitari:",
+            "• cookie di autenticazione (sessione di accesso, rinnovo della sessione, fase di autenticazione a due fattori, collegamento di un account terzo), tutti httpOnly e a durata limitata.",
+            "Non viene utilizzato alcun cookie di tracciamento pubblicitario o di analisi del pubblico.",
+            "Utilizziamo anche l'archiviazione locale (localStorage) del tuo browser per memorizzare due preferenze di visualizzazione: la lingua scelta e il tema chiaro/scuro. Queste informazioni restano sul tuo dispositivo e non vengono mai trasmesse ai nostri server.",
+            "Poiché questi cookie sono strettamente necessari al funzionamento del servizio, non richiedono consenso preventivo ai sensi della normativa ePrivacy."
+          ]
+        },
+        "thirdParties": {
+          "title": "Servizi di terze parti",
+          "body": [
+            "Per funzionare, Saveboxd si avvale dei seguenti servizi di terze parti:",
+            "• IGDB (Internet Game Database), per le informazioni pubbliche sui videogiochi — nessun dato personale che ti riguarda viene loro trasmesso;",
+            "• Steam (Valve), se scegli di collegare il tuo account, per verificare la tua identità e recuperare il tuo nome utente, avatar, libreria di giochi e lista amici Steam (utilizzata solo per suggerirti amici già presenti su Saveboxd, mai memorizzata);",
+            "• Google, 42 (Intra) e Discord, se scegli di accedere tramite uno di questi fornitori;",
+            "• Brevo, il nostro fornitore di invio e-mail transazionali, utilizzato solo per le e-mail di verifica dell'indirizzo e di reimpostazione della password.",
+            "Non utilizziamo alcuno strumento di analisi del pubblico, pubblicitario o di tracciamento di terze parti.",
+            "Hosting: questo progetto è sviluppato e valutato nell'ambito del percorso 42. Se il sito venisse distribuito pubblicamente, questa sezione dovrà essere completata con il nome del fornitore di hosting."
+          ]
+        },
+        "contact": {
+          "title": "Contatto",
+          "body": [
+            "Per qualsiasi domanda relativa a questa informativa sulla privacy, o per esercitare i tuoi diritti sui tuoi dati personali, contattaci a: [ADRESSE_EMAIL_CONTACT]"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Condizioni d'uso",
+      "lastUpdated": "Ultimo aggiornamento: 22 luglio 2026",
+      "intro": "Le presenti condizioni disciplinano l'accesso e l'utilizzo del sito Saveboxd, un progetto studentesco realizzato nell'ambito del percorso 42. Creando un account o utilizzando il sito, accetti le condizioni descritte di seguito.",
+      "sections": {
+        "purpose": {
+          "title": "Oggetto del servizio",
+          "body": [
+            "Saveboxd è una piattaforma comunitaria che consente di catalogare, valutare e recensire videogiochi, tenere traccia dei giochi a cui hai giocato, creare liste personalizzate e interagire con altri utenti (amici, messaggistica, recensioni, commenti).",
+            "Il sito è un progetto studentesco realizzato a fini didattici nell'ambito del percorso 42, e non un servizio commerciale."
+          ]
+        },
+        "account": {
+          "title": "Accesso e creazione dell'account",
+          "body": [
+            "L'accesso alla maggior parte delle funzionalità richiede la creazione di un account, tramite registrazione classica (e-mail, nome utente, password) o tramite un fornitore di autenticazione terzo (Google, 42, Discord, Steam).",
+            "Devi fornire informazioni accurate al momento della registrazione, e non sei autorizzato a creare un account a nome di un'altra persona senza il suo consenso, né a creare più account per aggirare una sospensione."
+          ]
+        },
+        "credentials": {
+          "title": "Responsabilità relativa alle tue credenziali",
+          "body": [
+            "Sei responsabile della riservatezza della tua password e di qualsiasi attività effettuata dal tuo account.",
+            "Se sospetti un accesso non autorizzato al tuo account, cambia immediatamente la password e contattaci.",
+            "Ti consigliamo di attivare l'autenticazione a due fattori (2FA), disponibile nelle tue impostazioni, per rafforzare la sicurezza del tuo account."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Uso accettabile del sito",
+          "body": [
+            "Utilizzando Saveboxd, ti impegni a:",
+            "• pubblicare solo recensioni, commenti e messaggi rispettosi degli altri;",
+            "• non impersonare un'altra persona o entità;",
+            "• non utilizzare il sito per scopi illegali o per danneggiare altri utenti;",
+            "• non tentare di interferire con il funzionamento tecnico del sito (sovraccarico, sfruttamento di vulnerabilità, elusione dei limiti di richieste)."
+          ]
+        },
+        "abuse": {
+          "title": "Comportamenti vietati",
+          "body": [
+            "Sono in particolare vietati:",
+            "• molestie, insulti, minacce o qualsiasi comportamento malevolo nei confronti di un altro utente;",
+            "• lo spam (messaggi o recensioni ripetitivi, pubblicitari o fuori tema);",
+            "• la pubblicazione di contenuti illegali, di odio, discriminatori o a carattere sessualmente esplicito;",
+            "• qualsiasi tentativo di accesso non autorizzato a un altro account o ai sistemi del sito."
+          ]
+        },
+        "interactions": {
+          "title": "Interazioni tra utenti",
+          "body": [
+            "Saveboxd offre funzionalità sociali: richieste di amicizia, messaggistica privata, condivisione di giochi/recensioni/profili nelle conversazioni, e suggerimenti di amici basati sulla tua rete Steam o sulla tua appartenenza alla comunità 42.",
+            "Rimani l'unico responsabile del contenuto dei tuoi messaggi e delle tue pubblicazioni. I messaggi privati scambiati con un amico vengono eliminati definitivamente, per entrambe le parti, se uno dei due account viene eliminato."
+          ]
+        },
+        "moderation": {
+          "title": "Moderazione e segnalazioni",
+          "body": [
+            "Il sito non dispone attualmente di un sistema di segnalazione integrato per recensioni o messaggi.",
+            "In caso di abuso, molestie o contenuti inappropriati, puoi contattarci direttamente all'indirizzo indicato nella sezione Contatto; la moderazione viene quindi gestita manualmente dal team del progetto."
+          ]
+        },
+        "suspension": {
+          "title": "Sospensione o eliminazione dell'account",
+          "body": [
+            "In caso di mancato rispetto delle presenti condizioni (abuso, molestie, spam, contenuti illegali), ci riserviamo il diritto di sospendere o eliminare un account, a nostra discrezione, nella misura ragionevolmente possibile per un progetto studentesco privo di un team di moderazione dedicato.",
+            "Puoi eliminare il tuo account in qualsiasi momento dalle tue impostazioni."
+          ]
+        },
+        "userContent": {
+          "title": "Contenuti generati dagli utenti",
+          "body": [
+            "Mantieni la proprietà dei contenuti che pubblichi (recensioni, commenti, liste, biografia, avatar). Pubblicandoli su Saveboxd, ci autorizzi a mostrarli e a memorizzarli nell'ambito del normale funzionamento del sito.",
+            "Garantisci di possedere i diritti necessari su qualsiasi contenuto che pubblichi, in particolare la tua foto profilo se non utilizzi quella fornita da un fornitore di autenticazione terzo."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Proprietà intellettuale",
+          "body": [
+            "Il codice, il design e il marchio «Saveboxd» sono realizzati nell'ambito di un progetto studentesco del percorso 42 e non sono destinati a uno sfruttamento commerciale.",
+            "Le informazioni e gli elementi visivi relativi ai videogiochi (titoli, copertine, descrizioni) provengono da banche dati pubbliche di terze parti (IGDB) e appartengono ai rispettivi editori e titolari dei diritti. Saveboxd non rivendica alcuna proprietà su questi contenuti e li mostra a scopo illustrativo e informativo, in un contesto non commerciale ed educativo."
+          ]
+        },
+        "gameContent": {
+          "title": "Contenuti relativi ai videogiochi",
+          "body": [
+            "Le copertine, le descrizioni e le informazioni sui giochi mostrate su Saveboxd vengono importate automaticamente da IGDB, e da Steam per i dati relativi alla tua libreria personale se colleghi il tuo account. Queste informazioni restano di proprietà dei rispettivi titolari dei diritti."
+          ]
+        },
+        "availability": {
+          "title": "Disponibilità del servizio",
+          "body": [
+            "Saveboxd è un progetto studentesco fornito «così com'è», senza garanzia di disponibilità continua. Il servizio può essere interrotto, modificato o sospeso in qualsiasi momento, in particolare nell'ambito della sua valutazione o manutenzione, senza preavviso."
+          ]
+        },
+        "liability": {
+          "title": "Limitazione di responsabilità",
+          "body": [
+            "Saveboxd è fornito a scopo didattico, senza alcuna garanzia di alcun tipo, esplicita o implicita. Nella misura consentita dalla legge, il team del progetto non potrà essere ritenuto responsabile per alcun danno diretto o indiretto derivante dall'uso o dall'impossibilità di utilizzare il sito.",
+            "Questa limitazione non costituisce un parere legale e non priva gli utenti di diritti inderogabili che non possono essere esclusi contrattualmente ai sensi del diritto applicabile."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Servizi di terze parti e autenticazione",
+          "body": [
+            "Saveboxd consente di accedere tramite fornitori terzi (Google, 42, Discord, Steam). L'utilizzo di questi fornitori è inoltre soggetto alle loro rispettive condizioni d'uso, sulle quali Saveboxd non ha alcun controllo."
+          ]
+        },
+        "changes": {
+          "title": "Modifica delle presenti condizioni",
+          "body": [
+            "Le presenti condizioni possono essere modificate in qualsiasi momento, in particolare per riflettere l'evoluzione delle funzionalità del sito. La data dell'ultimo aggiornamento compare in cima a questa pagina. In caso di modifica sostanziale, ci impegneremo a informarti con un mezzo ragionevole."
+          ]
+        },
+        "law": {
+          "title": "Legge applicabile e giurisdizione",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — salvo diversa indicazione, le presenti condizioni sono fornite a titolo indicativo nell'ambito di un progetto studentesco e non costituiscono un contratto commerciale formale."
+          ]
+        },
+        "contact": {
+          "title": "Contatto",
+          "body": [
+            "Per qualsiasi domanda relativa alle presenti condizioni d'uso, contattaci a: [ADRESSE_EMAIL_CONTACT]"
+          ]
+        }
+      }
+    }
   }
 }

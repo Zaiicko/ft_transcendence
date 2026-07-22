@@ -344,10 +344,10 @@ export default function Layout() {
           </div>
           <nav className="flex items-center gap-6 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             <Link to="/privacy-policy" className="transition hover:text-accent">
-              Privacy Policy
+              {t('footer.privacyPolicy')}
             </Link>
             <Link to="/terms-of-service" className="transition hover:text-accent">
-              Terms of Service
+              {t('footer.termsOfService')}
             </Link>
             <span className="font-normal normal-case text-zinc-400 dark:text-zinc-600">
               © {new Date().getFullYear()}
