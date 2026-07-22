@@ -10,13 +10,26 @@ import { GamesSyncService } from './games-sync.service';
 // catalog on the fly
 const ON_DEMAND_THRESHOLD = 5;
 
-// Recommendations: a review counts as a positive signal above this rating
-// (0-10 scale); below it, we fall back to "played" as a weaker signal.
-const RECOMMENDATION_LIKED_RATING = 7;
+// Recommendations — taste is built from BOTH the games a user reviewed and the
+// games they played, so logging games actually shifts the suggestions:
+//   • a review contributes (rating − NEUTRAL): a 9/10 pushes its genres hard, a
+//     3/10 pushes them away (a genuine "not for me" signal), a 5/10 is neutral;
+//   • a played game is a lighter positive nudge on its genres.
+const RECOMMENDATION_NEUTRAL_RATING = 5;
+const RECOMMENDATION_PLAYED_WEIGHT = 1.5;
+// Recency: recent activity says more about current taste than an old log. Each
+// signal is scaled from 1 (just now) down to a floor (long ago), halving around
+// the half-life — so old games still count, they just weigh less.
+const RECOMMENDATION_RECENCY_HALFLIFE_DAYS = 45;
+const RECOMMENDATION_RECENCY_FLOOR = 0.5;
 // How many genre-matching candidates we pull before re-ranking in JS — wide
 // enough to not miss good matches, narrow enough to stay fast without a
 // dedicated scoring query.
 const RECOMMENDATION_CANDIDATE_POOL = 200;
+// The final list is drawn from this many top matches by weighted-random pick:
+// strong genre matches still dominate, but the exact line-up varies between
+// loads instead of being frozen (same spirit as the shuffled "popular" row).
+const RECOMMENDATION_SHORTLIST_FACTOR = 3;
 
 // Bayesian confidence weight (IMDb-style): the external rating counts as this
 // many virtual user votes, so a couple of accounts can't skew a game's score
@@ -321,50 +334,78 @@ export class GamesService {
     });
   }
 
-  // Content-based "recommended for you": genres of games the user rated well
-  // (falling back to genres of anything they've played, for users who play
-  // but don't review) become weighted signals — candidates sharing more of
-  // those genres, weighted by how often each genre showed up, rank higher.
-  // Deliberately not collaborative filtering: with a small/growing user base
-  // the per-user review overlap needed for that to work reliably isn't there
-  // yet, while genre affinity is dense from day one (IGDB tags every game).
+  // Content-based "recommended for you": builds a per-genre taste profile from
+  // BOTH the games the user reviewed and the games they played, then ranks
+  // unseen games by how well their genres match it.
+  //   • a review weighs (rating − NEUTRAL): high ratings pull their genres in,
+  //     low ratings push them away (a real "not for me"), decayed by age;
+  //   • a played game is a lighter positive nudge, decayed the same way.
+  // The final list is a weighted-random draw from the top matches, so strong
+  // affinities dominate but the line-up isn't frozen between visits. Chosen over
+  // collaborative filtering: on a small user base the per-user review overlap it
+  // needs isn't there yet, while genre affinity is dense from day one.
   async recommendationsFor(userId: number, limit = 18) {
-    const likedReviews = await this.prisma.review.findMany({
-      where: { userId, gameId: { not: null }, rating: { gte: RECOMMENDATION_LIKED_RATING } },
-      select: { game: { select: { genres: { select: { id: true } } } } },
-    });
-    let genreSource = likedReviews;
-    if (genreSource.length === 0) {
-      genreSource = await this.prisma.playedGame.findMany({
-        where: { userId, status: PlayStatus.PLAYED },
-        select: { game: { select: { genres: { select: { id: true } } } } },
-      });
-    }
-    if (genreSource.length === 0) return { data: [] };
-
-    // Frequency across the user's liked/played games = affinity weight per genre
-    const genreWeight = new Map<number, number>();
-    for (const row of genreSource) {
-      for (const g of row.game?.genres ?? []) {
-        genreWeight.set(g.id, (genreWeight.get(g.id) ?? 0) + 1);
-      }
-    }
-
-    const [played, reviewed] = await Promise.all([
-      this.prisma.playedGame.findMany({ where: { userId }, select: { gameId: true } }),
+    const [reviews, played] = await Promise.all([
       this.prisma.review.findMany({
         where: { userId, gameId: { not: null } },
-        select: { gameId: true },
+        select: {
+          rating: true,
+          createdAt: true,
+          gameId: true,
+          game: { select: { genres: { select: { id: true } } } },
+        },
+      }),
+      this.prisma.playedGame.findMany({
+        where: { userId },
+        select: {
+          status: true,
+          playedAt: true,
+          createdAt: true,
+          gameId: true,
+          game: { select: { genres: { select: { id: true } } } },
+        },
       }),
     ]);
+
+    // Recent activity says more about current taste than an old log: 1 now,
+    // decaying toward a floor and halving around the half-life.
+    const recency = (date: Date) => {
+      const ageDays = Math.max(0, (Date.now() - date.getTime()) / 86_400_000);
+      return (
+        RECOMMENDATION_RECENCY_FLOOR +
+        (1 - RECOMMENDATION_RECENCY_FLOOR) *
+          Math.pow(0.5, ageDays / RECOMMENDATION_RECENCY_HALFLIFE_DAYS)
+      );
+    };
+
+    const genreWeight = new Map<number, number>();
+    const addGenres = (genres: { id: number }[], weight: number) => {
+      if (weight === 0) return;
+      for (const g of genres) genreWeight.set(g.id, (genreWeight.get(g.id) ?? 0) + weight);
+    };
+    for (const r of reviews) {
+      addGenres(r.game?.genres ?? [], (r.rating - RECOMMENDATION_NEUTRAL_RATING) * recency(r.createdAt));
+    }
+    for (const p of played) {
+      if (p.status !== PlayStatus.PLAYED) continue;
+      addGenres(p.game?.genres ?? [], RECOMMENDATION_PLAYED_WEIGHT * recency(p.playedAt ?? p.createdAt));
+    }
+
+    // Only genres the user actually leans toward drive the candidate search;
+    // disliked genres still subtract in the score below, but shouldn't pull in
+    // candidates on their own.
+    const likedGenreIds = [...genreWeight].filter(([, w]) => w > 0).map(([id]) => id);
+    if (likedGenreIds.length === 0) return { data: [] };
+
+    // Never recommend something the user has already reviewed or played.
     const exclude = [
-      ...new Set([...played.map((p) => p.gameId), ...reviewed.map((r) => r.gameId as number)]),
+      ...new Set([...played.map((p) => p.gameId), ...reviews.map((r) => r.gameId as number)]),
     ];
 
     const candidates = await this.prisma.game.findMany({
       where: {
         id: { notIn: exclude },
-        genres: { some: { id: { in: [...genreWeight.keys()] } } },
+        genres: { some: { id: { in: likedGenreIds } } },
         // Same rule as the catalog list: DLCs/expansions surface on their
         // parent's page, never recommended standalone.
         OR: [
@@ -377,15 +418,38 @@ export class GamesService {
       take: RECOMMENDATION_CANDIDATE_POOL,
     });
 
-    const ranked = candidates
+    const scored = candidates
       .map((game) => ({
         game,
-        matchScore: game.genres.reduce((sum, g) => sum + (genreWeight.get(g.id) ?? 0), 0),
+        score: game.genres.reduce((sum, g) => sum + (genreWeight.get(g.id) ?? 0), 0),
       }))
-      .sort((a, b) => b.matchScore - a.matchScore || (b.game.igdbRating ?? 0) - (a.game.igdbRating ?? 0))
-      .slice(0, limit)
-      .map((r) => r.game);
+      .filter((c) => c.score > 0)
+      .sort((a, b) => b.score - a.score || (b.game.igdbRating ?? 0) - (a.game.igdbRating ?? 0));
 
-    return { data: ranked };
+    // Weighted-random draw from the strongest matches (probability ∝ score):
+    // relevant, but a fresh line-up each visit instead of a frozen top.
+    const shortlist = scored.slice(0, limit * RECOMMENDATION_SHORTLIST_FACTOR);
+    const data = weightedSampleWithoutReplacement(
+      shortlist.map((c) => ({ item: c.game, weight: c.score })),
+      limit,
+    );
+
+    return { data };
   }
+}
+
+// Draw up to `k` distinct items, each round picking one with probability
+// proportional to its (positive) weight — a weighted shuffle of the top matches.
+function weightedSampleWithoutReplacement<T>(items: { item: T; weight: number }[], k: number): T[] {
+  const pool = items.filter((x) => x.weight > 0).map((x) => ({ ...x }));
+  const out: T[] = [];
+  while (out.length < k && pool.length > 0) {
+    const total = pool.reduce((sum, x) => sum + x.weight, 0);
+    let r = Math.random() * total;
+    let idx = 0;
+    while (idx < pool.length - 1 && (r -= pool[idx].weight) > 0) idx++;
+    out.push(pool[idx].item);
+    pool.splice(idx, 1);
+  }
+  return out;
 }
