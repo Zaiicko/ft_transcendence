@@ -121,6 +121,22 @@ export class UsersService {
     };
   }
 
+  // Full list of games this user has logged (any status), newest-played first
+  // (undated entries last). Backs the "games played" modal on the profile —
+  // the profile payload itself only carries the dated subset (calendar).
+  async playedGamesOf(username: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+    if (!user) return null;
+    return this.prisma.playedGame.findMany({
+      where: { userId: user.id },
+      orderBy: [{ playedAt: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }],
+      select: { playedAt: true, status: true, game: gameRef },
+    });
+  }
+
   private async friendState(ownerId: number, viewerId?: number): Promise<FriendState> {
     if (!viewerId) return 'none';
     if (viewerId === ownerId) return 'self';

@@ -49,6 +49,15 @@ export class UsersController {
     return profile;
   }
 
+  // Full played-games list for the profile's "games played" modal (public,
+  // like the profile). Three path segments, so no clash with @Get(':id').
+  @Get('profile/:username/played')
+  async playedGames(@Param('username') username: string) {
+    const rows = await this.usersService.playedGamesOf(username);
+    if (rows === null) throw new NotFoundException();
+    return rows;
+  }
+
   // Public profile only — never return passwordHash / twoFactorSecret / providerId
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {

@@ -9,7 +9,9 @@ import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import Modal from '../components/Modal';
 import ProfileLists from '../components/ProfileLists';
+import ProfilePlayedGames from '../components/ProfilePlayedGames';
 import ProfileReviews from '../components/ProfileReviews';
 import Skeleton from '../components/Skeleton';
 import Stars from '../components/Stars';
@@ -242,6 +244,8 @@ export default function PublicProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Modale ouverte au clic sur un compteur de l'en-tête (avis / jeux faits)
+  const [modal, setModal] = useState<'reviews' | 'played' | null>(null);
 
   // No synchronous setState in the body (react-hooks/set-state-in-effect):
   // every update happens in a promise callback.
@@ -286,6 +290,14 @@ export default function PublicProfile() {
     );
   if (error || !profile) return <p className="text-red-400">{error ?? t('profile.notFound')}</p>;
 
+  // Réutilisés comme label du compteur ET comme titre de la modale
+  const reviewLabel = t(profile.reviewCount === 1 ? 'profile.reviewOne' : 'profile.reviewMany', {
+    count: profile.reviewCount,
+  });
+  const playedLabel = t(profile.playedCount === 1 ? 'profile.playedGameOne' : 'profile.playedGameMany', {
+    count: profile.playedCount,
+  });
+
   return (
     <div className="mx-auto max-w-3xl">
       {/* Header */}
@@ -301,13 +313,29 @@ export default function PublicProfile() {
           {profile.bio && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{profile.bio}</p>}
           <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
             {t('profile.memberSince', { date: memberSince(profile.createdAt) })} ·{' '}
-            {t(profile.reviewCount === 1 ? 'profile.reviewOne' : 'profile.reviewMany', {
-              count: profile.reviewCount,
-            })}{' '}
+            {profile.reviewCount > 0 ? (
+              <button
+                type="button"
+                onClick={() => setModal('reviews')}
+                className="underline decoration-dotted underline-offset-2 transition hover:text-accent"
+              >
+                {reviewLabel}
+              </button>
+            ) : (
+              reviewLabel
+            )}{' '}
             ·{' '}
-            {t(profile.playedCount === 1 ? 'profile.playedGameOne' : 'profile.playedGameMany', {
-              count: profile.playedCount,
-            })}
+            {profile.playedCount > 0 ? (
+              <button
+                type="button"
+                onClick={() => setModal('played')}
+                className="underline decoration-dotted underline-offset-2 transition hover:text-accent"
+              >
+                {playedLabel}
+              </button>
+            ) : (
+              playedLabel
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2 sm:self-start">
@@ -388,6 +416,17 @@ export default function PublicProfile() {
 
       {/* Recent reviews — limitées à 10, triables, "Charger plus" */}
       <ProfileReviews username={profile.username} seed={profile.recentReviews} />
+
+      {modal === 'reviews' && (
+        <Modal title={reviewLabel} onClose={() => setModal(null)}>
+          <ProfileReviews username={profile.username} seed={profile.recentReviews} embedded />
+        </Modal>
+      )}
+      {modal === 'played' && (
+        <Modal title={playedLabel} onClose={() => setModal(null)}>
+          <ProfilePlayedGames username={profile.username} />
+        </Modal>
+      )}
     </div>
   );
 }

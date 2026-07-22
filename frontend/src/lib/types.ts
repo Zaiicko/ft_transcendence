@@ -189,7 +189,14 @@ export interface FeedPage {
 // Viewer's relationship with the profile owner (drives the friend button)
 export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 
-type GameRef = { id: number; title: string; coverUrl: string | null };
+export type GameRef = { id: number; title: string; coverUrl: string | null };
+
+// GET /users/profile/:username/played — every game the user has logged
+export interface ProfilePlayedGame {
+  playedAt: string | null;
+  status: 'PLAYED' | 'PLAYING' | 'BACKLOG';
+  game: GameRef;
+}
 
 // Un avis tel qu'affiché sur le profil (seed du profil + GET
 // /users/profile/:username/reviews). Exactement un de game/company est non-null.

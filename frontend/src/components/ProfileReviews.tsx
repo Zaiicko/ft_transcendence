@@ -22,9 +22,12 @@ const SORTS: { key: Sort; labelKey: string }[] = [
 export default function ProfileReviews({
   username,
   seed,
+  embedded = false,
 }: {
   username: string;
   seed: ProfileReview[];
+  // Dans la modale du profil : la modale porte déjà le titre, on masque le h2.
+  embedded?: boolean;
 }) {
   const { t } = useTranslation();
   const [sort, setSort] = useState<Sort>('popular');
@@ -68,9 +71,11 @@ export default function ProfileReviews({
   return (
     <section>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('profile.recentReviews')}
-        </h2>
+        {!embedded && (
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            {t('profile.recentReviews')}
+          </h2>
+        )}
         {reviews.length > 0 && (
           <div className="flex gap-2">
             {SORTS.map((s) => (
