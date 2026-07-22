@@ -261,13 +261,16 @@
     "writeReview": "レビューを書く",
     "popularNow": "今人気",
     "showMorePopular": "人気のゲームをもっと見る",
+    "showLessPopular": "人気ゲームを少なく表示",
     "popularReviews": "人気のレビュー",
     "noReviewsTitle": "まだレビューがありません",
     "noReviewsDescription": "最初にゲームを評価してみましょう。優れたレビューはここに表示されます。",
     "showMoreReviews": "レビューをもっと見る",
     "deletedUser": "[削除されたユーザー]",
     "viewGame": "{{title}} を見る",
-    "recommendedForYou": "あなたへのおすすめ"
+    "recommendedForYou": "あなたへのおすすめ",
+    "showMoreRecommended": "おすすめをもっと見る",
+    "showLessRecommended": "おすすめを少なく表示"
   },
   "feed": {
     "title": "フレンドのアクティビティ",

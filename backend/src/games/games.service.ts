@@ -328,7 +328,7 @@ export class GamesService {
   // Deliberately not collaborative filtering: with a small/growing user base
   // the per-user review overlap needed for that to work reliably isn't there
   // yet, while genre affinity is dense from day one (IGDB tags every game).
-  async recommendationsFor(userId: number, limit = 12) {
+  async recommendationsFor(userId: number, limit = 18) {
     const likedReviews = await this.prisma.review.findMany({
       where: { userId, gameId: { not: null }, rating: { gte: RECOMMENDATION_LIKED_RATING } },
       select: { game: { select: { genres: { select: { id: true } } } } },

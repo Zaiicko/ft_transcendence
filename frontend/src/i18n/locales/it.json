@@ -261,13 +261,16 @@
     "writeReview": "Scrivi una recensione",
     "popularNow": "Popolare ora",
     "showMorePopular": "Mostra altri giochi popolari",
+    "showLessPopular": "Mostra meno giochi popolari",
     "popularReviews": "Recensioni popolari",
     "noReviewsTitle": "Ancora nessuna recensione",
     "noReviewsDescription": "Sii il primo a valutare un gioco — le migliori recensioni appariranno qui.",
     "showMoreReviews": "Mostra altre recensioni",
     "deletedUser": "[utente eliminato]",
     "viewGame": "Vedi {{title}}",
-    "recommendedForYou": "Consigliato per te"
+    "recommendedForYou": "Consigliato per te",
+    "showMoreRecommended": "Mostra altri consigli",
+    "showLessRecommended": "Mostra meno consigli"
   },
   "feed": {
     "title": "Attività dei tuoi amici",

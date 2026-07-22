@@ -261,13 +261,16 @@
     "writeReview": "리뷰 작성",
     "popularNow": "지금 인기 있는",
     "showMorePopular": "인기 게임 더 보기",
+    "showLessPopular": "인기 게임 적게 보기",
     "popularReviews": "인기 리뷰",
     "noReviewsTitle": "아직 리뷰가 없습니다",
     "noReviewsDescription": "가장 먼저 게임을 평가해 보세요. 훌륭한 리뷰가 여기에 표시됩니다.",
     "showMoreReviews": "리뷰 더 보기",
     "deletedUser": "[삭제된 사용자]",
     "viewGame": "{{title}} 보기",
-    "recommendedForYou": "맞춤 추천"
+    "recommendedForYou": "맞춤 추천",
+    "showMoreRecommended": "추천 더 보기",
+    "showLessRecommended": "추천 적게 보기"
   },
   "feed": {
     "title": "친구 활동",

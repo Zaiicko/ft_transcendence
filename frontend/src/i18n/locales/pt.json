@@ -261,13 +261,16 @@
     "writeReview": "Escrever uma crítica",
     "popularNow": "Popular agora",
     "showMorePopular": "Mostrar mais jogos populares",
+    "showLessPopular": "Ver menos jogos populares",
     "popularReviews": "Críticas populares",
     "noReviewsTitle": "Ainda sem críticas",
     "noReviewsDescription": "Sê o primeiro a avaliar um jogo — as melhores críticas vão aparecer aqui.",
     "showMoreReviews": "Mostrar mais críticas",
     "deletedUser": "[utilizador eliminado]",
     "viewGame": "Ver {{title}}",
-    "recommendedForYou": "Recomendado para você"
+    "recommendedForYou": "Recomendado para você",
+    "showMoreRecommended": "Ver mais recomendações",
+    "showLessRecommended": "Ver menos recomendações"
   },
   "feed": {
     "title": "Atividade dos teus amigos",

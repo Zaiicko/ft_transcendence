@@ -261,13 +261,16 @@
     "writeReview": "Schrijf een recensie",
     "popularNow": "Nu populair",
     "showMorePopular": "Meer populaire games tonen",
+    "showLessPopular": "Minder populaire games tonen",
     "popularReviews": "Populaire recensies",
     "noReviewsTitle": "Nog geen recensies",
     "noReviewsDescription": "Wees de eerste die een game beoordeelt — de beste recensies verschijnen hier.",
     "showMoreReviews": "Meer recensies tonen",
     "deletedUser": "[verwijderde gebruiker]",
     "viewGame": "Bekijk {{title}}",
-    "recommendedForYou": "Aanbevolen voor jou"
+    "recommendedForYou": "Aanbevolen voor jou",
+    "showMoreRecommended": "Meer aanbevelingen tonen",
+    "showLessRecommended": "Minder aanbevelingen tonen"
   },
   "feed": {
     "title": "Activiteit van je vrienden",

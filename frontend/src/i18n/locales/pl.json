@@ -261,13 +261,16 @@
     "writeReview": "Napisz recenzję",
     "popularNow": "Popularne teraz",
     "showMorePopular": "Pokaż więcej popularnych gier",
+    "showLessPopular": "Pokaż mniej popularnych gier",
     "popularReviews": "Popularne recenzje",
     "noReviewsTitle": "Jeszcze brak recenzji",
     "noReviewsDescription": "Bądź pierwszą osobą, która oceni grę — najlepsze recenzje pojawią się tutaj.",
     "showMoreReviews": "Pokaż więcej recenzji",
     "deletedUser": "[usunięty użytkownik]",
     "viewGame": "Zobacz {{title}}",
-    "recommendedForYou": "Polecane dla Ciebie"
+    "recommendedForYou": "Polecane dla Ciebie",
+    "showMoreRecommended": "Pokaż więcej rekomendacji",
+    "showLessRecommended": "Pokaż mniej rekomendacji"
   },
   "feed": {
     "title": "Aktywność znajomych",

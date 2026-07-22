@@ -261,13 +261,16 @@
     "writeReview": "撰写评论",
     "popularNow": "当前热门",
     "showMorePopular": "查看更多热门游戏",
+    "showLessPopular": "显示更少热门游戏",
     "popularReviews": "热门评论",
     "noReviewsTitle": "暂无评论",
     "noReviewsDescription": "成为第一个评分的人——精彩评论将在此展示。",
     "showMoreReviews": "查看更多评论",
     "deletedUser": "[已删除用户]",
     "viewGame": "查看 {{title}}",
-    "recommendedForYou": "为你推荐"
+    "recommendedForYou": "为你推荐",
+    "showMoreRecommended": "显示更多推荐",
+    "showLessRecommended": "显示更少推荐"
   },
   "feed": {
     "title": "好友动态",

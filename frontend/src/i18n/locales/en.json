@@ -261,13 +261,16 @@
     "writeReview": "Write a review",
     "popularNow": "Popular right now",
     "showMorePopular": "Show more popular games",
+    "showLessPopular": "Show fewer popular games",
     "popularReviews": "Popular reviews",
     "noReviewsTitle": "No reviews yet",
     "noReviewsDescription": "Be the first to rate a game — the best reviews will show up here.",
     "showMoreReviews": "Show more reviews",
     "deletedUser": "[deleted user]",
     "viewGame": "View {{title}}",
-    "recommendedForYou": "Recommended for you"
+    "recommendedForYou": "Recommended for you",
+    "showMoreRecommended": "Show more recommendations",
+    "showLessRecommended": "Show fewer recommendations"
   },
   "feed": {
     "title": "Your friends' activity",

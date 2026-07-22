@@ -261,13 +261,16 @@
     "writeReview": "İnceleme yaz",
     "popularNow": "Şu anda popüler",
     "showMorePopular": "Daha fazla popüler oyun göster",
+    "showLessPopular": "Daha az popüler oyun göster",
     "popularReviews": "Popüler incelemeler",
     "noReviewsTitle": "Henüz inceleme yok",
     "noReviewsDescription": "Bir oyunu ilk değerlendiren sen ol — en iyi incelemeler burada görünecek.",
     "showMoreReviews": "Daha fazla inceleme göster",
     "deletedUser": "[silinmiş kullanıcı]",
     "viewGame": "{{title}} oyununu görüntüle",
-    "recommendedForYou": "Senin için önerilen"
+    "recommendedForYou": "Senin için önerilen",
+    "showMoreRecommended": "Daha fazla öneri göster",
+    "showLessRecommended": "Daha az öneri göster"
   },
   "feed": {
     "title": "Arkadaşlarının etkinliği",

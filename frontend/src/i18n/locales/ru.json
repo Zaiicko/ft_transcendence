@@ -261,13 +261,16 @@
     "writeReview": "Написать рецензию",
     "popularNow": "Популярно сейчас",
     "showMorePopular": "Показать больше популярных игр",
+    "showLessPopular": "Показать меньше популярных игр",
     "popularReviews": "Популярные рецензии",
     "noReviewsTitle": "Пока нет рецензий",
     "noReviewsDescription": "Стань первым, кто оценит игру — лучшие рецензии появятся здесь.",
     "showMoreReviews": "Показать больше рецензий",
     "deletedUser": "[удалённый пользователь]",
     "viewGame": "Посмотреть {{title}}",
-    "recommendedForYou": "Рекомендовано для вас"
+    "recommendedForYou": "Рекомендовано для вас",
+    "showMoreRecommended": "Показать больше рекомендаций",
+    "showLessRecommended": "Показать меньше рекомендаций"
   },
   "feed": {
     "title": "Активность друзей",

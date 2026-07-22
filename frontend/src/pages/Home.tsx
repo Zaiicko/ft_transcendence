@@ -21,6 +21,9 @@ const HIGHLIGHTS_STEP = 6;
 const POPULAR_STEP = 6;
 // 6 jeux au départ + 2 clics sur ⌄ maximum
 const POPULAR_MAX = POPULAR_STEP * 3;
+// Recommandations : mêmes 6 au départ, le bouton ⌄ dévoile la suite (le backend
+// en renvoie jusqu'à 12)
+const RECO_STEP = 6;
 
 const gameHref = (id: number) => `/game/${id}`;
 const companyHref = (id: number) => `/company/${id}`;
@@ -47,11 +50,13 @@ export default function Home() {
   const [recommended, setRecommended] = useState<GameSummary[]>([]);
   const [shown, setShown] = useState(HIGHLIGHTS_STEP);
   const [shownPopular, setShownPopular] = useState(POPULAR_STEP);
+  const [shownReco, setShownReco] = useState(RECO_STEP);
   const [loading, setLoading] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
   const revealTriggers = useRef<ScrollTrigger[]>([]);
 
   const visiblePopular = popular.slice(0, shownPopular);
+  const visibleRecommended = recommended.slice(0, shownReco);
   const visibleHighlights = highlights.slice(0, shown);
 
   useEffect(() => {
@@ -132,7 +137,12 @@ export default function Home() {
   // des éléments après coup : à chaque rendu on ne câble que ceux pas encore
   // marqués data-revealed, sans toucher aux animations déjà jouées.
   useLayoutEffect(() => {
-    if (visiblePopular.length === 0 && visibleHighlights.length === 0) return;
+    if (
+      visiblePopular.length === 0 &&
+      visibleRecommended.length === 0 &&
+      visibleHighlights.length === 0
+    )
+      return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const fresh = Array.from(
       rootRef.current?.querySelectorAll<HTMLElement>('[data-anim="cover"], [data-anim="card"]') ??
@@ -154,7 +164,7 @@ export default function Home() {
     // Les nouveaux éléments décalent ceux d'en dessous : on refait mesurer
     // toutes les positions de déclenchement
     ScrollTrigger.refresh();
-  }, [visiblePopular, visibleHighlights]);
+  }, [visiblePopular, visibleRecommended, visibleHighlights]);
 
   // Démontage : tuer les triggers encore en attente et rendre visibles les
   // éléments masqués, pour repartir propre si le composant est remonté
@@ -187,10 +197,18 @@ export default function Home() {
             {t('home.recommendedForYou')}
           </h2>
           <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
-            {recommended.map((g) => (
+            {visibleRecommended.map((g) => (
               <GameCard key={g.id} game={g} />
             ))}
           </div>
+          <GridExpander
+            shown={shownReco}
+            step={RECO_STEP}
+            total={recommended.length}
+            onChange={setShownReco}
+            moreLabel={t('home.showMoreRecommended')}
+            lessLabel={t('home.showLessRecommended')}
+          />
         </section>
       )}
       {(popular.length > 0 || loading) && (
@@ -207,19 +225,14 @@ export default function Home() {
           ) : (
             <CoverGridSkeleton count={6} />
           )}
-          {shownPopular < popular.length && (
-            <button
-              type="button"
-              onClick={() => setShownPopular(shownPopular + POPULAR_STEP)}
-              aria-label={t('home.showMorePopular')}
-              title={t('home.showMorePopular')}
-              className="mx-auto mt-4 flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400 hover:opacity-70 dark:border-zinc-700"
-            >
-              <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2">
-                <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          )}
+          <GridExpander
+            shown={shownPopular}
+            step={POPULAR_STEP}
+            total={popular.length}
+            onChange={setShownPopular}
+            moreLabel={t('home.showMorePopular')}
+            lessLabel={t('home.showLessPopular')}
+          />
         </section>
       )}
       <section>
@@ -366,6 +379,62 @@ function Hero({ game }: { game: GameSummary }) {
             {t('home.writeReview')}
           </a>
         </div>
+      )}
+    </div>
+  );
+}
+
+// Contrôles ⌄ / ⌃ sous une grille de jaquettes : déroule ou replie par pas de
+// `step` (mêmes paliers 6/12/18 partout). La flèche bas apparaît tant qu'il
+// reste à montrer, la flèche haut dès qu'on a dépassé le palier initial ; rien
+// ne s'affiche quand la grille est à la fois au minimum et au maximum.
+function GridExpander({
+  shown,
+  step,
+  total,
+  onChange,
+  moreLabel,
+  lessLabel,
+}: {
+  shown: number;
+  step: number;
+  total: number;
+  onChange: (next: number) => void;
+  moreLabel: string;
+  lessLabel: string;
+}) {
+  const canMore = shown < total;
+  const canLess = shown > step;
+  if (!canMore && !canLess) return null;
+  const btn =
+    'flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400 hover:opacity-70 dark:border-zinc-700';
+  return (
+    <div className="mt-4 flex items-center justify-center gap-3">
+      {canLess && (
+        <button
+          type="button"
+          onClick={() => onChange(Math.max(step, shown - step))}
+          aria-label={lessLabel}
+          title={lessLabel}
+          className={btn}
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2">
+            <path d="m6 15 6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
+      {canMore && (
+        <button
+          type="button"
+          onClick={() => onChange(Math.min(total, shown + step))}
+          aria-label={moreLabel}
+          title={moreLabel}
+          className={btn}
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2">
+            <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
       )}
     </div>
   );
