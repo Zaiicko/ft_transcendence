@@ -10,6 +10,14 @@ import { GamesSyncService } from './games-sync.service';
 // catalog on the fly
 const ON_DEMAND_THRESHOLD = 5;
 
+// Recommendations: a review counts as a positive signal above this rating
+// (0-10 scale); below it, we fall back to "played" as a weaker signal.
+const RECOMMENDATION_LIKED_RATING = 7;
+// How many genre-matching candidates we pull before re-ranking in JS — wide
+// enough to not miss good matches, narrow enough to stay fast without a
+// dedicated scoring query.
+const RECOMMENDATION_CANDIDATE_POOL = 200;
+
 // Bayesian confidence weight (IMDb-style): the external rating counts as this
 // many virtual user votes, so a couple of accounts can't skew a game's score
 // while a real crowd of users progressively takes over.
@@ -311,5 +319,73 @@ export class GamesService {
       take: 25,
       include: GAME_INCLUDE,
     });
+  }
+
+  // Content-based "recommended for you": genres of games the user rated well
+  // (falling back to genres of anything they've played, for users who play
+  // but don't review) become weighted signals — candidates sharing more of
+  // those genres, weighted by how often each genre showed up, rank higher.
+  // Deliberately not collaborative filtering: with a small/growing user base
+  // the per-user review overlap needed for that to work reliably isn't there
+  // yet, while genre affinity is dense from day one (IGDB tags every game).
+  async recommendationsFor(userId: number, limit = 12) {
+    const likedReviews = await this.prisma.review.findMany({
+      where: { userId, gameId: { not: null }, rating: { gte: RECOMMENDATION_LIKED_RATING } },
+      select: { game: { select: { genres: { select: { id: true } } } } },
+    });
+    let genreSource = likedReviews;
+    if (genreSource.length === 0) {
+      genreSource = await this.prisma.playedGame.findMany({
+        where: { userId, status: PlayStatus.PLAYED },
+        select: { game: { select: { genres: { select: { id: true } } } } },
+      });
+    }
+    if (genreSource.length === 0) return { data: [] };
+
+    // Frequency across the user's liked/played games = affinity weight per genre
+    const genreWeight = new Map<number, number>();
+    for (const row of genreSource) {
+      for (const g of row.game?.genres ?? []) {
+        genreWeight.set(g.id, (genreWeight.get(g.id) ?? 0) + 1);
+      }
+    }
+
+    const [played, reviewed] = await Promise.all([
+      this.prisma.playedGame.findMany({ where: { userId }, select: { gameId: true } }),
+      this.prisma.review.findMany({
+        where: { userId, gameId: { not: null } },
+        select: { gameId: true },
+      }),
+    ]);
+    const exclude = [
+      ...new Set([...played.map((p) => p.gameId), ...reviewed.map((r) => r.gameId as number)]),
+    ];
+
+    const candidates = await this.prisma.game.findMany({
+      where: {
+        id: { notIn: exclude },
+        genres: { some: { id: { in: [...genreWeight.keys()] } } },
+        // Same rule as the catalog list: DLCs/expansions surface on their
+        // parent's page, never recommended standalone.
+        OR: [
+          { parentId: null },
+          { gameType: { in: [GameType.STANDALONE, GameType.REMAKE, GameType.REMASTER] } },
+        ],
+      },
+      include: GAME_INCLUDE,
+      orderBy: [{ igdbRatingCount: { sort: 'desc', nulls: 'last' } }],
+      take: RECOMMENDATION_CANDIDATE_POOL,
+    });
+
+    const ranked = candidates
+      .map((game) => ({
+        game,
+        matchScore: game.genres.reduce((sum, g) => sum + (genreWeight.get(g.id) ?? 0), 0),
+      }))
+      .sort((a, b) => b.matchScore - a.matchScore || (b.game.igdbRating ?? 0) - (a.game.igdbRating ?? 0))
+      .slice(0, limit)
+      .map((r) => r.game);
+
+    return { data: ranked };
   }
 }

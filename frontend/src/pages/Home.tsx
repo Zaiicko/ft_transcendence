@@ -38,9 +38,11 @@ function pickRandom<T>(pool: T[], n: number): T[] {
 
 export default function Home() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [popular, setPopular] = useState<GameSummary[]>([]);
   const [featured, setFeatured] = useState<GameSummary | null>(null);
   const [highlights, setHighlights] = useState<ReviewHighlight[]>([]);
+  const [recommended, setRecommended] = useState<GameSummary[]>([]);
   const [shown, setShown] = useState(HIGHLIGHTS_STEP);
   const [shownPopular, setShownPopular] = useState(POPULAR_STEP);
   const [loading, setLoading] = useState(true);
@@ -85,6 +87,23 @@ export default function Home() {
       cancelled = true;
     };
   }, []);
+
+  // Personnalisé : rien à charger pour un visiteur anonyme. Pas besoin de
+  // vider `recommended` au logout — la section est de toute façon gated par
+  // `user` au rendu (voir plus bas), et une navigation loin de Home démonte
+  // le composant.
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    apiFetch<{ data: GameSummary[] }>('/games/recommendations')
+      .then((r) => {
+        if (!cancelled) setRecommended(r.data);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   // La bannière est visible dès l'arrivée : elle s'anime au chargement, et sa
   // parallaxe (l'image défile plus lentement que la page) est pilotée par le
@@ -159,6 +178,18 @@ export default function Home() {
         // haut de page (→ animations déclenchées à tort au chargement) puis
         // sont poussées vers le bas quand la carte s'insère (double saut)
         <div className="h-[42vh] animate-pulse rounded-xl bg-zinc-200 md:h-[52vh] dark:bg-zinc-900" />
+      )}
+      {user && recommended.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            {t('home.recommendedForYou')}
+          </h2>
+          <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+            {recommended.map((g) => (
+              <GameCard key={g.id} game={g} />
+            ))}
+          </div>
+        </section>
       )}
       {(popular.length > 0 || loading) && (
         <section>
