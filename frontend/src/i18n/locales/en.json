@@ -266,7 +266,8 @@
     "noReviewsDescription": "Be the first to rate a game — the best reviews will show up here.",
     "showMoreReviews": "Show more reviews",
     "deletedUser": "[deleted user]",
-    "viewGame": "View {{title}}"
+    "viewGame": "View {{title}}",
+    "recommendedForYou": "Recommended for you"
   },
   "feed": {
     "title": "Your friends' activity",
@@ -524,11 +525,227 @@
     "Visual Novel": "Visual Novel"
   },
   "legal": {
-    "privacyTitle": "Privacy Policy",
-    "privacyBody1": "Saveboxd collects the data you provide when creating an account (email, username, avatar) and the activity you generate on the platform (ratings, reviews, lists, friendships, messages). This data is used solely to provide the service and is never sold to third parties.",
-    "privacyBody2": "You can request an export of your personal data or the deletion of your account at any time from your settings page.",
-    "termsTitle": "Terms of Service",
-    "termsBody1": "By using Saveboxd you agree to publish only content you own and to remain respectful in your reviews and messages. Accounts that post abusive content may be suspended.",
-    "termsBody2": "Saveboxd is a student project built for the 42 curriculum and is provided as-is, without any warranty."
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated: July 22, 2026",
+      "intro": "Saveboxd is a student project built as part of the 42 curriculum: a video game catalog and review site with social features (friends, messaging, lists). This policy explains what data is collected when you use the site, why, and what your rights are.",
+      "sections": {
+        "dataCollected": {
+          "title": "Data we collect",
+          "body": [
+            "We only collect the data necessary for the site to work:",
+            "• At regular sign-up: your email address, a username, and a password (stored hashed, never in plain text).",
+            "• If you sign in via Google, 42 (Intra), Discord, or Steam: an identifier provided by that service, your email address when the provider shares it (Steam never shares an email address), your display name, and your profile picture.",
+            "• Profile information you choose to fill in: bio, avatar, preferred language.",
+            "• Your activity on the site: game reviews and ratings, games marked as played, custom game lists, friendships, messages exchanged with friends, likes and comments.",
+            "• Technical cookies required for authentication (see the Cookies section).",
+            "• Standard server technical logs (IP address, timestamp, requested page), generated automatically, as on virtually every website.",
+            "We do not collect any banking or payment data, no precise geolocation data, and we do not use any audience-analytics or advertising tools."
+          ]
+        },
+        "purposes": {
+          "title": "Why we use this data",
+          "body": [
+            "Your data is used exclusively to:",
+            "• create and manage your account;",
+            "• authenticate you and secure your session (cookies, tokens, two-factor authentication if enabled);",
+            "• display your profile and stats (games played, reviews, lists);",
+            "• power social features (friend requests, friend suggestions via Steam or 42, messaging, notifications);",
+            "• send you emails strictly related to account operation (email verification, password reset);",
+            "• keep the service secure and prevent abuse.",
+            "We never sell, rent, or share your data for commercial or advertising purposes."
+          ]
+        },
+        "discord": {
+          "title": "Signing in and linking with Discord",
+          "body": [
+            "Saveboxd lets you sign in or link your account via Discord (OAuth2). Discord then sends us: your Discord ID, your username, your associated email address if your Discord account makes it available, and the URL of your Discord avatar.",
+            "This information is only used to create your Saveboxd account or link an existing one to your Discord identity, and to display a Discord badge on your profile. We never receive your Discord password, and we never access any other data on your Discord account (servers, messages, contacts).",
+            "You can unlink your Discord account at any time from your settings, unless it is your only way of signing in."
+          ]
+        },
+        "retention": {
+          "title": "How long we keep your data",
+          "body": [
+            "Your data is kept for as long as your account exists.",
+            "When you delete your account from your settings:",
+            "• your account, avatar, friendships, games marked as played, lists, notifications, and messages (sent and received) are permanently deleted;",
+            "• your existing reviews and comments are kept but anonymized (shown as coming from a \"deleted user\"), so other users' discussion threads aren't broken;",
+            "• some data may briefly remain in technical backups or server logs before being automatically deleted.",
+            "We do not keep any data beyond what is necessary for the site to function or for the security of the service."
+          ]
+        },
+        "rights": {
+          "title": "Your rights",
+          "body": [
+            "Under the General Data Protection Regulation (GDPR), you have the following rights over your personal data:",
+            "• right of access to your personal data;",
+            "• right to rectify inaccurate data (most fields can be edited directly from your settings);",
+            "• right to erasure: delete your account at any time from your settings;",
+            "• right to restrict processing in certain cases;",
+            "• right to object to certain processing, for example via your notification preferences;",
+            "• right to portability of your data in a structured format;",
+            "• right to withdraw your consent at any time when processing relies on it (for example, signing in via a third-party provider);",
+            "• right to lodge a complaint with the competent data protection authority (in France, the CNIL — cnil.fr).",
+            "To exercise any of these rights, contact us at the address given in the Contact section."
+          ]
+        },
+        "cookies": {
+          "title": "Cookies and local storage",
+          "body": [
+            "Saveboxd only uses cookies strictly necessary for the site to work, all technical and never advertising:",
+            "• authentication cookies (login session, session refresh, two-factor authentication step, linking a third-party account), all httpOnly and time-limited.",
+            "No advertising or audience-tracking cookie is used.",
+            "We also use your browser's local storage (localStorage) to remember two display preferences: your chosen language and light/dark theme. This information stays on your device and is never sent to our servers.",
+            "As these cookies are strictly necessary for the service to function, they do not require prior consent under the ePrivacy regulation."
+          ]
+        },
+        "thirdParties": {
+          "title": "Third-party services",
+          "body": [
+            "To operate, Saveboxd relies on the following third-party services:",
+            "• IGDB (Internet Game Database), for public video game information — no personal data about you is shared with them;",
+            "• Steam (Valve), if you choose to link your account, to verify your identity and fetch your persona name, avatar, game library, and Steam friends list (used only to suggest friends already on Saveboxd, never stored);",
+            "• Google, 42 (Intra), and Discord, if you choose to sign in via one of these providers;",
+            "• Brevo, our transactional email provider, used only for email verification and password reset emails.",
+            "We do not use any audience-analytics, advertising, or third-party tracking tool.",
+            "Hosting: this project is developed and evaluated as part of the 42 curriculum. If the site were to be publicly deployed, this section would need to be completed with the hosting provider's name."
+          ]
+        },
+        "contact": {
+          "title": "Contact",
+          "body": [
+            "For any question about this privacy policy, or to exercise your rights over your personal data, contact us at: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "lastUpdated": "Last updated: July 22, 2026",
+      "intro": "These terms govern access to and use of the Saveboxd site, a student project built as part of the 42 curriculum. By creating an account or using the site, you agree to the terms described below.",
+      "sections": {
+        "purpose": {
+          "title": "Purpose of the service",
+          "body": [
+            "Saveboxd is a community platform for cataloging, rating, and reviewing video games, tracking games you've played, creating custom lists, and interacting with other users (friends, messaging, reviews, comments).",
+            "The site is a student project built for educational purposes as part of the 42 curriculum, not a commercial service."
+          ]
+        },
+        "account": {
+          "title": "Access and account creation",
+          "body": [
+            "Access to most features requires creating an account, either through regular sign-up (email, username, password) or via a third-party authentication provider (Google, 42, Discord, Steam).",
+            "You must provide accurate information when signing up, and you may not create an account on behalf of someone else without their consent, nor create multiple accounts to bypass a suspension."
+          ]
+        },
+        "credentials": {
+          "title": "Responsibility for your credentials",
+          "body": [
+            "You are responsible for keeping your password confidential and for all activity carried out from your account.",
+            "If you suspect unauthorized access to your account, change your password immediately and contact us.",
+            "We recommend enabling two-factor authentication (2FA), available in your settings, to strengthen your account's security."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Acceptable use of the site",
+          "body": [
+            "By using Saveboxd, you agree to:",
+            "• only post reviews, comments, and messages that are respectful of others;",
+            "• not impersonate another person or entity;",
+            "• not use the site for illegal purposes or to harm other users;",
+            "• not attempt to disrupt the site's technical operation (overload, exploiting vulnerabilities, bypassing rate limits)."
+          ]
+        },
+        "abuse": {
+          "title": "Prohibited behavior",
+          "body": [
+            "The following are prohibited in particular:",
+            "• harassment, insults, threats, or any malicious behavior toward another user;",
+            "• spam (repetitive, promotional, or off-topic messages or reviews);",
+            "• posting illegal, hateful, discriminatory, or sexually explicit content;",
+            "• any attempt to gain unauthorized access to another account or to the site's systems."
+          ]
+        },
+        "interactions": {
+          "title": "Interactions between users",
+          "body": [
+            "Saveboxd offers social features: friend requests, private messaging, sharing games/reviews/profiles in conversations, and friend suggestions based on your Steam network or your membership in the 42 community.",
+            "You remain solely responsible for the content of your messages and posts. Private messages exchanged with a friend are permanently deleted, for both parties, if either account is deleted."
+          ]
+        },
+        "moderation": {
+          "title": "Moderation and reporting",
+          "body": [
+            "The site does not currently have a built-in reporting system for reviews or messages.",
+            "If you experience abuse, harassment, or inappropriate content, you can contact us directly at the address given in the Contact section; moderation is then handled manually by the project team."
+          ]
+        },
+        "suspension": {
+          "title": "Account suspension or deletion",
+          "body": [
+            "If these terms are not respected (abuse, harassment, spam, illegal content), we reserve the right to suspend or delete an account, at our discretion, to the extent reasonably possible for a student project without a dedicated moderation team.",
+            "You may delete your own account at any time from your settings."
+          ]
+        },
+        "userContent": {
+          "title": "User-generated content",
+          "body": [
+            "You retain ownership of the content you post (reviews, comments, lists, bio, avatar). By posting it on Saveboxd, you authorize us to display and store it as part of the site's normal operation.",
+            "You warrant that you hold the necessary rights to any content you post, in particular your profile picture if you are not using the one provided by a third-party authentication provider."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Intellectual property",
+          "body": [
+            "The code, design, and \"Saveboxd\" brand are built as part of a 42 curriculum student project and are not intended for commercial exploitation.",
+            "Video game information and visuals (titles, cover art, descriptions) come from third-party public databases (IGDB) and belong to their respective publishers and rights holders. Saveboxd claims no ownership over this content and displays it for illustrative and informational purposes only, in a non-commercial, educational context."
+          ]
+        },
+        "gameContent": {
+          "title": "Video game content",
+          "body": [
+            "Cover art, descriptions, and game information displayed on Saveboxd are automatically imported from IGDB, and from Steam for data related to your personal library if you link your account. This information remains the property of its respective rights holders."
+          ]
+        },
+        "availability": {
+          "title": "Service availability",
+          "body": [
+            "Saveboxd is a student project provided \"as is\", with no guarantee of continuous availability. The service may be interrupted, modified, or discontinued at any time, particularly as part of its evaluation or maintenance, without notice."
+          ]
+        },
+        "liability": {
+          "title": "Limitation of liability",
+          "body": [
+            "Saveboxd is provided for educational purposes, with no warranty of any kind, express or implied. To the extent permitted by law, the project team cannot be held liable for any direct or indirect damage resulting from the use or inability to use the site.",
+            "This limitation is not legal advice and does not deprive users of any mandatory rights that cannot be excluded by contract under applicable law."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Third-party services and authentication",
+          "body": [
+            "Saveboxd lets you sign in via third-party providers (Google, 42, Discord, Steam). Using these providers is also subject to their own respective terms of service, over which Saveboxd has no control."
+          ]
+        },
+        "changes": {
+          "title": "Changes to these terms",
+          "body": [
+            "These terms may be changed at any time, in particular to reflect changes to the site's features. The last-updated date appears at the top of this page. In the event of a substantial change, we will make reasonable efforts to inform you."
+          ]
+        },
+        "law": {
+          "title": "Governing law and jurisdiction",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — unless stated otherwise, these terms are provided for guidance as part of a student project and do not constitute a formal commercial contract."
+          ]
+        },
+        "contact": {
+          "title": "Contact",
+          "body": [
+            "For any question about these terms of service, contact us at: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
   }
 }

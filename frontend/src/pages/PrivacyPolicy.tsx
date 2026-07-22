@@ -1,15 +1,31 @@
 import { useTranslation } from 'react-i18next';
+import LegalSection from '../components/LegalSection';
 
-// TODO(phase 4): replace with the full, project-specific privacy policy.
-// The evaluation rejects placeholder pages — this content must be completed
-// before the defense (data collected, purpose, retention, user rights, etc.).
+const SECTIONS = [
+  'dataCollected',
+  'purposes',
+  'discord',
+  'retention',
+  'rights',
+  'cookies',
+  'thirdParties',
+  'contact',
+] as const;
+
 export default function PrivacyPolicy() {
   const { t } = useTranslation();
   return (
     <article className="prose prose-invert mx-auto max-w-3xl">
-      <h1 className="mb-6 text-3xl font-bold tracking-tight">{t('legal.privacyTitle')}</h1>
-      <p className="text-zinc-300">{t('legal.privacyBody1')}</p>
-      <p className="mt-4 text-zinc-300">{t('legal.privacyBody2')}</p>
+      <h1 className="mb-2 text-3xl font-bold tracking-tight">{t('legal.privacy.title')}</h1>
+      <p className="mb-8 text-sm text-zinc-500 dark:text-zinc-400">{t('legal.privacy.lastUpdated')}</p>
+      <p className="text-zinc-300">{t('legal.privacy.intro')}</p>
+      {SECTIONS.map((key) => (
+        <LegalSection
+          key={key}
+          titleKey={`legal.privacy.sections.${key}.title`}
+          bodyKey={`legal.privacy.sections.${key}.body`}
+        />
+      ))}
     </article>
   );
 }

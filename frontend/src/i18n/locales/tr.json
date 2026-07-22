@@ -266,7 +266,8 @@
     "noReviewsDescription": "Bir oyunu ilk değerlendiren sen ol — en iyi incelemeler burada görünecek.",
     "showMoreReviews": "Daha fazla inceleme göster",
     "deletedUser": "[silinmiş kullanıcı]",
-    "viewGame": "{{title}} oyununu görüntüle"
+    "viewGame": "{{title}} oyununu görüntüle",
+    "recommendedForYou": "Senin için önerilen"
   },
   "feed": {
     "title": "Arkadaşlarının etkinliği",
@@ -524,11 +525,227 @@
     "Visual Novel": "Görsel Roman"
   },
   "legal": {
-    "privacyTitle": "Gizlilik Politikası",
-    "privacyBody1": "Saveboxd, hesap oluştururken sağladığın verileri (e-posta, kullanıcı adı, avatar) ve platformda oluşturduğun etkinliği (puanlar, incelemeler, listeler, arkadaşlıklar, mesajlar) toplar. Bu veriler yalnızca hizmeti sunmak için kullanılır ve asla üçüncü taraflara satılmaz.",
-    "privacyBody2": "Ayarlar sayfandan istediğin zaman kişisel verilerinin dışa aktarılmasını veya hesabının silinmesini talep edebilirsin.",
-    "termsTitle": "Hizmet Şartları",
-    "termsBody1": "Saveboxd'u kullanarak yalnızca sana ait içerikleri yayınlamayı ve incelemelerinde ve mesajlarında saygılı kalmayı kabul edersin. Kötüye kullanım içeriği paylaşan hesaplar askıya alınabilir.",
-    "termsBody2": "Saveboxd, 42 müfredatı için oluşturulmuş bir öğrenci projesidir ve herhangi bir garanti olmaksızın olduğu gibi sunulur."
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "lastUpdated": "Son güncelleme: 22 Temmuz 2026",
+      "intro": "Saveboxd, 42 müfredatı kapsamında geliştirilen bir öğrenci projesidir: sosyal özellikler (arkadaşlar, mesajlaşma, listeler) içeren bir video oyunu kataloğu ve inceleme sitesi. Bu politika, siteyi kullandığınızda hangi verilerin toplandığını, neden toplandığını ve haklarınızın neler olduğunu açıklar.",
+      "sections": {
+        "dataCollected": {
+          "title": "Topladığımız veriler",
+          "body": [
+            "Yalnızca sitenin çalışması için gerekli verileri topluyoruz:",
+            "• Klasik kayıt sırasında: e-posta adresiniz, bir kullanıcı adı ve bir parola (hash'lenmiş olarak saklanır, asla düz metin olarak değil).",
+            "• Google, 42 (Intra), Discord veya Steam üzerinden giriş yaparsanız: o hizmet tarafından sağlanan bir kimlik, sağlayıcı paylaşırsa e-posta adresiniz (Steam hiçbir zaman e-posta adresi paylaşmaz), görünen adınız ve profil fotoğrafınız.",
+            "• Doldurmayı tercih ettiğiniz profil bilgileri: biyografi, avatar, tercih edilen dil.",
+            "• Sitedeki etkinliğiniz: oyun incelemeleri ve puanları, oynandı olarak işaretlenen oyunlar, özel oyun listeleri, arkadaşlıklar, arkadaşlarınızla değişilen mesajlar, beğeniler ve yorumlar.",
+            "• Kimlik doğrulama için gerekli teknik çerezler (bkz. Çerezler bölümü).",
+            "• Neredeyse her web sitesinde olduğu gibi otomatik olarak oluşturulan standart teknik sunucu günlükleri (IP adresi, zaman damgası, istenen sayfa).",
+            "Herhangi bir banka veya ödeme verisi, hassas konum verisi toplamıyoruz ve herhangi bir kitle analitiği veya reklam aracı kullanmıyoruz."
+          ]
+        },
+        "purposes": {
+          "title": "Bu verileri neden kullanıyoruz",
+          "body": [
+            "Verileriniz yalnızca şu amaçlarla kullanılır:",
+            "• hesabınızı oluşturmak ve yönetmek;",
+            "• sizi doğrulamak ve oturumunuzu güvence altına almak (çerezler, token'lar, etkinleştirilmişse iki faktörlü kimlik doğrulama);",
+            "• profilinizi ve istatistiklerinizi görüntülemek (oynanan oyunlar, incelemeler, listeler);",
+            "• sosyal özellikleri çalıştırmak (arkadaşlık istekleri, Steam veya 42 üzerinden arkadaş önerileri, mesajlaşma, bildirimler);",
+            "• size yalnızca hesap işlemleriyle ilgili e-postalar göndermek (e-posta doğrulama, parola sıfırlama);",
+            "• hizmetin güvenliğini sağlamak ve kötüye kullanımı önlemek.",
+            "Verilerinizi asla ticari veya reklam amacıyla satmıyor, kiralamıyor veya paylaşmıyoruz."
+          ]
+        },
+        "discord": {
+          "title": "Discord ile giriş ve hesap bağlama",
+          "body": [
+            "Saveboxd, Discord (OAuth2) üzerinden giriş yapmanıza veya hesabınızı bağlamanıza olanak tanır. Discord bize şunları iletir: Discord kimliğiniz, kullanıcı adınız, Discord hesabınız mevcutsa ilişkili e-posta adresiniz ve Discord avatarınızın URL'si.",
+            "Bu bilgiler yalnızca Saveboxd hesabınızı oluşturmak veya mevcut bir hesabı Discord kimliğinizle ilişkilendirmek ve profilinizde bir Discord rozeti göstermek için kullanılır. Discord parolanızı asla almayız ve hesabınızın başka hiçbir verisine (sunucular, mesajlar, kişiler) erişmeyiz.",
+            "Tek giriş yönteminiz olmadığı sürece Discord hesabınızın bağlantısını istediğiniz zaman ayarlarınızdan kaldırabilirsiniz."
+          ]
+        },
+        "retention": {
+          "title": "Veri saklama süresi",
+          "body": [
+            "Verileriniz, hesabınız var olduğu sürece saklanır.",
+            "Hesabınızı ayarlarınızdan sildiğinizde:",
+            "• hesabınız, avatarınız, arkadaşlıklarınız, oynandı olarak işaretlenen oyunlarınız, listeleriniz, bildirimleriniz ve mesajlarınız (gönderilen ve alınan) kalıcı olarak silinir;",
+            "• mevcut incelemeleriniz ve yorumlarınız korunur ancak anonimleştirilir (\"silinmiş kullanıcı\"dan geliyormuş gibi gösterilir), böylece diğer kullanıcıların tartışma başlıkları bozulmaz;",
+            "• bazı veriler, otomatik olarak silinmeden önce teknik yedeklerde veya sunucu günlüklerinde kısa süreliğine kalabilir.",
+            "Sitenin çalışması veya hizmetin güvenliği için gerekli olandan fazla hiçbir veriyi saklamıyoruz."
+          ]
+        },
+        "rights": {
+          "title": "Haklarınız",
+          "body": [
+            "Genel Veri Koruma Yönetmeliği (GDPR) uyarınca kişisel verileriniz üzerinde aşağıdaki haklara sahipsiniz:",
+            "• kişisel verilerinize erişim hakkı;",
+            "• yanlış verilerin düzeltilmesi hakkı (çoğu alan doğrudan ayarlarınızdan düzenlenebilir);",
+            "• silme hakkı: hesabınızı istediğiniz zaman ayarlarınızdan silme;",
+            "• belirli durumlarda işlemenin kısıtlanması hakkı;",
+            "• örneğin bildirim tercihleriniz aracılığıyla belirli işlemelere itiraz etme hakkı;",
+            "• verilerinizin yapılandırılmış bir formatta taşınabilirlik hakkı;",
+            "• işleme buna dayandığında (örneğin üçüncü taraf bir sağlayıcı üzerinden giriş yapmak) rızanızı istediğiniz zaman geri çekme hakkı;",
+            "• yetkili veri koruma otoritesine (Fransa'da CNIL — cnil.fr) şikayette bulunma hakkı.",
+            "Bu haklardan herhangi birini kullanmak için İletişim bölümünde belirtilen adresten bizimle iletişime geçin."
+          ]
+        },
+        "cookies": {
+          "title": "Çerezler ve yerel depolama",
+          "body": [
+            "Saveboxd yalnızca sitenin çalışması için kesinlikle gerekli olan, tamamı teknik ve asla reklam amaçlı olmayan çerezleri kullanır:",
+            "• kimlik doğrulama çerezleri (oturum açma oturumu, oturum yenileme, iki faktörlü kimlik doğrulama adımı, üçüncü taraf hesap bağlama), tümü httpOnly ve süreli.",
+            "Hiçbir reklam veya izleme çerezi kullanılmaz.",
+            "Ayrıca, iki görüntüleme tercihini hatırlamak için tarayıcınızın yerel depolamasını (localStorage) kullanıyoruz: seçilen dil ve açık/koyu tema. Bu bilgiler cihazınızda kalır ve asla sunucularımıza gönderilmez.",
+            "Bu çerezler hizmetin çalışması için kesinlikle gerekli olduğundan, ePrivacy yönetmeliği kapsamında önceden onay gerektirmezler."
+          ]
+        },
+        "thirdParties": {
+          "title": "Üçüncü taraf hizmetler",
+          "body": [
+            "Çalışmak için Saveboxd aşağıdaki üçüncü taraf hizmetlerden yararlanır:",
+            "• genel video oyunu bilgileri için IGDB (Internet Game Database) — sizinle ilgili hiçbir kişisel veri onlara iletilmez;",
+            "• hesabınızı bağlamayı seçerseniz, kimliğinizi doğrulamak ve kullanıcı adınızı, avatarınızı, oyun kütüphanenizi ve Steam arkadaş listenizi almak için Steam (Valve) (yalnızca Saveboxd'de zaten bulunan arkadaşları önermek için kullanılır, asla saklanmaz);",
+            "• bu sağlayıcılardan biriyle giriş yapmayı seçerseniz Google, 42 (Intra) ve Discord;",
+            "• yalnızca e-posta doğrulama ve parola sıfırlama e-postaları için kullanılan işlemsel e-posta sağlayıcımız Brevo.",
+            "Hiçbir kitle analitiği, reklam veya üçüncü taraf izleme aracı kullanmıyoruz.",
+            "Barındırma: bu proje 42 müfredatı kapsamında geliştirilmekte ve değerlendirilmektedir. Site herkese açık olarak dağıtılırsa, bu bölüm barındırma sağlayıcısının adıyla tamamlanmalıdır."
+          ]
+        },
+        "contact": {
+          "title": "İletişim",
+          "body": [
+            "Bu gizlilik politikasıyla ilgili herhangi bir sorunuz varsa veya kişisel verileriniz üzerindeki haklarınızı kullanmak isterseniz, bizimle şu adresten iletişime geçin: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Kullanım Koşulları",
+      "lastUpdated": "Son güncelleme: 22 Temmuz 2026",
+      "intro": "Bu koşullar, 42 müfredatı kapsamında geliştirilen bir öğrenci projesi olan Saveboxd sitesine erişimi ve kullanımını düzenler. Bir hesap oluşturarak veya siteyi kullanarak, aşağıda açıklanan koşulları kabul etmiş olursunuz.",
+      "sections": {
+        "purpose": {
+          "title": "Hizmetin amacı",
+          "body": [
+            "Saveboxd; video oyunlarını kataloglamayı, puanlamayı ve incelemeyi, oynadığınız oyunları takip etmeyi, özel listeler oluşturmayı ve diğer kullanıcılarla etkileşim kurmayı (arkadaşlar, mesajlaşma, incelemeler, yorumlar) sağlayan bir topluluk platformudur.",
+            "Site, 42 müfredatı kapsamında eğitim amacıyla geliştirilen bir öğrenci projesidir, ticari bir hizmet değildir."
+          ]
+        },
+        "account": {
+          "title": "Erişim ve hesap oluşturma",
+          "body": [
+            "Çoğu özelliğe erişim, klasik kayıt (e-posta, kullanıcı adı, parola) veya üçüncü taraf bir kimlik doğrulama sağlayıcısı (Google, 42, Discord, Steam) aracılığıyla bir hesap oluşturmayı gerektirir.",
+            "Kayıt olurken doğru bilgiler vermelisiniz ve başka birinin rızası olmadan onun adına hesap oluşturamaz, bir askıya almayı atlatmak için birden fazla hesap oluşturamazsınız."
+          ]
+        },
+        "credentials": {
+          "title": "Kimlik bilgileriniz için sorumluluk",
+          "body": [
+            "Parolanızın gizliliğinden ve hesabınızdan gerçekleştirilen tüm etkinliklerden siz sorumlusunuz.",
+            "Hesabınıza yetkisiz erişim olduğundan şüpheleniyorsanız, parolanızı hemen değiştirin ve bizimle iletişime geçin.",
+            "Hesabınızın güvenliğini artırmak için ayarlarınızda bulunan iki faktörlü kimlik doğrulamayı (2FA) etkinleştirmenizi öneririz."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Sitenin kabul edilebilir kullanımı",
+          "body": [
+            "Saveboxd'i kullanarak şunları kabul edersiniz:",
+            "• yalnızca başkalarına saygılı incelemeler, yorumlar ve mesajlar yayınlamak;",
+            "• başka bir kişi veya kuruluşun kimliğine bürünmemek;",
+            "• siteyi yasa dışı amaçlarla veya diğer kullanıcılara zarar vermek için kullanmamak;",
+            "• sitenin teknik işleyişini bozmaya çalışmamak (aşırı yükleme, güvenlik açıklarından yararlanma, istek sınırlarını atlatma)."
+          ]
+        },
+        "abuse": {
+          "title": "Yasaklanmış davranışlar",
+          "body": [
+            "Özellikle şunlar yasaktır:",
+            "• başka bir kullanıcıya yönelik taciz, hakaret, tehdit veya herhangi bir kötü niyetli davranış;",
+            "• spam (tekrarlayan, tanıtım amaçlı veya konu dışı mesajlar veya incelemeler);",
+            "• yasa dışı, nefret dolu, ayrımcı veya cinsel içerikli materyal yayınlama;",
+            "• başka bir hesaba veya sitenin sistemlerine yetkisiz erişim girişimi."
+          ]
+        },
+        "interactions": {
+          "title": "Kullanıcılar arası etkileşimler",
+          "body": [
+            "Saveboxd, arkadaşlık istekleri, özel mesajlaşma, konuşmalarda oyun/inceleme/profil paylaşımı ve Steam ağınıza veya 42 topluluğuna üyeliğinize dayalı arkadaş önerileri gibi sosyal özellikler sunar.",
+            "Mesajlarınızın ve gönderilerinizin içeriğinden yalnızca siz sorumlusunuz. Bir arkadaşla değiştirilen özel mesajlar, hesaplardan biri silinirse her iki taraf için de kalıcı olarak silinir."
+          ]
+        },
+        "moderation": {
+          "title": "Moderasyon ve şikayetler",
+          "body": [
+            "Site şu anda incelemeler veya mesajlar için yerleşik bir şikayet sistemine sahip değildir.",
+            "Taciz, kötüye kullanım veya uygunsuz içerikle karşılaşırsanız, İletişim bölümünde belirtilen adresten doğrudan bizimle iletişime geçebilirsiniz; moderasyon bu durumda proje ekibi tarafından manuel olarak gerçekleştirilir."
+          ]
+        },
+        "suspension": {
+          "title": "Hesap askıya alma veya silme",
+          "body": [
+            "Bu koşullara uyulmaması durumunda (kötüye kullanım, taciz, spam, yasa dışı içerik), kendi takdirimize bağlı olarak bir hesabı askıya alma veya silme hakkımızı, özel bir moderasyon ekibi olmayan bir öğrenci projesi için makul ölçüde saklı tutarız.",
+            "Kendi hesabınızı istediğiniz zaman ayarlarınızdan silebilirsiniz."
+          ]
+        },
+        "userContent": {
+          "title": "Kullanıcı tarafından oluşturulan içerik",
+          "body": [
+            "Yayınladığınız içeriğin (incelemeler, yorumlar, listeler, biyografi, avatar) mülkiyetini elinizde tutarsınız. Bunu Saveboxd'de yayınlayarak, sitenin normal işleyişinin bir parçası olarak bunu görüntülememize ve saklamamıza izin verirsiniz.",
+            "Yayınladığınız herhangi bir içerik üzerinde, özellikle üçüncü taraf bir kimlik doğrulama sağlayıcısı tarafından sağlanan fotoğrafı kullanmıyorsanız profil fotoğrafınız üzerinde gerekli haklara sahip olduğunuzu garanti edersiniz."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Fikri mülkiyet",
+          "body": [
+            "Kod, tasarım ve \"Saveboxd\" markası, 42 müfredatı öğrenci projesi kapsamında oluşturulmuştur ve ticari kullanım amaçlı değildir.",
+            "Video oyunlarıyla ilgili bilgiler ve görseller (başlıklar, kapak görselleri, açıklamalar) üçüncü taraf genel veritabanlarından (IGDB) gelir ve ilgili yayıncılarına ve hak sahiplerine aittir. Saveboxd bu içerikler üzerinde hiçbir mülkiyet hakkı iddia etmez ve bunları yalnızca gösterim ve bilgilendirme amacıyla, ticari olmayan, eğitimsel bir bağlamda görüntüler."
+          ]
+        },
+        "gameContent": {
+          "title": "Video oyunu içeriği",
+          "body": [
+            "Saveboxd'de görüntülenen kapak görselleri, açıklamalar ve oyun bilgileri otomatik olarak IGDB'den ve hesabınızı bağlarsanız kişisel kütüphanenizle ilgili veriler için Steam'den içe aktarılır. Bu bilgiler ilgili hak sahiplerinin mülkiyetinde kalır."
+          ]
+        },
+        "availability": {
+          "title": "Hizmetin kullanılabilirliği",
+          "body": [
+            "Saveboxd, sürekli kullanılabilirlik garantisi olmadan \"olduğu gibi\" sunulan bir öğrenci projesidir. Hizmet, özellikle değerlendirmesi veya bakımı kapsamında, önceden bildirimde bulunulmaksızın herhangi bir zamanda kesintiye uğrayabilir, değiştirilebilir veya durdurulabilir."
+          ]
+        },
+        "liability": {
+          "title": "Sorumluluğun sınırlandırılması",
+          "body": [
+            "Saveboxd, açık veya zımni hiçbir garanti olmaksızın eğitim amacıyla sunulmaktadır. Yasaların izin verdiği ölçüde, proje ekibi, sitenin kullanımından veya kullanılamamasından kaynaklanan doğrudan veya dolaylı hiçbir zarardan sorumlu tutulamaz.",
+            "Bu sınırlama hukuki tavsiye teşkil etmez ve kullanıcıları, geçerli hukuk uyarınca sözleşmeyle hariç tutulamayacak zorunlu haklarından mahrum bırakmaz."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Üçüncü taraf hizmetler ve kimlik doğrulama",
+          "body": [
+            "Saveboxd, üçüncü taraf sağlayıcılar (Google, 42, Discord, Steam) aracılığıyla giriş yapmanıza olanak tanır. Bu sağlayıcıların kullanımı, Saveboxd'in hiçbir kontrolü olmadığı kendi kullanım koşullarına da tabidir."
+          ]
+        },
+        "changes": {
+          "title": "Bu koşullardaki değişiklikler",
+          "body": [
+            "Bu koşullar, özellikle sitenin özelliklerindeki gelişmeleri yansıtmak için herhangi bir zamanda değiştirilebilir. Son güncelleme tarihi bu sayfanın üst kısmında görünür. Önemli bir değişiklik durumunda, sizi makul bir şekilde bilgilendirmek için elimizden geleni yapacağız."
+          ]
+        },
+        "law": {
+          "title": "Uygulanacak hukuk ve yargı yetkisi",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — aksi belirtilmedikçe, bu koşullar bir öğrenci projesi kapsamında bilgilendirme amacıyla sunulmaktadır ve resmi bir ticari sözleşme teşkil etmez."
+          ]
+        },
+        "contact": {
+          "title": "İletişim",
+          "body": [
+            "Bu kullanım koşullarıyla ilgili herhangi bir sorunuz varsa, bizimle şu adresten iletişime geçin: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
   }
 }

@@ -16,6 +16,7 @@ import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import { Throttle } from '@nestjs/throttler';
 import { AuthProvider, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { FriendsService } from '../friends/friends.service';
@@ -37,6 +38,10 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 // Must match AuthService's MFA_CHALLENGE_TTL ('5m') — the cookie should
 // never outlive the JWT it carries.
 const MFA_CHALLENGE_COOKIE_MAX_AGE_MS = 5 * 60 * 1000;
+
+// Tighter than the app-wide default (120/min) — these routes are exactly
+// what credential-stuffing / spam / 2FA-guessing target.
+const AUTH_THROTTLE = { default: { limit: 5, ttl: 60_000 } };
 
 // Preuve courte, signée, du user qui rattache son Discord — portée entre le
 // départ vers Discord et le callback. Le userId vient du JWT, jamais du query.
@@ -61,6 +66,7 @@ export class AuthController {
     private readonly moduleRef: ModuleRef,
   ) {}
 
+  @Throttle(AUTH_THROTTLE)
   @Post('signup')
   @HttpCode(201)
   async signup(@Body() dto: SignupDto, @Res({ passthrough: true }) res: Response) {
@@ -69,6 +75,7 @@ export class AuthController {
     return toPublicUser(user);
   }
 
+  @Throttle(AUTH_THROTTLE)
   @Post('login')
   @HttpCode(200)
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
@@ -90,6 +97,7 @@ export class AuthController {
     return toPublicUser(user);
   }
 
+  @Throttle(AUTH_THROTTLE)
   @Post('2fa/verify-login')
   @HttpCode(200)
   async verifyLoginTwoFactor(
@@ -139,6 +147,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Throttle(AUTH_THROTTLE)
   @Post('resend-verification')
   @HttpCode(204)
   async resendVerification(@CurrentUser() current: JwtPayload) {
@@ -146,6 +155,7 @@ export class AuthController {
     if (user) await this.auth.requestEmailVerification(user);
   }
 
+  @Throttle(AUTH_THROTTLE)
   @Post('forgot-password')
   @HttpCode(200)
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
@@ -154,6 +164,7 @@ export class AuthController {
     return { message: 'If that email is registered, a reset link has been sent.' };
   }
 
+  @Throttle(AUTH_THROTTLE)
   @Post('reset-password')
   @HttpCode(204)
   async resetPassword(@Body() dto: ResetPasswordDto) {

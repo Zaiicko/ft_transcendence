@@ -266,7 +266,8 @@
     "noReviewsDescription": "Wees de eerste die een game beoordeelt — de beste recensies verschijnen hier.",
     "showMoreReviews": "Meer recensies tonen",
     "deletedUser": "[verwijderde gebruiker]",
-    "viewGame": "Bekijk {{title}}"
+    "viewGame": "Bekijk {{title}}",
+    "recommendedForYou": "Aanbevolen voor jou"
   },
   "feed": {
     "title": "Activiteit van je vrienden",
@@ -524,11 +525,227 @@
     "Visual Novel": "Visual novel"
   },
   "legal": {
-    "privacyTitle": "Privacybeleid",
-    "privacyBody1": "Saveboxd verzamelt de gegevens die je verstrekt bij het aanmaken van een account (e-mail, gebruikersnaam, avatar) en de activiteit die je op het platform genereert (beoordelingen, recensies, lijsten, vriendschappen, berichten). Deze gegevens worden uitsluitend gebruikt om de dienst te leveren en worden nooit aan derden verkocht.",
-    "privacyBody2": "Je kunt op elk moment een export van je persoonlijke gegevens of de verwijdering van je account aanvragen via je instellingenpagina.",
-    "termsTitle": "Servicevoorwaarden",
-    "termsBody1": "Door Saveboxd te gebruiken ga je ermee akkoord alleen inhoud te publiceren die van jou is en respectvol te blijven in je recensies en berichten. Accounts die beledigende inhoud plaatsen, kunnen worden opgeschort.",
-    "termsBody2": "Saveboxd is een studentenproject gebouwd voor het 42-curriculum en wordt geleverd zoals het is, zonder enige garantie."
+    "privacy": {
+      "title": "Privacybeleid",
+      "lastUpdated": "Laatst bijgewerkt: 22 juli 2026",
+      "intro": "Saveboxd is een studentenproject in het kader van het 42-curriculum: een catalogus- en recensiesite voor videogames met sociale functies (vrienden, berichten, lijsten). Dit beleid legt uit welke gegevens worden verzameld wanneer u de site gebruikt, waarom, en wat uw rechten zijn.",
+      "sections": {
+        "dataCollected": {
+          "title": "Verzamelde gegevens",
+          "body": [
+            "Wij verzamelen alleen de gegevens die nodig zijn voor de werking van de site:",
+            "• Bij de klassieke registratie: uw e-mailadres, een gebruikersnaam en een wachtwoord (opgeslagen als hash, nooit in platte tekst).",
+            "• Als u inlogt via Google, 42 (Intra), Discord of Steam: een door die dienst verstrekte identificatiecode, uw e-mailadres indien de aanbieder dit doorgeeft (Steam geeft nooit een e-mailadres door), uw weergavenaam en uw profielfoto.",
+            "• De profielinformatie die u kiest in te vullen: biografie, avatar, voorkeurstaal.",
+            "• Uw activiteit op de site: recensies en beoordelingen van games, games gemarkeerd als gespeeld, aangepaste gamelijsten, vriendschappen, berichten uitgewisseld met uw vrienden, likes en reacties.",
+            "• Technische cookies die nodig zijn voor authenticatie (zie de sectie Cookies).",
+            "• Standaard technische serverlogs (IP-adres, tijdstempel, opgevraagde pagina), automatisch gegenereerd, zoals op vrijwel elke website.",
+            "Wij verzamelen geen bank- of betaalgegevens, geen precieze locatiegegevens, en gebruiken geen enkele tool voor publieksanalyse of reclame."
+          ]
+        },
+        "purposes": {
+          "title": "Waarom wij deze gegevens gebruiken",
+          "body": [
+            "Uw gegevens worden uitsluitend gebruikt om:",
+            "• uw account aan te maken en te beheren;",
+            "• u te authenticeren en uw sessie te beveiligen (cookies, tokens, tweefactorauthenticatie indien ingeschakeld);",
+            "• uw profiel en statistieken weer te geven (gespeelde games, recensies, lijsten);",
+            "• sociale functies mogelijk te maken (vriendschapsverzoeken, vriendensuggesties via Steam of 42, berichten, meldingen);",
+            "• u e-mails te sturen die strikt verband houden met de werking van uw account (e-mailverificatie, wachtwoordherstel);",
+            "• de veiligheid van de dienst te waarborgen en misbruik te voorkomen.",
+            "Wij verkopen, verhuren of delen uw gegevens nooit voor commerciële of reclamedoeleinden."
+          ]
+        },
+        "discord": {
+          "title": "Inloggen en koppelen met Discord",
+          "body": [
+            "Saveboxd biedt de mogelijkheid om in te loggen of uw account te koppelen via Discord (OAuth2). Discord geeft ons dan door: uw Discord-ID, uw gebruikersnaam, uw gekoppelde e-mailadres indien uw Discord-account dit beschikbaar stelt, en de URL van uw Discord-avatar.",
+            "Deze informatie wordt alleen gebruikt om uw Saveboxd-account aan te maken of een bestaand account aan uw Discord-identiteit te koppelen, en om een Discord-badge op uw profiel weer te geven. Wij ontvangen nooit uw Discord-wachtwoord en hebben geen toegang tot andere gegevens van uw account (servers, berichten, contacten).",
+            "U kunt uw Discord-account op elk moment ontkoppelen via uw instellingen, tenzij dit uw enige manier is om in te loggen."
+          ]
+        },
+        "retention": {
+          "title": "Bewaartermijn",
+          "body": [
+            "Uw gegevens worden bewaard zolang uw account bestaat.",
+            "Wanneer u uw account verwijdert via uw instellingen:",
+            "• worden uw account, avatar, vriendschappen, als gespeeld gemarkeerde games, lijsten, meldingen en berichten (verzonden en ontvangen) definitief verwijderd;",
+            "• blijven uw bestaande recensies en reacties bewaard maar worden geanonimiseerd (weergegeven als afkomstig van een «verwijderde gebruiker»), zodat de discussies van andere gebruikers niet worden verstoord;",
+            "• kunnen sommige gegevens tijdelijk aanwezig blijven in technische back-ups of serverlogs, voordat ze automatisch worden verwijderd.",
+            "Wij bewaren geen gegevens langer dan nodig is voor de werking van de site of de veiligheid van de dienst."
+          ]
+        },
+        "rights": {
+          "title": "Uw rechten",
+          "body": [
+            "Overeenkomstig de Algemene Verordening Gegevensbescherming (AVG) heeft u de volgende rechten:",
+            "• recht op inzage in uw persoonsgegevens;",
+            "• recht op rectificatie van onjuiste gegevens (rechtstreeks aanpasbaar via uw instellingen);",
+            "• recht op wissing: verwijder uw account op elk moment via uw instellingen;",
+            "• recht op beperking van de verwerking in bepaalde gevallen;",
+            "• recht op bezwaar tegen bepaalde verwerkingen, bijvoorbeeld via uw meldingsvoorkeuren;",
+            "• recht op overdraagbaarheid van uw gegevens in een gestructureerd formaat;",
+            "• recht om uw toestemming op elk moment in te trekken wanneer de verwerking daarop berust (bijvoorbeeld inloggen via een externe aanbieder);",
+            "• recht om een klacht in te dienen bij de bevoegde gegevensbeschermingsautoriteit (in Frankrijk de CNIL — cnil.fr).",
+            "Om een van deze rechten uit te oefenen, kunt u contact met ons opnemen via het adres vermeld in de sectie Contact."
+          ]
+        },
+        "cookies": {
+          "title": "Cookies en lokale opslag",
+          "body": [
+            "Saveboxd gebruikt uitsluitend cookies die strikt noodzakelijk zijn voor de werking van de site, allemaal technisch en nooit voor reclame:",
+            "• authenticatiecookies (inlogsessie, sessievernieuwing, tweefactorauthenticatiestap, koppeling van een extern account), allemaal httpOnly en met beperkte levensduur.",
+            "Er wordt geen enkele reclame- of trackingcookie gebruikt.",
+            "Wij gebruiken ook de lokale opslag (localStorage) van uw browser om twee weergavevoorkeuren te onthouden: de gekozen taal en het lichte/donkere thema. Deze informatie blijft op uw apparaat en wordt nooit naar onze servers verzonden.",
+            "Aangezien deze cookies strikt noodzakelijk zijn voor de werking van de dienst, vereisen ze geen voorafgaande toestemming onder de ePrivacy-verordening."
+          ]
+        },
+        "thirdParties": {
+          "title": "Diensten van derden",
+          "body": [
+            "Om te functioneren, maakt Saveboxd gebruik van de volgende diensten van derden:",
+            "• IGDB (Internet Game Database), voor openbare informatie over videogames — er worden geen persoonsgegevens van u aan hen doorgegeven;",
+            "• Steam (Valve), als u ervoor kiest uw account te koppelen, om uw identiteit te verifiëren en uw gebruikersnaam, avatar, gamebibliotheek en Steam-vriendenlijst op te halen (alleen gebruikt om u vrienden voor te stellen die al op Saveboxd aanwezig zijn, nooit opgeslagen);",
+            "• Google, 42 (Intra) en Discord, als u ervoor kiest in te loggen via een van deze aanbieders;",
+            "• Brevo, onze aanbieder voor het versturen van transactionele e-mails, alleen gebruikt voor e-mailverificatie en wachtwoordherstel.",
+            "Wij gebruiken geen enkele tool voor publieksanalyse, reclame of tracking door derden.",
+            "Hosting: dit project wordt ontwikkeld en geëvalueerd in het kader van het 42-curriculum. Mocht de site openbaar worden ingezet, dan moet deze sectie worden aangevuld met de naam van de hostingprovider."
+          ]
+        },
+        "contact": {
+          "title": "Contact",
+          "body": [
+            "Voor vragen over dit privacybeleid, of om uw rechten met betrekking tot uw persoonsgegevens uit te oefenen, kunt u contact met ons opnemen via: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Gebruiksvoorwaarden",
+      "lastUpdated": "Laatst bijgewerkt: 22 juli 2026",
+      "intro": "Deze voorwaarden regelen de toegang tot en het gebruik van de Saveboxd-site, een studentenproject in het kader van het 42-curriculum. Door een account aan te maken of de site te gebruiken, aanvaardt u de hieronder beschreven voorwaarden.",
+      "sections": {
+        "purpose": {
+          "title": "Doel van de dienst",
+          "body": [
+            "Saveboxd is een communityplatform waarmee u videogames kunt catalogiseren, beoordelen en recenseren, games kunt bijhouden waaraan u heeft gespeeld, aangepaste lijsten kunt maken en kunt communiceren met andere gebruikers (vrienden, berichten, recensies, reacties).",
+            "De site is een studentenproject ontwikkeld voor educatieve doeleinden in het kader van het 42-curriculum, en geen commerciële dienst."
+          ]
+        },
+        "account": {
+          "title": "Toegang en accountaanmaak",
+          "body": [
+            "Toegang tot de meeste functies vereist het aanmaken van een account, hetzij via klassieke registratie (e-mail, gebruikersnaam, wachtwoord), hetzij via een externe authenticatieaanbieder (Google, 42, Discord, Steam).",
+            "U moet nauwkeurige informatie verstrekken bij registratie, en u mag geen account aanmaken namens iemand anders zonder diens toestemming, noch meerdere accounts aanmaken om een schorsing te omzeilen."
+          ]
+        },
+        "credentials": {
+          "title": "Verantwoordelijkheid voor uw inloggegevens",
+          "body": [
+            "U bent verantwoordelijk voor de vertrouwelijkheid van uw wachtwoord en voor alle activiteiten die vanaf uw account worden uitgevoerd.",
+            "Als u vermoedt dat er ongeoorloofd toegang is verkregen tot uw account, wijzig dan onmiddellijk uw wachtwoord en neem contact met ons op.",
+            "Wij raden u aan tweefactorauthenticatie (2FA) in te schakelen, beschikbaar in uw instellingen, om de beveiliging van uw account te versterken."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Aanvaardbaar gebruik van de site",
+          "body": [
+            "Door Saveboxd te gebruiken, verbindt u zich ertoe:",
+            "• alleen recensies, reacties en berichten te plaatsen die respectvol zijn tegenover anderen;",
+            "• zich niet voor te doen als een andere persoon of entiteit;",
+            "• de site niet te gebruiken voor illegale doeleinden of om andere gebruikers te schaden;",
+            "• niet te proberen de technische werking van de site te verstoren (overbelasting, misbruik van kwetsbaarheden, omzeilen van aanvraaglimieten)."
+          ]
+        },
+        "abuse": {
+          "title": "Verboden gedrag",
+          "body": [
+            "Met name verboden zijn:",
+            "• intimidatie, beledigingen, bedreigingen of enig kwaadwillig gedrag tegenover een andere gebruiker;",
+            "• spam (herhaaldelijke, promotionele of niet-terzake doende berichten of recensies);",
+            "• het plaatsen van illegale, hatelijke, discriminerende of seksueel expliciete inhoud;",
+            "• elke poging tot ongeoorloofde toegang tot een ander account of de systemen van de site."
+          ]
+        },
+        "interactions": {
+          "title": "Interacties tussen gebruikers",
+          "body": [
+            "Saveboxd biedt sociale functies: vriendschapsverzoeken, privéberichten, het delen van games/recensies/profielen in gesprekken, en vriendensuggesties op basis van uw Steam-netwerk of uw lidmaatschap van de 42-gemeenschap.",
+            "U blijft als enige verantwoordelijk voor de inhoud van uw berichten en publicaties. Privéberichten die met een vriend zijn uitgewisseld, worden definitief verwijderd, voor beide partijen, als een van de twee accounts wordt verwijderd."
+          ]
+        },
+        "moderation": {
+          "title": "Moderatie en meldingen",
+          "body": [
+            "De site beschikt momenteel niet over een ingebouwd meldsysteem voor recensies of berichten.",
+            "Bij misbruik, intimidatie of ongepaste inhoud kunt u rechtstreeks contact met ons opnemen via het adres vermeld in de sectie Contact; de moderatie wordt dan handmatig door het projectteam behandeld."
+          ]
+        },
+        "suspension": {
+          "title": "Schorsing of verwijdering van een account",
+          "body": [
+            "Bij niet-naleving van deze voorwaarden (misbruik, intimidatie, spam, illegale inhoud) behouden wij ons het recht voor om een account naar eigen goeddunken te schorsen of te verwijderen, voor zover redelijkerwijs mogelijk voor een studentenproject zonder toegewijd moderatieteam.",
+            "U kunt uw eigen account op elk moment verwijderen via uw instellingen."
+          ]
+        },
+        "userContent": {
+          "title": "Door gebruikers gegenereerde inhoud",
+          "body": [
+            "U behoudt de eigendom van de inhoud die u plaatst (recensies, reacties, lijsten, biografie, avatar). Door deze op Saveboxd te plaatsen, staat u ons toe deze weer te geven en op te slaan als onderdeel van de normale werking van de site.",
+            "U garandeert dat u over de nodige rechten beschikt op alle inhoud die u plaatst, met name uw profielfoto indien u niet degene gebruikt die door een externe authenticatieaanbieder wordt verstrekt."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Intellectueel eigendom",
+          "body": [
+            "De code, het ontwerp en het merk «Saveboxd» worden ontwikkeld in het kader van een studentenproject van het 42-curriculum en zijn niet bestemd voor commerciële exploitatie.",
+            "Informatie en visuele elementen met betrekking tot videogames (titels, covers, beschrijvingen) zijn afkomstig van openbare databases van derden (IGDB) en behoren toe aan hun respectieve uitgevers en rechthebbenden. Saveboxd claimt geen enkele eigendom over deze inhoud en toont deze uitsluitend ter illustratie en informatie, in een niet-commerciële, educatieve context."
+          ]
+        },
+        "gameContent": {
+          "title": "Inhoud met betrekking tot videogames",
+          "body": [
+            "Covers, beschrijvingen en gameinformatie die op Saveboxd worden weergegeven, worden automatisch geïmporteerd van IGDB, en van Steam voor gegevens met betrekking tot uw persoonlijke bibliotheek als u uw account koppelt. Deze informatie blijft eigendom van de respectieve rechthebbenden."
+          ]
+        },
+        "availability": {
+          "title": "Beschikbaarheid van de dienst",
+          "body": [
+            "Saveboxd is een studentenproject dat «as-is» wordt aangeboden, zonder garantie van continue beschikbaarheid. De dienst kan op elk moment worden onderbroken, gewijzigd of stopgezet, met name in het kader van de evaluatie of het onderhoud ervan, zonder voorafgaande kennisgeving."
+          ]
+        },
+        "liability": {
+          "title": "Beperking van aansprakelijkheid",
+          "body": [
+            "Saveboxd wordt aangeboden voor educatieve doeleinden, zonder enige garantie, expliciet of impliciet. Voor zover wettelijk toegestaan, kan het projectteam niet aansprakelijk worden gesteld voor directe of indirecte schade die voortvloeit uit het gebruik of de onmogelijkheid om de site te gebruiken.",
+            "Deze beperking vormt geen juridisch advies en ontneemt gebruikers geen dwingende rechten die contractueel niet kunnen worden uitgesloten onder het toepasselijke recht."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Diensten van derden en authenticatie",
+          "body": [
+            "Saveboxd biedt de mogelijkheid om in te loggen via externe aanbieders (Google, 42, Discord, Steam). Het gebruik van deze aanbieders is ook onderworpen aan hun eigen respectieve gebruiksvoorwaarden, waarover Saveboxd geen controle heeft."
+          ]
+        },
+        "changes": {
+          "title": "Wijziging van deze voorwaarden",
+          "body": [
+            "Deze voorwaarden kunnen op elk moment worden gewijzigd, met name om de ontwikkeling van de functies van de site weer te geven. De datum van laatste bijwerking staat bovenaan deze pagina. Bij een substantiële wijziging zullen wij redelijke inspanningen leveren om u te informeren."
+          ]
+        },
+        "law": {
+          "title": "Toepasselijk recht en bevoegde rechtbank",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — tenzij anders vermeld, worden deze voorwaarden ter informatie verstrekt in het kader van een studentenproject en vormen zij geen formeel commercieel contract."
+          ]
+        },
+        "contact": {
+          "title": "Contact",
+          "body": [
+            "Voor vragen over deze gebruiksvoorwaarden kunt u contact met ons opnemen via: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
   }
 }

@@ -41,6 +41,15 @@ export class GamesController {
     return this.gamesService.facets();
   }
 
+  // Declared before ':id' so "recommendations" is not parsed as an id.
+  // Personalized, so it requires auth — genres come from the caller's own
+  // reviews/played games.
+  @UseGuards(JwtAuthGuard)
+  @Get('recommendations')
+  recommendations(@CurrentUser() user: JwtPayload) {
+    return this.gamesService.recommendationsFor(user.sub);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number, @Query() query: GetGameDto) {
     return this.gamesService.findById(id, query.lang);
