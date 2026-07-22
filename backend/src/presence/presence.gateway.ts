@@ -58,7 +58,10 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
     if (userId === undefined) return;
 
     if (this.presence.removeSocket(userId, socket.id)) {
-      await this.prisma.user.update({ where: { id: userId }, data: { lastSeenAt: new Date() } });
+      // updateMany (et non update) : un socket peut se déconnecter pour un user
+      // supprimé entre-temps — update lèverait P2025 et, non géré ici, ferait
+      // planter tout le backend. updateMany ne touche simplement aucune ligne.
+      await this.prisma.user.updateMany({ where: { id: userId }, data: { lastSeenAt: new Date() } });
       await this.broadcastToFriends(userId, 'friend:offline', { userId });
     }
   }
