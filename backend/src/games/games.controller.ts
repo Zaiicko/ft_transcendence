@@ -13,6 +13,7 @@ import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
+import { GetGameDto } from './dto/get-game.dto';
 import { ListGamesDto } from './dto/list-games.dto';
 import { SearchGamesDto } from './dto/search-games.dto';
 import { GamesService } from './games.service';
@@ -41,8 +42,8 @@ export class GamesController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.gamesService.findById(id);
+  findOne(@Param('id', ParseIntPipe) id: number, @Query() query: GetGameDto) {
+    return this.gamesService.findById(id, query.lang);
   }
 
   // "I played it" — public count + the viewer's own mark when authenticated

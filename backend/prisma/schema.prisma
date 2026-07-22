@@ -180,6 +180,21 @@ model Game {
   playedBy  PlayedGame[]
   listItems GameListItem[]
   messages  Message[]
+
+  translations GameTranslation[]
+}
+
+// Machine-translated cache of a game's `summary`, populated lazily on first
+// view in a given language rather than pre-translating the whole catalog.
+model GameTranslation {
+  id          Int      @id @default(autoincrement())
+  game        Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId      Int
+  language    String
+  description String
+  createdAt   DateTime @default(now())
+
+  @@unique([gameId, language])
 }
 
 model Genre {

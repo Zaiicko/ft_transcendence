@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { FeedModule } from '../feed/feed.module';
+import { TranslationModule } from '../translation/translation.module';
 import { GamesController } from './games.controller';
 import { GamesService } from './games.service';
 import { GamesSyncService } from './games-sync.service';
@@ -8,7 +9,7 @@ import { SteamService } from './steam/steam.service';
 import { SteamSyncService } from './steam/steam-sync.service';
 
 @Module({
-  imports: [FeedModule],
+  imports: [FeedModule, TranslationModule],
   controllers: [GamesController],
   providers: [
     GamesService,

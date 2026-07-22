@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import AddToListButton from '../components/AddToListButton';
 import PlayedButton from '../components/PlayedButton';
@@ -16,6 +17,7 @@ const screenshot1080 = (g: GameSummary) =>
 export default function Game() {
   const { id } = useParams();
   const gameId = Number(id);
+  const { i18n } = useTranslation();
 
   // Résultats tagués par id : au changement de jeu, l'ancien contenu est
   // ignoré sans setState synchrone dans l'effet (règle set-state-in-effect).
@@ -30,7 +32,10 @@ export default function Game() {
 
   useEffect(() => {
     let cancelled = false;
-    apiFetch<GameSummary>(`/games/${gameId}`)
+    // Description is translated server-side and cached there — English
+    // needs no query param, no need to ask for a translation of itself.
+    const query = i18n.language && i18n.language !== 'en' ? `?lang=${i18n.language}` : '';
+    apiFetch<GameSummary>(`/games/${gameId}${query}`)
       .then((g) => {
         if (!cancelled) setLoaded({ id: gameId, game: g });
       })
@@ -40,7 +45,7 @@ export default function Game() {
     return () => {
       cancelled = true;
     };
-  }, [gameId]);
+  }, [gameId, i18n.language]);
 
   const game = loaded?.id === gameId ? loaded.game : undefined;
 

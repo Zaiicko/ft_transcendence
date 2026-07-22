@@ -2,6 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { GameType, PlayStatus, Prisma } from '@prisma/client';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { TranslationService } from '../translation/translation.service';
 import { GameSort, ListGamesDto } from './dto/list-games.dto';
 import { GamesSyncService } from './games-sync.service';
 
@@ -39,6 +40,7 @@ export class GamesService {
     private readonly prisma: PrismaService,
     private readonly sync: GamesSyncService,
     private readonly feed: FeedService,
+    private readonly translation: TranslationService,
   ) {}
 
   // Combinable filters (Prisma), then computed sorts (SQL aggregates: weighted
@@ -176,7 +178,7 @@ export class GamesService {
     return { genres: clean(genres), platforms: clean(platforms), companies: clean(companies) };
   }
 
-  async findById(id: number) {
+  async findById(id: number, lang?: string) {
     const game = await this.prisma.game.findUnique({
       where: { id },
       include: {
@@ -203,7 +205,39 @@ export class GamesService {
       },
     });
     if (!game) throw new NotFoundException(`Game ${id} not found`);
+    if (lang && lang !== 'en' && game.summary) {
+      game.summary = await this.getTranslatedSummary(id, game.summary, lang);
+    }
     return game;
+  }
+
+  // On-demand translation cache (Solution D from the DB-bloat discussion):
+  // only ever translates a (game, language) pair the first time it's
+  // actually viewed, then reuses the stored result — never pre-translates
+  // the whole catalog, and never fails the page load if translation is down.
+  private async getTranslatedSummary(
+    gameId: number,
+    original: string,
+    lang: string,
+  ): Promise<string> {
+    const cached = await this.prisma.gameTranslation.findUnique({
+      where: { gameId_language: { gameId, language: lang } },
+    });
+    if (cached) return cached.description;
+    try {
+      const translated = await this.translation.translate(original, lang);
+      await this.prisma.gameTranslation.upsert({
+        where: { gameId_language: { gameId, language: lang } },
+        create: { gameId, language: lang, description: translated },
+        update: { description: translated },
+      });
+      return translated;
+    } catch (err) {
+      this.logger.warn(
+        `Translation to "${lang}" failed for game ${gameId}: ${(err as Error).message}`,
+      );
+      return original;
+    }
   }
 
   // "I played it" — the per-game heart count + the viewer's own mark (null
