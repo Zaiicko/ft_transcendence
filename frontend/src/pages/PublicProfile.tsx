@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useFriendSocket } from '../friends/useFriendSocket';
+import i18n from '../i18n';
 import Avatar from '../components/Avatar';
 import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
@@ -16,7 +18,7 @@ import { apiFetch, ApiError } from '../lib/api';
 import type { FriendState, PublicProfile as Profile } from '../lib/types';
 
 function memberSince(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  return new Date(iso).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' });
 }
 
 // ---- Yearly completion calendar (GitHub-style heatmap) ----
@@ -30,7 +32,7 @@ function dateKey(d: Date): string {
 type CalGame = Profile['calendar'][number]['game'];
 
 function formatDay(key: string): string {
-  return new Date(`${key}T00:00:00Z`).toLocaleDateString(undefined, {
+  return new Date(`${key}T00:00:00Z`).toLocaleDateString(i18n.language, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -40,6 +42,7 @@ function formatDay(key: string): string {
 }
 
 function CompletionCalendar({ entries }: { entries: Profile['calendar'] }) {
+  const { t } = useTranslation();
   // dateKey -> games completed that day (full refs so we can link + show covers)
   const byDay = useMemo(() => {
     const map = new Map<string, CalGame[]>();
@@ -66,8 +69,8 @@ function CompletionCalendar({ entries }: { entries: Profile['calendar'] }) {
     return (
       <EmptyState
         icon={<CalendarIcon />}
-        title="No completion dates yet"
-        description="Games marked as done will fill this yearly calendar."
+        title={t('profile.calNoDates')}
+        description={t('profile.calNoDatesDesc')}
       />
     );
   }
@@ -172,7 +175,7 @@ function CompletionCalendar({ entries }: { entries: Profile['calendar'] }) {
         </div>
       ) : (
         <p className="mt-3 text-xs text-zinc-400 dark:text-zinc-500">
-          Hover or tap a colored day to see the games completed then.
+          {t('profile.calHint')}
         </p>
       )}
     </div>
@@ -190,15 +193,18 @@ function FriendAction({
   username: string;
   onSent: () => void;
 }) {
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (state === 'friends') return <span className="text-sm text-emerald-500">✓ Friends</span>;
-  if (state === 'outgoing') return <span className="text-sm text-zinc-500">Request pending</span>;
+  if (state === 'friends')
+    return <span className="text-sm text-emerald-500">✓ {t('profile.friends')}</span>;
+  if (state === 'outgoing')
+    return <span className="text-sm text-zinc-500">{t('profile.requestPending')}</span>;
   if (state === 'incoming')
     return (
       <Link to="/friends" className="text-sm text-zinc-300 underline">
-        Respond to their request
+        {t('profile.respondRequest')}
       </Link>
     );
   // state === 'none'
@@ -209,7 +215,7 @@ function FriendAction({
       await apiFetch(`/friends/requests/${encodeURIComponent(username)}`, { method: 'POST' });
       onSent();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not send request');
+      setError(err instanceof ApiError ? err.message : t('profile.couldNotSend'));
     } finally {
       setBusy(false);
     }
@@ -222,7 +228,7 @@ function FriendAction({
         disabled={busy}
         className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
       >
-        {busy ? 'Sending…' : 'Add friend'}
+        {busy ? t('profile.sending') : t('profile.addFriend')}
       </button>
       {error && <span className="text-sm text-red-400">{error}</span>}
     </div>
@@ -230,6 +236,7 @@ function FriendAction({
 }
 
 export default function PublicProfile() {
+  const { t } = useTranslation();
   const { username = '' } = useParams();
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -245,9 +252,9 @@ export default function PublicProfile() {
           setProfile(p);
           setError(null);
         })
-        .catch((err) => setError(err instanceof ApiError ? err.message : 'Could not load profile'))
+        .catch((err) => setError(err instanceof ApiError ? err.message : t('profile.couldNotLoad')))
         .finally(() => setLoading(false)),
-    [username],
+    [username, t],
   );
 
   useEffect(() => {
@@ -277,7 +284,7 @@ export default function PublicProfile() {
         </div>
       </div>
     );
-  if (error || !profile) return <p className="text-red-400">{error ?? 'Profile not found'}</p>;
+  if (error || !profile) return <p className="text-red-400">{error ?? t('profile.notFound')}</p>;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -293,9 +300,14 @@ export default function PublicProfile() {
           </h1>
           {profile.bio && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{profile.bio}</p>}
           <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-            Member since {memberSince(profile.createdAt)} · {profile.reviewCount} review
-            {profile.reviewCount === 1 ? '' : 's'} · {profile.playedCount} game
-            {profile.playedCount === 1 ? '' : 's'} played
+            {t('profile.memberSince', { date: memberSince(profile.createdAt) })} ·{' '}
+            {t(profile.reviewCount === 1 ? 'profile.reviewOne' : 'profile.reviewMany', {
+              count: profile.reviewCount,
+            })}{' '}
+            ·{' '}
+            {t(profile.playedCount === 1 ? 'profile.playedGameOne' : 'profile.playedGameMany', {
+              count: profile.playedCount,
+            })}
           </p>
         </div>
         <div className="flex items-center gap-2 sm:self-start">
@@ -303,15 +315,15 @@ export default function PublicProfile() {
           {user && (
             <ShareButton
               target={{ type: 'PROFILE', sharedUserId: profile.id }}
-              title="Partager ce profil à un ami"
+              title={t('profile.shareProfile')}
               triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
             />
           )}
           {profile.friendState === 'self' ? (
             <Link
               to="/settings"
-              title="Edit profile"
-              aria-label="Edit profile"
+              title={t('profile.editProfile')}
+              aria-label={t('profile.editProfile')}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
             >
               {/* Rouage filaire (trait 1.6, style TiMN) */}
@@ -340,7 +352,7 @@ export default function PublicProfile() {
       {/* Top 5 games */}
       {profile.topGames.length > 0 && (
         <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Top rated games</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('profile.topRated')}</h2>
           <div className="grid grid-cols-3 gap-4 sm:grid-cols-5">
             {profile.topGames.map(({ game, rating }) => (
               <Link key={game.id} to={`/game/${game.id}`} className="group">
@@ -370,7 +382,7 @@ export default function PublicProfile() {
 
       {/* Completion calendar */}
       <section className="mb-10">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Completion calendar</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('profile.completionCalendar')}</h2>
         <CompletionCalendar entries={profile.calendar} />
       </section>
 

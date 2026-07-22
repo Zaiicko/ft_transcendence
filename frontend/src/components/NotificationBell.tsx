@@ -1,7 +1,8 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import i18n from '../i18n';
 import { apiFetch } from '../lib/api';
 import type { AppNotification } from '../lib/types';
 import { useNotificationSocket } from '../notifications/useNotificationSocket';
@@ -168,44 +169,61 @@ function linkFor(n: AppNotification): string {
   }
 }
 
-// Libellé de la notification (acteur en gras)
+// Libellé de la notification (acteur en gras). L'ordre des mots et la tournure
+// sont portés par les clés de traduction ; <Trans> insère le nom en gras.
 function messageFor(n: AppNotification): ReactNode {
-  const who = <strong className="font-semibold">{n.payload.actorUsername ?? 'Quelqu’un'}</strong>;
+  const who = n.payload.actorUsername ?? i18n.t('notifications.someone');
   const title = n.payload.reviewTitle;
+  const components = { b: <strong className="font-semibold" /> };
   switch (n.type) {
     case 'REVIEW_LIKE':
-      return <>{who} a aimé ton avis {title && <>« {title} »</>}</>;
+      return (
+        <Trans
+          i18nKey={title ? 'notifications.reviewLikeTitled' : 'notifications.reviewLike'}
+          values={{ who, title }}
+          components={components}
+        />
+      );
     case 'REVIEW_COMMENT':
-      return <>{who} a commenté ton avis {title && <>« {title} »</>}</>;
+      return (
+        <Trans
+          i18nKey={title ? 'notifications.reviewCommentTitled' : 'notifications.reviewComment'}
+          values={{ who, title }}
+          components={components}
+        />
+      );
     case 'COMMENT_REPLY':
-      return <>{who} a répondu à ton commentaire</>;
+      return <Trans i18nKey="notifications.commentReply" values={{ who }} components={components} />;
     case 'FRIEND_REQUEST':
-      return <>{who} t’a envoyé une demande d’ami</>;
+      return <Trans i18nKey="notifications.friendRequest" values={{ who }} components={components} />;
     case 'FRIEND_ACCEPT':
-      return <>{who} a accepté ta demande d’ami</>;
+      return <Trans i18nKey="notifications.friendAccept" values={{ who }} components={components} />;
     case 'NEW_MESSAGE':
-      return <>{who} t’a envoyé un message</>;
+      return <Trans i18nKey="notifications.newMessage" values={{ who }} components={components} />;
     case 'FRIEND_JOINED':
       return (
-        <>
-          {who} ({n.payload.via === '42' ? '42' : 'Steam'}) a rejoint Saveboxd
-        </>
+        <Trans
+          i18nKey="notifications.friendJoined"
+          values={{ who, via: n.payload.via === '42' ? '42' : 'Steam' }}
+          components={components}
+        />
       );
     default:
-      return <>{who}</>;
+      return <strong className="font-semibold">{who}</strong>;
   }
 }
 
 function relativeTime(iso: string): string {
+  const t = i18n.t.bind(i18n);
   const diff = Date.now() - new Date(iso).getTime();
   const min = Math.floor(diff / 60000);
-  if (min < 1) return "à l'instant";
-  if (min < 60) return `il y a ${min} min`;
+  if (min < 1) return t('feed.timeNow');
+  if (min < 60) return t('feed.timeMinutes', { count: min });
   const h = Math.floor(min / 60);
-  if (h < 24) return `il y a ${h} h`;
+  if (h < 24) return t('feed.timeHours', { count: h });
   const d = Math.floor(h / 24);
-  if (d < 7) return `il y a ${d} j`;
-  return new Date(iso).toLocaleDateString('fr');
+  if (d < 7) return t('feed.timeDays', { count: d });
+  return new Date(iso).toLocaleDateString(i18n.language);
 }
 
 function BellIcon() {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import ReviewsSection, { ReviewStats } from '../components/ReviewsSection';
 import Skeleton from '../components/Skeleton';
@@ -9,6 +10,7 @@ import { CompanyDetail } from '../lib/types';
 const GAMES_STEP = 18;
 
 export default function Company() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const companyId = Number(id);
 
@@ -40,7 +42,7 @@ export default function Company() {
   const company = loaded?.id === companyId ? loaded.company : undefined;
 
   if (company === null)
-    return <p className="py-24 text-center text-zinc-400">Studio introuvable.</p>;
+    return <p className="py-24 text-center text-zinc-400">{t('company.notFound')}</p>;
   if (!company)
     return (
       <div className="flex flex-col gap-10">
@@ -72,7 +74,7 @@ export default function Company() {
         )}
         <div className="min-w-0">
           <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            Studio
+            {t('company.label')}
           </span>
           <h1 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
             {company.name}
@@ -83,12 +85,16 @@ export default function Company() {
                 <StarIcon className="h-3.5 w-3.5" />
                 {stats._avg.rating.toFixed(1)}/10
                 <span className="ml-1 font-normal text-zinc-500 dark:text-zinc-400">
-                  ({stats._count} avis)
+                  ({t(stats._count === 1 ? 'profile.reviewOne' : 'profile.reviewMany', {
+                    count: stats._count,
+                  })})
                 </span>
               </span>
             )}
             <span className="text-zinc-500 dark:text-zinc-400">
-              {company._count.games} jeu{company._count.games > 1 ? 'x' : ''}
+              {t(company._count.games === 1 ? 'lists.gameOne' : 'lists.gameMany', {
+                count: company._count.games,
+              })}
             </span>
           </div>
         </div>
@@ -98,7 +104,7 @@ export default function Company() {
       {company.games.length > 0 && (
         <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            Jeux du studio
+            {t('company.games')}
           </h2>
           <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
             {company.games.slice(0, shownGames).map((g) => (
@@ -129,7 +135,7 @@ export default function Company() {
               onClick={() => setShownGames((n) => n + GAMES_STEP * 2)}
               className="mx-auto mt-4 block rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 dark:border-zinc-700"
             >
-              Voir plus de jeux ({company.games.length - shownGames})
+              {t('company.seeMore', { count: company.games.length - shownGames })}
             </button>
           )}
         </section>

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import EmptyState, { GamepadIcon, UsersIcon } from '../components/EmptyState';
 import Skeleton from '../components/Skeleton';
+import i18n from '../i18n';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
 
@@ -34,12 +36,14 @@ interface SuggestionsResponse {
 }
 
 function formatPlaytime(minutes: number): string {
-  if (minutes === 0) return 'Never played';
-  if (minutes < 60) return `${minutes} min`;
-  return `${Math.round(minutes / 60)} h`;
+  const t = i18n.t.bind(i18n);
+  if (minutes === 0) return t('steam.neverPlayed');
+  if (minutes < 60) return t('steam.playMinutes', { count: minutes });
+  return t('steam.playHours', { count: Math.round(minutes / 60) });
 }
 
 export default function SteamLibrary() {
+  const { t } = useTranslation();
   const { user } = useAuth();
 
   const steamLinked = Boolean(user?.steamId);
@@ -65,7 +69,7 @@ export default function SteamLibrary() {
         setSuggestions(sug);
       })
       .catch((err: unknown) => {
-        setError(err instanceof ApiError ? err.message : 'Could not load your Steam library');
+        setError(err instanceof ApiError ? err.message : t('steam.loadError'));
       })
       .finally(() => setLoading(false));
   }, [steamLinked]);
@@ -94,22 +98,20 @@ export default function SteamLibrary() {
       await apiFetch(`/friends/requests/${userId}`, { method: 'POST' });
       setRequested((prev) => new Set(prev).add(userId));
     } catch (err) {
-      setRequestError(err instanceof ApiError ? err.message : 'Could not send friend request');
+      setRequestError(err instanceof ApiError ? err.message : t('steam.friendRequestError'));
     }
   }
 
   if (!steamLinked) {
     return (
       <div className="mx-auto max-w-lg text-center">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight">Steam library</h1>
-        <p className="mb-6 text-zinc-400">
-          Link your Steam account to import your game library and find your Steam friends.
-        </p>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
+        <p className="mb-6 text-zinc-400">{t('steam.linkPrompt')}</p>
         <a
           href="/api/auth/steam"
           className="rounded border border-zinc-700 px-4 py-2 hover:bg-zinc-900"
         >
-          Link my Steam account
+          {t('steam.linkCta')}
         </a>
       </div>
     );
@@ -137,7 +139,7 @@ export default function SteamLibrary() {
   if (error) {
     return (
       <div className="mx-auto max-w-lg">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight">Steam library</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
         <p className="text-red-400">{error}</p>
       </div>
     );
@@ -145,24 +147,20 @@ export default function SteamLibrary() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Steam library</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
 
       {/* Amis d'abord : la biblio de jeux peut être immense, les amis se
           retrouveraient sinon enterrés tout en bas */}
       <section className="mb-10">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          Steam friends on Saveboxd
+          {t('steam.friendsHeading')}
         </h2>
-        {suggestions?.private && (
-          <p className="text-zinc-400">
-            Your Steam friend list is private, so we cannot suggest friends.
-          </p>
-        )}
+        {suggestions?.private && <p className="text-zinc-400">{t('steam.friendsPrivate')}</p>}
         {suggestions && !suggestions.private && suggestions.suggestions.length === 0 && (
           <EmptyState
             icon={<UsersIcon />}
-            title="No Steam friends here yet"
-            description="None of your Steam friends are on Saveboxd yet — invite them!"
+            title={t('steam.noFriendsTitle')}
+            description={t('steam.noFriendsDesc')}
           />
         )}
         {requestError && <p className="mb-3 text-sm text-red-400">{requestError}</p>}
@@ -174,14 +172,14 @@ export default function SteamLibrary() {
                 <span className="font-medium">{s.username}</span>
                 <div className="ml-auto">
                   {requested.has(s.id) ? (
-                    <span className="text-sm text-zinc-400">Request sent</span>
+                    <span className="text-sm text-zinc-400">{t('steam.requestSent')}</span>
                   ) : (
                     <button
                       type="button"
                       onClick={() => handleAddFriend(s.id)}
                       className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
                     >
-                      Add friend
+                      {t('steam.addFriend')}
                     </button>
                   )}
                 </div>
@@ -192,19 +190,26 @@ export default function SteamLibrary() {
       </section>
 
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        Your games
+        {t('steam.yourGames')}
       </h2>
       {library?.private ? (
         <p className="mb-8 text-zinc-400">
-          Your Steam game details are private. Set{' '}
-          <span className="text-zinc-200">Profile → Privacy Settings → Game details</span> to
-          Public on Steam, then reload this page.
+          <Trans
+            i18nKey="steam.gamesPrivate"
+            components={{ s: <span className="text-zinc-200" /> }}
+          />
         </p>
       ) : (
         <>
           <p className="mb-6 text-sm text-zinc-400">
-            {library?.totalOwned} games owned on Steam — {library?.matched.length} in our
-            catalog{library && library.unmatchedCount > 0 ? `, ${library.unmatchedCount} not referenced` : ''}.
+            {t(
+              library && library.unmatchedCount > 0 ? 'steam.ownedUnmatched' : 'steam.owned',
+              {
+                totalOwned: library?.totalOwned ?? 0,
+                matched: library?.matched.length ?? 0,
+                unmatched: library?.unmatchedCount ?? 0,
+              },
+            )}
           </p>
 
           {library && library.matched.length > 0 ? (
@@ -229,16 +234,16 @@ export default function SteamLibrary() {
                     {/* PLAYED est porté par le knob ambre ; seuls les autres
                         statuts (playing/backlog) gardent leur étiquette */}
                     {game.playedStatus && game.playedStatus !== 'PLAYED' && (
-                      <span className="self-start rounded bg-zinc-800 px-1.5 py-0.5 text-xs capitalize text-zinc-300">
-                        {game.playedStatus.toLowerCase()}
+                      <span className="self-start rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-300">
+                        {t(game.playedStatus === 'PLAYING' ? 'steam.statusPlaying' : 'steam.statusBacklog')}
                       </span>
                     )}
                     <div className="mt-1 flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => togglePlayed(game)}
-                        title={game.playedStatus === 'PLAYED' ? 'Fait — cliquer pour retirer' : "Je l'ai fait"}
-                        aria-label={game.playedStatus === 'PLAYED' ? 'Retirer la marque "fait"' : 'Marquer comme fait'}
+                        title={game.playedStatus === 'PLAYED' ? t('game.markedTitle') : t('game.markTitle')}
+                        aria-label={game.playedStatus === 'PLAYED' ? t('game.unmarkAria') : t('game.markAria')}
                         className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
                           game.playedStatus === 'PLAYED'
                             ? 'border-accent bg-accent text-zinc-950'
@@ -260,8 +265,10 @@ export default function SteamLibrary() {
                       </button>
                       <Link
                         to={`/game/${game.id}#review`}
-                        title={game.reviewed ? 'Critique écrite — voir/modifier' : 'Écrire une critique'}
-                        aria-label={`${game.reviewed ? 'Voir ta critique de' : 'Écrire une critique de'} ${game.title}`}
+                        title={game.reviewed ? t('steam.reviewWritten') : t('steam.writeReview')}
+                        aria-label={t(game.reviewed ? 'steam.viewReviewOf' : 'steam.writeReviewOf', {
+                          title: game.title,
+                        })}
                         className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
                           game.reviewed
                             ? 'border-accent bg-accent text-zinc-950'
@@ -290,15 +297,18 @@ export default function SteamLibrary() {
             <EmptyState
               className="mb-10"
               icon={<GamepadIcon />}
-              title="No matched games yet"
-              description="None of your Steam games are in our catalog for now."
+              title={t('steam.noMatchedTitle')}
+              description={t('steam.noMatchedDesc')}
             />
           )}
         </>
       )}
 
       <p className="mt-10 text-sm text-zinc-400">
-        Manage your Steam link from your <Link to="/profile" className="underline">profile</Link>.
+        <Trans
+          i18nKey="steam.manageLink"
+          components={{ l: <Link to="/profile" className="underline" /> }}
+        />
       </p>
     </div>
   );

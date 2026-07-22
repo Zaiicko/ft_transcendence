@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch, ApiError } from '../lib/api';
 import type { GameListSummary } from '../lib/types';
@@ -13,6 +14,7 @@ export default function AddToListButton({
   gameId: number;
   onDark?: boolean;
 }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [lists, setLists] = useState<GameListSummary[] | null>(null);
@@ -86,8 +88,8 @@ export default function AddToListButton({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        title="Ajouter à une liste"
-        aria-label="Ajouter à une liste"
+        title={t('lists.addToList')}
+        aria-label={t('lists.addToList')}
         aria-expanded={open}
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition ${
           onDark
@@ -118,10 +120,10 @@ export default function AddToListButton({
         >
           <div className="max-h-64 overflow-y-auto">
             {lists === null ? (
-              <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">Chargement…</p>
+              <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">{t('lists.loading')}</p>
             ) : lists.length === 0 ? (
               <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
-                Aucune liste — crée-en une ci-dessous.
+                {t('lists.menuEmpty')}
               </p>
             ) : (
               <ul className="py-1">
@@ -155,7 +157,7 @@ export default function AddToListButton({
                       </span>
                       <span className="min-w-0 flex-1 truncate">{list.name}</span>
                       {!list.isPublic && (
-                        <span className="shrink-0 text-[10px] text-zinc-400">privée</span>
+                        <span className="shrink-0 text-[10px] text-zinc-400">{t('lists.privateShort')}</span>
                       )}
                     </button>
                   </li>
@@ -181,6 +183,7 @@ function QuickCreate({
   gameId: number;
   onCreated: (list: GameListSummary) => void;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -202,7 +205,7 @@ function QuickCreate({
       onCreated({ ...created, contains: true, gameCount: 1 });
       setName('');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Erreur');
+      setError(err instanceof ApiError ? err.message : t('lists.error'));
     } finally {
       setBusy(false);
     }
@@ -218,13 +221,13 @@ function QuickCreate({
           value={name}
           onChange={(e) => setName(e.target.value)}
           maxLength={60}
-          placeholder="Nouvelle liste + ce jeu"
+          placeholder={t('lists.quickPlaceholder')}
           className="field flex-1 px-2 py-1.5 text-sm"
         />
         <button
           type="submit"
           disabled={busy || !name.trim()}
-          aria-label="Créer la liste"
+          aria-label={t('lists.createAria')}
           className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           +

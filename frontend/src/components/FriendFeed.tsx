@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import i18n from '../i18n';
 import { useFeedSocket } from '../feed/useFeedSocket';
 import { apiFetch } from '../lib/api';
 import type { FeedItem, FeedPage } from '../lib/types';
@@ -12,27 +14,31 @@ const PAGE = 12;
 const gameHref = (id: number) => `/game/${id}`;
 const companyHref = (id: number) => `/company/${id}`;
 
-// Date relative courte (« il y a 3 h », « hier », sinon date)
+// Gras réutilisé dans les phrases <Trans> (nom d'acteur / cible mis en avant)
+const strongClass = 'font-semibold text-zinc-900 dark:text-zinc-100';
+
+// Date relative courte (« il y a 3 h », « hier », sinon date), localisée
 function relativeTime(iso: string): string {
+  const t = i18n.t.bind(i18n);
   const diff = Date.now() - new Date(iso).getTime();
   const min = Math.floor(diff / 60000);
-  if (min < 1) return "à l'instant";
-  if (min < 60) return `il y a ${min} min`;
+  if (min < 1) return t('feed.timeNow');
+  if (min < 60) return t('feed.timeMinutes', { count: min });
   const h = Math.floor(min / 60);
-  if (h < 24) return `il y a ${h} h`;
+  if (h < 24) return t('feed.timeHours', { count: h });
   const d = Math.floor(h / 24);
-  if (d === 1) return 'hier';
-  if (d < 7) return `il y a ${d} j`;
-  return new Date(iso).toLocaleDateString('fr');
+  if (d === 1) return t('feed.timeYesterday');
+  if (d < 7) return t('feed.timeDays', { count: d });
+  return new Date(iso).toLocaleDateString(i18n.language);
 }
 
 type Filter = 'all' | 'reviews' | 'played' | 'likes';
 
-const TABS: { key: Filter; label: string }[] = [
-  { key: 'all', label: 'Tout' },
-  { key: 'reviews', label: 'Avis' },
-  { key: 'played', label: 'Jeux' },
-  { key: 'likes', label: 'Likes' },
+const TAB_KEYS: { key: Filter; labelKey: string }[] = [
+  { key: 'all', labelKey: 'feed.tabAll' },
+  { key: 'reviews', labelKey: 'feed.tabReviews' },
+  { key: 'played', labelKey: 'feed.tabPlayed' },
+  { key: 'likes', labelKey: 'feed.tabLikes' },
 ];
 
 // Un item pushé en temps réel correspond-il à l'onglet courant ?
@@ -44,6 +50,7 @@ function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
 }
 
 export default function FriendFeed() {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>('all');
   // Repère le changement d'onglet pendant le rendu (plutôt qu'un setState
   // synchrone dans l'effet ci-dessous) pour passer loading à true sans
@@ -110,18 +117,18 @@ export default function FriendFeed() {
     <div className="flex flex-col gap-4">
       {/* Onglets de filtre */}
       <div className="flex gap-2">
-        {TABS.map((t) => (
+        {TAB_KEYS.map((tab) => (
           <button
-            key={t.key}
+            key={tab.key}
             type="button"
-            onClick={() => setFilter(t.key)}
+            onClick={() => setFilter(tab.key)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-              filter === t.key
+              filter === tab.key
                 ? 'bg-accent text-zinc-950'
                 : 'border border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
             }`}
           >
-            {t.label}
+            {t(tab.labelKey)}
           </button>
         ))}
       </div>
@@ -135,14 +142,14 @@ export default function FriendFeed() {
       ) : items.length === 0 ? (
         <EmptyState
           icon={<FeedIcon />}
-          title={filter === 'all' ? 'Rien de neuf chez tes amis' : 'Rien dans cet onglet'}
-          description="Ajoute des amis et suis leurs dernières critiques, jeux terminés et likes ici."
+          title={filter === 'all' ? t('feed.emptyTitle') : t('feed.emptyTitleTab')}
+          description={t('feed.emptyDescription')}
         >
           <Link
             to="/friends"
             className="mt-2 rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110"
           >
-            Trouver des amis
+            {t('feed.findFriends')}
           </Link>
         </EmptyState>
       ) : (
@@ -166,7 +173,7 @@ export default function FriendFeed() {
               disabled={loadingMore}
               className="mx-auto mt-2 rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
             >
-              {loadingMore ? 'Chargement…' : 'Charger plus'}
+              {loadingMore ? t('feed.loading') : t('feed.loadMore')}
             </button>
           )}
         </div>
@@ -200,7 +207,7 @@ function ReviewItem({ item }: { item: Extract<FeedItem, { kind: 'review' }> }) {
         />
       )}
       <div className="min-w-0 flex-1">
-        <ActorLine actor={r.user} at={item.at} verb="a noté" strong={target.name} />
+        <ActorLine actor={r.user} at={item.at} action="rated" strong={target.name} />
         <div className="mt-1 flex items-center gap-2">
           <Stars rating={r.rating} showValue={false} />
           <span className="truncate text-sm font-semibold">« {r.title} »</span>
@@ -232,9 +239,9 @@ function PlayedItem({ item }: { item: Extract<FeedItem, { kind: 'played' }> }) {
         <img src={item.game.coverUrl} alt="" className="h-16 w-11 shrink-0 rounded object-cover" />
       )}
       <div className="min-w-0 flex-1">
-        <ActorLine actor={item.actor} at={item.at} verb="a joué à" strong={item.game.title} />
+        <ActorLine actor={item.actor} at={item.at} action="played" strong={item.game.title} />
       </div>
-      <span className="shrink-0 text-zinc-400" title="Jeu terminé">
+      <span className="shrink-0 text-zinc-400" title={i18n.t('feed.gameCompleted')}>
         <CheckIcon />
       </span>
     </Link>
@@ -258,9 +265,11 @@ function ReviewLikeItem({ item }: { item: Extract<FeedItem, { kind: 'review-like
         />
       )}
       <div className="min-w-0 flex-1">
-        <LikeLine actor={item.actor} author={r.user} at={item.at} what="l'avis" />
+        <LikeLine actor={item.actor} author={r.user} at={item.at} what="review" />
         <div className="mt-1 truncate text-sm font-semibold">« {r.title} »</div>
-        <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">sur {t.name}</div>
+        <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+          {i18n.t('feed.on', { target: t.name })}
+        </div>
       </div>
     </Link>
   );
@@ -283,17 +292,20 @@ function CommentLikeItem({ item }: { item: Extract<FeedItem, { kind: 'comment-li
         />
       )}
       <div className="min-w-0 flex-1">
-        <LikeLine actor={item.actor} author={c.user} at={item.at} what="le commentaire" />
+        <LikeLine actor={item.actor} author={c.user} at={item.at} what="comment" />
         <p className="mt-1 line-clamp-2 text-sm italic text-zinc-600 dark:text-zinc-400">
           « {c.text} »
         </p>
-        <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">sur {t.name}</div>
+        <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+          {i18n.t('feed.on', { target: t.name })}
+        </div>
       </div>
     </Link>
   );
 }
 
-// Libellé « X a aimé <what> de Y » (Y = auteur de l'avis/commentaire)
+// Libellé « X a aimé l'avis/le commentaire de Y » (Y = auteur). L'ordre des mots
+// et la tournure sont portés par la clé de traduction (feed.likedReview/Comment).
 function LikeLine({
   actor,
   author,
@@ -303,17 +315,18 @@ function LikeLine({
   actor: { username: string; avatarUrl: string | null };
   author: { username: string; avatarUrl: string | null } | null;
   at: string;
-  what: string;
+  what: 'review' | 'comment';
 }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
       <Avatar username={actor.username} avatarUrl={actor.avatarUrl} size={20} />
       <span className="min-w-0 truncate">
-        <span className="font-semibold text-zinc-900 dark:text-zinc-100">{actor.username}</span> a
-        aimé {what} de{' '}
-        <span className="font-semibold text-zinc-900 dark:text-zinc-100">
-          {author?.username ?? '[supprimé]'}
-        </span>
+        <Trans
+          i18nKey={what === 'review' ? 'feed.likedReview' : 'feed.likedComment'}
+          values={{ actor: actor.username, author: author?.username ?? t('feed.deletedShort') }}
+          components={{ a: <span className={strongClass} />, s: <span className={strongClass} /> }}
+        />
       </span>
       <HeartIcon />
       <span className="ml-auto shrink-0 text-xs text-zinc-400">{relativeTime(at)}</span>
@@ -346,29 +359,35 @@ function HeartIcon() {
   );
 }
 
+// Libellé « X a noté / a joué à <cible> ». L'action et l'ordre des mots sont
+// portés par la clé (feed.rated / feed.played).
 function ActorLine({
   actor,
   at,
-  verb,
+  action,
   strong,
 }: {
   actor: { username: string; avatarUrl: string | null } | null;
   at: string;
-  verb: string;
+  action: 'rated' | 'played';
   strong: string;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
       {actor ? (
         <>
           <Avatar username={actor.username} avatarUrl={actor.avatarUrl} size={20} />
           <span className="min-w-0 truncate">
-            <span className="font-semibold text-zinc-900 dark:text-zinc-100">{actor.username}</span>{' '}
-            {verb} <span className="font-semibold text-zinc-900 dark:text-zinc-100">{strong}</span>
+            <Trans
+              i18nKey={action === 'rated' ? 'feed.rated' : 'feed.played'}
+              values={{ user: actor.username, game: strong }}
+              components={{ a: <span className={strongClass} />, s: <span className={strongClass} /> }}
+            />
           </span>
         </>
       ) : (
-        <em>[utilisateur supprimé]</em>
+        <em>{t('feed.deletedUser')}</em>
       )}
       <span className="ml-auto shrink-0 text-xs text-zinc-400">{relativeTime(at)}</span>
     </div>

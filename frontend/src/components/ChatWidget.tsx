@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useChatSocket } from '../chat/useChatSocket';
 import { useFriendSocket } from '../friends/useFriendSocket';
+import i18n from '../i18n';
 import { apiFetch } from '../lib/api';
 import type { ChatConversation, ChatMessage } from '../lib/types';
 import Avatar from './Avatar';
@@ -12,6 +14,7 @@ import Stars from './Stars';
 // non-lus. Ouverte : un panneau avec la liste des conversations, ou le fil d'un
 // ami. Temps réel via useChatSocket ; n'est monté que pour un utilisateur connecté.
 export default function ChatWidget() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [activeId, setActiveId] = useState<number | null>(null);
@@ -167,7 +170,7 @@ export default function ChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? 'Fermer la messagerie' : 'Ouvrir la messagerie'}
+        aria-label={open ? t('chat.close') : t('chat.open')}
         className="relative flex h-14 w-14 items-center justify-center rounded-full bg-accent text-zinc-950 shadow-xl transition hover:brightness-110"
       >
         {open ? <CloseIcon /> : <ChatIcon />}
@@ -193,14 +196,15 @@ function ConversationList({
   onClose: () => void;
   onOpen: (friendId: number) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <>
       <header className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-700">
-        <h2 className="font-semibold">Messages</h2>
+        <h2 className="font-semibold">{t('chat.title')}</h2>
         <button
           type="button"
           onClick={onClose}
-          aria-label="Fermer"
+          aria-label={t('chat.closeAria')}
           className="text-zinc-400 transition hover:text-zinc-700 dark:hover:text-zinc-200"
         >
           <CloseIcon />
@@ -209,7 +213,7 @@ function ConversationList({
       <div className="flex-1 overflow-y-auto">
         {conversations.length === 0 ? (
           <p className="p-4 text-sm text-zinc-500 dark:text-zinc-400">
-            Ajoute des amis pour discuter avec eux ici.
+            {t('chat.noConversations')}
           </p>
         ) : (
           <ul>
@@ -275,6 +279,7 @@ function Thread({
   onSend: () => void;
   onBack: () => void;
 }) {
+  const { t } = useTranslation();
   const endRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'end' });
@@ -286,7 +291,7 @@ function Thread({
         <button
           type="button"
           onClick={onBack}
-          aria-label="Retour"
+          aria-label={t('chat.back')}
           className="rounded-full p-1 text-zinc-500 transition hover:text-accent"
         >
           <BackIcon />
@@ -324,14 +329,14 @@ function Thread({
         <input
           value={text}
           onChange={(e) => onText(e.target.value)}
-          placeholder="Écrire un message…"
+          placeholder={t('chat.placeholder')}
           maxLength={2000}
           className="field flex-1 px-3 py-2 text-sm"
         />
         <button
           type="submit"
           disabled={sending || !text.trim()}
-          aria-label="Envoyer"
+          aria-label={t('chat.send')}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           <SendIcon />
@@ -342,6 +347,7 @@ function Thread({
 }
 
 function MessageBubble({ message, mine }: { message: ChatMessage; mine: boolean }) {
+  const { t } = useTranslation();
   const bubble = mine
     ? 'bg-accent text-zinc-950'
     : 'bg-white text-zinc-800 dark:bg-zinc-800 dark:text-zinc-100';
@@ -352,7 +358,7 @@ function MessageBubble({ message, mine }: { message: ChatMessage; mine: boolean 
         {message.content && <p className="whitespace-pre-wrap break-words">{message.content}</p>}
         <div className={`mt-1 flex items-center gap-1 text-[10px] ${mine ? 'text-zinc-800/60' : 'text-zinc-400'}`}>
           {shortTime(message.createdAt)}
-          {mine && message.readAt && <span>· Lu</span>}
+          {mine && message.readAt && <span>· {t('chat.read')}</span>}
         </div>
       </div>
     </div>
@@ -361,6 +367,7 @@ function MessageBubble({ message, mine }: { message: ChatMessage; mine: boolean 
 
 // Carte de partage à l'intérieur d'une bulle (jeu / avis / profil)
 function ShareCard({ message }: { message: ChatMessage }) {
+  const { t } = useTranslation();
   if (message.type === 'GAME' && message.game) {
     const g = message.game;
     return (
@@ -374,7 +381,7 @@ function ShareCard({ message }: { message: ChatMessage }) {
           <span className="h-14 w-10 shrink-0 rounded bg-zinc-300 dark:bg-zinc-700" />
         )}
         <span className="min-w-0">
-          <span className="block text-[10px] uppercase tracking-wide opacity-70">Jeu</span>
+          <span className="block text-[10px] uppercase tracking-wide opacity-70">{t('chat.shareGame')}</span>
           <span className="line-clamp-2 font-medium">{g.title}</span>
         </span>
       </Link>
@@ -400,7 +407,7 @@ function ShareCard({ message }: { message: ChatMessage }) {
           <span className="h-14 w-10 shrink-0 rounded bg-zinc-300 dark:bg-zinc-700" />
         )}
         <span className="min-w-0">
-          <span className="block text-[10px] uppercase tracking-wide opacity-70">Avis · {name}</span>
+          <span className="block text-[10px] uppercase tracking-wide opacity-70">{t('chat.shareReview')} · {name}</span>
           <span className="line-clamp-1 font-medium">{r.title}</span>
           <Stars rating={r.rating} showValue={false} />
         </span>
@@ -416,7 +423,7 @@ function ShareCard({ message }: { message: ChatMessage }) {
       >
         <Avatar username={u.username} avatarUrl={u.avatarUrl} size={36} />
         <span className="min-w-0">
-          <span className="block text-[10px] uppercase tracking-wide opacity-70">Profil</span>
+          <span className="block text-[10px] uppercase tracking-wide opacity-70">{t('chat.shareProfile')}</span>
           <span className="truncate font-medium">{u.username}</span>
         </span>
       </Link>
@@ -426,14 +433,15 @@ function ShareCard({ message }: { message: ChatMessage }) {
 }
 
 function shortTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString('fr', { hour: '2-digit', minute: '2-digit' });
+  return new Date(iso).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' });
 }
 
 function previewOf(m: ChatMessage | null): string {
-  if (!m) return 'Aucun message';
-  if (m.type === 'GAME') return `🎮 ${m.game?.title ?? 'Jeu partagé'}`;
-  if (m.type === 'REVIEW') return `📝 ${m.review?.title ?? 'Avis partagé'}`;
-  if (m.type === 'PROFILE') return `👤 ${m.sharedUser?.username ?? 'Profil partagé'}`;
+  const t = i18n.t.bind(i18n);
+  if (!m) return t('chat.noMessage');
+  if (m.type === 'GAME') return `🎮 ${m.game?.title ?? t('chat.sharedGame')}`;
+  if (m.type === 'REVIEW') return `📝 ${m.review?.title ?? t('chat.sharedReview')}`;
+  if (m.type === 'PROFILE') return `👤 ${m.sharedUser?.username ?? t('chat.sharedProfile')}`;
   return m.content ?? '';
 }
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
@@ -8,6 +9,7 @@ const MIN_CHARS = 2;
 const DEBOUNCE_MS = 300;
 
 export default function SearchBar() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GameSummary[]>([]);
@@ -107,14 +109,14 @@ export default function SearchBar() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpen(true)}
           onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
-          placeholder="Search"
+          placeholder={t('catalog.searchNav')}
           className={`${field} w-full min-w-0 flex-1 px-4 py-1.5 text-sm placeholder-zinc-500 focus:border-accent focus:outline-none`}
         />
         <button
           type="button"
           onClick={randomGame}
-          title="Jeu au hasard"
-          aria-label="Jeu au hasard"
+          title={t('catalog.randomGame')}
+          aria-label={t('catalog.randomGame')}
           className={`${field} flex items-center px-3 text-zinc-500 transition hover:border-accent hover:text-accent dark:text-zinc-400`}
         >
           {/* Dé filaire (trait 1.6, style TiMN) — face à cinq points */}
@@ -163,7 +165,7 @@ export default function SearchBar() {
           {noResults && !importing && (
             <div className="px-4 py-3 text-sm">
               <p className="text-zinc-500 dark:text-zinc-400">
-                Aucun jeu « {trimmed} » dans le catalogue.
+                {t('catalog.noneInCatalog', { query: trimmed })}
               </p>
               <button
                 type="button"
@@ -181,7 +183,7 @@ export default function SearchBar() {
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                Ajouter depuis IGDB
+                {t('catalog.importIgdb')}
               </button>
             </div>
           )}
@@ -189,7 +191,7 @@ export default function SearchBar() {
           {importing && (
             <p className="flex items-center gap-2 px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
               <span className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-400 border-t-accent" />
-              Import depuis IGDB…
+              {t('catalog.importing')}
             </p>
           )}
         </div>

@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../lib/api';
 
-// Types personnalisables + libellés FR (doivent matcher NotificationsService.CUSTOMIZABLE)
-const TYPES: { key: string; label: string; hint: string }[] = [
-  { key: 'FRIEND_REQUEST', label: "Demandes d'ami", hint: "Quand quelqu'un t'envoie une demande" },
-  { key: 'FRIEND_ACCEPT', label: 'Demandes acceptées', hint: 'Quand ta demande est acceptée' },
-  { key: 'REVIEW_LIKE', label: 'J’aime sur mes avis', hint: 'Quand un avis à toi est aimé' },
-  { key: 'REVIEW_COMMENT', label: 'Commentaires sur mes avis', hint: 'Quand on commente un avis à toi' },
-  { key: 'COMMENT_REPLY', label: 'Réponses à mes commentaires', hint: 'Quand on répond à ton commentaire' },
-  { key: 'FRIEND_JOINED', label: 'Un contact rejoint', hint: 'Quand un contact Steam/42 s’inscrit' },
+// Types personnalisables (doivent matcher NotificationsService.CUSTOMIZABLE).
+// Les libellés/hints viennent de i18n (notifications.pref*).
+const TYPES: { key: string; labelKey: string; hintKey: string }[] = [
+  { key: 'FRIEND_REQUEST', labelKey: 'notifications.prefFriendRequest', hintKey: 'notifications.prefFriendRequestHint' },
+  { key: 'FRIEND_ACCEPT', labelKey: 'notifications.prefFriendAccept', hintKey: 'notifications.prefFriendAcceptHint' },
+  { key: 'REVIEW_LIKE', labelKey: 'notifications.prefReviewLike', hintKey: 'notifications.prefReviewLikeHint' },
+  { key: 'REVIEW_COMMENT', labelKey: 'notifications.prefReviewComment', hintKey: 'notifications.prefReviewCommentHint' },
+  { key: 'COMMENT_REPLY', labelKey: 'notifications.prefCommentReply', hintKey: 'notifications.prefCommentReplyHint' },
+  { key: 'FRIEND_JOINED', labelKey: 'notifications.prefFriendJoined', hintKey: 'notifications.prefFriendJoinedHint' },
 ];
 
 // Cloche filaire (trait 1.6, style TiMN) — partagée par la section et le titre
@@ -32,6 +33,7 @@ export function BellIcon({ className = 'h-4 w-4' }: { className?: string }) {
 // Liste réutilisable des interrupteurs (opt-out par type). Utilisée à la fois
 // dans la page Settings et dans la fenêtre du menu rouage.
 export function NotificationPrefsList() {
+  const { t } = useTranslation();
   const [prefs, setPrefs] = useState<Record<string, boolean> | null>(null);
 
   useEffect(() => {
@@ -55,21 +57,21 @@ export function NotificationPrefsList() {
 
   return (
     <ul className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
-      {TYPES.map((t) => {
-        const on = prefs?.[t.key] ?? true;
+      {TYPES.map((type) => {
+        const on = prefs?.[type.key] ?? true;
         return (
-          <li key={t.key} className="flex items-center justify-between gap-4 py-3">
+          <li key={type.key} className="flex items-center justify-between gap-4 py-3">
             <span className="min-w-0">
-              <span className="block text-sm font-medium">{t.label}</span>
-              <span className="block text-xs text-zinc-500 dark:text-zinc-400">{t.hint}</span>
+              <span className="block text-sm font-medium">{t(type.labelKey)}</span>
+              <span className="block text-xs text-zinc-500 dark:text-zinc-400">{t(type.hintKey)}</span>
             </span>
             <button
               type="button"
               role="switch"
               aria-checked={on}
-              aria-label={t.label}
+              aria-label={t(type.labelKey)}
               disabled={!prefs}
-              onClick={() => toggle(t.key)}
+              onClick={() => toggle(type.key)}
               className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-50 ${
                 on ? 'bg-accent' : 'bg-zinc-300 dark:bg-zinc-700'
               }`}

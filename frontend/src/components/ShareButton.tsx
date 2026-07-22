@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch } from '../lib/api';
 import Avatar from './Avatar';
@@ -18,13 +19,15 @@ export default function ShareButton({
   target,
   triggerClassName,
   dropUp = false,
-  title = 'Partager à un ami',
+  title,
 }: {
   target: ShareTarget;
   triggerClassName: string;
   dropUp?: boolean;
   title?: string;
 }) {
+  const { t } = useTranslation();
+  const label = title ?? t('share.defaultTitle');
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [friends, setFriends] = useState<Friend[] | null>(null);
@@ -85,8 +88,8 @@ export default function ShareButton({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={title}
-        title={title}
+        aria-label={label}
+        title={label}
         aria-expanded={open}
         className={triggerClassName}
       >
@@ -100,14 +103,14 @@ export default function ShareButton({
           }`}
         >
           <p className="border-b border-zinc-200 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
-            Partager à…
+            {t('share.shareTo')}
           </p>
           <div className="max-h-64 overflow-y-auto">
             {friends === null ? (
-              <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">Chargement…</p>
+              <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">{t('share.loading')}</p>
             ) : friends.length === 0 ? (
               <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
-                Ajoute des amis pour partager avec eux.
+                {t('share.noFriends')}
               </p>
             ) : (
               <ul className="py-1">
@@ -125,10 +128,10 @@ export default function ShareButton({
                         <span className="min-w-0 flex-1 truncate">{f.username}</span>
                         {sent ? (
                           <span className="shrink-0 text-xs font-medium text-emerald-500">
-                            Envoyé ✓
+                            {t('share.sent')}
                           </span>
                         ) : (
-                          <span className="shrink-0 text-xs text-accent">Envoyer</span>
+                          <span className="shrink-0 text-xs text-accent">{t('share.send')}</span>
                         )}
                       </button>
                     </li>

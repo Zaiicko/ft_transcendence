@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
@@ -9,6 +10,7 @@ import Select from '../components/Select';
 import Skeleton from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
+import { translateGenre } from '../lib/genres';
 import { GameDlc, GameSummary } from '../lib/types';
 
 const screenshot1080 = (g: GameSummary) =>
@@ -17,7 +19,7 @@ const screenshot1080 = (g: GameSummary) =>
 export default function Game() {
   const { id } = useParams();
   const gameId = Number(id);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Résultats tagués par id : au changement de jeu, l'ancien contenu est
   // ignoré sans setState synchrone dans l'effet (règle set-state-in-effect).
@@ -49,7 +51,7 @@ export default function Game() {
 
   const game = loaded?.id === gameId ? loaded.game : undefined;
 
-  if (game === null) return <p className="py-24 text-center text-zinc-400">Jeu introuvable.</p>;
+  if (game === null) return <p className="py-24 text-center text-zinc-400">{t('game.notFound')}</p>;
   if (!game)
     return (
       <div className="flex flex-col gap-10">
@@ -92,7 +94,7 @@ export default function Game() {
             key={g.id}
             className="rounded-full border border-zinc-500/30 bg-zinc-950/40 px-2.5 py-0.5 backdrop-blur"
           >
-            {g.name}
+            {translateGenre(g.name, t)}
           </span>
         ))}
         {/* Studios : bulles cliquables → fiche du studio */}
@@ -142,7 +144,7 @@ export default function Game() {
         <ShareButton
           target={{ type: 'GAME', gameId }}
           dropUp={onDark}
-          title="Partager ce jeu à un ami"
+          title={t('game.shareGame')}
           triggerClassName={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition ${
             onDark
               ? 'border-zinc-100/25 bg-zinc-950/30 text-zinc-200 backdrop-blur hover:border-accent hover:text-accent'
@@ -213,17 +215,18 @@ export default function Game() {
   );
 }
 
-// Libellé FR du type de contenu additionnel
-function dlcTypeLabel(type: string): string {
-  if (type === 'EXPANSION') return 'Extension';
-  if (type === 'STANDALONE') return 'Standalone';
-  return 'DLC';
+// Libellé traduit du type de contenu additionnel
+function dlcTypeLabel(type: string, t: TFunction): string {
+  if (type === 'EXPANSION') return t('game.dlcExpansion');
+  if (type === 'STANDALONE') return t('game.dlcStandalone');
+  return t('game.dlcGeneric');
 }
 
 const dlcYear = (d: GameDlc) => d.releaseDate?.slice(0, 4);
 
 // Petit lien "Noter" → ouvre la fiche du DLC sur le formulaire de critique
 function RateLink({ id }: { id: number }) {
+  const { t } = useTranslation();
   return (
     <Link
       to={`/game/${id}#review`}
@@ -240,7 +243,7 @@ function RateLink({ id }: { id: number }) {
         <path d="M12 20h9" />
         <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
       </svg>
-      Noter
+      {t('game.rate')}
     </Link>
   );
 }
@@ -248,24 +251,25 @@ function RateLink({ id }: { id: number }) {
 // Variante A : un menu déroulant pour choisir un DLC, puis un panneau avec le
 // toggle "fait" (sur place) et le bouton "Noter" pour le DLC sélectionné.
 function DlcSelector({ dlcs }: { dlcs: GameDlc[] }) {
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const selected = dlcs.find((d) => d.id === selectedId) ?? null;
 
   return (
     <section>
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        Extensions & DLC ({dlcs.length})
+        {t('game.dlcHeading', { count: dlcs.length })}
       </h2>
       <Select
-        label="Choisir un DLC"
+        label={t('game.chooseDlcLabel')}
         value={selectedId?.toString() ?? ''}
         onChange={(v) => setSelectedId(v ? Number(v) : null)}
         className="w-full max-w-md"
         options={[
-          { value: '', label: 'Choisir un DLC…' },
+          { value: '', label: t('game.chooseDlcPlaceholder') },
           ...dlcs.map((d) => ({
             value: String(d.id),
-            label: `${dlcTypeLabel(d.gameType)} · ${d.title}${dlcYear(d) ? ` (${dlcYear(d)})` : ''}`,
+            label: `${dlcTypeLabel(d.gameType, t)} · ${d.title}${dlcYear(d) ? ` (${dlcYear(d)})` : ''}`,
           })),
         ]}
       />
@@ -280,7 +284,7 @@ function DlcSelector({ dlcs }: { dlcs: GameDlc[] }) {
             />
           ) : (
             <div className="flex h-24 w-16 shrink-0 items-center justify-center rounded-lg bg-zinc-200 text-center text-[10px] text-zinc-500 dark:bg-zinc-800">
-              {dlcTypeLabel(selected.gameType)}
+              {dlcTypeLabel(selected.gameType, t)}
             </div>
           )}
           <div className="min-w-0 flex-1">
@@ -291,7 +295,7 @@ function DlcSelector({ dlcs }: { dlcs: GameDlc[] }) {
               {selected.title}
             </Link>
             <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
-              {dlcTypeLabel(selected.gameType)}
+              {dlcTypeLabel(selected.gameType, t)}
               {dlcYear(selected) ? ` · ${dlcYear(selected)}` : ''}
             </div>
             <div className="mt-3 flex items-center gap-3">

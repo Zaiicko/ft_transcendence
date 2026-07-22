@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { emitCommentReaction } from '../games/commentBus';
@@ -27,10 +28,10 @@ interface ReviewT {
 }
 
 type Sort = 'recent' | 'popular' | 'discussed';
-const SORTS: { key: Sort; label: string }[] = [
-  { key: 'popular', label: 'Populaires' },
-  { key: 'recent', label: 'Récentes' },
-  { key: 'discussed', label: 'Discutées' },
+const SORTS: { key: Sort; labelKey: string }[] = [
+  { key: 'popular', labelKey: 'reviews.sortPopular' },
+  { key: 'recent', labelKey: 'reviews.sortRecent' },
+  { key: 'discussed', labelKey: 'reviews.sortDiscussed' },
 ];
 
 // Avis chargés par lot, avec un bouton « Charger plus »
@@ -50,8 +51,8 @@ export default function ReviewsSection({
 }) {
   const { kind, id } = target;
   const base = `/${kind === 'game' ? 'games' : 'companies'}/${id}`;
-  const noun = kind === 'game' ? 'ce jeu' : 'ce studio';
 
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { hash } = useLocation();
 
@@ -237,7 +238,8 @@ export default function ReviewsSection({
     <section ref={reviewRef} id="review" className="scroll-mt-24">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          Critiques{reviews.length > 0 ? ` (${reviews.length})` : ''}
+          {t('reviews.heading')}
+          {reviews.length > 0 ? ` (${reviews.length})` : ''}
         </h2>
         <div className="flex gap-2">
           {SORTS.map((s) => (
@@ -251,7 +253,7 @@ export default function ReviewsSection({
                   : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
               }`}
             >
-              {s.label}
+              {t(s.labelKey)}
             </button>
           ))}
         </div>
@@ -260,7 +262,7 @@ export default function ReviewsSection({
       {user && !alreadyReviewed && (
         <ReviewForm
           base={base}
-          noun={noun}
+          kind={kind}
           onCreated={() => {
             setSort('recent');
             apiFetch<ReviewT[]>(`${base}/reviews?sort=recent&page=1&limit=${PAGE_SIZE}`)
@@ -277,19 +279,23 @@ export default function ReviewsSection({
       )}
       {!user && (
         <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
-          Connecte-toi pour écrire une critique.
+          {t('reviews.loginToReview')}
         </p>
       )}
 
       {reviews.length === 0 ? (
         <EmptyState
           icon={<PencilIcon />}
-          title="Pas encore de critique"
-          description={
+          title={t('reviews.emptyTitle')}
+          description={t(
             user
-              ? `Sois le premier à partager ton avis sur ${noun}.`
-              : `Connecte-toi pour être le premier à noter ${noun}.`
-          }
+              ? kind === 'game'
+                ? 'reviews.emptyDescGame'
+                : 'reviews.emptyDescCompany'
+              : kind === 'game'
+                ? 'reviews.emptyDescGameGuest'
+                : 'reviews.emptyDescCompanyGuest',
+          )}
         />
       ) : (
         <div className="flex flex-col gap-4">
@@ -309,7 +315,7 @@ export default function ReviewsSection({
                     <div className="min-w-0">
                       <div className="truncate text-sm font-semibold">{r.user.username}</div>
                       <div className="text-xs text-zinc-500">
-                        {new Date(r.createdAt).toLocaleDateString('fr')}
+                        {new Date(r.createdAt).toLocaleDateString(i18n.language)}
                       </div>
                     </div>
                   </Link>
@@ -318,10 +324,10 @@ export default function ReviewsSection({
                     <Avatar username="?" size={32} />
                     <div className="min-w-0">
                       <div className="truncate text-sm">
-                        <em>[utilisateur supprimé]</em>
+                        <em>{t('reviews.deletedUser')}</em>
                       </div>
                       <div className="text-xs text-zinc-500">
-                        {new Date(r.createdAt).toLocaleDateString('fr')}
+                        {new Date(r.createdAt).toLocaleDateString(i18n.language)}
                       </div>
                     </div>
                   </div>
@@ -382,7 +388,7 @@ export default function ReviewsSection({
                     </button>
                     <ShareButton
                       target={{ type: 'REVIEW', reviewId: r.id }}
-                      title="Partager cet avis à un ami"
+                      title={t('reviews.shareReview')}
                       triggerClassName="inline-flex items-center justify-center rounded-full border border-zinc-400/60 px-2.5 py-1 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
                     />
                     {user && r.user?.id === user.id && (
@@ -392,14 +398,14 @@ export default function ReviewsSection({
                           onClick={() => setEditingId(r.id)}
                           className="ml-auto text-zinc-500 transition hover:text-accent"
                         >
-                          Modifier
+                          {t('reviews.edit')}
                         </button>
                         <button
                           type="button"
                           onClick={() => removeOwn(r)}
                           className="text-zinc-500 transition hover:text-red-400"
                         >
-                          Supprimer
+                          {t('reviews.delete')}
                         </button>
                       </>
                     )}
@@ -423,7 +429,7 @@ export default function ReviewsSection({
               disabled={loadingMore}
               className="mx-auto mt-2 block rounded-lg border border-zinc-400 px-6 py-2 text-sm transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
             >
-              {loadingMore ? 'Chargement…' : 'Charger plus'}
+              {loadingMore ? t('reviews.loading') : t('reviews.loadMore')}
             </button>
           )}
         </div>
@@ -434,13 +440,14 @@ export default function ReviewsSection({
 
 function ReviewForm({
   base,
-  noun,
+  kind,
   onCreated,
 }: {
   base: string;
-  noun: string;
+  kind: ReviewTargetKind;
   onCreated: () => void;
 }) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState<number | null>(null);
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
@@ -450,7 +457,7 @@ function ReviewForm({
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (rating == null) {
-      setError('Choisis une note.');
+      setError(t('reviews.chooseRating'));
       return;
     }
     setSending(true);
@@ -464,10 +471,10 @@ function ReviewForm({
     } catch (err) {
       setError(
         err instanceof ApiError && err.status === 409
-          ? `Tu as déjà critiqué ${noun}.`
+          ? t(kind === 'game' ? 'reviews.alreadyReviewedGame' : 'reviews.alreadyReviewedCompany')
           : err instanceof ApiError
             ? err.message
-            : 'Erreur inattendue.',
+            : t('reviews.unexpectedError'),
       );
     } finally {
       setSending(false);
@@ -477,13 +484,13 @@ function ReviewForm({
   return (
     <form onSubmit={submit} className="card mb-6 flex flex-col gap-3 p-4">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">Note :</span>
+        <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">{t('reviews.ratingLabel')}</span>
         {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
           <button
             key={n}
             type="button"
             onClick={() => setRating(n)}
-            aria-label={`${n} sur 10`}
+            aria-label={t('reviews.ratingAria', { n })}
             className={`h-8 w-8 rounded-full border text-xs transition ${
               rating != null && n <= rating
                 ? 'border-accent bg-accent font-bold text-zinc-950'
@@ -497,7 +504,7 @@ function ReviewForm({
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Titre de ta critique"
+        placeholder={t('reviews.titlePlaceholder')}
         maxLength={120}
         required
         className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
@@ -505,7 +512,7 @@ function ReviewForm({
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Ton avis (sans spoiler…)"
+        placeholder={t('reviews.textPlaceholder')}
         maxLength={5000}
         required
         rows={4}
@@ -517,7 +524,7 @@ function ReviewForm({
         disabled={sending}
         className="self-end rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
       >
-        Publier la critique
+        {t('reviews.publish')}
       </button>
     </form>
   );
@@ -535,6 +542,7 @@ function EditReviewForm({
   onCancel: () => void;
   onSaved: (u: { rating: number; title: string; text: string }) => void;
 }) {
+  const { t: translate } = useTranslation();
   const [rating, setRating] = useState<number>(review.rating);
   const [title, setTitle] = useState(review.title);
   const [text, setText] = useState(review.text);
@@ -546,7 +554,7 @@ function EditReviewForm({
     const t = title.trim();
     const body = text.trim();
     if (!t || !body) {
-      setError('Titre et texte obligatoires.');
+      setError(translate('reviews.titleTextRequired'));
       return;
     }
     setSending(true);
@@ -558,7 +566,7 @@ function EditReviewForm({
       });
       onSaved({ rating, title: t, text: body });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Erreur inattendue.');
+      setError(err instanceof ApiError ? err.message : translate('reviews.unexpectedError'));
     } finally {
       setSending(false);
     }
@@ -567,13 +575,15 @@ function EditReviewForm({
   return (
     <form onSubmit={submit} className="mt-3 flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">Note :</span>
+        <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">
+          {translate('reviews.ratingLabel')}
+        </span>
         {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
           <button
             key={n}
             type="button"
             onClick={() => setRating(n)}
-            aria-label={`${n} sur 10`}
+            aria-label={translate('reviews.ratingAria', { n })}
             className={`h-8 w-8 rounded-full border text-xs transition ${
               n <= rating
                 ? 'border-accent bg-accent font-bold text-zinc-950'
@@ -587,7 +597,7 @@ function EditReviewForm({
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Titre de ta critique"
+        placeholder={translate('reviews.titlePlaceholder')}
         maxLength={120}
         required
         className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
@@ -595,7 +605,7 @@ function EditReviewForm({
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Ton avis (sans spoiler…)"
+        placeholder={translate('reviews.textPlaceholder')}
         maxLength={5000}
         required
         rows={4}
@@ -608,14 +618,14 @@ function EditReviewForm({
           onClick={onCancel}
           className="rounded-full px-4 py-2 text-zinc-500 transition hover:text-accent"
         >
-          Annuler
+          {translate('reviews.cancel')}
         </button>
         <button
           type="submit"
           disabled={sending}
           className="rounded-full bg-accent px-5 py-2 font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
-          Enregistrer
+          {translate('reviews.save')}
         </button>
       </div>
     </form>

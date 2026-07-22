@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { TFunction } from 'i18next';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
@@ -10,6 +11,7 @@ import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/Reactio
 import { CoverGridSkeleton } from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
+import { translateGenre } from '../lib/genres';
 import { imageSize } from '../lib/theme';
 import { GameSummary, ReviewHighlight } from '../lib/types';
 
@@ -224,12 +226,12 @@ export default function Home() {
   );
 }
 
-// "2023 · RPG · Aventure" — l'année de sortie et jusqu'à trois genres
-function heroMeta(game: GameSummary): string {
+// "2023 · RPG · Aventure" — l'année de sortie et jusqu'à trois genres (traduits)
+function heroMeta(game: GameSummary, t: TFunction): string {
   const year = game.releaseDate?.slice(0, 4);
   const genres = game.genres
     ?.slice(0, 3)
-    .map((g) => g.name)
+    .map((g) => translateGenre(g.name, t))
     .join(' · ');
   return [year, genres].filter(Boolean).join(' · ');
 }
@@ -289,7 +291,7 @@ function Hero({ game }: { game: GameSummary }) {
               </h1>
               <div className="mt-2 flex items-center gap-3 text-sm text-zinc-300">
                 {game.score !== undefined && <ScoreBadge score={game.score} />}
-                {heroMeta(game) && <span>{heroMeta(game)}</span>}
+                {heroMeta(game, t) && <span>{heroMeta(game, t)}</span>}
               </div>
             </div>
           </>
@@ -376,7 +378,7 @@ function ScoreBadge({ score, small = false }: { score: number; small?: boolean }
 }
 
 function ReviewCard({ review }: { review: ReviewHighlight }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // Le lien pointe sur l'avis précis (#review-<id>) : la fiche jeu/studio défile
   // dessus et l'encadre, comme depuis un profil (l'épinglage gère le cas où il
   // n'est pas dans le premier lot chargé).
@@ -439,7 +441,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
         <span className="inline-flex items-center gap-1">
           <CommentIcon className="h-3.5 w-3.5" /> {review._count.comments}
         </span>
-        <span className="ml-auto">{new Date(review.createdAt).toLocaleDateString('fr')}</span>
+        <span className="ml-auto">{new Date(review.createdAt).toLocaleDateString(i18n.language)}</span>
       </div>
     </a>
   );

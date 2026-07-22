@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { apiFetch, ApiError } from '../lib/api';
 import type { GameListDetail, GameListSummary } from '../lib/types';
@@ -13,6 +14,7 @@ export default function ProfileLists({
   isSelf: boolean;
   publicLists: GameListSummary[];
 }) {
+  const { t } = useTranslation();
   const [lists, setLists] = useState<GameListSummary[]>(publicLists);
   const [creating, setCreating] = useState(false);
 
@@ -35,7 +37,7 @@ export default function ProfileLists({
     <section className="mb-10">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          Lists
+          {t('lists.heading')}
         </h2>
         {isSelf && !creating && (
           <button
@@ -46,7 +48,7 @@ export default function ProfileLists({
             <span aria-hidden className="text-sm leading-none">
               +
             </span>
-            Nouvelle liste
+            {t('lists.newList')}
           </button>
         )}
       </div>
@@ -63,9 +65,7 @@ export default function ProfileLists({
 
       {lists.length === 0 && !creating ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          {isSelf
-            ? 'Aucune liste pour l’instant. Crée-en une (ex. « Best competitive », « To-do »).'
-            : 'Aucune liste publique.'}
+          {isSelf ? t('lists.emptyOwn') : t('lists.emptyPublic')}
         </p>
       ) : (
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -85,6 +85,7 @@ function CreateListForm({
   onCancel: () => void;
   onCreated: () => void;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -102,7 +103,7 @@ function CreateListForm({
       });
       onCreated();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Erreur');
+      setError(err instanceof ApiError ? err.message : t('lists.error'));
       setBusy(false);
     }
   }
@@ -114,7 +115,7 @@ function CreateListForm({
         value={name}
         onChange={(e) => setName(e.target.value)}
         maxLength={60}
-        placeholder="Nom de la liste"
+        placeholder={t('lists.namePlaceholder')}
         className="field px-3 py-2 text-sm"
       />
       <VisibilityToggle isPublic={isPublic} onChange={setIsPublic} />
@@ -125,14 +126,14 @@ function CreateListForm({
           disabled={busy || !name.trim()}
           className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
-          {busy ? 'Création…' : 'Créer'}
+          {busy ? t('lists.creating') : t('lists.create')}
         </button>
         <button
           type="button"
           onClick={onCancel}
           className="rounded-full px-3 py-1.5 text-sm text-zinc-500 transition hover:text-zinc-800 dark:hover:text-zinc-200"
         >
-          Annuler
+          {t('lists.cancel')}
         </button>
       </div>
     </form>
@@ -147,12 +148,14 @@ function VisibilityToggle({
   isPublic: boolean;
   onChange: (v: boolean) => void;
 }) {
+  const { t } = useTranslation();
+  const options = [
+    { value: false, label: t('lists.private'), hint: t('lists.privateHint') },
+    { value: true, label: t('lists.public'), hint: t('lists.publicHint') },
+  ] as const;
   return (
     <div className="flex gap-2 text-xs">
-      {([
-        [false, 'Privée', 'Visible par toi seul'],
-        [true, 'Publique', 'Visible sur ton profil'],
-      ] as const).map(([value, label, hint]) => (
+      {options.map(({ value, label, hint }) => (
         <button
           key={label}
           type="button"
@@ -181,6 +184,7 @@ function ListCard({
   isSelf: boolean;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
 
@@ -192,7 +196,7 @@ function ListCard({
           type="button"
           onClick={() => setExpanded((v) => !v)}
           className="relative h-16 w-24 shrink-0"
-          aria-label="Voir les jeux"
+          aria-label={t('lists.viewGames')}
         >
           {list.covers.length > 0 ? (
             list.covers.slice(0, 4).map((c, i) => (
@@ -206,7 +210,7 @@ function ListCard({
             ))
           ) : (
             <span className="flex h-16 w-full items-center justify-center rounded bg-zinc-200 text-[10px] text-zinc-500 dark:bg-zinc-800">
-              vide
+              {t('lists.empty')}
             </span>
           )}
         </button>
@@ -218,7 +222,7 @@ function ListCard({
         >
           <span className="block truncate font-semibold">{list.name}</span>
           <span className="mt-0.5 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-            {list.gameCount} jeu{list.gameCount > 1 ? 'x' : ''}
+            {t(list.gameCount === 1 ? 'lists.gameOne' : 'lists.gameMany', { count: list.gameCount })}
             {isSelf && (
               <span
                 className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
@@ -227,7 +231,7 @@ function ListCard({
                     : 'bg-zinc-500/15 text-zinc-500 dark:text-zinc-400'
                 }`}
               >
-                {list.isPublic ? 'Publique' : 'Privée'}
+                {list.isPublic ? t('lists.public') : t('lists.private')}
               </span>
             )}
           </span>
@@ -237,7 +241,7 @@ function ListCard({
           <button
             type="button"
             onClick={() => setEditing((v) => !v)}
-            aria-label="Modifier la liste"
+            aria-label={t('lists.editList')}
             className="shrink-0 self-start rounded-full p-1.5 text-zinc-400 transition hover:text-accent"
           >
             <svg
@@ -271,6 +275,7 @@ function ListCard({
 }
 
 function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => void }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(list.name);
   const [isPublic, setIsPublic] = useState(list.isPublic);
   const [busy, setBusy] = useState(false);
@@ -286,13 +291,13 @@ function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => vo
       });
       onDone();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Erreur');
+      setError(err instanceof ApiError ? err.message : t('lists.error'));
       setBusy(false);
     }
   }
 
   async function remove() {
-    if (!confirm(`Supprimer la liste « ${list.name} » ?`)) return;
+    if (!confirm(t('lists.confirmDelete', { name: list.name }))) return;
     setBusy(true);
     try {
       await apiFetch(`/lists/${list.id}`, { method: 'DELETE' });
@@ -320,14 +325,14 @@ function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => vo
             disabled={busy || !name.trim()}
             className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
-            Enregistrer
+            {t('lists.save')}
           </button>
           <button
             type="button"
             onClick={onDone}
             className="rounded-full px-3 py-1.5 text-sm text-zinc-500 transition hover:text-zinc-800 dark:hover:text-zinc-200"
           >
-            Annuler
+            {t('lists.cancel')}
           </button>
         </div>
         <button
@@ -336,7 +341,7 @@ function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => vo
           disabled={busy}
           className="text-sm text-red-400 transition hover:text-red-300 disabled:opacity-50"
         >
-          Supprimer
+          {t('lists.delete')}
         </button>
       </div>
     </div>
@@ -353,14 +358,15 @@ function ListGames({
   isSelf: boolean;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation();
   const [detail, setDetail] = useState<GameListDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     apiFetch<GameListDetail>(`/lists/${listId}`)
       .then(setDetail)
-      .catch((err) => setError(err instanceof ApiError ? err.message : 'Erreur'));
-  }, [listId]);
+      .catch((err) => setError(err instanceof ApiError ? err.message : t('lists.error')));
+  }, [listId, t]);
 
   useEffect(() => {
     load();
@@ -383,13 +389,13 @@ function ListGames({
   if (!detail)
     return (
       <p className="border-t border-zinc-200 p-3 text-xs text-zinc-400 dark:border-zinc-800">
-        Chargement…
+        {t('lists.loading')}
       </p>
     );
   if (detail.games.length === 0)
     return (
       <p className="border-t border-zinc-200 p-3 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-        Liste vide — ajoute des jeux depuis leur fiche.
+        {t('lists.listEmpty')}
       </p>
     );
 
@@ -414,7 +420,7 @@ function ListGames({
             <button
               type="button"
               onClick={() => removeGame(g.id)}
-              aria-label={`Retirer ${g.title}`}
+              aria-label={t('lists.removeGame', { title: g.title })}
               className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-950/70 text-xs text-white opacity-0 transition group-hover:opacity-100 hover:bg-red-500"
             >
               ×

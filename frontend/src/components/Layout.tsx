@@ -132,7 +132,7 @@ export default function Layout() {
               <>
                 <button
                   type="button"
-                  aria-label="Fermer le menu"
+                  aria-label={t('menu.closeMenu')}
                   tabIndex={-1}
                   onClick={() => setNavOpen(false)}
                   className="fixed inset-0 z-10 cursor-default"
@@ -344,10 +344,10 @@ export default function Layout() {
           </div>
           <nav className="flex items-center gap-6 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             <Link to="/privacy-policy" className="transition hover:text-accent">
-              Privacy Policy
+              {t('footer.privacy')}
             </Link>
             <Link to="/terms-of-service" className="transition hover:text-accent">
-              Terms of Service
+              {t('footer.terms')}
             </Link>
             <span className="font-normal normal-case text-zinc-400 dark:text-zinc-600">
               © {new Date().getFullYear()}
@@ -365,7 +365,7 @@ export default function Layout() {
           <div
             role="dialog"
             aria-modal="true"
-            aria-label="Préférences de notifications"
+            aria-label={t('menu.notificationPrefs')}
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md rounded-xl border border-zinc-900/10 bg-white p-5 shadow-2xl dark:border-zinc-100/10 dark:bg-zinc-900"
           >

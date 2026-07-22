@@ -1,8 +1,10 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Select from '../components/Select';
 import { CoverGridSkeleton } from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
+import { translateGenre } from '../lib/genres';
 import { GameFacets, GameSummary } from '../lib/types';
 
 const PAGE_SIZE = 24;
@@ -10,10 +12,10 @@ const PAGE_SIZE = 24;
 // Tris exposés à l'utilisateur → valeurs de l'enum GameSort côté back. Les deux
 // premiers répondent à la demande « mieux notés / plus faits PAR LES USERS ».
 const SORTS = [
-  { value: 'rating', label: 'Mieux notés' },
-  { value: 'most_played', label: 'Plus joués' },
-  { value: 'recent', label: 'Récents' },
-  { value: 'popular', label: 'Populaires' },
+  { value: 'rating', labelKey: 'catalog.sortRating' },
+  { value: 'most_played', labelKey: 'catalog.sortMostPlayed' },
+  { value: 'recent', labelKey: 'catalog.sortRecent' },
+  { value: 'popular', labelKey: 'catalog.sortPopular' },
 ] as const;
 
 type SortValue = (typeof SORTS)[number]['value'];
@@ -26,6 +28,7 @@ interface Page {
 }
 
 export default function Catalog() {
+  const { t, i18n } = useTranslation();
   // Filtres (les noms viennent des facettes → toujours ≥ 2 caractères, OK pour
   // la validation back). q est débouncée pour ne pas spammer la recherche.
   const [q, setQ] = useState('');
@@ -108,10 +111,12 @@ export default function Catalog() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="font-display text-2xl font-bold tracking-tight">Catalogue</h1>
+        <h1 className="font-display text-2xl font-bold tracking-tight">{t('catalog.title')}</h1>
         {!loading && (
           <span className="text-sm text-zinc-500 dark:text-zinc-400">
-            {total.toLocaleString('fr')} jeu{total > 1 ? 'x' : ''}
+            {t(total === 1 ? 'lists.gameOne' : 'lists.gameMany', {
+              count: total.toLocaleString(i18n.language),
+            })}
           </span>
         )}
       </div>
@@ -124,32 +129,32 @@ export default function Catalog() {
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Rechercher un jeu…"
+            placeholder={t('catalog.searchPlaceholder')}
             className="field w-full pl-9"
-            aria-label="Rechercher un jeu"
+            aria-label={t('catalog.searchAria')}
           />
         </div>
         <Select
-          label="Tri"
+          label={t('catalog.sortLabel')}
           value={sort}
           onChange={(v) => setSort(v as SortValue)}
-          options={SORTS.map((s) => ({ value: s.value, label: s.label }))}
+          options={SORTS.map((s) => ({ value: s.value, label: t(s.labelKey) }))}
         />
         <Select
-          label="Plateforme"
+          label={t('catalog.platformLabel')}
           value={platform ?? ''}
           onChange={(v) => setPlatform(v || null)}
           options={[
-            { value: '', label: 'Toutes plateformes' },
+            { value: '', label: t('catalog.allPlatforms') },
             ...(facets?.platforms.map((p) => ({ value: p.name, label: p.name })) ?? []),
           ]}
         />
         <Select
-          label="Studio"
+          label={t('catalog.studioLabel')}
           value={company ?? ''}
           onChange={(v) => setCompany(v || null)}
           options={[
-            { value: '', label: 'Tous studios' },
+            { value: '', label: t('catalog.allStudios') },
             ...(facets?.companies.map((c) => ({ value: c.name, label: c.name })) ?? []),
           ]}
         />
@@ -164,7 +169,7 @@ export default function Catalog() {
               active={genre === g.name}
               onClick={() => setGenre((cur) => (cur === g.name ? null : g.name))}
             >
-              {g.name}
+              {translateGenre(g.name, t)}
             </Chip>
           ))}
         </div>
@@ -175,7 +180,7 @@ export default function Catalog() {
         <CoverGridSkeleton count={12} />
       ) : games.length === 0 ? (
         <p className="py-16 text-center text-sm text-zinc-500 dark:text-zinc-400">
-          Aucun jeu ne correspond à ces filtres.
+          {t('catalog.noResults')}
         </p>
       ) : (
         <>
@@ -194,7 +199,7 @@ export default function Catalog() {
               disabled={loadingMore}
               className="mx-auto mt-2 rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
             >
-              {loadingMore ? 'Chargement…' : 'Charger plus'}
+              {loadingMore ? t('catalog.loading') : t('catalog.loadMore')}
             </button>
           )}
         </>

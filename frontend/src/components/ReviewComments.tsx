@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
 import { ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
@@ -48,6 +49,7 @@ export default function ReviewComments({
   version: number; // bumpé par le temps réel (comment:changed) → refetch racine
   onChanged: () => void; // remonte le compteur 💬 de l'avis après ma mutation
 }) {
+  const { t } = useTranslation();
   const [roots, setRoots] = useState<CommentT[]>([]);
   const [sort, setSort] = useState<'top' | 'recent'>('top');
   const [loading, setLoading] = useState(true);
@@ -92,15 +94,15 @@ export default function ReviewComments({
               sort === s ? 'font-semibold text-accent' : 'text-zinc-500 hover:text-accent'
             }`}
           >
-            {s === 'top' ? 'Meilleurs' : 'Récents'}
+            {s === 'top' ? t('comments.sortTop') : t('comments.sortRecent')}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <p className="text-xs text-zinc-500">Chargement…</p>
+        <p className="text-xs text-zinc-500">{t('comments.loading')}</p>
       ) : roots.length === 0 ? (
-        <p className="text-xs text-zinc-500">Aucun commentaire — lance la discussion.</p>
+        <p className="text-xs text-zinc-500">{t('comments.empty')}</p>
       ) : (
         <ul className="flex flex-col gap-3">
           {roots.map((c) => (
@@ -135,6 +137,7 @@ function CommentNode({
   reload: () => void; // refetch du niveau parent (après édition/suppression)
   onChanged: () => void;
 }) {
+  const { t } = useTranslation();
   const [c, setC] = useState(comment);
   const [seen, setSeen] = useState(comment);
   const [replies, setReplies] = useState<CommentT[] | null>(null); // null = pas encore chargées
@@ -219,7 +222,7 @@ function CommentNode({
         )}
         <div className="min-w-0 flex-1">
           {c.deleted ? (
-            <p className="text-sm italic text-zinc-500">[commentaire supprimé]</p>
+            <p className="text-sm italic text-zinc-500">{t('comments.deletedComment')}</p>
           ) : (
             <>
               <div className="flex items-center gap-2">
@@ -231,7 +234,7 @@ function CommentNode({
                     {c.user.username}
                   </Link>
                 ) : (
-                  <span className="text-xs italic text-zinc-500">[utilisateur supprimé]</span>
+                  <span className="text-xs italic text-zinc-500">{t('comments.deletedUser')}</span>
                 )}
               </div>
               {editing ? (
@@ -249,14 +252,14 @@ function CommentNode({
                       onClick={saveEdit}
                       className="rounded-full bg-accent px-3 py-1 font-medium text-zinc-950 transition hover:brightness-110"
                     >
-                      Enregistrer
+                      {t('comments.save')}
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditing(false)}
                       className="text-zinc-500 transition hover:text-accent"
                     >
-                      Annuler
+                      {t('comments.cancel')}
                     </button>
                   </div>
                 </div>
@@ -292,7 +295,7 @@ function CommentNode({
                     onClick={() => setReplying((v) => !v)}
                     className="inline-flex items-center gap-1 transition hover:text-accent"
                   >
-                    <ReplyIcon /> Répondre
+                    <ReplyIcon /> {t('comments.reply')}
                   </button>
                 )}
                 {mine && !editing && (
@@ -304,7 +307,7 @@ function CommentNode({
                     }}
                     className="transition hover:text-accent"
                   >
-                    Modifier
+                    {t('comments.edit')}
                   </button>
                 )}
                 {mine && (
@@ -313,7 +316,7 @@ function CommentNode({
                     onClick={remove}
                     className="transition hover:text-red-400"
                   >
-                    Supprimer
+                    {t('comments.delete')}
                   </button>
                 )}
               </div>
@@ -342,7 +345,7 @@ function CommentNode({
                   onClick={loadReplies}
                   className="mt-2 text-xs font-medium text-accent hover:underline"
                 >
-                  Voir {c._count.replies} réponse{c._count.replies > 1 ? 's' : ''}
+                  {t('comments.viewReplies', { count: c._count.replies })}
                 </button>
               )
             : replies.length > 0 && (
@@ -378,6 +381,7 @@ function Composer({
   parentId?: number;
   onDone: () => void;
 }) {
+  const { t } = useTranslation();
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -407,7 +411,7 @@ function Composer({
         ref={ref}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder={parentId ? 'Répondre…' : 'Ajouter un commentaire…'}
+        placeholder={parentId ? t('comments.replyPlaceholder') : t('comments.addPlaceholder')}
         maxLength={5000}
         rows={parentId ? 2 : 2}
         className="field w-full resize-none px-4 py-2"
@@ -417,7 +421,7 @@ function Composer({
         disabled={sending || !text.trim()}
         className="self-end rounded-full bg-accent px-4 py-1.5 text-xs font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
       >
-        {parentId ? 'Répondre' : 'Commenter'}
+        {parentId ? t('comments.reply') : t('comments.submit')}
       </button>
     </form>
   );

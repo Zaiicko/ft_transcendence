@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import type { ProfileReview } from '../lib/types';
@@ -8,10 +9,10 @@ import Stars from './Stars';
 const LIMIT = 10;
 
 type Sort = 'recent' | 'popular' | 'discussed';
-const SORTS: { key: Sort; label: string }[] = [
-  { key: 'popular', label: 'Populaires' },
-  { key: 'recent', label: 'Récentes' },
-  { key: 'discussed', label: 'Discutées' },
+const SORTS: { key: Sort; labelKey: string }[] = [
+  { key: 'popular', labelKey: 'reviews.sortPopular' },
+  { key: 'recent', labelKey: 'reviews.sortRecent' },
+  { key: 'discussed', labelKey: 'reviews.sortDiscussed' },
 ];
 
 // Section "Recent reviews" du profil : limitée à 10, triable (populaires /
@@ -25,6 +26,7 @@ export default function ProfileReviews({
   username: string;
   seed: ProfileReview[];
 }) {
+  const { t } = useTranslation();
   const [sort, setSort] = useState<Sort>('popular');
   const [reviews, setReviews] = useState<ProfileReview[]>(seed);
   const [page, setPage] = useState(1);
@@ -67,7 +69,7 @@ export default function ProfileReviews({
     <section>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          Recent reviews
+          {t('profile.recentReviews')}
         </h2>
         {reviews.length > 0 && (
           <div className="flex gap-2">
@@ -82,7 +84,7 @@ export default function ProfileReviews({
                     : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                 }`}
               >
-                {s.label}
+                {t(s.labelKey)}
               </button>
             ))}
           </div>
@@ -92,8 +94,8 @@ export default function ProfileReviews({
       {reviews.length === 0 ? (
         <EmptyState
           icon={<PencilIcon />}
-          title="No reviews yet"
-          description="This player hasn't reviewed any game yet."
+          title={t('profile.noReviewsTitle')}
+          description={t('profile.noReviewsDesc')}
         />
       ) : (
         <>
@@ -109,7 +111,7 @@ export default function ProfileReviews({
               disabled={loadingMore}
               className="mx-auto mt-4 block rounded-lg border border-zinc-400 px-6 py-2 text-sm transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
             >
-              {loadingMore ? 'Chargement…' : 'Charger plus'}
+              {loadingMore ? t('reviews.loading') : t('reviews.loadMore')}
             </button>
           )}
         </>
@@ -119,7 +121,8 @@ export default function ProfileReviews({
 }
 
 function ReviewCard({ r }: { r: ProfileReview }) {
-  const name = r.game?.title ?? r.company?.name ?? 'Unknown';
+  const { t } = useTranslation();
+  const name = r.game?.title ?? r.company?.name ?? t('common.unknown');
   const cover = r.game?.coverUrl ?? r.company?.logoUrl ?? null;
   const isCompany = !r.game && !!r.company;
   // Cliquer la carte ouvre l'avis précis sur la page du jeu/studio (ancre

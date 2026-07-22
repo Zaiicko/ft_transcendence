@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch } from '../lib/api';
 
@@ -24,6 +25,7 @@ export default function PlayedButton({
   // "fait" côté serveur) pour forcer un rechargement de l'état "fait".
   refreshKey?: number;
 }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [played, setPlayed] = useState<PlayedInfo | null>(null);
 
@@ -64,8 +66,8 @@ export default function PlayedButton({
         <button
           type="button"
           onClick={toggle}
-          title={marked ? 'Fait — cliquer pour retirer' : "Je l'ai fait"}
-          aria-label={marked ? 'Retirer la marque "fait"' : 'Marquer comme fait'}
+          title={marked ? t('game.markedTitle') : t('game.markTitle')}
+          aria-label={marked ? t('game.unmarkAria') : t('game.markAria')}
           className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition ${
             marked
               ? 'border-accent bg-accent text-zinc-950'
@@ -90,7 +92,7 @@ export default function PlayedButton({
       )}
       {showPhrase && (
         <span className={`text-xs ${onDark ? 'text-zinc-300' : 'text-zinc-500 dark:text-zinc-400'}`}>
-          {played.count} joueur{played.count > 1 ? 's ont' : ' a'} fait ce jeu
+          {t(played.count === 1 ? 'game.playedOne' : 'game.playedMany', { count: played.count })}
         </span>
       )}
     </div>
