@@ -23,7 +23,8 @@
     "friends": "친구",
     "steam": "Steam",
     "login": "로그인",
-    "signup": "회원가입"
+    "signup": "회원가입",
+    "library": "라이브러리"
   },
   "menu": {
     "notifications": "알림",
@@ -793,5 +794,12 @@
     "writeReview": "리뷰 작성",
     "viewReviewOf": "{{title}}에 대한 내 리뷰 보기",
     "writeReviewOf": "{{title}} 리뷰 작성"
+  },
+  "library": {
+    "title": "내 라이브러리",
+    "noneLinkedTitle": "연결된 계정 없음",
+    "noneLinkedDesc": "설정에서 Steam 또는 PlayStation 계정을 연결하면 여기에서 게임과 트로피를 볼 수 있습니다.",
+    "goSettings": "설정으로 이동",
+    "notLinked": "연결 안 됨"
   }
 }

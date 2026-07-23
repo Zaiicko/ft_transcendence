@@ -42,7 +42,9 @@ function formatPlaytime(minutes: number): string {
   return t('steam.playHours', { count: Math.round(minutes / 60) });
 }
 
-export default function SteamLibrary() {
+// `embedded` : rendu dans la page globale « Mes bibliothèques » (onglets par
+// plateforme) — on masque alors le titre h1, l'onglet porte déjà le nom.
+export default function SteamLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
 
@@ -147,7 +149,9 @@ export default function SteamLibrary() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
+      {!embedded && (
+        <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
+      )}
 
       {/* Amis d'abord : la biblio de jeux peut être immense, les amis se
           retrouveraient sinon enterrés tout en bas */}

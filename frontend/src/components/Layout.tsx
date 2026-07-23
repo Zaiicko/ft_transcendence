@@ -168,12 +168,12 @@ export default function Layout() {
                         {t('nav.friends')}
                       </NavLink>
                       <NavLink
-                        to="/steam"
+                        to="/library"
                         role="menuitem"
                         onClick={() => setNavOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                       >
-                        {t('nav.steam')}
+                        {t('nav.library')}
                       </NavLink>
                     </>
                   )}
@@ -204,7 +204,7 @@ export default function Layout() {
                   {t('nav.friends')}
                 </NavLink>
                 <NavLink to="/steam" className={navLink}>
-                  {t('nav.steam')}
+                  {t('nav.library')}
                 </NavLink>
               </>
             )}

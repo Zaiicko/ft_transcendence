@@ -23,7 +23,8 @@
     "friends": "Amigos",
     "steam": "Steam",
     "login": "Iniciar sessão",
-    "signup": "Criar conta"
+    "signup": "Criar conta",
+    "library": "Bibliotecas"
   },
   "menu": {
     "notifications": "Notificações",
@@ -793,5 +794,12 @@
     "writeReview": "Escrever uma crítica",
     "viewReviewOf": "Ver a sua crítica de {{title}}",
     "writeReviewOf": "Escrever uma crítica de {{title}}"
+  },
+  "library": {
+    "title": "As minhas bibliotecas",
+    "noneLinkedTitle": "Nenhuma conta associada",
+    "noneLinkedDesc": "Associe uma conta Steam ou PlayStation nas definições para ver aqui os seus jogos e troféus.",
+    "goSettings": "Ir para as definições",
+    "notLinked": "Não associada"
   }
 }

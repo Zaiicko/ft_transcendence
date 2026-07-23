@@ -23,7 +23,8 @@
     "friends": "好友",
     "steam": "Steam",
     "login": "登录",
-    "signup": "注册"
+    "signup": "注册",
+    "library": "库"
   },
   "menu": {
     "notifications": "通知",
@@ -793,5 +794,12 @@
     "writeReview": "写评价",
     "viewReviewOf": "查看你对 {{title}} 的评价",
     "writeReviewOf": "为 {{title}} 写评价"
+  },
+  "library": {
+    "title": "我的游戏库",
+    "noneLinkedTitle": "未关联账户",
+    "noneLinkedDesc": "在设置中关联 Steam 或 PlayStation 账户，即可在此查看你的游戏和奖杯。",
+    "goSettings": "前往设置",
+    "notLinked": "未关联"
   }
 }

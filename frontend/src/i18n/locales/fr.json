@@ -23,7 +23,8 @@
     "friends": "Amis",
     "steam": "Steam",
     "login": "Connexion",
-    "signup": "Inscription"
+    "signup": "Inscription",
+    "library": "Bibliothèques"
   },
   "menu": {
     "notifications": "Notifications",
@@ -793,5 +794,12 @@
     "writeReview": "Écrire un avis",
     "viewReviewOf": "Voir ton avis sur {{title}}",
     "writeReviewOf": "Écrire un avis sur {{title}}"
+  },
+  "library": {
+    "title": "Mes bibliothèques",
+    "noneLinkedTitle": "Aucun compte lié",
+    "noneLinkedDesc": "Lie un compte Steam ou PlayStation dans tes réglages pour voir tes jeux et trophées ici.",
+    "goSettings": "Aller aux réglages",
+    "notLinked": "Non lié"
   }
 }

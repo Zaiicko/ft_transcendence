@@ -23,7 +23,8 @@
     "friends": "Друзья",
     "steam": "Steam",
     "login": "Войти",
-    "signup": "Регистрация"
+    "signup": "Регистрация",
+    "library": "Библиотеки"
   },
   "menu": {
     "notifications": "Уведомления",
@@ -793,5 +794,12 @@
     "writeReview": "Написать отзыв",
     "viewReviewOf": "Посмотреть ваш отзыв об игре {{title}}",
     "writeReviewOf": "Написать отзыв об игре {{title}}"
+  },
+  "library": {
+    "title": "Мои библиотеки",
+    "noneLinkedTitle": "Нет привязанных аккаунтов",
+    "noneLinkedDesc": "Привяжите аккаунт Steam или PlayStation в настройках, чтобы видеть здесь свои игры и трофеи.",
+    "goSettings": "Перейти в настройки",
+    "notLinked": "Не привязан"
   }
 }

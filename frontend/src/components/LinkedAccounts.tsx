@@ -69,7 +69,7 @@ export default function LinkedAccounts() {
       linkHref: '/api/auth/steam',
       unlinkPath: '/auth/steam/link',
       extra: user.steamId ? (
-        <Link to="/steam" className={pill}>
+        <Link to="/library?platform=steam" className={pill}>
           {t('settings.steam.viewLibrary')}
         </Link>
       ) : undefined,
@@ -110,7 +110,7 @@ export default function LinkedAccounts() {
           {user.psnOnlineId && (
             <span className="text-xs text-zinc-500 dark:text-zinc-400">{user.psnOnlineId}</span>
           )}
-          <Link to="/psn" className={pill}>
+          <Link to="/library?platform=psn" className={pill}>
             {t('settings.psn.viewLibrary')}
           </Link>
         </>

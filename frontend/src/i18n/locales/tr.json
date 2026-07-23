@@ -23,7 +23,8 @@
     "friends": "Arkadaşlar",
     "steam": "Steam",
     "login": "Giriş yap",
-    "signup": "Kaydol"
+    "signup": "Kaydol",
+    "library": "Kütüphaneler"
   },
   "menu": {
     "notifications": "Bildirimler",
@@ -793,5 +794,12 @@
     "writeReview": "İnceleme yaz",
     "viewReviewOf": "{{title}} incelemene bak",
     "writeReviewOf": "{{title}} için inceleme yaz"
+  },
+  "library": {
+    "title": "Kütüphanelerim",
+    "noneLinkedTitle": "Bağlı hesap yok",
+    "noneLinkedDesc": "Oyunlarını ve kupalarını burada görmek için ayarlardan bir Steam veya PlayStation hesabı bağla.",
+    "goSettings": "Ayarlara git",
+    "notLinked": "Bağlı değil"
   }
 }

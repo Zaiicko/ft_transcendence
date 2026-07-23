@@ -23,7 +23,8 @@
     "friends": "Vrienden",
     "steam": "Steam",
     "login": "Inloggen",
-    "signup": "Registreren"
+    "signup": "Registreren",
+    "library": "Bibliotheken"
   },
   "menu": {
     "notifications": "Meldingen",
@@ -793,5 +794,12 @@
     "writeReview": "Recensie schrijven",
     "viewReviewOf": "Bekijk je recensie van {{title}}",
     "writeReviewOf": "Schrijf een recensie van {{title}}"
+  },
+  "library": {
+    "title": "Mijn bibliotheken",
+    "noneLinkedTitle": "Geen account gekoppeld",
+    "noneLinkedDesc": "Koppel een Steam- of PlayStation-account in je instellingen om hier je games en trofeeën te zien.",
+    "goSettings": "Naar instellingen",
+    "notLinked": "Niet gekoppeld"
   }
 }

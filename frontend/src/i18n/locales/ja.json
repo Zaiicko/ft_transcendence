@@ -23,7 +23,8 @@
     "friends": "フレンド",
     "steam": "Steam",
     "login": "ログイン",
-    "signup": "新規登録"
+    "signup": "新規登録",
+    "library": "ライブラリ"
   },
   "menu": {
     "notifications": "通知",
@@ -793,5 +794,12 @@
     "writeReview": "レビューを書く",
     "viewReviewOf": "{{title}} のあなたのレビューを見る",
     "writeReviewOf": "{{title}} のレビューを書く"
+  },
+  "library": {
+    "title": "マイライブラリ",
+    "noneLinkedTitle": "連携済みのアカウントがありません",
+    "noneLinkedDesc": "設定で Steam または PlayStation アカウントを連携すると、ここにゲームとトロフィーが表示されます。",
+    "goSettings": "設定へ",
+    "notLinked": "未連携"
   }
 }

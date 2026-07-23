@@ -78,7 +78,9 @@ function TrophyTally({ counts, className = '' }: { counts: TrophyCounts; classNa
   );
 }
 
-export default function PsnLibrary() {
+// `embedded` : rendu dans la page globale « Mes bibliothèques » — on masque le
+// titre h1 (l'onglet porte déjà le nom de la plateforme).
+export default function PsnLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const psnLinked = Boolean(user?.psnLinked);
@@ -178,7 +180,7 @@ export default function PsnLibrary() {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold tracking-tight">{t('psn.title')}</h1>
+        {!embedded && <h1 className="text-2xl font-bold tracking-tight">{t('psn.title')}</h1>}
         {user?.psnOnlineId && (
           <span className="text-sm text-zinc-500 dark:text-zinc-400">{user.psnOnlineId}</span>
         )}

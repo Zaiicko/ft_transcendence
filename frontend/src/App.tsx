@@ -16,8 +16,7 @@ import PublicProfile from './pages/PublicProfile';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import Signup from './pages/Signup';
-import PsnLibrary from './pages/PsnLibrary';
-import SteamLibrary from './pages/SteamLibrary';
+import Library from './pages/Library';
 import TermsOfService from './pages/TermsOfService';
 import VerifyEmail from './pages/VerifyEmail';
 
@@ -69,8 +68,10 @@ export default function App() {
             <Route path="/feed" element={<Feed />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/friends" element={<Friends />} />
-            <Route path="/steam" element={<SteamLibrary />} />
-            <Route path="/psn" element={<PsnLibrary />} />
+            <Route path="/library" element={<Library />} />
+            {/* Anciennes routes → page globale (rétro-compat liens/onglets) */}
+            <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />
+            <Route path="/psn" element={<Navigate to="/library?platform=psn" replace />} />
           </Route>
         </Route>
       </Routes>
