@@ -423,8 +423,9 @@ export default function Layout() {
         </div>
       )}
 
-      {/* Messagerie flottante (bas-droite) — visible uniquement connecté */}
-      <ChatWidget />
+      {/* Messagerie flottante (bas-droite) — montée uniquement si connecté :
+          sinon l'effet de ChatWidget appelle /chat/conversations → 401. */}
+      {user && <ChatWidget />}
     </div>
   );
 }
