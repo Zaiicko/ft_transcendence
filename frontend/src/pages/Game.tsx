@@ -1,5 +1,6 @@
+import gsap from 'gsap';
 import type { TFunction } from 'i18next';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import AddToListButton from '../components/AddToListButton';
@@ -32,17 +33,36 @@ export default function Game() {
   // Bumpé quand on poste un avis : le back marque alors le jeu "fait"
   // automatiquement, ce compteur force PlayedButton à recharger son état.
   const [playedRefresh, setPlayedRefresh] = useState(0);
+  const summaryRef = useRef<HTMLParagraphElement>(null);
+  // Mémorise le dernier résumé par jeu pour ne faire le fondu QUE sur le
+  // remplacement par la traduction (pas à l'affichage initial ni au changement
+  // de jeu).
+  const summarySeen = useRef<{ id: number; summary: string | null } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    // Description is translated server-side and cached there. apiLang folds
-    // regional variants (fr-FR → fr) and returns '' for English or an
-    // unsupported code, so the server's @IsIn(SUPPORTED_LANGUAGES) never 400s.
-    const lang = apiLang();
-    const query = lang ? `?lang=${lang}` : '';
-    apiFetch<GameSummary>(`/games/${gameId}${query}`)
+    // Chargement principal SANS traduction → instantané (le résumé arrive en
+    // anglais). La traduction (appel DeepL lent au 1er affichage) est ensuite
+    // récupérée EN ARRIÈRE-PLAN et remplace juste le résumé, sans bloquer
+    // l'affichage de l'en-tête, de la jaquette et des avis. apiLang folds
+    // fr-FR→fr et renvoie '' pour l'anglais (pas de 2e requête inutile).
+    apiFetch<GameSummary>(`/games/${gameId}`)
       .then((g) => {
-        if (!cancelled) setLoaded({ id: gameId, game: g });
+        if (cancelled) return;
+        setLoaded({ id: gameId, game: g });
+        const lang = apiLang();
+        if (!lang) return;
+        apiFetch<GameSummary>(`/games/${gameId}?lang=${lang}`)
+          .then((translated) => {
+            if (cancelled) return;
+            // Tagué par id : on n'écrase que si c'est toujours le même jeu.
+            setLoaded((cur) =>
+              cur?.id === gameId && cur.game
+                ? { id: gameId, game: { ...cur.game, summary: translated.summary } }
+                : cur,
+            );
+          })
+          .catch(() => {});
       })
       .catch(() => {
         if (!cancelled) setLoaded({ id: gameId, game: null });
@@ -53,6 +73,22 @@ export default function Game() {
   }, [gameId, i18n.language]);
 
   const game = loaded?.id === gameId ? loaded.game : undefined;
+
+  // Fondu doux quand la traduction (arrivée en arrière-plan) remplace le résumé
+  // anglais : opacité + léger flou, bien plus fluide qu'un swap sec.
+  useEffect(() => {
+    const cur = game?.summary ?? null;
+    const seen = summarySeen.current;
+    const isTranslationSwap = !!(seen && seen.id === gameId && seen.summary && cur && seen.summary !== cur);
+    summarySeen.current = { id: gameId, summary: cur };
+    if (isTranslationSwap && summaryRef.current) {
+      gsap.fromTo(
+        summaryRef.current,
+        { opacity: 0, filter: 'blur(6px)' },
+        { opacity: 1, filter: 'blur(0px)', duration: 0.55, ease: 'power2.out' },
+      );
+    }
+  }, [game?.summary, gameId]);
 
   if (game === null) return <p className="py-24 text-center text-zinc-400">{t('game.notFound')}</p>;
   if (!game)
@@ -201,7 +237,10 @@ export default function Game() {
       )}
 
       {game.summary && (
-        <p className="max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+        <p
+          ref={summaryRef}
+          className="max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300"
+        >
           {game.summary}
         </p>
       )}

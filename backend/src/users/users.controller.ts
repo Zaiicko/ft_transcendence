@@ -27,12 +27,16 @@ import { hashPassword, verifyPassword } from '../auth/password.util';
 import { AVATARS_DIR } from '../common/uploads';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 import { SetPasswordDto } from './dto/set-password.dto';
+import { AvatarFrameDto } from './dto/avatar-frame.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { toPublicUser } from './public-user';
 import { UsersService } from './users.service';
 
-const ALLOWED_AVATAR_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
-const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
+// image/gif inclus : l'avatar est stocké tel quel (aucun ré-encodage), donc le
+// GIF animé est servi et s'anime dans le <img>. 4 Mo reste sous le plafond
+// nginx (client_max_body_size 5m), assez pour un GIF d'avatar.
+const ALLOWED_AVATAR_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const MAX_AVATAR_BYTES = 4 * 1024 * 1024;
 
 @Controller('users')
 export class UsersController {
@@ -130,7 +134,7 @@ export class UsersController {
     }),
   )
   async uploadAvatar(@CurrentUser() current: JwtPayload, @UploadedFile() file?: Express.Multer.File) {
-    if (!file) throw new BadRequestException('Provide a jpeg, png or webp image up to 2MB');
+    if (!file) throw new BadRequestException('Provide a jpeg, png, webp or gif image up to 4MB');
 
     const user = await this.usersService.findById(current.sub);
     if (user?.avatarUrl) await this.usersService.deleteAvatarFile(user.avatarUrl);
@@ -138,6 +142,25 @@ export class UsersController {
     const updated = await this.usersService.update(current.sub, {
       avatarUrl: `/api/uploads/avatars/${file.filename}`,
     });
+    return toPublicUser(updated);
+  }
+
+  // Zoom/centrage de l'avatar : encodé dans avatarUrl via #af=scale,x,y. Ce
+  // fragment n'est jamais envoyé au serveur au fetch de l'image (le navigateur
+  // le retire), mais accompagne avatarUrl dans toutes les réponses → le cadrage
+  // s'applique sur tous les profils sans dupliquer de champs. Défaut (1,0,0) =
+  // pas de fragment (URL propre).
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/avatar-frame')
+  async setAvatarFrame(@CurrentUser() current: JwtPayload, @Body() dto: AvatarFrameDto) {
+    const user = await this.usersService.findById(current.sub);
+    if (!user?.avatarUrl) throw new BadRequestException('No avatar to frame');
+    const base = user.avatarUrl.split('#')[0];
+    const framed =
+      dto.scale === 1 && dto.x === 0 && dto.y === 0
+        ? base
+        : `${base}#af=${dto.scale},${dto.x},${dto.y}`;
+    const updated = await this.usersService.update(current.sub, { avatarUrl: framed });
     return toPublicUser(updated);
   }
 }

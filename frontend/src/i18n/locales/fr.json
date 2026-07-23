@@ -221,7 +221,12 @@
       "notConfigured": "L'import PlayStation n'est pas encore configuré côté serveur. Réessaie plus tard.",
       "genericError": "La connexion a échoué. Réessaie.",
       "viewLibrary": "Voir ma bibliothèque PlayStation"
-    }
+    },
+    "adjustAvatar": "Ajuster",
+    "avatarReset": "Réinitialiser",
+    "avatarFrameHint": "Glissez pour déplacer, curseur pour zoomer",
+    "avatarZoom": "Zoom",
+    "chooseImage": "Choisir une image"
   },
   "friends": {
     "title": "Amis",

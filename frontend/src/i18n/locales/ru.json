@@ -221,7 +221,12 @@
       "notConfigured": "Импорт PlayStation ещё не настроен на сервере. Попробуйте позже.",
       "genericError": "Не удалось подключиться. Попробуйте ещё раз.",
       "viewLibrary": "Моя библиотека PlayStation"
-    }
+    },
+    "adjustAvatar": "Настроить",
+    "avatarReset": "Сбросить",
+    "avatarFrameHint": "Перетащите, чтобы переместить, ползунок для масштаба",
+    "avatarZoom": "Масштаб",
+    "chooseImage": "Выбрать изображение"
   },
   "friends": {
     "title": "Друзья",

@@ -221,7 +221,12 @@
       "notConfigured": "PlayStation-import is nog niet ingesteld op de server. Probeer het later opnieuw.",
       "genericError": "Koppelen mislukt. Probeer het opnieuw.",
       "viewLibrary": "Mijn PlayStation-bibliotheek bekijken"
-    }
+    },
+    "adjustAvatar": "Aanpassen",
+    "avatarReset": "Herstellen",
+    "avatarFrameHint": "Sleep om te verplaatsen, schuif om te zoomen",
+    "avatarZoom": "Zoom",
+    "chooseImage": "Kies een afbeelding"
   },
   "friends": {
     "title": "Vrienden",

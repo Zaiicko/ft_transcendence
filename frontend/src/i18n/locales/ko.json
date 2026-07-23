@@ -221,7 +221,12 @@
       "notConfigured": "서버에 PlayStation 가져오기가 아직 설정되지 않았습니다. 나중에 다시 시도하세요.",
       "genericError": "연결에 실패했습니다. 다시 시도하세요.",
       "viewLibrary": "내 PlayStation 라이브러리 보기"
-    }
+    },
+    "adjustAvatar": "조정",
+    "avatarReset": "초기화",
+    "avatarFrameHint": "드래그하여 이동, 슬라이더로 확대",
+    "avatarZoom": "확대",
+    "chooseImage": "이미지 선택"
   },
   "friends": {
     "title": "친구",

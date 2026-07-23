@@ -221,7 +221,12 @@
       "notConfigured": "Import PlayStation nie jest jeszcze skonfigurowany na serwerze. Spróbuj później.",
       "genericError": "Połączenie nie powiodło się. Spróbuj ponownie.",
       "viewLibrary": "Zobacz moją bibliotekę PlayStation"
-    }
+    },
+    "adjustAvatar": "Dostosuj",
+    "avatarReset": "Resetuj",
+    "avatarFrameHint": "Przeciągnij, aby przesunąć, suwak do przybliżania",
+    "avatarZoom": "Powiększenie",
+    "chooseImage": "Wybierz obraz"
   },
   "friends": {
     "title": "Znajomi",
