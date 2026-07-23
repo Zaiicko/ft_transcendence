@@ -218,7 +218,8 @@
       "alreadyLinked": "To konto PlayStation jest już połączone z innym profilem.",
       "invalidId": "To nie wygląda na prawidłowy identyfikator online PSN (3–16 liter, cyfr, - lub _).",
       "notConfigured": "Import PlayStation nie jest jeszcze skonfigurowany na serwerze. Spróbuj później.",
-      "genericError": "Połączenie nie powiodło się. Spróbuj ponownie."
+      "genericError": "Połączenie nie powiodło się. Spróbuj ponownie.",
+      "viewLibrary": "Zobacz moją bibliotekę PlayStation"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Połącz konto PlayStation, aby zaimportować gry, trofea i znajomych.",
+    "linkCta": "Przejdź do ustawień",
+    "loadError": "Nie udało się wczytać danych PlayStation.",
+    "friendsHeading": "Znajomi z PlayStation na Saveboxd",
+    "friendsPrivate": "Twoja lista znajomych PlayStation jest prywatna.",
+    "noFriendsTitle": "Brak znajomych do zaproponowania",
+    "noFriendsDesc": "Żaden z Twoich znajomych z PlayStation nie jest jeszcze na Saveboxd.",
+    "requestSent": "Wysłano zaproszenie",
+    "addFriend": "Dodaj",
+    "friendRequestError": "Nie udało się wysłać zaproszenia do znajomych.",
+    "yourGames": "Twoje gry",
+    "gamesPrivate": "Twoje gry PlayStation są prywatne.",
+    "played": "Zagrane gry: {{totalPlayed}} · {{matched}} znaleziono w naszym katalogu",
+    "playedUnmatched": "Zagrane gry: {{totalPlayed}} · {{matched}} znaleziono · {{unmatched}} spoza katalogu",
+    "noMatchedTitle": "Brak pasujących gier",
+    "noMatchedDesc": "Żadna z Twoich gier PlayStation nie jest jeszcze w naszym katalogu.",
+    "trophyLevel": "Poziom trofeów",
+    "trophiesEarned": "Zdobyte trofea",
+    "trophyProgress": "{{earned}}/{{total}} trofeów · {{progress}} %",
+    "statusPlaying": "W trakcie",
+    "statusBacklog": "Do zagrania",
+    "reviewWritten": "Recenzja napisana",
+    "writeReview": "Napisz recenzję",
+    "viewReviewOf": "Zobacz swoją recenzję gry {{title}}",
+    "writeReviewOf": "Napisz recenzję gry {{title}}"
   }
 }

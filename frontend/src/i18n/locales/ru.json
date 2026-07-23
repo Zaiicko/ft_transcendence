@@ -218,7 +218,8 @@
       "alreadyLinked": "Этот аккаунт PlayStation уже привязан к другому профилю.",
       "invalidId": "Это не похоже на корректный сетевой ID PSN (3–16 букв, цифр, - или _).",
       "notConfigured": "Импорт PlayStation ещё не настроен на сервере. Попробуйте позже.",
-      "genericError": "Не удалось подключиться. Попробуйте ещё раз."
+      "genericError": "Не удалось подключиться. Попробуйте ещё раз.",
+      "viewLibrary": "Моя библиотека PlayStation"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Привяжите аккаунт PlayStation, чтобы импортировать игры, трофеи и друзей.",
+    "linkCta": "Перейти в настройки",
+    "loadError": "Не удалось загрузить данные PlayStation.",
+    "friendsHeading": "Друзья PlayStation в Saveboxd",
+    "friendsPrivate": "Ваш список друзей PlayStation закрыт.",
+    "noFriendsTitle": "Некого предложить",
+    "noFriendsDesc": "Никто из ваших друзей PlayStation пока не в Saveboxd.",
+    "requestSent": "Запрос отправлен",
+    "addFriend": "Добавить",
+    "friendRequestError": "Не удалось отправить запрос в друзья.",
+    "yourGames": "Ваши игры",
+    "gamesPrivate": "Ваши игры PlayStation закрыты.",
+    "played": "Сыграно игр: {{totalPlayed}} · {{matched}} найдено в нашем каталоге",
+    "playedUnmatched": "Сыграно игр: {{totalPlayed}} · {{matched}} найдено · {{unmatched}} нет в каталоге",
+    "noMatchedTitle": "Нет совпадающих игр",
+    "noMatchedDesc": "Ни одной из ваших игр PlayStation пока нет в нашем каталоге.",
+    "trophyLevel": "Уровень трофеев",
+    "trophiesEarned": "Получено трофеев",
+    "trophyProgress": "{{earned}}/{{total}} трофеев · {{progress}} %",
+    "statusPlaying": "Играю",
+    "statusBacklog": "В планах",
+    "reviewWritten": "Отзыв написан",
+    "writeReview": "Написать отзыв",
+    "viewReviewOf": "Посмотреть ваш отзыв об игре {{title}}",
+    "writeReviewOf": "Написать отзыв об игре {{title}}"
   }
 }

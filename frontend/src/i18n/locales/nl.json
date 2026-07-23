@@ -218,7 +218,8 @@
       "alreadyLinked": "Dit PlayStation-account is al aan een ander profiel gekoppeld.",
       "invalidId": "Dat lijkt geen geldige PSN Online ID (3–16 letters, cijfers, - of _).",
       "notConfigured": "PlayStation-import is nog niet ingesteld op de server. Probeer het later opnieuw.",
-      "genericError": "Koppelen mislukt. Probeer het opnieuw."
+      "genericError": "Koppelen mislukt. Probeer het opnieuw.",
+      "viewLibrary": "Mijn PlayStation-bibliotheek bekijken"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Koppel je PlayStation-account om je games, trofeeën en vrienden te importeren.",
+    "linkCta": "Naar instellingen",
+    "loadError": "Je PlayStation-gegevens konden niet worden geladen.",
+    "friendsHeading": "PlayStation-vrienden op Saveboxd",
+    "friendsPrivate": "Je PlayStation-vriendenlijst is privé.",
+    "noFriendsTitle": "Geen vrienden om voor te stellen",
+    "noFriendsDesc": "Nog geen van je PlayStation-vrienden staat op Saveboxd.",
+    "requestSent": "Verzoek verzonden",
+    "addFriend": "Toevoegen",
+    "friendRequestError": "Het vriendschapsverzoek kon niet worden verzonden.",
+    "yourGames": "Je games",
+    "gamesPrivate": "Je PlayStation-games zijn privé.",
+    "played": "{{totalPlayed}} games gespeeld · {{matched}} gevonden in onze catalogus",
+    "playedUnmatched": "{{totalPlayed}} games gespeeld · {{matched}} gevonden · {{unmatched}} niet in onze catalogus",
+    "noMatchedTitle": "Geen overeenkomende games",
+    "noMatchedDesc": "Nog geen van je PlayStation-games staat in onze catalogus.",
+    "trophyLevel": "Trofeeniveau",
+    "trophiesEarned": "Verdiende trofeeën",
+    "trophyProgress": "{{earned}}/{{total}} trofeeën · {{progress}} %",
+    "statusPlaying": "Bezig",
+    "statusBacklog": "Backlog",
+    "reviewWritten": "Recensie geschreven",
+    "writeReview": "Recensie schrijven",
+    "viewReviewOf": "Bekijk je recensie van {{title}}",
+    "writeReviewOf": "Schrijf een recensie van {{title}}"
   }
 }

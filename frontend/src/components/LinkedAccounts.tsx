@@ -105,10 +105,16 @@ export default function LinkedAccounts() {
       linked: user.psnLinked,
       onLink: () => setPsnModalOpen(true),
       unlinkPath: '/psn/link',
-      extra:
-        user.psnLinked && user.psnOnlineId ? (
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">{user.psnOnlineId}</span>
-        ) : undefined,
+      extra: user.psnLinked ? (
+        <>
+          {user.psnOnlineId && (
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">{user.psnOnlineId}</span>
+          )}
+          <Link to="/psn" className={pill}>
+            {t('settings.psn.viewLibrary')}
+          </Link>
+        </>
+      ) : undefined,
     },
   ];
 

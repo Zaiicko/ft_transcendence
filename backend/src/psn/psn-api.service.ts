@@ -3,14 +3,26 @@ import { ConfigService } from '@nestjs/config';
 import {
   exchangeAccessCodeForAuthTokens,
   exchangeNpssoForAccessCode,
+  getUserFriendsAccountIds,
+  getUserTitles,
+  getUserTrophyProfileSummary,
   makeUniversalSearch,
   type AuthorizationPayload,
+  type TrophyCounts,
+  type TrophyTitle,
 } from 'psn-api';
 
 export interface PsnAccount {
   accountId: string;
   onlineId: string;
   avatarUrl: string | null;
+}
+
+export interface PsnTrophySummary {
+  level: number;
+  tier: number;
+  progress: number; // % vers le niveau suivant
+  earned: TrophyCounts; // { bronze, silver, gold, platinum }
 }
 
 // PSN n'a pas d'API publique et pas d'OAuth ouvert. Modèle "infinitebacklog" :
@@ -88,5 +100,53 @@ export class PsnApiService {
       }
     }
     return null;
+  }
+
+  // Jeux joués (titres à trophées) d'un compte, triés par déblocage récent.
+  // null = profil dont les jeux/trophées ne sont pas publics.
+  async getTitles(accountId: string): Promise<TrophyTitle[] | null> {
+    const auth = await this.serviceAuth();
+    try {
+      const res = await getUserTitles(auth, accountId, { limit: 800 });
+      return res.trophyTitles ?? [];
+    } catch (e) {
+      this.logger.warn(`getUserTitles(${accountId}) échoué (profil privé ?): ${this.msg(e)}`);
+      return null;
+    }
+  }
+
+  // Résumé de trophées (niveau, palier, progression, compteurs par grade).
+  // null = profil privé.
+  async getTrophySummary(accountId: string): Promise<PsnTrophySummary | null> {
+    const auth = await this.serviceAuth();
+    try {
+      const s = await getUserTrophyProfileSummary(auth, accountId);
+      const level = Number(s.trophyLevel);
+      return {
+        level: Number.isFinite(level) ? level : 0,
+        tier: s.tier,
+        progress: s.progress,
+        earned: s.earnedTrophies,
+      };
+    } catch (e) {
+      this.logger.warn(`getUserTrophyProfileSummary(${accountId}) échoué: ${this.msg(e)}`);
+      return null;
+    }
+  }
+
+  // accountId des amis PSN d'un compte. null = liste d'amis non publique.
+  async getFriendAccountIds(accountId: string): Promise<string[] | null> {
+    const auth = await this.serviceAuth();
+    try {
+      const res = await getUserFriendsAccountIds(auth, accountId, { limit: 1000 });
+      return res.friends ?? [];
+    } catch (e) {
+      this.logger.warn(`getUserFriendsAccountIds(${accountId}) échoué: ${this.msg(e)}`);
+      return null;
+    }
+  }
+
+  private msg(e: unknown): string {
+    return e instanceof Error ? e.message : String(e);
   }
 }

@@ -218,7 +218,8 @@
       "alreadyLinked": "Bu PlayStation hesabı zaten başka bir profile bağlı.",
       "invalidId": "Bu geçerli bir PSN Online ID'ye benzemiyor (3–16 harf, rakam, - veya _).",
       "notConfigured": "PlayStation içe aktarımı sunucuda henüz ayarlanmadı. Daha sonra tekrar dene.",
-      "genericError": "Bağlantı başarısız oldu. Lütfen tekrar dene."
+      "genericError": "Bağlantı başarısız oldu. Lütfen tekrar dene.",
+      "viewLibrary": "PlayStation kütüphanemi gör"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Oyunlarını, kupalarını ve arkadaşlarını içe aktarmak için PlayStation hesabını bağla.",
+    "linkCta": "Ayarlara git",
+    "loadError": "PlayStation verilerin yüklenemedi.",
+    "friendsHeading": "Saveboxd'daki PlayStation arkadaşları",
+    "friendsPrivate": "PlayStation arkadaş listen gizli.",
+    "noFriendsTitle": "Önerilecek arkadaş yok",
+    "noFriendsDesc": "PlayStation arkadaşlarının hiçbiri henüz Saveboxd'da değil.",
+    "requestSent": "İstek gönderildi",
+    "addFriend": "Ekle",
+    "friendRequestError": "Arkadaşlık isteği gönderilemedi.",
+    "yourGames": "Oyunların",
+    "gamesPrivate": "PlayStation oyunların gizli.",
+    "played": "{{totalPlayed}} oyun oynandı · {{matched}} kataloğumuzda bulundu",
+    "playedUnmatched": "{{totalPlayed}} oyun oynandı · {{matched}} bulundu · {{unmatched}} katalogda yok",
+    "noMatchedTitle": "Eşleşen oyun yok",
+    "noMatchedDesc": "PlayStation oyunlarının hiçbiri henüz kataloğumuzda değil.",
+    "trophyLevel": "Kupa seviyesi",
+    "trophiesEarned": "Kazanılan kupalar",
+    "trophyProgress": "{{earned}}/{{total}} kupa · %{{progress}}",
+    "statusPlaying": "Oynanıyor",
+    "statusBacklog": "Bekleyen",
+    "reviewWritten": "İnceleme yazıldı",
+    "writeReview": "İnceleme yaz",
+    "viewReviewOf": "{{title}} incelemene bak",
+    "writeReviewOf": "{{title}} için inceleme yaz"
   }
 }

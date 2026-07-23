@@ -218,7 +218,8 @@
       "alreadyLinked": "Questo account PlayStation è già collegato a un altro profilo.",
       "invalidId": "Questo ID online PSN non sembra valido (3–16 lettere, cifre, - o _).",
       "notConfigured": "L'importazione PlayStation non è ancora configurata sul server. Riprova più tardi.",
-      "genericError": "Connessione non riuscita. Riprova."
+      "genericError": "Connessione non riuscita. Riprova.",
+      "viewLibrary": "Vedi la mia libreria PlayStation"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Collega il tuo account PlayStation per importare giochi, trofei e amici.",
+    "linkCta": "Vai alle impostazioni",
+    "loadError": "Impossibile caricare i tuoi dati PlayStation.",
+    "friendsHeading": "Amici PlayStation su Saveboxd",
+    "friendsPrivate": "La tua lista amici PlayStation è privata.",
+    "noFriendsTitle": "Nessun amico da suggerire",
+    "noFriendsDesc": "Nessuno dei tuoi amici PlayStation è ancora su Saveboxd.",
+    "requestSent": "Richiesta inviata",
+    "addFriend": "Aggiungi",
+    "friendRequestError": "Impossibile inviare la richiesta di amicizia.",
+    "yourGames": "I tuoi giochi",
+    "gamesPrivate": "I tuoi giochi PlayStation sono privati.",
+    "played": "{{totalPlayed}} giochi giocati · {{matched}} trovati nel nostro catalogo",
+    "playedUnmatched": "{{totalPlayed}} giochi giocati · {{matched}} trovati · {{unmatched}} assenti dal catalogo",
+    "noMatchedTitle": "Nessun gioco corrispondente",
+    "noMatchedDesc": "Nessuno dei tuoi giochi PlayStation è ancora nel nostro catalogo.",
+    "trophyLevel": "Livello trofei",
+    "trophiesEarned": "Trofei ottenuti",
+    "trophyProgress": "{{earned}}/{{total}} trofei · {{progress}} %",
+    "statusPlaying": "In corso",
+    "statusBacklog": "Da giocare",
+    "reviewWritten": "Recensione scritta",
+    "writeReview": "Scrivi una recensione",
+    "viewReviewOf": "Vedi la tua recensione di {{title}}",
+    "writeReviewOf": "Scrivi una recensione di {{title}}"
   }
 }

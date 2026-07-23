@@ -218,7 +218,8 @@
       "alreadyLinked": "この PlayStation アカウントは別のプロフィールにすでに連携されています。",
       "invalidId": "有効な PSN オンライン ID ではないようです（3〜16 文字の英数字、-、_）。",
       "notConfigured": "PlayStation インポートはサーバーでまだ設定されていません。後でもう一度お試しください。",
-      "genericError": "接続に失敗しました。もう一度お試しください。"
+      "genericError": "接続に失敗しました。もう一度お試しください。",
+      "viewLibrary": "PlayStation ライブラリを見る"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "PlayStation アカウントを連携して、ゲーム・トロフィー・フレンドをインポートします。",
+    "linkCta": "設定へ",
+    "loadError": "PlayStation のデータを読み込めませんでした。",
+    "friendsHeading": "Saveboxd の PlayStation フレンド",
+    "friendsPrivate": "PlayStation のフレンドリストは非公開です。",
+    "noFriendsTitle": "提案できるフレンドがいません",
+    "noFriendsDesc": "PlayStation のフレンドはまだ誰も Saveboxd にいません。",
+    "requestSent": "リクエスト送信済み",
+    "addFriend": "追加",
+    "friendRequestError": "フレンドリクエストを送信できませんでした。",
+    "yourGames": "あなたのゲーム",
+    "gamesPrivate": "PlayStation のゲームは非公開です。",
+    "played": "{{totalPlayed}} 本プレイ · {{matched}} 本がカタログに一致",
+    "playedUnmatched": "{{totalPlayed}} 本プレイ · {{matched}} 本一致 · {{unmatched}} 本はカタログにありません",
+    "noMatchedTitle": "一致するゲームがありません",
+    "noMatchedDesc": "あなたの PlayStation のゲームはまだカタログにありません。",
+    "trophyLevel": "トロフィーレベル",
+    "trophiesEarned": "獲得トロフィー",
+    "trophyProgress": "{{earned}}/{{total}} トロフィー · {{progress}}%",
+    "statusPlaying": "プレイ中",
+    "statusBacklog": "積みゲー",
+    "reviewWritten": "レビュー済み",
+    "writeReview": "レビューを書く",
+    "viewReviewOf": "{{title}} のあなたのレビューを見る",
+    "writeReviewOf": "{{title}} のレビューを書く"
   }
 }

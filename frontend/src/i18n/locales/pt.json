@@ -218,7 +218,8 @@
       "alreadyLinked": "Esta conta PlayStation já está associada a outro perfil.",
       "invalidId": "Esse ID online PSN não parece válido (3–16 letras, dígitos, - ou _).",
       "notConfigured": "A importação da PlayStation ainda não está configurada no servidor. Tente mais tarde.",
-      "genericError": "A ligação falhou. Tente novamente."
+      "genericError": "A ligação falhou. Tente novamente.",
+      "viewLibrary": "Ver a minha biblioteca PlayStation"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Associe a sua conta PlayStation para importar os seus jogos, troféus e amigos.",
+    "linkCta": "Ir para as definições",
+    "loadError": "Não foi possível carregar os seus dados PlayStation.",
+    "friendsHeading": "Amigos PlayStation no Saveboxd",
+    "friendsPrivate": "A sua lista de amigos PlayStation é privada.",
+    "noFriendsTitle": "Nenhum amigo a sugerir",
+    "noFriendsDesc": "Nenhum dos seus amigos PlayStation está ainda no Saveboxd.",
+    "requestSent": "Pedido enviado",
+    "addFriend": "Adicionar",
+    "friendRequestError": "Não foi possível enviar o pedido de amizade.",
+    "yourGames": "Os seus jogos",
+    "gamesPrivate": "Os seus jogos PlayStation são privados.",
+    "played": "{{totalPlayed}} jogos jogados · {{matched}} encontrados no nosso catálogo",
+    "playedUnmatched": "{{totalPlayed}} jogos jogados · {{matched}} encontrados · {{unmatched}} ausentes do catálogo",
+    "noMatchedTitle": "Nenhum jogo correspondente",
+    "noMatchedDesc": "Nenhum dos seus jogos PlayStation está ainda no nosso catálogo.",
+    "trophyLevel": "Nível de troféus",
+    "trophiesEarned": "Troféus obtidos",
+    "trophyProgress": "{{earned}}/{{total}} troféus · {{progress}} %",
+    "statusPlaying": "A jogar",
+    "statusBacklog": "Por jogar",
+    "reviewWritten": "Crítica escrita",
+    "writeReview": "Escrever uma crítica",
+    "viewReviewOf": "Ver a sua crítica de {{title}}",
+    "writeReviewOf": "Escrever uma crítica de {{title}}"
   }
 }

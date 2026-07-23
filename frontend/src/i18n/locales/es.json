@@ -218,7 +218,8 @@
       "alreadyLinked": "Esta cuenta de PlayStation ya está vinculada a otro perfil.",
       "invalidId": "Ese ID online de PSN no parece válido (3–16 letras, dígitos, - o _).",
       "notConfigured": "La importación de PlayStation aún no está configurada en el servidor. Inténtalo más tarde.",
-      "genericError": "La conexión falló. Inténtalo de nuevo."
+      "genericError": "La conexión falló. Inténtalo de nuevo.",
+      "viewLibrary": "Ver mi biblioteca de PlayStation"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Vincula tu cuenta de PlayStation para importar tus juegos, trofeos y amigos.",
+    "linkCta": "Ir a ajustes",
+    "loadError": "No se pudieron cargar tus datos de PlayStation.",
+    "friendsHeading": "Amigos de PlayStation en Saveboxd",
+    "friendsPrivate": "Tu lista de amigos de PlayStation es privada.",
+    "noFriendsTitle": "No hay amigos que sugerir",
+    "noFriendsDesc": "Ninguno de tus amigos de PlayStation está aún en Saveboxd.",
+    "requestSent": "Solicitud enviada",
+    "addFriend": "Añadir",
+    "friendRequestError": "No se pudo enviar la solicitud de amistad.",
+    "yourGames": "Tus juegos",
+    "gamesPrivate": "Tus juegos de PlayStation son privados.",
+    "played": "{{totalPlayed}} juegos jugados · {{matched}} encontrados en nuestro catálogo",
+    "playedUnmatched": "{{totalPlayed}} juegos jugados · {{matched}} encontrados · {{unmatched}} ausentes del catálogo",
+    "noMatchedTitle": "No hay juegos coincidentes",
+    "noMatchedDesc": "Ninguno de tus juegos de PlayStation está aún en nuestro catálogo.",
+    "trophyLevel": "Nivel de trofeos",
+    "trophiesEarned": "Trofeos obtenidos",
+    "trophyProgress": "{{earned}}/{{total}} trofeos · {{progress}} %",
+    "statusPlaying": "Jugando",
+    "statusBacklog": "Pendiente",
+    "reviewWritten": "Reseña escrita",
+    "writeReview": "Escribir una reseña",
+    "viewReviewOf": "Ver tu reseña de {{title}}",
+    "writeReviewOf": "Escribir una reseña de {{title}}"
   }
 }

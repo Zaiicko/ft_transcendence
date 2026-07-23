@@ -218,7 +218,8 @@
       "alreadyLinked": "此 PlayStation 账户已关联到其他个人资料。",
       "invalidId": "这看起来不是有效的 PSN 在线 ID（3–16 个字母、数字、- 或 _）。",
       "notConfigured": "服务器尚未配置 PlayStation 导入功能。请稍后再试。",
-      "genericError": "连接失败。请重试。"
+      "genericError": "连接失败。请重试。",
+      "viewLibrary": "查看我的 PlayStation 库"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "关联你的 PlayStation 账户以导入你的游戏、奖杯和好友。",
+    "linkCta": "前往设置",
+    "loadError": "无法加载你的 PlayStation 数据。",
+    "friendsHeading": "Saveboxd 上的 PlayStation 好友",
+    "friendsPrivate": "你的 PlayStation 好友列表是私密的。",
+    "noFriendsTitle": "没有可推荐的好友",
+    "noFriendsDesc": "你的 PlayStation 好友还没有人在 Saveboxd 上。",
+    "requestSent": "请求已发送",
+    "addFriend": "添加",
+    "friendRequestError": "无法发送好友请求。",
+    "yourGames": "你的游戏",
+    "gamesPrivate": "你的 PlayStation 游戏是私密的。",
+    "played": "已玩 {{totalPlayed}} 款游戏 · 其中 {{matched}} 款在我们的目录中",
+    "playedUnmatched": "已玩 {{totalPlayed}} 款游戏 · {{matched}} 款已匹配 · {{unmatched}} 款不在目录中",
+    "noMatchedTitle": "没有匹配的游戏",
+    "noMatchedDesc": "你的 PlayStation 游戏还没有在我们的目录中。",
+    "trophyLevel": "奖杯等级",
+    "trophiesEarned": "已获得奖杯",
+    "trophyProgress": "{{earned}}/{{total}} 个奖杯 · {{progress}}%",
+    "statusPlaying": "进行中",
+    "statusBacklog": "待玩",
+    "reviewWritten": "已写评价",
+    "writeReview": "写评价",
+    "viewReviewOf": "查看你对 {{title}} 的评价",
+    "writeReviewOf": "为 {{title}} 写评价"
   }
 }

@@ -1,21 +1,29 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
   Delete,
+  Get,
   HttpCode,
   NotFoundException,
   Post,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import type { TrophyTitle } from 'psn-api';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
 import { LinkPsnDto } from './dto/link-psn.dto';
 import { PsnApiService } from './psn-api.service';
+
+// Normalise un titre pour le matching PSN↔catalogue : minuscules + on ne garde
+// que lettres/chiffres (retire ™®©, espaces, ponctuation, éditions "™").
+const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 @UseGuards(JwtAuthGuard)
 @Controller('psn')
@@ -25,6 +33,15 @@ export class PsnController {
     private readonly users: UsersService,
     private readonly api: PsnApiService,
   ) {}
+
+  private async requireAccountId(userId: number): Promise<string> {
+    const user = await this.users.findById(userId);
+    if (!user) throw new UnauthorizedException();
+    if (!user.psnAccountId) {
+      throw new BadRequestException('Aucun compte PlayStation lié — lie-le d’abord dans les réglages');
+    }
+    return user.psnAccountId;
+  }
 
   // Rattache un compte PlayStation : on résout le PSN Online ID déclaré en
   // accountId via la session service, puis on stocke l'ID + l'accountId (aucun
@@ -36,7 +53,6 @@ export class PsnController {
       throw new NotFoundException('Aucun compte PlayStation public trouvé pour cet Online ID');
     }
 
-    // Un même compte PSN ne peut être rattaché qu'à un seul utilisateur
     const owner = await this.prisma.user.findUnique({
       where: { psnAccountId: account.accountId },
     });
@@ -57,11 +73,132 @@ export class PsnController {
   async unlink(@CurrentUser() current: JwtPayload) {
     const user = await this.users.findById(current.sub);
     if (!user) throw new UnauthorizedException();
-    // PSN est un rattachement import-only (jamais un moyen de connexion), donc
-    // pas de garde anti-lockout comme pour Steam/Discord.
     await this.prisma.user.update({
       where: { id: current.sub },
       data: { psnAccountId: null, psnOnlineId: null },
     });
+  }
+
+  // Bibliothèque PSN : les jeux joués (titres à trophées) matchés à notre
+  // catalogue par nom, avec la progression de trophées par jeu, + le résumé
+  // global de trophées. Miroir de GET /steam/library.
+  @Get('library')
+  async library(@CurrentUser() current: JwtPayload) {
+    const accountId = await this.requireAccountId(current.sub);
+
+    const [titles, summary] = await Promise.all([
+      this.api.getTitles(accountId),
+      this.api.getTrophySummary(accountId),
+    ]);
+    if (titles === null) {
+      return { private: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary };
+    }
+
+    const matched = await this.matchTitles(current.sub, titles);
+    return {
+      private: false,
+      totalPlayed: titles.length,
+      matched,
+      unmatchedCount: titles.length - matched.length,
+      summary,
+    };
+  }
+
+  // Amis PSN déjà inscrits sur Saveboxd et pas encore amis (ni en attente) avec
+  // l'utilisateur courant. Miroir de GET /steam/friends/suggestions.
+  @Get('friends/suggestions')
+  async friendSuggestions(@CurrentUser() current: JwtPayload) {
+    const accountId = await this.requireAccountId(current.sub);
+
+    const friendIds = await this.api.getFriendAccountIds(accountId);
+    if (friendIds === null) return { private: true, suggestions: [] };
+    if (friendIds.length === 0) return { private: false, suggestions: [] };
+
+    const candidates = await this.prisma.user.findMany({
+      where: { psnAccountId: { in: friendIds }, id: { not: current.sub } },
+    });
+    if (candidates.length === 0) return { private: false, suggestions: [] };
+
+    const existing = await this.prisma.friendship.findMany({
+      where: {
+        OR: [
+          { requesterId: current.sub, addresseeId: { in: candidates.map((c) => c.id) } },
+          { addresseeId: current.sub, requesterId: { in: candidates.map((c) => c.id) } },
+        ],
+      },
+      select: { requesterId: true, addresseeId: true },
+    });
+    const linked = new Set(existing.flatMap((f) => [f.requesterId, f.addresseeId]));
+
+    return {
+      private: false,
+      suggestions: candidates.filter((c) => !linked.has(c.id)).map(toPublicUser),
+    };
+  }
+
+  // Associe les titres PSN aux jeux du catalogue par nom normalisé (SQL), puis
+  // décore chaque jeu de sa progression de trophées et de l'état de l'utilisateur
+  // (déjà "joué" / déjà noté). Un jeu multi-plateformes n'apparaît qu'une fois.
+  private async matchTitles(userId: number, titles: TrophyTitle[]) {
+    // nom normalisé -> meilleur titre PSN (progression la plus haute)
+    const byNorm = new Map<string, TrophyTitle>();
+    for (const t of titles) {
+      const n = normalize(t.trophyTitleName);
+      if (!n) continue;
+      const prev = byNorm.get(n);
+      if (!prev || t.progress > prev.progress) byNorm.set(n, t);
+    }
+    const normNames = [...byNorm.keys()];
+    if (normNames.length === 0) return [];
+
+    const rows = await this.prisma.$queryRaw<
+      { id: number; title: string; coverUrl: string | null; gameType: string; norm: string }[]
+    >`
+      SELECT id, title, "coverUrl", "gameType"::text AS "gameType",
+             lower(regexp_replace(title, '[^a-zA-Z0-9]', '', 'g')) AS norm
+      FROM "Game"
+      WHERE lower(regexp_replace(title, '[^a-zA-Z0-9]', '', 'g')) = ANY(${normNames})
+    `;
+
+    // norm -> premier jeu catalogue trouvé
+    const gameByNorm = new Map<string, (typeof rows)[number]>();
+    for (const r of rows) if (!gameByNorm.has(r.norm)) gameByNorm.set(r.norm, r);
+
+    const matched = normNames
+      .map((n) => ({ game: gameByNorm.get(n), title: byNorm.get(n)! }))
+      .filter((m): m is { game: (typeof rows)[number]; title: TrophyTitle } => !!m.game);
+
+    // État de l'utilisateur pour ces jeux (joué / noté), en 2 requêtes groupées
+    const gameIds = matched.map((m) => m.game.id);
+    const [played, reviewed] = await Promise.all([
+      this.prisma.playedGame.findMany({
+        where: { userId, gameId: { in: gameIds } },
+        select: { gameId: true, status: true, playedAt: true },
+      }),
+      this.prisma.review.findMany({
+        where: { userId, gameId: { in: gameIds } },
+        select: { gameId: true },
+      }),
+    ]);
+    const playedBy = new Map(played.map((p) => [p.gameId, p]));
+    const reviewedIds = new Set(reviewed.map((r) => r.gameId));
+
+    return matched
+      .map(({ game, title }) => ({
+        id: game.id,
+        title: game.title,
+        coverUrl: game.coverUrl,
+        gameType: game.gameType,
+        platform: title.trophyTitlePlatform,
+        trophies: {
+          earned: title.earnedTrophies,
+          defined: title.definedTrophies,
+          progress: title.progress,
+        },
+        playedStatus: playedBy.get(game.id)?.status ?? null,
+        reviewed: reviewedIds.has(game.id),
+      }))
+      // les plus avancés / récents d'abord
+      .sort((a, b) => b.trophies.progress - a.trophies.progress);
   }
 }

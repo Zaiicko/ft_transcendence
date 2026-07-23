@@ -218,7 +218,8 @@
       "alreadyLinked": "이 PlayStation 계정은 이미 다른 프로필에 연결되어 있습니다.",
       "invalidId": "유효한 PSN 온라인 ID가 아닌 것 같습니다(3–16자 문자, 숫자, - 또는 _).",
       "notConfigured": "서버에 PlayStation 가져오기가 아직 설정되지 않았습니다. 나중에 다시 시도하세요.",
-      "genericError": "연결에 실패했습니다. 다시 시도하세요."
+      "genericError": "연결에 실패했습니다. 다시 시도하세요.",
+      "viewLibrary": "내 PlayStation 라이브러리 보기"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "PlayStation 계정을 연결해 게임, 트로피, 친구를 가져오세요.",
+    "linkCta": "설정으로 이동",
+    "loadError": "PlayStation 데이터를 불러오지 못했습니다.",
+    "friendsHeading": "Saveboxd의 PlayStation 친구",
+    "friendsPrivate": "PlayStation 친구 목록이 비공개입니다.",
+    "noFriendsTitle": "추천할 친구가 없습니다",
+    "noFriendsDesc": "PlayStation 친구 중 아직 Saveboxd에 있는 사람이 없습니다.",
+    "requestSent": "요청 보냄",
+    "addFriend": "추가",
+    "friendRequestError": "친구 요청을 보내지 못했습니다.",
+    "yourGames": "내 게임",
+    "gamesPrivate": "PlayStation 게임이 비공개입니다.",
+    "played": "{{totalPlayed}}개 게임 플레이 · {{matched}}개가 카탈로그에 있음",
+    "playedUnmatched": "{{totalPlayed}}개 게임 플레이 · {{matched}}개 일치 · {{unmatched}}개는 카탈로그에 없음",
+    "noMatchedTitle": "일치하는 게임 없음",
+    "noMatchedDesc": "내 PlayStation 게임이 아직 카탈로그에 없습니다.",
+    "trophyLevel": "트로피 레벨",
+    "trophiesEarned": "획득 트로피",
+    "trophyProgress": "{{earned}}/{{total}} 트로피 · {{progress}}%",
+    "statusPlaying": "플레이 중",
+    "statusBacklog": "백로그",
+    "reviewWritten": "리뷰 작성됨",
+    "writeReview": "리뷰 작성",
+    "viewReviewOf": "{{title}}에 대한 내 리뷰 보기",
+    "writeReviewOf": "{{title}} 리뷰 작성"
   }
 }

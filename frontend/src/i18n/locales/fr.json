@@ -218,7 +218,8 @@
       "alreadyLinked": "Ce compte PlayStation est déjà lié à un autre profil.",
       "invalidId": "Cet Online ID PSN ne semble pas valide (3–16 lettres, chiffres, - ou _).",
       "notConfigured": "L'import PlayStation n'est pas encore configuré côté serveur. Réessaie plus tard.",
-      "genericError": "La connexion a échoué. Réessaie."
+      "genericError": "La connexion a échoué. Réessaie.",
+      "viewLibrary": "Voir ma bibliothèque PlayStation"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Lie ton compte PlayStation pour importer tes jeux, trophées et amis.",
+    "linkCta": "Aller aux réglages",
+    "loadError": "Impossible de charger tes données PlayStation.",
+    "friendsHeading": "Amis PlayStation sur Saveboxd",
+    "friendsPrivate": "Ta liste d'amis PlayStation est privée.",
+    "noFriendsTitle": "Aucun ami à suggérer",
+    "noFriendsDesc": "Aucun de tes amis PlayStation n'est encore sur Saveboxd.",
+    "requestSent": "Demande envoyée",
+    "addFriend": "Ajouter",
+    "friendRequestError": "Impossible d'envoyer la demande d'ami.",
+    "yourGames": "Tes jeux",
+    "gamesPrivate": "Tes jeux PlayStation sont privés.",
+    "played": "{{totalPlayed}} jeux joués · {{matched}} trouvés dans notre catalogue",
+    "playedUnmatched": "{{totalPlayed}} jeux joués · {{matched}} trouvés · {{unmatched}} absents de notre catalogue",
+    "noMatchedTitle": "Aucun jeu correspondant",
+    "noMatchedDesc": "Aucun de tes jeux PlayStation n'est encore dans notre catalogue.",
+    "trophyLevel": "Niveau de trophées",
+    "trophiesEarned": "Trophées obtenus",
+    "trophyProgress": "{{earned}}/{{total}} trophées · {{progress}} %",
+    "statusPlaying": "En cours",
+    "statusBacklog": "À faire",
+    "reviewWritten": "Avis rédigé",
+    "writeReview": "Écrire un avis",
+    "viewReviewOf": "Voir ton avis sur {{title}}",
+    "writeReviewOf": "Écrire un avis sur {{title}}"
   }
 }

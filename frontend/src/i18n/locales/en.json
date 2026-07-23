@@ -218,7 +218,8 @@
       "alreadyLinked": "This PlayStation account is already linked to another profile.",
       "invalidId": "That doesn't look like a valid PSN Online ID (3–16 letters, digits, - or _).",
       "notConfigured": "PlayStation import isn't set up on the server yet. Try again later.",
-      "genericError": "Connection failed. Please try again."
+      "genericError": "Connection failed. Please try again.",
+      "viewLibrary": "View my PlayStation library"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Link your PlayStation account to import your games, trophies and friends.",
+    "linkCta": "Go to settings",
+    "loadError": "Couldn't load your PlayStation data.",
+    "friendsHeading": "PlayStation friends on Saveboxd",
+    "friendsPrivate": "Your PlayStation friends list is private.",
+    "noFriendsTitle": "No friends to suggest",
+    "noFriendsDesc": "None of your PlayStation friends are on Saveboxd yet.",
+    "requestSent": "Request sent",
+    "addFriend": "Add friend",
+    "friendRequestError": "Couldn't send the friend request.",
+    "yourGames": "Your games",
+    "gamesPrivate": "Your PlayStation games are private.",
+    "played": "{{totalPlayed}} games played · {{matched}} matched in our catalog",
+    "playedUnmatched": "{{totalPlayed}} games played · {{matched}} matched · {{unmatched}} not in our catalog",
+    "noMatchedTitle": "No matching games",
+    "noMatchedDesc": "None of your PlayStation games are in our catalog yet.",
+    "trophyLevel": "Trophy level",
+    "trophiesEarned": "Trophies earned",
+    "trophyProgress": "{{earned}}/{{total}} trophies · {{progress}}%",
+    "statusPlaying": "Playing",
+    "statusBacklog": "Backlog",
+    "reviewWritten": "Review written",
+    "writeReview": "Write a review",
+    "viewReviewOf": "View your review of {{title}}",
+    "writeReviewOf": "Write a review of {{title}}"
   }
 }

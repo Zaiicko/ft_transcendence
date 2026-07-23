@@ -218,7 +218,8 @@
       "alreadyLinked": "Dieses PlayStation-Konto ist bereits mit einem anderen Profil verknüpft.",
       "invalidId": "Das sieht nicht wie eine gültige PSN Online-ID aus (3–16 Buchstaben, Ziffern, - oder _).",
       "notConfigured": "Der PlayStation-Import ist auf dem Server noch nicht eingerichtet. Versuche es später erneut.",
-      "genericError": "Verbindung fehlgeschlagen. Bitte versuche es erneut."
+      "genericError": "Verbindung fehlgeschlagen. Bitte versuche es erneut.",
+      "viewLibrary": "Meine PlayStation-Bibliothek ansehen"
     }
   },
   "friends": {
@@ -764,5 +765,33 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Verknüpfe dein PlayStation-Konto, um deine Spiele, Trophäen und Freunde zu importieren.",
+    "linkCta": "Zu den Einstellungen",
+    "loadError": "Deine PlayStation-Daten konnten nicht geladen werden.",
+    "friendsHeading": "PlayStation-Freunde auf Saveboxd",
+    "friendsPrivate": "Deine PlayStation-Freundesliste ist privat.",
+    "noFriendsTitle": "Keine Freunde vorzuschlagen",
+    "noFriendsDesc": "Noch keiner deiner PlayStation-Freunde ist auf Saveboxd.",
+    "requestSent": "Anfrage gesendet",
+    "addFriend": "Hinzufügen",
+    "friendRequestError": "Freundschaftsanfrage konnte nicht gesendet werden.",
+    "yourGames": "Deine Spiele",
+    "gamesPrivate": "Deine PlayStation-Spiele sind privat.",
+    "played": "{{totalPlayed}} Spiele gespielt · {{matched}} in unserem Katalog gefunden",
+    "playedUnmatched": "{{totalPlayed}} Spiele gespielt · {{matched}} gefunden · {{unmatched}} nicht im Katalog",
+    "noMatchedTitle": "Keine passenden Spiele",
+    "noMatchedDesc": "Noch keines deiner PlayStation-Spiele ist in unserem Katalog.",
+    "trophyLevel": "Trophäenlevel",
+    "trophiesEarned": "Erhaltene Trophäen",
+    "trophyProgress": "{{earned}}/{{total}} Trophäen · {{progress}} %",
+    "statusPlaying": "Am Spielen",
+    "statusBacklog": "Backlog",
+    "reviewWritten": "Rezension verfasst",
+    "writeReview": "Rezension schreiben",
+    "viewReviewOf": "Deine Rezension zu {{title}} ansehen",
+    "writeReviewOf": "Rezension zu {{title}} schreiben"
   }
 }
