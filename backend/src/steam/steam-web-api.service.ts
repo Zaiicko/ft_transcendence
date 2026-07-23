@@ -14,6 +14,11 @@ export interface SteamOwnedGame {
   playtime_forever: number;
 }
 
+export interface SteamAchievements {
+  unlocked: number;
+  total: number;
+}
+
 @Injectable()
 export class SteamWebApiService {
   private readonly logger = new Logger(SteamWebApiService.name);
@@ -61,6 +66,31 @@ export class SteamWebApiService {
     );
     if (data === null) return null;
     return data.friendslist?.friends?.map((f) => f.steamid) ?? [];
+  }
+
+  // Achievements du joueur pour un jeu donné. null = le jeu n'a pas de succès,
+  // le profil est privé, ou l'app n'a pas de stats. Résilient (aucune exception
+  // remontée) car il est appelé en masse, un appel par jeu — un jeu qui
+  // échoue ne doit pas casser toute la bibliothèque.
+  async getPlayerAchievements(steamId: string, appId: number): Promise<SteamAchievements | null> {
+    try {
+      const qs = new URLSearchParams({ key: this.key(), steamid: steamId, appid: String(appId) });
+      const res = await fetch(
+        `${API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?${qs}`,
+      );
+      if (!res.ok) return null; // 400 = pas de stats, 403 = privé
+      const data = (await res.json()) as {
+        playerstats?: { success?: boolean; achievements?: { achieved: number }[] };
+      };
+      const stats = data.playerstats;
+      if (!stats?.success || !stats.achievements?.length) return null;
+      return {
+        unlocked: stats.achievements.filter((a) => a.achieved === 1).length,
+        total: stats.achievements.length,
+      };
+    } catch {
+      return null;
+    }
   }
 
   async getPersonaName(steamId: string): Promise<string | null> {

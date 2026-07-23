@@ -23,7 +23,8 @@
     "friends": "Друзья",
     "steam": "Steam",
     "login": "Войти",
-    "signup": "Регистрация"
+    "signup": "Регистрация",
+    "library": "Библиотеки"
   },
   "menu": {
     "notifications": "Уведомления",
@@ -205,6 +206,21 @@
       "comingSoon": "Скоро",
       "discordLinked": "Аккаунт Discord связан!",
       "discordTaken": "Этот аккаунт Discord уже связан с другим пользователем."
+    },
+    "psn": {
+      "title": "Подключить PlayStation",
+      "intro": "Просто введите свой сетевой идентификатор PlayStation — мы найдём ваш публичный профиль. Пароль или токен не нужны.",
+      "idLabel": "Ваш сетевой ID PSN",
+      "publicHint": "Ваш профиль PlayStation должен быть публичным (игры и трофеи видны), чтобы мы могли его импортировать.",
+      "connect": "Подключить",
+      "connecting": "Подключение…",
+      "connectedAs": "Подключено как {{onlineId}}",
+      "notFound": "Публичный аккаунт PlayStation с таким ID не найден. Проверьте правильность написания и что ваш профиль публичный.",
+      "alreadyLinked": "Этот аккаунт PlayStation уже привязан к другому профилю.",
+      "invalidId": "Это не похоже на корректный сетевой ID PSN (3–16 букв, цифр, - или _).",
+      "notConfigured": "Импорт PlayStation ещё не настроен на сервере. Попробуйте позже.",
+      "genericError": "Не удалось подключиться. Попробуйте ещё раз.",
+      "viewLibrary": "Моя библиотека PlayStation"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "Написать рецензию",
     "popularNow": "Популярно сейчас",
     "showMorePopular": "Показать больше популярных игр",
+    "showLessPopular": "Показать меньше популярных игр",
     "popularReviews": "Популярные рецензии",
     "noReviewsTitle": "Пока нет рецензий",
     "noReviewsDescription": "Стань первым, кто оценит игру — лучшие рецензии появятся здесь.",
     "showMoreReviews": "Показать больше рецензий",
     "deletedUser": "[удалённый пользователь]",
     "viewGame": "Посмотреть {{title}}",
-    "recommendedForYou": "Рекомендовано для вас"
+    "recommendedForYou": "Рекомендовано для вас",
+    "showMoreRecommended": "Показать больше рекомендаций",
+    "showLessRecommended": "Показать меньше рекомендаций"
   },
   "feed": {
     "title": "Активность друзей",
@@ -497,7 +516,13 @@
     "writeReviewOf": "Написать обзор {{title}}",
     "noMatchedTitle": "Пока нет совпадающих игр",
     "noMatchedDesc": "Ни одна из ваших игр Steam пока не в нашем каталоге.",
-    "manageLink": "Управляйте привязкой Steam в своём <l>профиле</l>."
+    "manageLink": "Управляйте привязкой Steam в своём <l>профиле</l>.",
+    "achievementsTitle": "Достижения",
+    "achievementsSub": "{{games}} игр · {{perfect}} на 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} достижений",
+    "achievementsNone": "Достижения ещё не синхронизированы — ваш профиль Steam может быть закрыт.",
+    "syncAchievements": "Обновить",
+    "syncing": "Синхронизация…"
   },
   "genres": {
     "Adventure": "Приключения",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Привяжите аккаунт PlayStation, чтобы импортировать игры, трофеи и друзей.",
+    "linkCta": "Перейти в настройки",
+    "loadError": "Не удалось загрузить данные PlayStation.",
+    "friendsHeading": "Друзья PlayStation в Saveboxd",
+    "friendsPrivate": "Ваш список друзей PlayStation закрыт.",
+    "noFriendsTitle": "Некого предложить",
+    "noFriendsDesc": "Никто из ваших друзей PlayStation пока не в Saveboxd.",
+    "requestSent": "Запрос отправлен",
+    "addFriend": "Добавить",
+    "friendRequestError": "Не удалось отправить запрос в друзья.",
+    "yourGames": "Ваши игры",
+    "gamesPrivate": "Ваши игры PlayStation закрыты.",
+    "played": "Сыграно игр: {{totalPlayed}} · {{matched}} найдено в нашем каталоге",
+    "playedUnmatched": "Сыграно игр: {{totalPlayed}} · {{matched}} найдено · {{unmatched}} нет в каталоге",
+    "noMatchedTitle": "Нет совпадающих игр",
+    "noMatchedDesc": "Ни одной из ваших игр PlayStation пока нет в нашем каталоге.",
+    "trophyLevel": "Уровень трофеев",
+    "trophiesEarned": "Получено трофеев",
+    "trophyProgress": "{{earned}}/{{total}} трофеев · {{progress}} %",
+    "statusPlaying": "Играю",
+    "statusBacklog": "В планах",
+    "reviewWritten": "Отзыв написан",
+    "writeReview": "Написать отзыв",
+    "viewReviewOf": "Посмотреть ваш отзыв об игре {{title}}",
+    "writeReviewOf": "Написать отзыв об игре {{title}}"
+  },
+  "library": {
+    "title": "Мои библиотеки",
+    "noneLinkedTitle": "Нет привязанных аккаунтов",
+    "noneLinkedDesc": "Привяжите аккаунт Steam или PlayStation в настройках, чтобы видеть здесь свои игры и трофеи.",
+    "goSettings": "Перейти в настройки",
+    "notLinked": "Не привязан"
   }
 }

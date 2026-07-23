@@ -3,6 +3,7 @@ import { AuthProvider, FriendshipStatus, User } from '@prisma/client';
 import { ChatGateway } from '../chat/chat.gateway';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { PsnApiService } from '../psn/psn-api.service';
 import { SteamWebApiService } from '../steam/steam-web-api.service';
 import { UsersService } from '../users/users.service';
 
@@ -10,7 +11,7 @@ const SUGGESTION_LIMIT = 20;
 
 export interface FriendSuggestion {
   user: User;
-  via: 'steam' | '42';
+  via: 'steam' | '42' | 'psn';
 }
 
 @Injectable()
@@ -19,6 +20,7 @@ export class FriendsService {
     private readonly prisma: PrismaService,
     private readonly users: UsersService,
     private readonly steamWebApi: SteamWebApiService,
+    private readonly psnApi: PsnApiService,
     private readonly chatGateway: ChatGateway,
     private readonly notifications: NotificationsService,
   ) {}
@@ -211,6 +213,24 @@ export class FriendsService {
         }
       } catch {
         // No STEAM_API_KEY / Steam unreachable — skip Steam suggestions
+      }
+    }
+
+    // Amis PlayStation sur Saveboxd (si le compte PSN est lié). Ne remplace pas
+    // une entrée Steam déjà posée (lien perso prioritaire, comme Steam vs 42).
+    if (me.psnAccountId) {
+      try {
+        const friendAccountIds = await this.psnApi.getFriendAccountIds(me.psnAccountId);
+        if (friendAccountIds && friendAccountIds.length > 0) {
+          const users = await this.prisma.user.findMany({
+            where: { psnAccountId: { in: friendAccountIds }, id: { notIn: [...excludeIds] } },
+          });
+          for (const user of users) {
+            if (!suggestions.has(user.id)) suggestions.set(user.id, { user, via: 'psn' });
+          }
+        }
+      } catch {
+        // Session PSN indispo / liste d'amis privée — on saute les suggestions PSN
       }
     }
 

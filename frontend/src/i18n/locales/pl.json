@@ -23,7 +23,8 @@
     "friends": "Znajomi",
     "steam": "Steam",
     "login": "Zaloguj się",
-    "signup": "Zarejestruj się"
+    "signup": "Zarejestruj się",
+    "library": "Biblioteki"
   },
   "menu": {
     "notifications": "Powiadomienia",
@@ -205,6 +206,21 @@
       "comingSoon": "Wkrótce",
       "discordLinked": "Konto Discord połączone!",
       "discordTaken": "To konto Discord jest już połączone z innym użytkownikiem."
+    },
+    "psn": {
+      "title": "Połącz PlayStation",
+      "intro": "Po prostu podaj swój identyfikator online PlayStation — znajdziemy twój publiczny profil. Nie potrzebujesz hasła ani tokena.",
+      "idLabel": "Twój identyfikator online PSN",
+      "publicHint": "Twój profil PlayStation musi być publiczny (widoczne gry i trofea), abyśmy mogli go zaimportować.",
+      "connect": "Połącz",
+      "connecting": "Łączenie…",
+      "connectedAs": "Połączono jako {{onlineId}}",
+      "notFound": "Nie znaleziono publicznego konta PlayStation dla tego identyfikatora. Sprawdź pisownię i czy twój profil jest publiczny.",
+      "alreadyLinked": "To konto PlayStation jest już połączone z innym profilem.",
+      "invalidId": "To nie wygląda na prawidłowy identyfikator online PSN (3–16 liter, cyfr, - lub _).",
+      "notConfigured": "Import PlayStation nie jest jeszcze skonfigurowany na serwerze. Spróbuj później.",
+      "genericError": "Połączenie nie powiodło się. Spróbuj ponownie.",
+      "viewLibrary": "Zobacz moją bibliotekę PlayStation"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "Napisz recenzję",
     "popularNow": "Popularne teraz",
     "showMorePopular": "Pokaż więcej popularnych gier",
+    "showLessPopular": "Pokaż mniej popularnych gier",
     "popularReviews": "Popularne recenzje",
     "noReviewsTitle": "Jeszcze brak recenzji",
     "noReviewsDescription": "Bądź pierwszą osobą, która oceni grę — najlepsze recenzje pojawią się tutaj.",
     "showMoreReviews": "Pokaż więcej recenzji",
     "deletedUser": "[usunięty użytkownik]",
     "viewGame": "Zobacz {{title}}",
-    "recommendedForYou": "Polecane dla Ciebie"
+    "recommendedForYou": "Polecane dla Ciebie",
+    "showMoreRecommended": "Pokaż więcej rekomendacji",
+    "showLessRecommended": "Pokaż mniej rekomendacji"
   },
   "feed": {
     "title": "Aktywność znajomych",
@@ -497,7 +516,13 @@
     "writeReviewOf": "Napisz recenzję gry {{title}}",
     "noMatchedTitle": "Brak dopasowanych gier",
     "noMatchedDesc": "Żadna z Twoich gier Steam nie znajduje się obecnie w naszym katalogu.",
-    "manageLink": "Zarządzaj połączeniem ze Steam w swoim <l>profilu</l>."
+    "manageLink": "Zarządzaj połączeniem ze Steam w swoim <l>profilu</l>.",
+    "achievementsTitle": "Osiągnięcia",
+    "achievementsSub": "{{games}} gier · {{perfect}} w 100%",
+    "achPerGame": "{{unlocked}}/{{total}} osiągnięć",
+    "achievementsNone": "Brak zsynchronizowanych osiągnięć — twój profil Steam może być prywatny.",
+    "syncAchievements": "Odśwież",
+    "syncing": "Synchronizacja…"
   },
   "genres": {
     "Adventure": "Przygodowa",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Połącz konto PlayStation, aby zaimportować gry, trofea i znajomych.",
+    "linkCta": "Przejdź do ustawień",
+    "loadError": "Nie udało się wczytać danych PlayStation.",
+    "friendsHeading": "Znajomi z PlayStation na Saveboxd",
+    "friendsPrivate": "Twoja lista znajomych PlayStation jest prywatna.",
+    "noFriendsTitle": "Brak znajomych do zaproponowania",
+    "noFriendsDesc": "Żaden z Twoich znajomych z PlayStation nie jest jeszcze na Saveboxd.",
+    "requestSent": "Wysłano zaproszenie",
+    "addFriend": "Dodaj",
+    "friendRequestError": "Nie udało się wysłać zaproszenia do znajomych.",
+    "yourGames": "Twoje gry",
+    "gamesPrivate": "Twoje gry PlayStation są prywatne.",
+    "played": "Zagrane gry: {{totalPlayed}} · {{matched}} znaleziono w naszym katalogu",
+    "playedUnmatched": "Zagrane gry: {{totalPlayed}} · {{matched}} znaleziono · {{unmatched}} spoza katalogu",
+    "noMatchedTitle": "Brak pasujących gier",
+    "noMatchedDesc": "Żadna z Twoich gier PlayStation nie jest jeszcze w naszym katalogu.",
+    "trophyLevel": "Poziom trofeów",
+    "trophiesEarned": "Zdobyte trofea",
+    "trophyProgress": "{{earned}}/{{total}} trofeów · {{progress}} %",
+    "statusPlaying": "W trakcie",
+    "statusBacklog": "Do zagrania",
+    "reviewWritten": "Recenzja napisana",
+    "writeReview": "Napisz recenzję",
+    "viewReviewOf": "Zobacz swoją recenzję gry {{title}}",
+    "writeReviewOf": "Napisz recenzję gry {{title}}"
+  },
+  "library": {
+    "title": "Moje biblioteki",
+    "noneLinkedTitle": "Brak połączonego konta",
+    "noneLinkedDesc": "Połącz konto Steam lub PlayStation w ustawieniach, aby zobaczyć tu swoje gry i trofea.",
+    "goSettings": "Przejdź do ustawień",
+    "notLinked": "Niepołączone"
   }
 }

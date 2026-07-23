@@ -23,7 +23,8 @@
     "friends": "친구",
     "steam": "Steam",
     "login": "로그인",
-    "signup": "회원가입"
+    "signup": "회원가입",
+    "library": "라이브러리"
   },
   "menu": {
     "notifications": "알림",
@@ -205,6 +206,21 @@
       "comingSoon": "곧 제공",
       "discordLinked": "Discord 계정이 연결되었습니다!",
       "discordTaken": "이 Discord 계정은 이미 다른 사용자에 연결되어 있습니다."
+    },
+    "psn": {
+      "title": "PlayStation 연결",
+      "intro": "PlayStation 온라인 ID만 입력하면 공개 프로필을 찾아드립니다. 비밀번호나 토큰이 필요 없습니다.",
+      "idLabel": "내 PSN 온라인 ID",
+      "publicHint": "가져오려면 PlayStation 프로필이 공개(게임과 트로피 표시)되어 있어야 합니다.",
+      "connect": "연결",
+      "connecting": "연결 중…",
+      "connectedAs": "{{onlineId}}(으)로 연결됨",
+      "notFound": "해당 온라인 ID의 공개 PlayStation 계정을 찾을 수 없습니다. 철자와 프로필 공개 여부를 확인하세요.",
+      "alreadyLinked": "이 PlayStation 계정은 이미 다른 프로필에 연결되어 있습니다.",
+      "invalidId": "유효한 PSN 온라인 ID가 아닌 것 같습니다(3–16자 문자, 숫자, - 또는 _).",
+      "notConfigured": "서버에 PlayStation 가져오기가 아직 설정되지 않았습니다. 나중에 다시 시도하세요.",
+      "genericError": "연결에 실패했습니다. 다시 시도하세요.",
+      "viewLibrary": "내 PlayStation 라이브러리 보기"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "리뷰 작성",
     "popularNow": "지금 인기 있는",
     "showMorePopular": "인기 게임 더 보기",
+    "showLessPopular": "인기 게임 적게 보기",
     "popularReviews": "인기 리뷰",
     "noReviewsTitle": "아직 리뷰가 없습니다",
     "noReviewsDescription": "가장 먼저 게임을 평가해 보세요. 훌륭한 리뷰가 여기에 표시됩니다.",
     "showMoreReviews": "리뷰 더 보기",
     "deletedUser": "[삭제된 사용자]",
     "viewGame": "{{title}} 보기",
-    "recommendedForYou": "맞춤 추천"
+    "recommendedForYou": "맞춤 추천",
+    "showMoreRecommended": "추천 더 보기",
+    "showLessRecommended": "추천 적게 보기"
   },
   "feed": {
     "title": "친구 활동",
@@ -497,7 +516,13 @@
     "writeReviewOf": "{{title}} 리뷰 작성",
     "noMatchedTitle": "아직 일치하는 게임이 없습니다",
     "noMatchedDesc": "현재 카탈로그에 있는 Steam 게임이 없습니다.",
-    "manageLink": "Steam 연결은 <l>프로필</l>에서 관리하세요."
+    "manageLink": "Steam 연결은 <l>프로필</l>에서 관리하세요.",
+    "achievementsTitle": "도전 과제",
+    "achievementsSub": "{{games}}개 게임 · {{perfect}}개 100%",
+    "achPerGame": "{{unlocked}}/{{total}} 도전 과제",
+    "achievementsNone": "아직 동기화된 도전 과제가 없습니다 — Steam 프로필이 비공개일 수 있습니다.",
+    "syncAchievements": "새로고침",
+    "syncing": "동기화 중…"
   },
   "genres": {
     "Adventure": "어드벤처",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "PlayStation 계정을 연결해 게임, 트로피, 친구를 가져오세요.",
+    "linkCta": "설정으로 이동",
+    "loadError": "PlayStation 데이터를 불러오지 못했습니다.",
+    "friendsHeading": "Saveboxd의 PlayStation 친구",
+    "friendsPrivate": "PlayStation 친구 목록이 비공개입니다.",
+    "noFriendsTitle": "추천할 친구가 없습니다",
+    "noFriendsDesc": "PlayStation 친구 중 아직 Saveboxd에 있는 사람이 없습니다.",
+    "requestSent": "요청 보냄",
+    "addFriend": "추가",
+    "friendRequestError": "친구 요청을 보내지 못했습니다.",
+    "yourGames": "내 게임",
+    "gamesPrivate": "PlayStation 게임이 비공개입니다.",
+    "played": "{{totalPlayed}}개 게임 플레이 · {{matched}}개가 카탈로그에 있음",
+    "playedUnmatched": "{{totalPlayed}}개 게임 플레이 · {{matched}}개 일치 · {{unmatched}}개는 카탈로그에 없음",
+    "noMatchedTitle": "일치하는 게임 없음",
+    "noMatchedDesc": "내 PlayStation 게임이 아직 카탈로그에 없습니다.",
+    "trophyLevel": "트로피 레벨",
+    "trophiesEarned": "획득 트로피",
+    "trophyProgress": "{{earned}}/{{total}} 트로피 · {{progress}}%",
+    "statusPlaying": "플레이 중",
+    "statusBacklog": "백로그",
+    "reviewWritten": "리뷰 작성됨",
+    "writeReview": "리뷰 작성",
+    "viewReviewOf": "{{title}}에 대한 내 리뷰 보기",
+    "writeReviewOf": "{{title}} 리뷰 작성"
+  },
+  "library": {
+    "title": "내 라이브러리",
+    "noneLinkedTitle": "연결된 계정 없음",
+    "noneLinkedDesc": "설정에서 Steam 또는 PlayStation 계정을 연결하면 여기에서 게임과 트로피를 볼 수 있습니다.",
+    "goSettings": "설정으로 이동",
+    "notLinked": "연결 안 됨"
   }
 }

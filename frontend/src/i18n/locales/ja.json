@@ -23,7 +23,8 @@
     "friends": "フレンド",
     "steam": "Steam",
     "login": "ログイン",
-    "signup": "新規登録"
+    "signup": "新規登録",
+    "library": "ライブラリ"
   },
   "menu": {
     "notifications": "通知",
@@ -205,6 +206,21 @@
       "comingSoon": "近日公開",
       "discordLinked": "Discord アカウントを連携しました！",
       "discordTaken": "この Discord アカウントは既に別のユーザーに連携されています。"
+    },
+    "psn": {
+      "title": "PlayStation を連携",
+      "intro": "PlayStation のオンライン ID を入力するだけで、公開プロフィールを見つけます。パスワードやトークンは不要です。",
+      "idLabel": "あなたの PSN オンライン ID",
+      "publicHint": "インポートするには、PlayStation のプロフィールが公開（ゲームとトロフィーが表示）されている必要があります。",
+      "connect": "連携する",
+      "connecting": "接続中…",
+      "connectedAs": "{{onlineId}} として連携しました",
+      "notFound": "そのオンライン ID の公開 PlayStation アカウントが見つかりませんでした。スペルとプロフィールが公開されているか確認してください。",
+      "alreadyLinked": "この PlayStation アカウントは別のプロフィールにすでに連携されています。",
+      "invalidId": "有効な PSN オンライン ID ではないようです（3〜16 文字の英数字、-、_）。",
+      "notConfigured": "PlayStation インポートはサーバーでまだ設定されていません。後でもう一度お試しください。",
+      "genericError": "接続に失敗しました。もう一度お試しください。",
+      "viewLibrary": "PlayStation ライブラリを見る"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "レビューを書く",
     "popularNow": "今人気",
     "showMorePopular": "人気のゲームをもっと見る",
+    "showLessPopular": "人気ゲームを少なく表示",
     "popularReviews": "人気のレビュー",
     "noReviewsTitle": "まだレビューがありません",
     "noReviewsDescription": "最初にゲームを評価してみましょう。優れたレビューはここに表示されます。",
     "showMoreReviews": "レビューをもっと見る",
     "deletedUser": "[削除されたユーザー]",
     "viewGame": "{{title}} を見る",
-    "recommendedForYou": "あなたへのおすすめ"
+    "recommendedForYou": "あなたへのおすすめ",
+    "showMoreRecommended": "おすすめをもっと見る",
+    "showLessRecommended": "おすすめを少なく表示"
   },
   "feed": {
     "title": "フレンドのアクティビティ",
@@ -497,7 +516,13 @@
     "writeReviewOf": "{{title}} のレビューを書く",
     "noMatchedTitle": "一致するゲームはまだありません",
     "noMatchedDesc": "現在、あなたの Steam ゲームはカタログにありません。",
-    "manageLink": "Steam 連携は<l>プロフィール</l>から管理できます。"
+    "manageLink": "Steam 連携は<l>プロフィール</l>から管理できます。",
+    "achievementsTitle": "実績",
+    "achievementsSub": "{{games}} 本 · {{perfect}} 本が100%",
+    "achPerGame": "{{unlocked}}/{{total}} 実績",
+    "achievementsNone": "実績がまだ同期されていません。Steam プロフィールが非公開の可能性があります。",
+    "syncAchievements": "更新",
+    "syncing": "同期中…"
   },
   "genres": {
     "Adventure": "アドベンチャー",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "PlayStation アカウントを連携して、ゲーム・トロフィー・フレンドをインポートします。",
+    "linkCta": "設定へ",
+    "loadError": "PlayStation のデータを読み込めませんでした。",
+    "friendsHeading": "Saveboxd の PlayStation フレンド",
+    "friendsPrivate": "PlayStation のフレンドリストは非公開です。",
+    "noFriendsTitle": "提案できるフレンドがいません",
+    "noFriendsDesc": "PlayStation のフレンドはまだ誰も Saveboxd にいません。",
+    "requestSent": "リクエスト送信済み",
+    "addFriend": "追加",
+    "friendRequestError": "フレンドリクエストを送信できませんでした。",
+    "yourGames": "あなたのゲーム",
+    "gamesPrivate": "PlayStation のゲームは非公開です。",
+    "played": "{{totalPlayed}} 本プレイ · {{matched}} 本がカタログに一致",
+    "playedUnmatched": "{{totalPlayed}} 本プレイ · {{matched}} 本一致 · {{unmatched}} 本はカタログにありません",
+    "noMatchedTitle": "一致するゲームがありません",
+    "noMatchedDesc": "あなたの PlayStation のゲームはまだカタログにありません。",
+    "trophyLevel": "トロフィーレベル",
+    "trophiesEarned": "獲得トロフィー",
+    "trophyProgress": "{{earned}}/{{total}} トロフィー · {{progress}}%",
+    "statusPlaying": "プレイ中",
+    "statusBacklog": "積みゲー",
+    "reviewWritten": "レビュー済み",
+    "writeReview": "レビューを書く",
+    "viewReviewOf": "{{title}} のあなたのレビューを見る",
+    "writeReviewOf": "{{title}} のレビューを書く"
+  },
+  "library": {
+    "title": "マイライブラリ",
+    "noneLinkedTitle": "連携済みのアカウントがありません",
+    "noneLinkedDesc": "設定で Steam または PlayStation アカウントを連携すると、ここにゲームとトロフィーが表示されます。",
+    "goSettings": "設定へ",
+    "notLinked": "未連携"
   }
 }

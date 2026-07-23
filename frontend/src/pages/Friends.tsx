@@ -4,6 +4,7 @@ import Avatar from '../components/Avatar';
 import EmptyState, { UsersIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import PsnBadge from '../components/PsnBadge';
 import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
 import { useFriendSocket } from '../friends/useFriendSocket';
@@ -23,7 +24,7 @@ interface FriendRequestRow {
 
 // Suggested by the backend: your Steam friends on Saveboxd, or fellow
 // 42 students when you signed in with 42
-type Suggestion = PublicUser & { via: 'steam' | '42' };
+type Suggestion = PublicUser & { via: 'steam' | '42' | 'psn' };
 
 export default function Friends() {
   const { t } = useTranslation();
@@ -182,6 +183,7 @@ export default function Friends() {
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {r.user.provider === 'DISCORD' && <DiscordBadge />}
                   {r.user.steamId && <SteamBadge />}
+                  {r.user.psnLinked && <PsnBadge />}
                 </span>
                 <div className="ml-auto flex gap-2">
                   <button
@@ -240,6 +242,7 @@ export default function Friends() {
                   {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {r.user.provider === 'DISCORD' && <DiscordBadge />}
                   {r.user.steamId && <SteamBadge />}
+                  {r.user.psnLinked && <PsnBadge />}
                 </span>
                 <span className="ml-auto text-sm text-zinc-500">{t('friends.pending')}</span>
                 <button
@@ -278,6 +281,7 @@ export default function Friends() {
                   {s.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {s.provider === 'DISCORD' && <DiscordBadge />}
                   {s.steamId && <SteamBadge />}
+                  {s.psnLinked && <PsnBadge />}
                 </span>
                 <button
                   type="button"
@@ -319,6 +323,7 @@ export default function Friends() {
                   {f.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {f.provider === 'DISCORD' && <DiscordBadge />}
                   {f.steamId && <SteamBadge />}
+                  {f.psnLinked && <PsnBadge />}
                 </span>
                 <button
                   type="button"

@@ -23,7 +23,8 @@
     "friends": "Freunde",
     "steam": "Steam",
     "login": "Anmelden",
-    "signup": "Registrieren"
+    "signup": "Registrieren",
+    "library": "Bibliotheken"
   },
   "menu": {
     "notifications": "Benachrichtigungen",
@@ -205,6 +206,21 @@
       "comingSoon": "Bald",
       "discordLinked": "Discord-Konto verknüpft!",
       "discordTaken": "Dieses Discord-Konto ist bereits mit einem anderen Benutzer verknüpft."
+    },
+    "psn": {
+      "title": "PlayStation verbinden",
+      "intro": "Gib einfach deine PlayStation Online-ID ein – wir finden dein öffentliches Profil. Kein Passwort oder Token nötig.",
+      "idLabel": "Deine PSN Online-ID",
+      "publicHint": "Dein PlayStation-Profil muss öffentlich sein (Spiele & Trophäen sichtbar), damit wir es importieren können.",
+      "connect": "Verbinden",
+      "connecting": "Verbinden…",
+      "connectedAs": "Verbunden als {{onlineId}}",
+      "notFound": "Kein öffentliches PlayStation-Konto für diese Online-ID gefunden. Prüfe die Schreibweise und ob dein Profil öffentlich ist.",
+      "alreadyLinked": "Dieses PlayStation-Konto ist bereits mit einem anderen Profil verknüpft.",
+      "invalidId": "Das sieht nicht wie eine gültige PSN Online-ID aus (3–16 Buchstaben, Ziffern, - oder _).",
+      "notConfigured": "Der PlayStation-Import ist auf dem Server noch nicht eingerichtet. Versuche es später erneut.",
+      "genericError": "Verbindung fehlgeschlagen. Bitte versuche es erneut.",
+      "viewLibrary": "Meine PlayStation-Bibliothek ansehen"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "Rezension schreiben",
     "popularNow": "Gerade beliebt",
     "showMorePopular": "Mehr beliebte Spiele anzeigen",
+    "showLessPopular": "Weniger beliebte Spiele anzeigen",
     "popularReviews": "Beliebte Rezensionen",
     "noReviewsTitle": "Noch keine Rezensionen",
     "noReviewsDescription": "Sei die erste Person, die ein Spiel bewertet — die besten Rezensionen erscheinen hier.",
     "showMoreReviews": "Mehr Rezensionen anzeigen",
     "deletedUser": "[gelöschter Nutzer]",
     "viewGame": "{{title}} ansehen",
-    "recommendedForYou": "Für dich empfohlen"
+    "recommendedForYou": "Für dich empfohlen",
+    "showMoreRecommended": "Mehr Empfehlungen anzeigen",
+    "showLessRecommended": "Weniger Empfehlungen anzeigen"
   },
   "feed": {
     "title": "Aktivität deiner Freunde",
@@ -497,7 +516,13 @@
     "writeReviewOf": "Rezension zu {{title}} schreiben",
     "noMatchedTitle": "Noch keine passenden Spiele",
     "noMatchedDesc": "Keines deiner Steam-Spiele ist derzeit in unserem Katalog.",
-    "manageLink": "Verwalte deine Steam-Verknüpfung in deinem <l>Profil</l>."
+    "manageLink": "Verwalte deine Steam-Verknüpfung in deinem <l>Profil</l>.",
+    "achievementsTitle": "Erfolge",
+    "achievementsSub": "{{games}} Spiele · {{perfect}} zu 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} Erfolge",
+    "achievementsNone": "Noch keine Erfolge synchronisiert – dein Steam-Profil ist evtl. privat.",
+    "syncAchievements": "Aktualisieren",
+    "syncing": "Synchronisiere…"
   },
   "genres": {
     "Adventure": "Abenteuer",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Verknüpfe dein PlayStation-Konto, um deine Spiele, Trophäen und Freunde zu importieren.",
+    "linkCta": "Zu den Einstellungen",
+    "loadError": "Deine PlayStation-Daten konnten nicht geladen werden.",
+    "friendsHeading": "PlayStation-Freunde auf Saveboxd",
+    "friendsPrivate": "Deine PlayStation-Freundesliste ist privat.",
+    "noFriendsTitle": "Keine Freunde vorzuschlagen",
+    "noFriendsDesc": "Noch keiner deiner PlayStation-Freunde ist auf Saveboxd.",
+    "requestSent": "Anfrage gesendet",
+    "addFriend": "Hinzufügen",
+    "friendRequestError": "Freundschaftsanfrage konnte nicht gesendet werden.",
+    "yourGames": "Deine Spiele",
+    "gamesPrivate": "Deine PlayStation-Spiele sind privat.",
+    "played": "{{totalPlayed}} Spiele gespielt · {{matched}} in unserem Katalog gefunden",
+    "playedUnmatched": "{{totalPlayed}} Spiele gespielt · {{matched}} gefunden · {{unmatched}} nicht im Katalog",
+    "noMatchedTitle": "Keine passenden Spiele",
+    "noMatchedDesc": "Noch keines deiner PlayStation-Spiele ist in unserem Katalog.",
+    "trophyLevel": "Trophäenlevel",
+    "trophiesEarned": "Erhaltene Trophäen",
+    "trophyProgress": "{{earned}}/{{total}} Trophäen · {{progress}} %",
+    "statusPlaying": "Am Spielen",
+    "statusBacklog": "Backlog",
+    "reviewWritten": "Rezension verfasst",
+    "writeReview": "Rezension schreiben",
+    "viewReviewOf": "Deine Rezension zu {{title}} ansehen",
+    "writeReviewOf": "Rezension zu {{title}} schreiben"
+  },
+  "library": {
+    "title": "Meine Bibliotheken",
+    "noneLinkedTitle": "Kein Konto verknüpft",
+    "noneLinkedDesc": "Verknüpfe ein Steam- oder PlayStation-Konto in deinen Einstellungen, um hier deine Spiele und Trophäen zu sehen.",
+    "goSettings": "Zu den Einstellungen",
+    "notLinked": "Nicht verknüpft"
   }
 }

@@ -23,7 +23,8 @@
     "friends": "Arkadaşlar",
     "steam": "Steam",
     "login": "Giriş yap",
-    "signup": "Kaydol"
+    "signup": "Kaydol",
+    "library": "Kütüphaneler"
   },
   "menu": {
     "notifications": "Bildirimler",
@@ -205,6 +206,21 @@
       "comingSoon": "Yakında",
       "discordLinked": "Discord hesabı bağlandı!",
       "discordTaken": "Bu Discord hesabı zaten başka bir kullanıcıya bağlı."
+    },
+    "psn": {
+      "title": "PlayStation'ı bağla",
+      "intro": "Sadece PlayStation Online ID'ni gir — herkese açık profilini buluruz. Şifre veya jeton gerekmez.",
+      "idLabel": "PSN Online ID'n",
+      "publicHint": "İçe aktarabilmemiz için PlayStation profilinin herkese açık olması gerekir (oyunlar ve kupalar görünür).",
+      "connect": "Bağla",
+      "connecting": "Bağlanıyor…",
+      "connectedAs": "{{onlineId}} olarak bağlandı",
+      "notFound": "Bu Online ID için herkese açık bir PlayStation hesabı bulunamadı. Yazımını ve profilinin herkese açık olduğunu kontrol et.",
+      "alreadyLinked": "Bu PlayStation hesabı zaten başka bir profile bağlı.",
+      "invalidId": "Bu geçerli bir PSN Online ID'ye benzemiyor (3–16 harf, rakam, - veya _).",
+      "notConfigured": "PlayStation içe aktarımı sunucuda henüz ayarlanmadı. Daha sonra tekrar dene.",
+      "genericError": "Bağlantı başarısız oldu. Lütfen tekrar dene.",
+      "viewLibrary": "PlayStation kütüphanemi gör"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "İnceleme yaz",
     "popularNow": "Şu anda popüler",
     "showMorePopular": "Daha fazla popüler oyun göster",
+    "showLessPopular": "Daha az popüler oyun göster",
     "popularReviews": "Popüler incelemeler",
     "noReviewsTitle": "Henüz inceleme yok",
     "noReviewsDescription": "Bir oyunu ilk değerlendiren sen ol — en iyi incelemeler burada görünecek.",
     "showMoreReviews": "Daha fazla inceleme göster",
     "deletedUser": "[silinmiş kullanıcı]",
     "viewGame": "{{title}} oyununu görüntüle",
-    "recommendedForYou": "Senin için önerilen"
+    "recommendedForYou": "Senin için önerilen",
+    "showMoreRecommended": "Daha fazla öneri göster",
+    "showLessRecommended": "Daha az öneri göster"
   },
   "feed": {
     "title": "Arkadaşlarının etkinliği",
@@ -497,7 +516,13 @@
     "writeReviewOf": "{{title}} için inceleme yaz",
     "noMatchedTitle": "Henüz eşleşen oyun yok",
     "noMatchedDesc": "Steam oyunlarından hiçbiri şu an kataloğumuzda değil.",
-    "manageLink": "Steam bağlantını <l>profilinden</l> yönet."
+    "manageLink": "Steam bağlantını <l>profilinden</l> yönet.",
+    "achievementsTitle": "Başarımlar",
+    "achievementsSub": "{{games}} oyun · {{perfect}} %100",
+    "achPerGame": "{{unlocked}}/{{total}} başarım",
+    "achievementsNone": "Henüz senkronize edilmiş başarım yok — Steam profilin gizli olabilir.",
+    "syncAchievements": "Yenile",
+    "syncing": "Senkronize ediliyor…"
   },
   "genres": {
     "Adventure": "Macera",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Oyunlarını, kupalarını ve arkadaşlarını içe aktarmak için PlayStation hesabını bağla.",
+    "linkCta": "Ayarlara git",
+    "loadError": "PlayStation verilerin yüklenemedi.",
+    "friendsHeading": "Saveboxd'daki PlayStation arkadaşları",
+    "friendsPrivate": "PlayStation arkadaş listen gizli.",
+    "noFriendsTitle": "Önerilecek arkadaş yok",
+    "noFriendsDesc": "PlayStation arkadaşlarının hiçbiri henüz Saveboxd'da değil.",
+    "requestSent": "İstek gönderildi",
+    "addFriend": "Ekle",
+    "friendRequestError": "Arkadaşlık isteği gönderilemedi.",
+    "yourGames": "Oyunların",
+    "gamesPrivate": "PlayStation oyunların gizli.",
+    "played": "{{totalPlayed}} oyun oynandı · {{matched}} kataloğumuzda bulundu",
+    "playedUnmatched": "{{totalPlayed}} oyun oynandı · {{matched}} bulundu · {{unmatched}} katalogda yok",
+    "noMatchedTitle": "Eşleşen oyun yok",
+    "noMatchedDesc": "PlayStation oyunlarının hiçbiri henüz kataloğumuzda değil.",
+    "trophyLevel": "Kupa seviyesi",
+    "trophiesEarned": "Kazanılan kupalar",
+    "trophyProgress": "{{earned}}/{{total}} kupa · %{{progress}}",
+    "statusPlaying": "Oynanıyor",
+    "statusBacklog": "Bekleyen",
+    "reviewWritten": "İnceleme yazıldı",
+    "writeReview": "İnceleme yaz",
+    "viewReviewOf": "{{title}} incelemene bak",
+    "writeReviewOf": "{{title}} için inceleme yaz"
+  },
+  "library": {
+    "title": "Kütüphanelerim",
+    "noneLinkedTitle": "Bağlı hesap yok",
+    "noneLinkedDesc": "Oyunlarını ve kupalarını burada görmek için ayarlardan bir Steam veya PlayStation hesabı bağla.",
+    "goSettings": "Ayarlara git",
+    "notLinked": "Bağlı değil"
   }
 }

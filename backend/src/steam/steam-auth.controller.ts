@@ -14,7 +14,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { AuthProvider } from '@prisma/client';
+import { AuthProvider, Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
 import { FriendsService } from '../friends/friends.service';
 import { setAuthCookies } from '../auth/auth-cookies.util';
@@ -90,7 +90,7 @@ export class SteamAuthController {
       }
       await this.prisma.user.update({
         where: { id: current.sub },
-        data: { steamId },
+        data: { steamId, steamAchievements: Prisma.DbNull },
       });
       return res.redirect(`${front}/profile?steam=linked`);
     }
@@ -200,7 +200,7 @@ export class SteamAuthController {
     }
     await this.prisma.user.update({
       where: { id: current.sub },
-      data: { steamId: null },
+      data: { steamId: null, steamAchievements: Prisma.DbNull },
     });
   }
 }

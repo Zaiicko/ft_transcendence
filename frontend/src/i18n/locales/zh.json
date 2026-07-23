@@ -23,7 +23,8 @@
     "friends": "好友",
     "steam": "Steam",
     "login": "登录",
-    "signup": "注册"
+    "signup": "注册",
+    "library": "库"
   },
   "menu": {
     "notifications": "通知",
@@ -205,6 +206,21 @@
       "comingSoon": "即将推出",
       "discordLinked": "已关联 Discord 账号！",
       "discordTaken": "此 Discord 账号已关联到其他用户。"
+    },
+    "psn": {
+      "title": "连接 PlayStation",
+      "intro": "只需输入你的 PlayStation 在线 ID，我们就会找到你的公开资料。无需密码或令牌。",
+      "idLabel": "你的 PSN 在线 ID",
+      "publicHint": "你的 PlayStation 资料必须公开（游戏和奖杯可见）我们才能导入。",
+      "connect": "连接",
+      "connecting": "连接中…",
+      "connectedAs": "已连接为 {{onlineId}}",
+      "notFound": "未找到该在线 ID 对应的公开 PlayStation 账户。请检查拼写以及资料是否公开。",
+      "alreadyLinked": "此 PlayStation 账户已关联到其他个人资料。",
+      "invalidId": "这看起来不是有效的 PSN 在线 ID（3–16 个字母、数字、- 或 _）。",
+      "notConfigured": "服务器尚未配置 PlayStation 导入功能。请稍后再试。",
+      "genericError": "连接失败。请重试。",
+      "viewLibrary": "查看我的 PlayStation 库"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "撰写评论",
     "popularNow": "当前热门",
     "showMorePopular": "查看更多热门游戏",
+    "showLessPopular": "显示更少热门游戏",
     "popularReviews": "热门评论",
     "noReviewsTitle": "暂无评论",
     "noReviewsDescription": "成为第一个评分的人——精彩评论将在此展示。",
     "showMoreReviews": "查看更多评论",
     "deletedUser": "[已删除用户]",
     "viewGame": "查看 {{title}}",
-    "recommendedForYou": "为你推荐"
+    "recommendedForYou": "为你推荐",
+    "showMoreRecommended": "显示更多推荐",
+    "showLessRecommended": "显示更少推荐"
   },
   "feed": {
     "title": "好友动态",
@@ -497,7 +516,13 @@
     "writeReviewOf": "为 {{title}} 写评价",
     "noMatchedTitle": "还没有匹配的游戏",
     "noMatchedDesc": "目前你的 Steam 游戏都不在我们的目录中。",
-    "manageLink": "在你的<l>主页</l>中管理 Steam 关联。"
+    "manageLink": "在你的<l>主页</l>中管理 Steam 关联。",
+    "achievementsTitle": "成就",
+    "achievementsSub": "{{games}} 款游戏 · {{perfect}} 款 100%",
+    "achPerGame": "{{unlocked}}/{{total}} 个成就",
+    "achievementsNone": "尚未同步成就——你的 Steam 资料可能是私密的。",
+    "syncAchievements": "刷新",
+    "syncing": "同步中…"
   },
   "genres": {
     "Adventure": "冒险",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "关联你的 PlayStation 账户以导入你的游戏、奖杯和好友。",
+    "linkCta": "前往设置",
+    "loadError": "无法加载你的 PlayStation 数据。",
+    "friendsHeading": "Saveboxd 上的 PlayStation 好友",
+    "friendsPrivate": "你的 PlayStation 好友列表是私密的。",
+    "noFriendsTitle": "没有可推荐的好友",
+    "noFriendsDesc": "你的 PlayStation 好友还没有人在 Saveboxd 上。",
+    "requestSent": "请求已发送",
+    "addFriend": "添加",
+    "friendRequestError": "无法发送好友请求。",
+    "yourGames": "你的游戏",
+    "gamesPrivate": "你的 PlayStation 游戏是私密的。",
+    "played": "已玩 {{totalPlayed}} 款游戏 · 其中 {{matched}} 款在我们的目录中",
+    "playedUnmatched": "已玩 {{totalPlayed}} 款游戏 · {{matched}} 款已匹配 · {{unmatched}} 款不在目录中",
+    "noMatchedTitle": "没有匹配的游戏",
+    "noMatchedDesc": "你的 PlayStation 游戏还没有在我们的目录中。",
+    "trophyLevel": "奖杯等级",
+    "trophiesEarned": "已获得奖杯",
+    "trophyProgress": "{{earned}}/{{total}} 个奖杯 · {{progress}}%",
+    "statusPlaying": "进行中",
+    "statusBacklog": "待玩",
+    "reviewWritten": "已写评价",
+    "writeReview": "写评价",
+    "viewReviewOf": "查看你对 {{title}} 的评价",
+    "writeReviewOf": "为 {{title}} 写评价"
+  },
+  "library": {
+    "title": "我的游戏库",
+    "noneLinkedTitle": "未关联账户",
+    "noneLinkedDesc": "在设置中关联 Steam 或 PlayStation 账户，即可在此查看你的游戏和奖杯。",
+    "goSettings": "前往设置",
+    "notLinked": "未关联"
   }
 }

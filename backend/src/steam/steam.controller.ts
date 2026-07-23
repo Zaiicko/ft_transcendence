@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Query,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -34,13 +35,19 @@ export class SteamController {
   // The user's Steam library, matched against our catalog through the
   // steamAppId mapping. The frontend lists these so the user can mark them
   // played / rate them (existing reviews & playedGame endpoints).
+  // `?refresh=true` force une resynchronisation des succès.
   @Get('library')
-  async library(@CurrentUser() current: JwtPayload) {
-    const steamId = await this.requireSteamId(current.sub);
+  async library(@CurrentUser() current: JwtPayload, @Query('refresh') refresh?: string) {
+    const user = await this.users.findById(current.sub);
+    if (!user) throw new UnauthorizedException();
+    if (!user.steamId) {
+      throw new BadRequestException('No Steam account linked — visit /api/auth/steam first');
+    }
+    const steamId = user.steamId;
 
     const owned = await this.webApi.getOwnedGames(steamId);
     if (owned === null) {
-      return { private: true, totalOwned: 0, matched: [], unmatchedCount: 0 };
+      return { private: true, totalOwned: 0, matched: [], unmatchedCount: 0, achievements: null };
     }
 
     const byAppId = new Map(owned.map((g) => [g.appid, g]));
@@ -69,21 +76,85 @@ export class SteamController {
       },
     });
 
+    // Succès : synchronisés une seule fois puis mis en cache sur l'utilisateur
+    // (Steam n'a pas d'appel groupé, c'est 1 requête/jeu — trop lourd à refaire
+    // à chaque affichage). On resynchronise si le cache est absent ou si
+    // ?refresh=true. `perGame` : { appId: [obtenus, total] }.
+    const cached = user.steamAchievements as
+      | { syncedAt: string; perGame: Record<string, [number, number]> }
+      | null;
+    let perGame: Record<string, [number, number]>;
+    let syncedAt: string;
+    if (cached?.perGame && refresh !== 'true') {
+      perGame = cached.perGame;
+      syncedAt = cached.syncedAt;
+    } else {
+      perGame = await this.syncAchievements(steamId, owned);
+      syncedAt = new Date().toISOString();
+      await this.prisma.user.update({
+        where: { id: current.sub },
+        data: { steamAchievements: { syncedAt, perGame } },
+      });
+    }
+
     const matched = games
-      .map(({ playedBy, reviews, ...game }) => ({
-        ...game,
-        playtimeMinutes: byAppId.get(game.steamAppId!)?.playtime_forever ?? 0,
-        playedStatus: playedBy[0]?.status ?? null,
-        reviewed: reviews.length > 0,
-      }))
+      .map(({ playedBy, reviews, ...game }) => {
+        const ach = game.steamAppId ? perGame[String(game.steamAppId)] : undefined;
+        return {
+          ...game,
+          playtimeMinutes: byAppId.get(game.steamAppId!)?.playtime_forever ?? 0,
+          playedStatus: playedBy[0]?.status ?? null,
+          reviewed: reviews.length > 0,
+          achievements: ach ? { unlocked: ach[0], total: ach[1] } : null,
+        };
+      })
       .sort((a, b) => b.playtimeMinutes - a.playtimeMinutes);
+
+    // Résumé global : sur TOUS les jeux synchronisés (pas seulement ceux du
+    // catalogue), pour refléter la vraie progression Steam de l'utilisateur.
+    const entries = Object.values(perGame);
+    const summary = {
+      unlocked: entries.reduce((n, [u]) => n + u, 0),
+      total: entries.reduce((n, [, t]) => n + t, 0),
+      games: entries.length,
+      perfect: entries.filter(([u, t]) => t > 0 && u === t).length,
+      syncedAt,
+    };
 
     return {
       private: false,
       totalOwned: owned.length,
       matched,
       unmatchedCount: owned.length - matched.length,
+      achievements: summary,
     };
+  }
+
+  // Récupère les succès de TOUS les jeux joués (temps de jeu > 0), les plus
+  // joués d'abord, par lots concurrents bornés. Plafond de sécurité pour éviter
+  // un cas pathologique (bibliothèque énorme) — au-delà, on prend les plus joués.
+  private async syncAchievements(
+    steamId: string,
+    owned: { appid: number; playtime_forever: number }[],
+  ): Promise<Record<string, [number, number]>> {
+    const SAFETY_CAP = 1000;
+    const CONCURRENCY = 10;
+    const played = owned
+      .filter((g) => g.playtime_forever > 0)
+      .sort((a, b) => b.playtime_forever - a.playtime_forever)
+      .slice(0, SAFETY_CAP);
+
+    const perGame: Record<string, [number, number]> = {};
+    for (let i = 0; i < played.length; i += CONCURRENCY) {
+      const batch = played.slice(i, i + CONCURRENCY);
+      await Promise.all(
+        batch.map(async (g) => {
+          const a = await this.webApi.getPlayerAchievements(steamId, g.appid);
+          if (a) perGame[String(g.appid)] = [a.unlocked, a.total];
+        }),
+      );
+    }
+    return perGame;
   }
 
   // Steam friends who already have a Saveboxd account and aren't already

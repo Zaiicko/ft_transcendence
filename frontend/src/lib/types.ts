@@ -189,7 +189,14 @@ export interface FeedPage {
 // Viewer's relationship with the profile owner (drives the friend button)
 export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 
-type GameRef = { id: number; title: string; coverUrl: string | null };
+export type GameRef = { id: number; title: string; coverUrl: string | null };
+
+// GET /users/profile/:username/played — every game the user has logged
+export interface ProfilePlayedGame {
+  playedAt: string | null;
+  status: 'PLAYED' | 'PLAYING' | 'BACKLOG';
+  game: GameRef;
+}
 
 // Un avis tel qu'affiché sur le profil (seed du profil + GET
 // /users/profile/:username/reviews). Exactement un de game/company est non-null.
@@ -231,6 +238,10 @@ export interface PublicUser {
   provider: AuthProvider;
   steamId: string | null;
   discordId: string | null;
+  // PlayStation lié via psn-api : le jeton NPSSO et l'accountId restent côté
+  // backend ; on n'expose que l'état lié + l'onlineId (affichage).
+  psnLinked: boolean;
+  psnOnlineId: string | null;
   hasPassword: boolean;
   twoFactorEnabled: boolean;
   emailVerifiedAt: string | null;

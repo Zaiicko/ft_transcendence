@@ -23,7 +23,8 @@
     "friends": "Friends",
     "steam": "Steam",
     "login": "Log in",
-    "signup": "Sign up"
+    "signup": "Sign up",
+    "library": "Libraries"
   },
   "menu": {
     "notifications": "Notifications",
@@ -205,6 +206,21 @@
       "comingSoon": "Soon",
       "discordLinked": "Discord account linked!",
       "discordTaken": "This Discord account is already linked to another user."
+    },
+    "psn": {
+      "title": "Connect PlayStation",
+      "intro": "Just enter your PlayStation Online ID — we'll find your public profile. No password or token needed.",
+      "idLabel": "Your PSN Online ID",
+      "publicHint": "Your PlayStation profile must be public (games & trophies visible) for us to import it.",
+      "connect": "Connect",
+      "connecting": "Connecting…",
+      "connectedAs": "Connected as {{onlineId}}",
+      "notFound": "No public PlayStation account found for that Online ID. Check the spelling and that your profile is public.",
+      "alreadyLinked": "This PlayStation account is already linked to another profile.",
+      "invalidId": "That doesn't look like a valid PSN Online ID (3–16 letters, digits, - or _).",
+      "notConfigured": "PlayStation import isn't set up on the server yet. Try again later.",
+      "genericError": "Connection failed. Please try again.",
+      "viewLibrary": "View my PlayStation library"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "Write a review",
     "popularNow": "Popular right now",
     "showMorePopular": "Show more popular games",
+    "showLessPopular": "Show fewer popular games",
     "popularReviews": "Popular reviews",
     "noReviewsTitle": "No reviews yet",
     "noReviewsDescription": "Be the first to rate a game — the best reviews will show up here.",
     "showMoreReviews": "Show more reviews",
     "deletedUser": "[deleted user]",
     "viewGame": "View {{title}}",
-    "recommendedForYou": "Recommended for you"
+    "recommendedForYou": "Recommended for you",
+    "showMoreRecommended": "Show more recommendations",
+    "showLessRecommended": "Show fewer recommendations"
   },
   "feed": {
     "title": "Your friends' activity",
@@ -497,7 +516,13 @@
     "writeReviewOf": "Write a review of {{title}}",
     "noMatchedTitle": "No matched games yet",
     "noMatchedDesc": "None of your Steam games are in our catalog for now.",
-    "manageLink": "Manage your Steam link from your <l>profile</l>."
+    "manageLink": "Manage your Steam link from your <l>profile</l>.",
+    "achievementsTitle": "Achievements",
+    "achievementsSub": "{{games}} games · {{perfect}} at 100%",
+    "achPerGame": "{{unlocked}}/{{total}} achievements",
+    "achievementsNone": "No achievements synced yet — your Steam profile may be private.",
+    "syncAchievements": "Refresh",
+    "syncing": "Syncing…"
   },
   "genres": {
     "Adventure": "Adventure",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Link your PlayStation account to import your games, trophies and friends.",
+    "linkCta": "Go to settings",
+    "loadError": "Couldn't load your PlayStation data.",
+    "friendsHeading": "PlayStation friends on Saveboxd",
+    "friendsPrivate": "Your PlayStation friends list is private.",
+    "noFriendsTitle": "No friends to suggest",
+    "noFriendsDesc": "None of your PlayStation friends are on Saveboxd yet.",
+    "requestSent": "Request sent",
+    "addFriend": "Add friend",
+    "friendRequestError": "Couldn't send the friend request.",
+    "yourGames": "Your games",
+    "gamesPrivate": "Your PlayStation games are private.",
+    "played": "{{totalPlayed}} games played · {{matched}} matched in our catalog",
+    "playedUnmatched": "{{totalPlayed}} games played · {{matched}} matched · {{unmatched}} not in our catalog",
+    "noMatchedTitle": "No matching games",
+    "noMatchedDesc": "None of your PlayStation games are in our catalog yet.",
+    "trophyLevel": "Trophy level",
+    "trophiesEarned": "Trophies earned",
+    "trophyProgress": "{{earned}}/{{total}} trophies · {{progress}}%",
+    "statusPlaying": "Playing",
+    "statusBacklog": "Backlog",
+    "reviewWritten": "Review written",
+    "writeReview": "Write a review",
+    "viewReviewOf": "View your review of {{title}}",
+    "writeReviewOf": "Write a review of {{title}}"
+  },
+  "library": {
+    "title": "My libraries",
+    "noneLinkedTitle": "No account linked",
+    "noneLinkedDesc": "Link a Steam or PlayStation account in your settings to see your games and trophies here.",
+    "goSettings": "Go to settings",
+    "notLinked": "Not linked"
   }
 }

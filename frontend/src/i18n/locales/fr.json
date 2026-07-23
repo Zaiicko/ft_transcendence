@@ -23,7 +23,8 @@
     "friends": "Amis",
     "steam": "Steam",
     "login": "Connexion",
-    "signup": "Inscription"
+    "signup": "Inscription",
+    "library": "Bibliothèques"
   },
   "menu": {
     "notifications": "Notifications",
@@ -205,6 +206,21 @@
       "comingSoon": "Bientôt",
       "discordLinked": "Compte Discord lié !",
       "discordTaken": "Ce compte Discord est déjà lié à un autre utilisateur."
+    },
+    "psn": {
+      "title": "Connecter PlayStation",
+      "intro": "Entre simplement ton PlayStation Online ID — on retrouve ton profil public. Aucun mot de passe ni jeton nécessaire.",
+      "idLabel": "Ton PSN Online ID",
+      "publicHint": "Ton profil PlayStation doit être public (jeux et trophées visibles) pour qu'on puisse l'importer.",
+      "connect": "Connecter",
+      "connecting": "Connexion…",
+      "connectedAs": "Connecté en tant que {{onlineId}}",
+      "notFound": "Aucun compte PlayStation public trouvé pour cet Online ID. Vérifie l'orthographe et que ton profil est public.",
+      "alreadyLinked": "Ce compte PlayStation est déjà lié à un autre profil.",
+      "invalidId": "Cet Online ID PSN ne semble pas valide (3–16 lettres, chiffres, - ou _).",
+      "notConfigured": "L'import PlayStation n'est pas encore configuré côté serveur. Réessaie plus tard.",
+      "genericError": "La connexion a échoué. Réessaie.",
+      "viewLibrary": "Voir ma bibliothèque PlayStation"
     }
   },
   "friends": {
@@ -261,13 +277,16 @@
     "writeReview": "Écrire une critique",
     "popularNow": "Populaires en ce moment",
     "showMorePopular": "Voir plus de jeux populaires",
+    "showLessPopular": "Voir moins de jeux populaires",
     "popularReviews": "Critiques populaires",
     "noReviewsTitle": "Aucune critique pour l'instant",
     "noReviewsDescription": "Sois le premier à noter un jeu — les meilleures critiques apparaîtront ici.",
     "showMoreReviews": "Voir plus de critiques",
     "deletedUser": "[utilisateur supprimé]",
     "viewGame": "Voir {{title}}",
-    "recommendedForYou": "Recommandé pour vous"
+    "recommendedForYou": "Recommandé pour vous",
+    "showMoreRecommended": "Voir plus de recommandations",
+    "showLessRecommended": "Voir moins de recommandations"
   },
   "feed": {
     "title": "Activité de tes amis",
@@ -497,7 +516,13 @@
     "writeReviewOf": "Écrire une critique de {{title}}",
     "noMatchedTitle": "Aucun jeu reconnu pour l'instant",
     "noMatchedDesc": "Aucun de tes jeux Steam n'est dans notre catalogue pour le moment.",
-    "manageLink": "Gère ta liaison Steam depuis ton <l>profil</l>."
+    "manageLink": "Gère ta liaison Steam depuis ton <l>profil</l>.",
+    "achievementsTitle": "Succès",
+    "achievementsSub": "{{games}} jeux · {{perfect}} à 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} succès",
+    "achievementsNone": "Aucun succès synchronisé — ton profil Steam est peut-être privé.",
+    "syncAchievements": "Actualiser",
+    "syncing": "Synchro…"
   },
   "genres": {
     "Adventure": "Aventure",
@@ -747,5 +772,40 @@
         }
       }
     }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Lie ton compte PlayStation pour importer tes jeux, trophées et amis.",
+    "linkCta": "Aller aux réglages",
+    "loadError": "Impossible de charger tes données PlayStation.",
+    "friendsHeading": "Amis PlayStation sur Saveboxd",
+    "friendsPrivate": "Ta liste d'amis PlayStation est privée.",
+    "noFriendsTitle": "Aucun ami à suggérer",
+    "noFriendsDesc": "Aucun de tes amis PlayStation n'est encore sur Saveboxd.",
+    "requestSent": "Demande envoyée",
+    "addFriend": "Ajouter",
+    "friendRequestError": "Impossible d'envoyer la demande d'ami.",
+    "yourGames": "Tes jeux",
+    "gamesPrivate": "Tes jeux PlayStation sont privés.",
+    "played": "{{totalPlayed}} jeux joués · {{matched}} trouvés dans notre catalogue",
+    "playedUnmatched": "{{totalPlayed}} jeux joués · {{matched}} trouvés · {{unmatched}} absents de notre catalogue",
+    "noMatchedTitle": "Aucun jeu correspondant",
+    "noMatchedDesc": "Aucun de tes jeux PlayStation n'est encore dans notre catalogue.",
+    "trophyLevel": "Niveau de trophées",
+    "trophiesEarned": "Trophées obtenus",
+    "trophyProgress": "{{earned}}/{{total}} trophées · {{progress}} %",
+    "statusPlaying": "En cours",
+    "statusBacklog": "À faire",
+    "reviewWritten": "Avis rédigé",
+    "writeReview": "Écrire un avis",
+    "viewReviewOf": "Voir ton avis sur {{title}}",
+    "writeReviewOf": "Écrire un avis sur {{title}}"
+  },
+  "library": {
+    "title": "Mes bibliothèques",
+    "noneLinkedTitle": "Aucun compte lié",
+    "noneLinkedDesc": "Lie un compte Steam ou PlayStation dans tes réglages pour voir tes jeux et trophées ici.",
+    "goSettings": "Aller aux réglages",
+    "notLinked": "Non lié"
   }
 }

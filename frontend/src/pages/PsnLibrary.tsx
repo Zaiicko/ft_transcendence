@@ -1,52 +1,44 @@
 import { useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import EmptyState, { GamepadIcon, UsersIcon } from '../components/EmptyState';
 import Skeleton from '../components/Skeleton';
-import i18n from '../i18n';
 import { apiFetch, ApiError } from '../lib/api';
 import type { PublicUser } from '../lib/types';
 
-interface SteamLibraryGame {
+interface TrophyCounts {
+  bronze: number;
+  silver: number;
+  gold: number;
+  platinum: number;
+}
+
+interface PsnGame {
   id: number;
   title: string;
   coverUrl: string | null;
   gameType: string;
-  steamAppId: number | null;
-  igdbRating: number | null;
-  steamScore: number | null;
-  releaseDate: string | null;
-  playtimeMinutes: number;
+  platform: string;
+  trophies: { earned: TrophyCounts; defined: TrophyCounts; progress: number };
   playedStatus: string | null;
   reviewed: boolean;
-  achievements: { unlocked: number; total: number } | null;
 }
 
-interface AchievementSummary {
-  unlocked: number;
-  total: number;
-  games: number;
-  perfect: number;
-  syncedAt?: string;
+interface TrophySummary {
+  level: number;
+  tier: number;
+  progress: number;
+  earned: TrophyCounts;
 }
 
 interface LibraryResponse {
   private: boolean;
-  totalOwned: number;
-  matched: SteamLibraryGame[];
+  totalPlayed: number;
+  matched: PsnGame[];
   unmatchedCount: number;
-  achievements?: AchievementSummary;
-}
-
-// Étoile pleine (ambre) : succès Steam débloqués
-function StarIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
-      <path d="M12 2l2.9 6.26L21.5 9.2l-4.75 4.63L17.8 21 12 17.5 6.2 21l1.05-7.17L2.5 9.2l6.6-.94z" />
-    </svg>
-  );
+  summary: TrophySummary | null;
 }
 
 interface SuggestionsResponse {
@@ -54,67 +46,69 @@ interface SuggestionsResponse {
   suggestions: PublicUser[];
 }
 
-function formatPlaytime(minutes: number): string {
-  const t = i18n.t.bind(i18n);
-  if (minutes === 0) return t('steam.neverPlayed');
-  if (minutes < 60) return t('steam.playMinutes', { count: minutes });
-  return t('steam.playHours', { count: Math.round(minutes / 60) });
+const sum = (c: TrophyCounts) => c.bronze + c.silver + c.gold + c.platinum;
+
+// Pastilles colorées des 4 grades de trophées (platine, or, argent, bronze).
+const GRADES: { key: keyof TrophyCounts; color: string }[] = [
+  { key: 'platinum', color: '#8bb9e8' },
+  { key: 'gold', color: '#e6b53c' },
+  { key: 'silver', color: '#b9c2cc' },
+  { key: 'bronze', color: '#cd7f45' },
+];
+
+// Icône de trophée (coupe) colorée selon le grade PSN
+function TrophyIcon({ color, className = '' }: { color: string; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill={color} aria-hidden="true">
+      <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" />
+    </svg>
+  );
 }
 
-// `embedded` : rendu dans la page globale « Mes bibliothèques » (onglets par
-// plateforme) — on masque alors le titre h1, l'onglet porte déjà le nom.
-export default function SteamLibrary({ embedded = false }: { embedded?: boolean }) {
+function TrophyTally({ counts, className = '' }: { counts: TrophyCounts; className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-2 ${className}`}>
+      {GRADES.map(({ key, color }) => (
+        <span key={key} className="inline-flex items-center gap-1 text-xs tabular-nums">
+          <TrophyIcon color={color} className="h-3.5 w-3.5" />
+          {counts[key]}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+// `embedded` : rendu dans la page globale « Mes bibliothèques » — on masque le
+// titre h1 (l'onglet porte déjà le nom de la plateforme).
+export default function PsnLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
-
-  const steamLinked = Boolean(user?.steamId);
+  const psnLinked = Boolean(user?.psnLinked);
 
   const [library, setLibrary] = useState<LibraryResponse | null>(null);
   const [suggestions, setSuggestions] = useState<SuggestionsResponse | null>(null);
-  // Nothing to load when no Steam account is linked
-  const [loading, setLoading] = useState(steamLinked);
+  const [loading, setLoading] = useState(psnLinked);
   const [error, setError] = useState<string | null>(null);
   const [requested, setRequested] = useState<Set<number>>(new Set());
   const [requestError, setRequestError] = useState<string | null>(null);
-  const [syncing, setSyncing] = useState(false);
-
-  // Resynchronise les succès (force ?refresh=true) — utile après avoir joué de
-  // nouveaux jeux ou passé son profil en public. Le reste de la biblio ne bouge
-  // pas, on ne remplace que la réponse /steam/library.
-  async function refreshAchievements() {
-    setSyncing(true);
-    try {
-      const lib = await apiFetch<LibraryResponse>('/steam/library?refresh=true');
-      setLibrary(lib);
-    } catch {
-      // silencieux : on garde l'affichage courant
-    } finally {
-      setSyncing(false);
-    }
-  }
 
   useEffect(() => {
-    if (!steamLinked) return;
-    // setState only happens in the promise callbacks (async), never in the
-    // effect's synchronous body — see react-hooks/set-state-in-effect
+    if (!psnLinked) return;
     Promise.all([
-      apiFetch<LibraryResponse>('/steam/library'),
-      apiFetch<SuggestionsResponse>('/steam/friends/suggestions'),
+      apiFetch<LibraryResponse>('/psn/library'),
+      apiFetch<SuggestionsResponse>('/psn/friends/suggestions'),
     ])
       .then(([lib, sug]) => {
         setLibrary(lib);
         setSuggestions(sug);
       })
       .catch((err: unknown) => {
-        setError(err instanceof ApiError ? err.message : t('steam.loadError'));
+        setError(err instanceof ApiError ? err.message : t('psn.loadError'));
       })
       .finally(() => setLoading(false));
-  }, [steamLinked]);
+  }, [psnLinked]);
 
-  // Coche "fait" directement depuis la bibliothèque : l'API renvoie déjà
-  // playedStatus par jeu, on patche l'état local au lieu de re-fetcher
-  // (la liste peut compter des centaines de jeux)
-  async function togglePlayed(game: SteamLibraryGame) {
+  async function togglePlayed(game: PsnGame) {
     const marked = game.playedStatus === 'PLAYED';
     await apiFetch(`/games/${game.id}/played`, { method: marked ? 'DELETE' : 'PUT' });
     setLibrary((lib) =>
@@ -135,21 +129,21 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
       await apiFetch(`/friends/requests/${userId}`, { method: 'POST' });
       setRequested((prev) => new Set(prev).add(userId));
     } catch (err) {
-      setRequestError(err instanceof ApiError ? err.message : t('steam.friendRequestError'));
+      setRequestError(err instanceof ApiError ? err.message : t('psn.friendRequestError'));
     }
   }
 
-  if (!steamLinked) {
+  if (!psnLinked) {
     return (
       <div className="mx-auto max-w-lg text-center">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
-        <p className="mb-6 text-zinc-400">{t('steam.linkPrompt')}</p>
-        <a
-          href="/api/auth/steam"
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('psn.title')}</h1>
+        <p className="mb-6 text-zinc-400">{t('psn.linkPrompt')}</p>
+        <Link
+          to="/settings"
           className="rounded border border-zinc-700 px-4 py-2 hover:bg-zinc-900"
         >
-          {t('steam.linkCta')}
-        </a>
+          {t('psn.linkCta')}
+        </Link>
       </div>
     );
   }
@@ -173,67 +167,54 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
       </div>
     );
 
-  if (error) {
+  if (error)
     return (
       <div className="mx-auto max-w-lg">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('psn.title')}</h1>
         <p className="text-red-400">{error}</p>
       </div>
     );
-  }
+
+  const summary = library?.summary ?? null;
 
   return (
     <div>
-      {!embedded && (
-        <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
-      )}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        {!embedded && <h1 className="text-2xl font-bold tracking-tight">{t('psn.title')}</h1>}
+        {user?.psnOnlineId && (
+          <span className="text-sm text-zinc-500 dark:text-zinc-400">{user.psnOnlineId}</span>
+        )}
+      </div>
 
-      {/* Résumé des succès (synchronisé une fois, puis en cache) */}
-      {library?.achievements && (
+      {/* Résumé de trophées : niveau + total par grade */}
+      {summary && (
         <div className="card mb-10 flex flex-wrap items-center gap-x-8 gap-y-3 p-4">
-          <p className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            <StarIcon className="h-3.5 w-3.5 text-amber-500" />
-            {t('steam.achievementsTitle')}
-          </p>
-          {library.achievements.games > 0 ? (
-            <>
-              <p className="text-2xl font-bold tabular-nums">
-                {library.achievements.unlocked}
-                <span className="text-base font-normal text-zinc-400"> / {library.achievements.total}</span>
-              </p>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                {t('steam.achievementsSub', {
-                  games: library.achievements.games,
-                  perfect: library.achievements.perfect,
-                })}
-              </p>
-            </>
-          ) : (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('steam.achievementsNone')}</p>
-          )}
-          <button
-            type="button"
-            onClick={refreshAchievements}
-            disabled={syncing}
-            className="ml-auto rounded-full border border-zinc-400/60 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent disabled:opacity-50 dark:border-zinc-600"
-          >
-            {syncing ? t('steam.syncing') : t('steam.syncAchievements')}
-          </button>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              {t('psn.trophyLevel')}
+            </p>
+            <p className="text-2xl font-bold tabular-nums">{summary.level}</p>
+          </div>
+          <div>
+            <p className="mb-1 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              {t('psn.trophiesEarned')}
+            </p>
+            <TrophyTally counts={summary.earned} className="text-sm" />
+          </div>
         </div>
       )}
 
-      {/* Amis d'abord : la biblio de jeux peut être immense, les amis se
-          retrouveraient sinon enterrés tout en bas */}
+      {/* Amis d'abord (la biblio peut être énorme) */}
       <section className="mb-10">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('steam.friendsHeading')}
+          {t('psn.friendsHeading')}
         </h2>
-        {suggestions?.private && <p className="text-zinc-400">{t('steam.friendsPrivate')}</p>}
+        {suggestions?.private && <p className="text-zinc-400">{t('psn.friendsPrivate')}</p>}
         {suggestions && !suggestions.private && suggestions.suggestions.length === 0 && (
           <EmptyState
             icon={<UsersIcon />}
-            title={t('steam.noFriendsTitle')}
-            description={t('steam.noFriendsDesc')}
+            title={t('psn.noFriendsTitle')}
+            description={t('psn.noFriendsDesc')}
           />
         )}
         {requestError && <p className="mb-3 text-sm text-red-400">{requestError}</p>}
@@ -245,14 +226,14 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                 <span className="font-medium">{s.username}</span>
                 <div className="ml-auto">
                   {requested.has(s.id) ? (
-                    <span className="text-sm text-zinc-400">{t('steam.requestSent')}</span>
+                    <span className="text-sm text-zinc-400">{t('psn.requestSent')}</span>
                   ) : (
                     <button
                       type="button"
                       onClick={() => handleAddFriend(s.id)}
                       className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
                     >
-                      {t('steam.addFriend')}
+                      {t('psn.addFriend')}
                     </button>
                   )}
                 </div>
@@ -263,33 +244,24 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
       </section>
 
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        {t('steam.yourGames')}
+        {t('psn.yourGames')}
       </h2>
       {library?.private ? (
-        <p className="mb-8 text-zinc-400">
-          <Trans
-            i18nKey="steam.gamesPrivate"
-            components={{ s: <span className="text-zinc-200" /> }}
-          />
-        </p>
+        <p className="mb-8 text-zinc-400">{t('psn.gamesPrivate')}</p>
       ) : (
         <>
           <p className="mb-6 text-sm text-zinc-400">
-            {t(
-              library && library.unmatchedCount > 0 ? 'steam.ownedUnmatched' : 'steam.owned',
-              {
-                totalOwned: library?.totalOwned ?? 0,
-                matched: library?.matched.length ?? 0,
-                unmatched: library?.unmatchedCount ?? 0,
-              },
-            )}
+            {t(library && library.unmatchedCount > 0 ? 'psn.playedUnmatched' : 'psn.played', {
+              totalPlayed: library?.totalPlayed ?? 0,
+              matched: library?.matched.length ?? 0,
+              unmatched: library?.unmatchedCount ?? 0,
+            })}
           </p>
 
           {library && library.matched.length > 0 ? (
             <ul className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {library.matched.map((game) => (
                 <li key={game.id} className="card flex flex-col overflow-hidden">
-                  {/* Jaquette + titre cliquables → fiche du jeu (consultation) */}
                   <Link to={`/game/${game.id}`} className="group flex flex-1 flex-col">
                     {game.coverUrl ? (
                       <img
@@ -303,32 +275,18 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                     <p className="p-2 pb-0 text-sm font-medium leading-tight">{game.title}</p>
                   </Link>
                   <div className="flex flex-1 flex-col gap-1 p-2 pt-1">
-                    <p className="mt-auto text-xs text-zinc-400">{formatPlaytime(game.playtimeMinutes)}</p>
-                    {game.achievements && (
-                      <p
-                        className="flex items-center gap-1 text-xs text-zinc-400"
-                        title={t('steam.achPerGame', {
-                          unlocked: game.achievements.unlocked,
-                          total: game.achievements.total,
-                        })}
-                      >
-                        <StarIcon
-                          className={`h-3 w-3 ${
-                            game.achievements.unlocked === game.achievements.total
-                              ? 'text-amber-500'
-                              : 'text-zinc-400'
-                          }`}
-                        />
-                        <span className="tabular-nums">
-                          {game.achievements.unlocked}/{game.achievements.total}
-                        </span>
-                      </p>
-                    )}
-                    {/* PLAYED est porté par le knob ambre ; seuls les autres
-                        statuts (playing/backlog) gardent leur étiquette */}
+                    {/* Progression de trophées : x/y + % */}
+                    <p className="mt-auto text-xs text-zinc-400">
+                      {t('psn.trophyProgress', {
+                        earned: sum(game.trophies.earned),
+                        total: sum(game.trophies.defined),
+                        progress: game.trophies.progress,
+                      })}
+                    </p>
+                    <TrophyTally counts={game.trophies.earned} />
                     {game.playedStatus && game.playedStatus !== 'PLAYED' && (
                       <span className="self-start rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-300">
-                        {t(game.playedStatus === 'PLAYING' ? 'steam.statusPlaying' : 'steam.statusBacklog')}
+                        {t(game.playedStatus === 'PLAYING' ? 'psn.statusPlaying' : 'psn.statusBacklog')}
                       </span>
                     )}
                     <div className="mt-1 flex items-center gap-2">
@@ -343,7 +301,6 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                             : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                         }`}
                       >
-                        {/* Coche cerclée filaire (trait 1.6) : "fait" */}
                         <svg
                           viewBox="0 0 24 24"
                           className="h-4 w-4 fill-none stroke-current"
@@ -358,8 +315,8 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                       </button>
                       <Link
                         to={`/game/${game.id}#review`}
-                        title={game.reviewed ? t('steam.reviewWritten') : t('steam.writeReview')}
-                        aria-label={t(game.reviewed ? 'steam.viewReviewOf' : 'steam.writeReviewOf', {
+                        title={game.reviewed ? t('psn.reviewWritten') : t('psn.writeReview')}
+                        aria-label={t(game.reviewed ? 'psn.viewReviewOf' : 'psn.writeReviewOf', {
                           title: game.title,
                         })}
                         className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
@@ -368,7 +325,6 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                             : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                         }`}
                       >
-                        {/* Crayon filaire (trait 1.6) : critique */}
                         <svg
                           viewBox="0 0 24 24"
                           className="h-4 w-4 fill-none stroke-current"
@@ -390,19 +346,12 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
             <EmptyState
               className="mb-10"
               icon={<GamepadIcon />}
-              title={t('steam.noMatchedTitle')}
-              description={t('steam.noMatchedDesc')}
+              title={t('psn.noMatchedTitle')}
+              description={t('psn.noMatchedDesc')}
             />
           )}
         </>
       )}
-
-      <p className="mt-10 text-sm text-zinc-400">
-        <Trans
-          i18nKey="steam.manageLink"
-          components={{ l: <Link to="/profile" className="underline" /> }}
-        />
-      </p>
     </div>
   );
 }
