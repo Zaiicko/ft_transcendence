@@ -360,7 +360,8 @@
     "viewReplies": "Reacties bekijken ({{count}})",
     "replyPlaceholder": "Reageren…",
     "addPlaceholder": "Een reactie toevoegen…",
-    "submit": "Reageren"
+    "submit": "Reageren",
+    "loginToComment": "Log in om te reageren"
   },
   "profile": {
     "recentReviews": "Recente recensies",
@@ -807,5 +808,17 @@
     "noneLinkedDesc": "Koppel een Steam- of PlayStation-account in je instellingen om hier je games en trofeeën te zien.",
     "goSettings": "Naar instellingen",
     "notLinked": "Niet gekoppeld"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Pagina niet gevonden",
+      "body": "Deze pagina bestaat niet of is verplaatst.",
+      "home": "Terug naar home"
+    },
+    "boundary": {
+      "title": "Er ging iets mis",
+      "body": "Er is een onverwachte fout opgetreden. Probeer de pagina opnieuw te laden.",
+      "retry": "Opnieuw laden"
+    }
   }
 }

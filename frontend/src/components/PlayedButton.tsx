@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
+import { useRequireAuth } from '../auth/useRequireAuth';
 import { apiFetch } from '../lib/api';
 
 // Compteur "l'ont fait" + la marque du viewer (null si anonyme / pas marqué)
@@ -27,6 +28,7 @@ export default function PlayedButton({
 }) {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const requireAuth = useRequireAuth();
   const [played, setPlayed] = useState<PlayedInfo | null>(null);
 
   // Rechargé quand la session change : `mine` dépend du cookie du viewer
@@ -45,7 +47,9 @@ export default function PlayedButton({
   const marked = played?.mine?.status === 'PLAYED';
 
   async function toggle() {
-    if (!user || !played) return;
+    // Invité → redirection login (retour ici après connexion) ; sinon on agit.
+    if (!requireAuth()) return;
+    if (!played) return;
     if (marked) {
       await apiFetch(`/games/${gameId}/played`, { method: 'DELETE' });
       setPlayed({ count: Math.max(0, played.count - 1), mine: null });
@@ -58,38 +62,35 @@ export default function PlayedButton({
   }
 
   const showPhrase = showCount && played != null && played.count > 0;
-  if (!user && !showPhrase) return null;
 
   return (
     <div className="flex items-center gap-3">
-      {user && (
-        <button
-          type="button"
-          onClick={toggle}
-          title={marked ? t('game.markedTitle') : t('game.markTitle')}
-          aria-label={marked ? t('game.unmarkAria') : t('game.markAria')}
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition ${
-            marked
-              ? 'border-accent bg-accent text-zinc-950'
-              : onDark
-                ? 'border-zinc-100/25 bg-zinc-950/30 text-zinc-200 backdrop-blur hover:border-accent hover:text-accent'
-                : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
-          }`}
+      <button
+        type="button"
+        onClick={toggle}
+        title={marked ? t('game.markedTitle') : t('game.markTitle')}
+        aria-label={marked ? t('game.unmarkAria') : t('game.markAria')}
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition ${
+          marked
+            ? 'border-accent bg-accent text-zinc-950'
+            : onDark
+              ? 'border-zinc-100/25 bg-zinc-950/30 text-zinc-200 backdrop-blur hover:border-accent hover:text-accent'
+              : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+        }`}
+      >
+        {/* Coche cerclée filaire (trait 1.6, style TiMN) : "fait" */}
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4 w-4 shrink-0 fill-none stroke-current"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
         >
-          {/* Coche cerclée filaire (trait 1.6, style TiMN) : "fait" */}
-          <svg
-            viewBox="0 0 24 24"
-            className="h-4 w-4 shrink-0 fill-none stroke-current"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="9" />
-            <path d="m8.5 12.5 2.5 2.5 4.5-5.5" />
-          </svg>
-        </button>
-      )}
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8.5 12.5 2.5 2.5 4.5-5.5" />
+        </svg>
+      </button>
       {showPhrase && (
         <span className={`text-xs ${onDark ? 'text-zinc-300' : 'text-zinc-500 dark:text-zinc-400'}`}>
           {t(played.count === 1 ? 'game.playedOne' : 'game.playedMany', { count: played.count })}

@@ -360,7 +360,8 @@
     "viewReplies": "返信を表示 ({{count}})",
     "replyPlaceholder": "返信…",
     "addPlaceholder": "コメントを追加…",
-    "submit": "コメント"
+    "submit": "コメント",
+    "loginToComment": "コメントするにはログインしてください"
   },
   "profile": {
     "recentReviews": "最近のレビュー",
@@ -807,5 +808,17 @@
     "noneLinkedDesc": "設定で Steam または PlayStation アカウントを連携すると、ここにゲームとトロフィーが表示されます。",
     "goSettings": "設定へ",
     "notLinked": "未連携"
+  },
+  "errors": {
+    "notFound": {
+      "title": "ページが見つかりません",
+      "body": "このページは存在しないか、移動されました。",
+      "home": "ホームに戻る"
+    },
+    "boundary": {
+      "title": "問題が発生しました",
+      "body": "予期しないエラーが発生しました。ページを再読み込みしてください。",
+      "retry": "再読み込み"
+    }
   }
 }

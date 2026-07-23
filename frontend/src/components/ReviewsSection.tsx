@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { useRequireAuth } from '../auth/useRequireAuth';
 import { emitCommentReaction } from '../games/commentBus';
 import { ReviewTargetKind, useReviewSocket } from '../games/useReviewSocket';
 import { ApiError, apiFetch } from '../lib/api';
@@ -54,6 +55,7 @@ export default function ReviewsSection({
 
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const requireAuth = useRequireAuth();
   const { hash } = useLocation();
 
   const [reviews, setReviews] = useState<ReviewT[]>([]);
@@ -166,7 +168,8 @@ export default function ReviewsSection({
   // absolu) arrive pendant l'await et le patch se cumule dessus → double
   // comptage. L'event réconcilie ensuite les compteurs à la valeur serveur.
   async function react(review: ReviewT, r: 'like' | 'dislike') {
-    if (!user) return;
+    // Invité → redirection login (retour ici après connexion) ; sinon on agit.
+    if (!requireAuth()) return;
     const removing = review.myReaction === r;
     setReviews((list) =>
       list.map((x) => {
@@ -278,9 +281,13 @@ export default function ReviewsSection({
         />
       )}
       {!user && (
-        <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
+        <button
+          type="button"
+          onClick={requireAuth}
+          className="mb-6 text-sm text-zinc-500 underline-offset-2 hover:text-accent hover:underline dark:text-zinc-400"
+        >
           {t('reviews.loginToReview')}
-        </p>
+        </button>
       )}
 
       {reviews.length === 0 ? (
@@ -353,24 +360,22 @@ export default function ReviewsSection({
                   <div className="mt-3 flex items-center gap-2 text-xs">
                     <button
                       type="button"
-                      disabled={!user}
                       onClick={() => react(r, 'like')}
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 transition disabled:cursor-default disabled:opacity-60 ${
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 transition ${
                         r.myReaction === 'like'
                           ? 'border-accent text-accent'
-                          : 'border-zinc-400/60 text-zinc-500 enabled:hover:border-accent enabled:hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+                          : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                       }`}
                     >
                       <ThumbsUpIcon className="h-3.5 w-3.5" /> {r._count.likes}
                     </button>
                     <button
                       type="button"
-                      disabled={!user}
                       onClick={() => react(r, 'dislike')}
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 transition disabled:cursor-default disabled:opacity-60 ${
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 transition ${
                         r.myReaction === 'dislike'
                           ? 'border-accent text-accent'
-                          : 'border-zinc-400/60 text-zinc-500 enabled:hover:border-accent enabled:hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+                          : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                       }`}
                     >
                       <ThumbsDownIcon className="h-3.5 w-3.5" /> {r._count.dislikes}

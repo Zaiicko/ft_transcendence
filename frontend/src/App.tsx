@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import Catalog from './pages/Catalog';
 import Company from './pages/Company';
@@ -11,6 +12,7 @@ import Friends from './pages/Friends';
 import Game from './pages/Game';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import NotFound from './pages/NotFound';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PublicProfile from './pages/PublicProfile';
 import ResetPassword from './pages/ResetPassword';
@@ -49,32 +51,36 @@ function LegacyProfileRedirect() {
 export default function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/games" element={<Catalog />} />
-          <Route path="/game/:id" element={<Game />} />
-          <Route path="/company/:id" element={<Company />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/u/:username" element={<PublicProfile />} />
-          <Route path="/profile" element={<LegacyProfileRedirect />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/friends" element={<Friends />} />
-            <Route path="/library" element={<Library />} />
-            {/* Anciennes routes → page globale (rétro-compat liens/onglets) */}
-            <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />
-            <Route path="/psn" element={<Navigate to="/library?platform=psn" replace />} />
+      <ErrorBoundary>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/games" element={<Catalog />} />
+            <Route path="/game/:id" element={<Game />} />
+            <Route path="/company/:id" element={<Company />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/u/:username" element={<PublicProfile />} />
+            <Route path="/profile" element={<LegacyProfileRedirect />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/feed" element={<Feed />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/friends" element={<Friends />} />
+              <Route path="/library" element={<Library />} />
+              {/* Anciennes routes → page globale (rétro-compat liens/onglets) */}
+              <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />
+              <Route path="/psn" element={<Navigate to="/library?platform=psn" replace />} />
+            </Route>
+            {/* Catch-all : toute URL inconnue garde la navbar et affiche la 404 */}
+            <Route path="*" element={<NotFound />} />
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </ErrorBoundary>
     </AuthProvider>
   );
 }

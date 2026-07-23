@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../auth/AuthContext';
+import { useRequireAuth } from '../auth/useRequireAuth';
 import { apiFetch, ApiError } from '../lib/api';
 import type { GameListSummary } from '../lib/types';
 
@@ -15,7 +15,7 @@ export default function AddToListButton({
   onDark?: boolean;
 }) {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const requireAuth = useRequireAuth();
   const [open, setOpen] = useState(false);
   const [lists, setLists] = useState<GameListSummary[] | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
@@ -54,8 +54,6 @@ export default function AddToListButton({
     };
   }, [open, gameId]);
 
-  if (!user) return null;
-
   async function toggle(list: GameListSummary) {
     setBusyId(list.id);
     const adding = !list.contains;
@@ -87,7 +85,7 @@ export default function AddToListButton({
     <div ref={ref} className="relative">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => requireAuth() && setOpen((v) => !v)}
         title={t('lists.addToList')}
         aria-label={t('lists.addToList')}
         aria-expanded={open}

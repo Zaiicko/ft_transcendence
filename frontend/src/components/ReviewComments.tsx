@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useRequireAuth } from '../auth/useRequireAuth';
 import Avatar from './Avatar';
 import { ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import { onCommentReaction } from '../games/commentBus';
@@ -50,6 +51,7 @@ export default function ReviewComments({
   onChanged: () => void; // remonte le compteur 💬 de l'avis après ma mutation
 }) {
   const { t } = useTranslation();
+  const requireAuth = useRequireAuth();
   const [roots, setRoots] = useState<CommentT[]>([]);
   const [sort, setSort] = useState<'top' | 'recent'>('top');
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ export default function ReviewComments({
 
   return (
     <div className="mt-4 border-t border-zinc-900/10 pt-4 dark:border-zinc-100/10">
-      {currentUserId != null && (
+      {currentUserId != null ? (
         <Composer
           reviewId={reviewId}
           onDone={() => {
@@ -82,6 +84,14 @@ export default function ReviewComments({
             onChanged();
           }}
         />
+      ) : (
+        <button
+          type="button"
+          onClick={requireAuth}
+          className="mb-3 text-xs text-zinc-500 underline-offset-2 hover:text-accent hover:underline"
+        >
+          {t('comments.loginToComment')}
+        </button>
       )}
 
       <div className="mb-2 flex items-center gap-2 text-xs">
@@ -138,6 +148,7 @@ function CommentNode({
   onChanged: () => void;
 }) {
   const { t } = useTranslation();
+  const requireAuth = useRequireAuth();
   const [c, setC] = useState(comment);
   const [seen, setSeen] = useState(comment);
   const [replies, setReplies] = useState<CommentT[] | null>(null); // null = pas encore chargées
@@ -172,7 +183,9 @@ function CommentNode({
   // Optimiste AVANT l'await (même piège que les avis : l'event `comment:reaction`
   // absolu arrive pendant l'await et se cumulerait avec le patch local).
   async function react(kind: 'like' | 'dislike') {
-    if (currentUserId == null || c.deleted) return;
+    if (c.deleted) return;
+    // Invité → redirection login (retour ici après connexion) ; sinon on agit.
+    if (!requireAuth()) return;
     const removing = c.myReaction === kind;
     setC((prev) => {
       const counts = { ...prev._count };
@@ -210,7 +223,8 @@ function CommentNode({
   }
 
   const mine = currentUserId != null && c.user?.id === currentUserId;
-  const canReply = currentUserId != null && !c.deleted && depth < MAX_DEPTH;
+  // Le bouton est visible même pour un invité : le clic déclenche requireAuth.
+  const canReply = !c.deleted && depth < MAX_DEPTH;
 
   return (
     <li>
@@ -271,20 +285,18 @@ function CommentNode({
               <div className="mt-1 flex items-center gap-3 text-xs text-zinc-500">
                 <button
                   type="button"
-                  disabled={currentUserId == null}
                   onClick={() => react('like')}
-                  className={`inline-flex items-center gap-1 transition disabled:cursor-default ${
-                    c.myReaction === 'like' ? 'text-accent' : 'enabled:hover:text-accent'
+                  className={`inline-flex items-center gap-1 transition ${
+                    c.myReaction === 'like' ? 'text-accent' : 'hover:text-accent'
                   }`}
                 >
                   <ThumbsUpIcon className="h-3.5 w-3.5" /> {c._count.likes}
                 </button>
                 <button
                   type="button"
-                  disabled={currentUserId == null}
                   onClick={() => react('dislike')}
-                  className={`inline-flex items-center gap-1 transition disabled:cursor-default ${
-                    c.myReaction === 'dislike' ? 'text-accent' : 'enabled:hover:text-accent'
+                  className={`inline-flex items-center gap-1 transition ${
+                    c.myReaction === 'dislike' ? 'text-accent' : 'hover:text-accent'
                   }`}
                 >
                   <ThumbsDownIcon className="h-3.5 w-3.5" /> {c._count.dislikes}
@@ -292,7 +304,7 @@ function CommentNode({
                 {canReply && (
                   <button
                     type="button"
-                    onClick={() => setReplying((v) => !v)}
+                    onClick={() => requireAuth() && setReplying((v) => !v)}
                     className="inline-flex items-center gap-1 transition hover:text-accent"
                   >
                     <ReplyIcon /> {t('comments.reply')}

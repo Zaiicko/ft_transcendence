@@ -360,7 +360,8 @@
     "viewReplies": "View replies ({{count}})",
     "replyPlaceholder": "Reply…",
     "addPlaceholder": "Add a comment…",
-    "submit": "Comment"
+    "submit": "Comment",
+    "loginToComment": "Log in to comment"
   },
   "profile": {
     "recentReviews": "Recent reviews",
@@ -807,5 +808,17 @@
     "noneLinkedDesc": "Link a Steam or PlayStation account in your settings to see your games and trophies here.",
     "goSettings": "Go to settings",
     "notLinked": "Not linked"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page not found",
+      "body": "This page doesn't exist or has moved.",
+      "home": "Back to home"
+    },
+    "boundary": {
+      "title": "Something went wrong",
+      "body": "An unexpected error occurred. Try reloading the page.",
+      "retry": "Reload"
+    }
   }
 }

@@ -360,7 +360,8 @@
     "viewReplies": "Antworten anzeigen ({{count}})",
     "replyPlaceholder": "Antworten…",
     "addPlaceholder": "Kommentar hinzufügen…",
-    "submit": "Kommentieren"
+    "submit": "Kommentieren",
+    "loginToComment": "Melde dich an, um zu kommentieren"
   },
   "profile": {
     "recentReviews": "Neueste Rezensionen",
@@ -807,5 +808,17 @@
     "noneLinkedDesc": "Verknüpfe ein Steam- oder PlayStation-Konto in deinen Einstellungen, um hier deine Spiele und Trophäen zu sehen.",
     "goSettings": "Zu den Einstellungen",
     "notLinked": "Nicht verknüpft"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Seite nicht gefunden",
+      "body": "Diese Seite existiert nicht oder wurde verschoben.",
+      "home": "Zurück zur Startseite"
+    },
+    "boundary": {
+      "title": "Etwas ist schiefgelaufen",
+      "body": "Ein unerwarteter Fehler ist aufgetreten. Lade die Seite neu.",
+      "retry": "Neu laden"
+    }
   }
 }

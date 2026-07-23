@@ -360,7 +360,8 @@
     "viewReplies": "Yanıtları gör ({{count}})",
     "replyPlaceholder": "Yanıtla…",
     "addPlaceholder": "Yorum ekle…",
-    "submit": "Yorum yap"
+    "submit": "Yorum yap",
+    "loginToComment": "Yorum yapmak için giriş yapın"
   },
   "profile": {
     "recentReviews": "Son incelemeler",
@@ -807,5 +808,17 @@
     "noneLinkedDesc": "Oyunlarını ve kupalarını burada görmek için ayarlardan bir Steam veya PlayStation hesabı bağla.",
     "goSettings": "Ayarlara git",
     "notLinked": "Bağlı değil"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Sayfa bulunamadı",
+      "body": "Bu sayfa mevcut değil veya taşınmış.",
+      "home": "Ana sayfaya dön"
+    },
+    "boundary": {
+      "title": "Bir şeyler ters gitti",
+      "body": "Beklenmeyen bir hata oluştu. Sayfayı yeniden yüklemeyi deneyin.",
+      "retry": "Yeniden yükle"
+    }
   }
 }

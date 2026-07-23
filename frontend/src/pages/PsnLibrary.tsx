@@ -106,6 +106,9 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
         setError(err instanceof ApiError ? err.message : t('psn.loadError'));
       })
       .finally(() => setLoading(false));
+    // t n'est lu que dans le catch (message d'erreur) : le rajouter referait un
+    // fetch à chaque changement de langue, non voulu — on charge une seule fois.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [psnLinked]);
 
   async function togglePlayed(game: PsnGame) {
