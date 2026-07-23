@@ -18,4 +18,6 @@ RUN npx prisma generate
 # data is at risk on destructive schema changes, and `make seed` regenerates
 # it. Without the flag, any risky schema change merged by a teammate makes
 # this container crash-loop on existing databases.
-CMD ["sh", "-c", "npm install && npx prisma generate && npx prisma db push --accept-data-loss && npm run start:dev"]
+# catalog:ensure (fixture-first) : remplit le catalogue si vide au tout premier
+# démarrage, sinon ne fait rien — d'où "make" seul = app peuplée et démontrable.
+CMD ["sh", "-c", "npm install && npx prisma generate && npx prisma db push --accept-data-loss && npm run catalog:ensure && npm run start:dev"]
