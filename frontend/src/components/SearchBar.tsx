@@ -1,3 +1,4 @@
+import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -94,6 +95,18 @@ export default function SearchBar() {
     if (data[0]) navigate(gameHref(data[0].id));
   }
 
+  const disc = useRef<HTMLImageElement>(null);
+
+  // Effet vinyle : un tour sur lui-même à chaque clic, dans un sens aléatoire
+  // (GSAP cumule la rotation avec '+=' / '-=' pour repartir de l'angle courant).
+  function spinAndPick(img: HTMLImageElement | null) {
+    if (img) {
+      const dir = Math.random() < 0.5 ? '+=360' : '-=360';
+      gsap.to(img, { rotation: dir, duration: 0.7, ease: 'power2.out' });
+    }
+    void randomGame();
+  }
+
   // Pill fantôme façon TiMN : quasi invisible au repos, bordure ambre au focus
   const field =
     'rounded-full border border-zinc-400/40 bg-zinc-900/5 dark:border-zinc-100/10 dark:bg-zinc-100/5';
@@ -114,27 +127,12 @@ export default function SearchBar() {
         />
         <button
           type="button"
-          onClick={randomGame}
+          onClick={() => spinAndPick(disc.current)}
           title={t('catalog.randomGame')}
           aria-label={t('catalog.randomGame')}
-          className={`${field} flex items-center px-3 text-zinc-500 transition hover:border-accent hover:text-accent dark:text-zinc-400`}
+          className={`${field} flex items-center px-3 transition hover:border-accent`}
         >
-          {/* Dé filaire (trait 1.6, style TiMN) — face à cinq points */}
-          <svg
-            viewBox="0 0 24 24"
-            className="h-4 w-4 shrink-0"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="3.5" y="3.5" width="17" height="17" rx="4" className="fill-none stroke-current" />
-            <circle cx="8.5" cy="8.5" r="1.1" className="fill-current" />
-            <circle cx="15.5" cy="8.5" r="1.1" className="fill-current" />
-            <circle cx="12" cy="12" r="1.1" className="fill-current" />
-            <circle cx="8.5" cy="15.5" r="1.1" className="fill-current" />
-            <circle cx="15.5" cy="15.5" r="1.1" className="fill-current" />
-          </svg>
+          <img ref={disc} src="/disc.png" alt="" className="h-5 w-5 shrink-0" />
         </button>
       </div>
 

@@ -154,9 +154,11 @@ export class UsersService {
     return friendship.requesterId === viewerId ? 'outgoing' : 'incoming';
   }
 
-  // avatarUrl looks like /api/uploads/avatars/<file> — only ever deletes inside AVATARS_DIR
+  // avatarUrl looks like /api/uploads/avatars/<file> — only ever deletes inside
+  // AVATARS_DIR. split('#') : retire un éventuel fragment de cadrage (#af=...)
+  // avant de déduire le nom de fichier.
   async deleteAvatarFile(avatarUrl: string): Promise<void> {
-    const filePath = join(AVATARS_DIR, basename(avatarUrl));
+    const filePath = join(AVATARS_DIR, basename(avatarUrl.split('#')[0]));
     if (filePath.startsWith(AVATARS_DIR) && existsSync(filePath)) {
       await unlink(filePath);
     }

@@ -221,7 +221,12 @@
       "notConfigured": "服务器尚未配置 PlayStation 导入功能。请稍后再试。",
       "genericError": "连接失败。请重试。",
       "viewLibrary": "查看我的 PlayStation 库"
-    }
+    },
+    "adjustAvatar": "调整",
+    "avatarReset": "重置",
+    "avatarFrameHint": "拖动以移动，滑块缩放",
+    "avatarZoom": "缩放",
+    "chooseImage": "选择图片"
   },
   "friends": {
     "title": "好友",

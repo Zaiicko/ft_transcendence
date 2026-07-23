@@ -221,7 +221,12 @@
       "notConfigured": "A importação da PlayStation ainda não está configurada no servidor. Tente mais tarde.",
       "genericError": "A ligação falhou. Tente novamente.",
       "viewLibrary": "Ver a minha biblioteca PlayStation"
-    }
+    },
+    "adjustAvatar": "Ajustar",
+    "avatarReset": "Repor",
+    "avatarFrameHint": "Arraste para mover, controle para ampliar",
+    "avatarZoom": "Zoom",
+    "chooseImage": "Escolher uma imagem"
   },
   "friends": {
     "title": "Amigos",

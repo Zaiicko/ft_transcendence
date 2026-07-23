@@ -221,7 +221,12 @@
       "notConfigured": "PlayStation import isn't set up on the server yet. Try again later.",
       "genericError": "Connection failed. Please try again.",
       "viewLibrary": "View my PlayStation library"
-    }
+    },
+    "adjustAvatar": "Adjust",
+    "avatarReset": "Reset",
+    "avatarFrameHint": "Drag to reposition, slider to zoom",
+    "avatarZoom": "Zoom",
+    "chooseImage": "Choose an image"
   },
   "friends": {
     "title": "Friends",

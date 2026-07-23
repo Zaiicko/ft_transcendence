@@ -221,7 +221,12 @@
       "notConfigured": "Der PlayStation-Import ist auf dem Server noch nicht eingerichtet. Versuche es später erneut.",
       "genericError": "Verbindung fehlgeschlagen. Bitte versuche es erneut.",
       "viewLibrary": "Meine PlayStation-Bibliothek ansehen"
-    }
+    },
+    "adjustAvatar": "Anpassen",
+    "avatarReset": "Zurücksetzen",
+    "avatarFrameHint": "Ziehen zum Verschieben, Regler zum Zoomen",
+    "avatarZoom": "Zoom",
+    "chooseImage": "Bild auswählen"
   },
   "friends": {
     "title": "Freunde",

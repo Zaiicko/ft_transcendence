@@ -1,9 +1,10 @@
 import type { TFunction } from 'i18next';
-import { ChangeEvent, FormEvent, useRef, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
+import AvatarFramer from '../components/AvatarFramer';
 import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import LinkedAccounts from '../components/LinkedAccounts';
@@ -46,15 +47,13 @@ export default function Settings() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isWelcome = searchParams.get('welcome') === '1';
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [username, setUsername] = useState(user?.username ?? '');
   const [bio, setBio] = useState(user?.bio ?? '');
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
-  const [uploading, setUploading] = useState(false);
-  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [framerOpen, setFramerOpen] = useState(false);
 
   const [resendingVerification, setResendingVerification] = useState(false);
   const [resendMessage, setResendMessage] = useState<string | null>(null);
@@ -90,24 +89,6 @@ export default function Settings() {
       setProfileError(err instanceof ApiError ? err.message : t('settings.profileError'));
     } finally {
       setSavingProfile(false);
-    }
-  }
-
-  async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setAvatarError(null);
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('avatar', file);
-      await apiFetch('/users/me/avatar', { method: 'POST', body: formData });
-      await refreshUser();
-    } catch (err) {
-      setAvatarError(err instanceof ApiError ? err.message : t('settings.avatarError'));
-    } finally {
-      setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   }
 
@@ -231,20 +212,18 @@ export default function Settings() {
             {user.steamId && <SteamBadge />}
           </p>
           <p className="text-sm text-zinc-400">{user.email}</p>
-          <label className="mt-2 inline-block cursor-pointer text-sm text-zinc-300 underline">
-            {uploading ? t('settings.uploadingAvatar') : t('settings.changeAvatar')}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleAvatarChange}
-              disabled={uploading}
-              className="hidden"
-            />
-          </label>
-          {avatarError && <p className="text-sm text-red-400">{avatarError}</p>}
+          <button
+            type="button"
+            onClick={() => setFramerOpen(true)}
+            className="mt-2 inline-block text-sm text-zinc-300 underline"
+          >
+            {t('settings.changeAvatar')}
+          </button>
         </div>
       </div>
+      {framerOpen && (
+        <AvatarFramer avatarUrl={user.avatarUrl} onClose={() => setFramerOpen(false)} />
+      )}
 
       <div className="mb-8 text-sm">
         {user.emailVerifiedAt ? (

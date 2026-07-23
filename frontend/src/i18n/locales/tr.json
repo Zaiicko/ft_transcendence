@@ -221,7 +221,12 @@
       "notConfigured": "PlayStation içe aktarımı sunucuda henüz ayarlanmadı. Daha sonra tekrar dene.",
       "genericError": "Bağlantı başarısız oldu. Lütfen tekrar dene.",
       "viewLibrary": "PlayStation kütüphanemi gör"
-    }
+    },
+    "adjustAvatar": "Ayarla",
+    "avatarReset": "Sıfırla",
+    "avatarFrameHint": "Taşımak için sürükle, yakınlaştırmak için kaydırıcı",
+    "avatarZoom": "Yakınlaştırma",
+    "chooseImage": "Bir görsel seç"
   },
   "friends": {
     "title": "Arkadaşlar",
