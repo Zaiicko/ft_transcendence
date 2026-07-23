@@ -238,6 +238,10 @@ export interface PublicUser {
   provider: AuthProvider;
   steamId: string | null;
   discordId: string | null;
+  // PlayStation lié via psn-api : le jeton NPSSO et l'accountId restent côté
+  // backend ; on n'expose que l'état lié + l'onlineId (affichage).
+  psnLinked: boolean;
+  psnOnlineId: string | null;
   hasPassword: boolean;
   twoFactorEnabled: boolean;
   emailVerifiedAt: string | null;

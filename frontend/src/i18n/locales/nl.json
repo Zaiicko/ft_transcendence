@@ -205,6 +205,20 @@
       "comingSoon": "Binnenkort",
       "discordLinked": "Discord-account gekoppeld!",
       "discordTaken": "Dit Discord-account is al aan een andere gebruiker gekoppeld."
+    },
+    "psn": {
+      "title": "PlayStation koppelen",
+      "intro": "Voer gewoon je PlayStation Online ID in — we vinden je openbare profiel. Geen wachtwoord of token nodig.",
+      "idLabel": "Je PSN Online ID",
+      "publicHint": "Je PlayStation-profiel moet openbaar zijn (games en trofeeën zichtbaar) om het te kunnen importeren.",
+      "connect": "Koppelen",
+      "connecting": "Koppelen…",
+      "connectedAs": "Gekoppeld als {{onlineId}}",
+      "notFound": "Geen openbaar PlayStation-account gevonden voor die Online ID. Controleer de spelling en of je profiel openbaar is.",
+      "alreadyLinked": "Dit PlayStation-account is al aan een ander profiel gekoppeld.",
+      "invalidId": "Dat lijkt geen geldige PSN Online ID (3–16 letters, cijfers, - of _).",
+      "notConfigured": "PlayStation-import is nog niet ingesteld op de server. Probeer het later opnieuw.",
+      "genericError": "Koppelen mislukt. Probeer het opnieuw."
     }
   },
   "friends": {

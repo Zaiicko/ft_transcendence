@@ -205,6 +205,20 @@
       "comingSoon": "Em breve",
       "discordLinked": "Conta do Discord vinculada!",
       "discordTaken": "Esta conta do Discord já está vinculada a outro utilizador."
+    },
+    "psn": {
+      "title": "Conectar PlayStation",
+      "intro": "Basta introduzir o seu ID online da PlayStation — encontramos o seu perfil público. Não precisa de palavra-passe nem token.",
+      "idLabel": "O seu ID online PSN",
+      "publicHint": "O seu perfil PlayStation tem de ser público (jogos e troféus visíveis) para o podermos importar.",
+      "connect": "Conectar",
+      "connecting": "A conectar…",
+      "connectedAs": "Conectado como {{onlineId}}",
+      "notFound": "Não foi encontrada nenhuma conta PlayStation pública para esse ID online. Verifique a ortografia e se o seu perfil é público.",
+      "alreadyLinked": "Esta conta PlayStation já está associada a outro perfil.",
+      "invalidId": "Esse ID online PSN não parece válido (3–16 letras, dígitos, - ou _).",
+      "notConfigured": "A importação da PlayStation ainda não está configurada no servidor. Tente mais tarde.",
+      "genericError": "A ligação falhou. Tente novamente."
     }
   },
   "friends": {

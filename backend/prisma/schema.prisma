@@ -62,6 +62,13 @@ model User {
   // Compte Discord rattaché (connexion secondaire, comme steamId). Sert aussi
   // d'identifiant de login pour les comptes créés via Discord.
   discordId        String?      @unique
+  // Compte PlayStation rattaché : l'utilisateur déclare son PSN Online ID, le
+  // backend le résout en accountId via sa propre session PSN service (une seule
+  // session côté serveur, cf. PSN_SERVICE_NPSSO). On ne stocke aucun jeton par
+  // utilisateur. accountId sert au matching d'amis, onlineId à l'affichage.
+  // Import-only (profils publics) : ce n'est pas un moyen de connexion.
+  psnAccountId     String?      @unique
+  psnOnlineId      String?
   twoFactorSecret  String?
   twoFactorEnabled Boolean      @default(false)
   language         String       @default("en")

@@ -1,13 +1,23 @@
 import { User } from '@prisma/client';
 
-export type PublicUser = Omit<User, 'passwordHash' | 'twoFactorSecret' | 'providerId'> & {
+export type PublicUser = Omit<
+  User,
+  'passwordHash' | 'twoFactorSecret' | 'providerId' | 'psnAccountId'
+> & {
   // Lets the frontend offer "add a password" (provider accounts without one)
   // vs "change my password" — the hash itself never leaves the backend.
   hasPassword: boolean;
+  // Whether a PlayStation account is linked. The internal account ID stays
+  // backend-only; the online ID is kept for display (`psnOnlineId`).
+  psnLinked: boolean;
 };
 
 // Strip auth-internal fields before a User ever leaves the backend
 export function toPublicUser(user: User): PublicUser {
-  const { passwordHash, twoFactorSecret, providerId, ...publicUser } = user;
-  return { ...publicUser, hasPassword: passwordHash !== null };
+  const { passwordHash, twoFactorSecret, providerId, psnAccountId, ...publicUser } = user;
+  return {
+    ...publicUser,
+    hasPassword: passwordHash !== null,
+    psnLinked: psnAccountId !== null,
+  };
 }

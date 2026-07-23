@@ -205,6 +205,20 @@
       "comingSoon": "近日公開",
       "discordLinked": "Discord アカウントを連携しました！",
       "discordTaken": "この Discord アカウントは既に別のユーザーに連携されています。"
+    },
+    "psn": {
+      "title": "PlayStation を連携",
+      "intro": "PlayStation のオンライン ID を入力するだけで、公開プロフィールを見つけます。パスワードやトークンは不要です。",
+      "idLabel": "あなたの PSN オンライン ID",
+      "publicHint": "インポートするには、PlayStation のプロフィールが公開（ゲームとトロフィーが表示）されている必要があります。",
+      "connect": "連携する",
+      "connecting": "接続中…",
+      "connectedAs": "{{onlineId}} として連携しました",
+      "notFound": "そのオンライン ID の公開 PlayStation アカウントが見つかりませんでした。スペルとプロフィールが公開されているか確認してください。",
+      "alreadyLinked": "この PlayStation アカウントは別のプロフィールにすでに連携されています。",
+      "invalidId": "有効な PSN オンライン ID ではないようです（3〜16 文字の英数字、-、_）。",
+      "notConfigured": "PlayStation インポートはサーバーでまだ設定されていません。後でもう一度お試しください。",
+      "genericError": "接続に失敗しました。もう一度お試しください。"
     }
   },
   "friends": {

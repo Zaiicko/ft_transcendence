@@ -205,6 +205,20 @@
       "comingSoon": "Yakında",
       "discordLinked": "Discord hesabı bağlandı!",
       "discordTaken": "Bu Discord hesabı zaten başka bir kullanıcıya bağlı."
+    },
+    "psn": {
+      "title": "PlayStation'ı bağla",
+      "intro": "Sadece PlayStation Online ID'ni gir — herkese açık profilini buluruz. Şifre veya jeton gerekmez.",
+      "idLabel": "PSN Online ID'n",
+      "publicHint": "İçe aktarabilmemiz için PlayStation profilinin herkese açık olması gerekir (oyunlar ve kupalar görünür).",
+      "connect": "Bağla",
+      "connecting": "Bağlanıyor…",
+      "connectedAs": "{{onlineId}} olarak bağlandı",
+      "notFound": "Bu Online ID için herkese açık bir PlayStation hesabı bulunamadı. Yazımını ve profilinin herkese açık olduğunu kontrol et.",
+      "alreadyLinked": "Bu PlayStation hesabı zaten başka bir profile bağlı.",
+      "invalidId": "Bu geçerli bir PSN Online ID'ye benzemiyor (3–16 harf, rakam, - veya _).",
+      "notConfigured": "PlayStation içe aktarımı sunucuda henüz ayarlanmadı. Daha sonra tekrar dene.",
+      "genericError": "Bağlantı başarısız oldu. Lütfen tekrar dene."
     }
   },
   "friends": {

@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch, ApiError } from '../lib/api';
 import DiscordBadge from './DiscordBadge';
+import PsnConnectModal from './PsnConnectModal';
 import SteamBadge from './SteamBadge';
 
 // Logos officiels des services (Simple Icons, CC0), sur fond de la couleur de
@@ -37,6 +38,7 @@ interface Service {
   available: boolean;
   linked: boolean;
   linkHref?: string; // navigation navigateur qui démarre le rattachement OAuth
+  onLink?: () => void; // rattachement via modale (ex. PlayStation : coller un jeton)
   unlinkPath?: string; // endpoint DELETE
   extra?: ReactNode; // action en plus quand lié (ex. « voir la bibliothèque »)
 }
@@ -50,6 +52,7 @@ export default function LinkedAccounts() {
   const [searchParams] = useSearchParams();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [psnModalOpen, setPsnModalOpen] = useState(false);
 
   if (!user) return null;
 
@@ -98,8 +101,14 @@ export default function LinkedAccounts() {
       key: 'playstation',
       label: 'PlayStation',
       mark: <BrandMark color="#003791" path={PLAYSTATION_PATH} />,
-      available: false,
-      linked: false,
+      available: true,
+      linked: user.psnLinked,
+      onLink: () => setPsnModalOpen(true),
+      unlinkPath: '/psn/link',
+      extra:
+        user.psnLinked && user.psnOnlineId ? (
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">{user.psnOnlineId}</span>
+        ) : undefined,
     },
   ];
 
@@ -200,10 +209,17 @@ export default function LinkedAccounts() {
                   {t('settings.connections.link')}
                 </a>
               )}
+              {s.available && !s.linked && s.onLink && (
+                <button type="button" onClick={s.onLink} className={pill}>
+                  {t('settings.connections.link')}
+                </button>
+              )}
             </span>
           </li>
         ))}
       </ul>
+
+      {psnModalOpen && <PsnConnectModal onClose={() => setPsnModalOpen(false)} />}
     </div>
   );
 }

@@ -205,6 +205,20 @@
       "comingSoon": "即将推出",
       "discordLinked": "已关联 Discord 账号！",
       "discordTaken": "此 Discord 账号已关联到其他用户。"
+    },
+    "psn": {
+      "title": "连接 PlayStation",
+      "intro": "只需输入你的 PlayStation 在线 ID，我们就会找到你的公开资料。无需密码或令牌。",
+      "idLabel": "你的 PSN 在线 ID",
+      "publicHint": "你的 PlayStation 资料必须公开（游戏和奖杯可见）我们才能导入。",
+      "connect": "连接",
+      "connecting": "连接中…",
+      "connectedAs": "已连接为 {{onlineId}}",
+      "notFound": "未找到该在线 ID 对应的公开 PlayStation 账户。请检查拼写以及资料是否公开。",
+      "alreadyLinked": "此 PlayStation 账户已关联到其他个人资料。",
+      "invalidId": "这看起来不是有效的 PSN 在线 ID（3–16 个字母、数字、- 或 _）。",
+      "notConfigured": "服务器尚未配置 PlayStation 导入功能。请稍后再试。",
+      "genericError": "连接失败。请重试。"
     }
   },
   "friends": {
