@@ -516,7 +516,13 @@
     "writeReviewOf": "为 {{title}} 写评价",
     "noMatchedTitle": "还没有匹配的游戏",
     "noMatchedDesc": "目前你的 Steam 游戏都不在我们的目录中。",
-    "manageLink": "在你的<l>主页</l>中管理 Steam 关联。"
+    "manageLink": "在你的<l>主页</l>中管理 Steam 关联。",
+    "achievementsTitle": "成就",
+    "achievementsSub": "{{games}} 款游戏 · {{perfect}} 款 100%",
+    "achPerGame": "{{unlocked}}/{{total}} 个成就",
+    "achievementsNone": "尚未同步成就——你的 Steam 资料可能是私密的。",
+    "syncAchievements": "刷新",
+    "syncing": "同步中…"
   },
   "genres": {
     "Adventure": "冒险",

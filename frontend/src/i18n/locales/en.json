@@ -516,7 +516,13 @@
     "writeReviewOf": "Write a review of {{title}}",
     "noMatchedTitle": "No matched games yet",
     "noMatchedDesc": "None of your Steam games are in our catalog for now.",
-    "manageLink": "Manage your Steam link from your <l>profile</l>."
+    "manageLink": "Manage your Steam link from your <l>profile</l>.",
+    "achievementsTitle": "Achievements",
+    "achievementsSub": "{{games}} games · {{perfect}} at 100%",
+    "achPerGame": "{{unlocked}}/{{total}} achievements",
+    "achievementsNone": "No achievements synced yet — your Steam profile may be private.",
+    "syncAchievements": "Refresh",
+    "syncing": "Syncing…"
   },
   "genres": {
     "Adventure": "Adventure",

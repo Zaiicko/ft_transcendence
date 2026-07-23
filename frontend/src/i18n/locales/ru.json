@@ -516,7 +516,13 @@
     "writeReviewOf": "Написать обзор {{title}}",
     "noMatchedTitle": "Пока нет совпадающих игр",
     "noMatchedDesc": "Ни одна из ваших игр Steam пока не в нашем каталоге.",
-    "manageLink": "Управляйте привязкой Steam в своём <l>профиле</l>."
+    "manageLink": "Управляйте привязкой Steam в своём <l>профиле</l>.",
+    "achievementsTitle": "Достижения",
+    "achievementsSub": "{{games}} игр · {{perfect}} на 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} достижений",
+    "achievementsNone": "Достижения ещё не синхронизированы — ваш профиль Steam может быть закрыт.",
+    "syncAchievements": "Обновить",
+    "syncing": "Синхронизация…"
   },
   "genres": {
     "Adventure": "Приключения",

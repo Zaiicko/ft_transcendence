@@ -516,7 +516,13 @@
     "writeReviewOf": "Schrijf een recensie van {{title}}",
     "noMatchedTitle": "Nog geen overeenkomende games",
     "noMatchedDesc": "Geen van je Steam-games staat momenteel in onze catalogus.",
-    "manageLink": "Beheer je Steam-koppeling vanuit je <l>profiel</l>."
+    "manageLink": "Beheer je Steam-koppeling vanuit je <l>profiel</l>.",
+    "achievementsTitle": "Prestaties",
+    "achievementsSub": "{{games}} games · {{perfect}} op 100%",
+    "achPerGame": "{{unlocked}}/{{total}} prestaties",
+    "achievementsNone": "Nog geen prestaties gesynchroniseerd — je Steam-profiel is mogelijk privé.",
+    "syncAchievements": "Vernieuwen",
+    "syncing": "Synchroniseren…"
   },
   "genres": {
     "Adventure": "Avontuur",

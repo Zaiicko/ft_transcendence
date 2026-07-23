@@ -516,7 +516,13 @@
     "writeReviewOf": "Scrivi una recensione di {{title}}",
     "noMatchedTitle": "Ancora nessun gioco corrispondente",
     "noMatchedDesc": "Nessuno dei tuoi giochi Steam è al momento nel nostro catalogo.",
-    "manageLink": "Gestisci il tuo collegamento Steam dal tuo <l>profilo</l>."
+    "manageLink": "Gestisci il tuo collegamento Steam dal tuo <l>profilo</l>.",
+    "achievementsTitle": "Obiettivi",
+    "achievementsSub": "{{games}} giochi · {{perfect}} al 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} obiettivi",
+    "achievementsNone": "Nessun obiettivo sincronizzato: il tuo profilo Steam potrebbe essere privato.",
+    "syncAchievements": "Aggiorna",
+    "syncing": "Sincronizzo…"
   },
   "genres": {
     "Adventure": "Avventura",

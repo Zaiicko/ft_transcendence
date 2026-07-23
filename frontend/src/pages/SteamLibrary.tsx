@@ -21,6 +21,15 @@ interface SteamLibraryGame {
   playtimeMinutes: number;
   playedStatus: string | null;
   reviewed: boolean;
+  achievements: { unlocked: number; total: number } | null;
+}
+
+interface AchievementSummary {
+  unlocked: number;
+  total: number;
+  games: number;
+  perfect: number;
+  syncedAt?: string;
 }
 
 interface LibraryResponse {
@@ -28,6 +37,16 @@ interface LibraryResponse {
   totalOwned: number;
   matched: SteamLibraryGame[];
   unmatchedCount: number;
+  achievements?: AchievementSummary;
+}
+
+// Étoile pleine (ambre) : succès Steam débloqués
+function StarIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M12 2l2.9 6.26L21.5 9.2l-4.75 4.63L17.8 21 12 17.5 6.2 21l1.05-7.17L2.5 9.2l6.6-.94z" />
+    </svg>
+  );
 }
 
 interface SuggestionsResponse {
@@ -57,6 +76,22 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
   const [error, setError] = useState<string | null>(null);
   const [requested, setRequested] = useState<Set<number>>(new Set());
   const [requestError, setRequestError] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+
+  // Resynchronise les succès (force ?refresh=true) — utile après avoir joué de
+  // nouveaux jeux ou passé son profil en public. Le reste de la biblio ne bouge
+  // pas, on ne remplace que la réponse /steam/library.
+  async function refreshAchievements() {
+    setSyncing(true);
+    try {
+      const lib = await apiFetch<LibraryResponse>('/steam/library?refresh=true');
+      setLibrary(lib);
+    } catch {
+      // silencieux : on garde l'affichage courant
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   useEffect(() => {
     if (!steamLinked) return;
@@ -153,6 +188,40 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
         <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
       )}
 
+      {/* Résumé des succès (synchronisé une fois, puis en cache) */}
+      {library?.achievements && (
+        <div className="card mb-10 flex flex-wrap items-center gap-x-8 gap-y-3 p-4">
+          <p className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <StarIcon className="h-3.5 w-3.5 text-amber-500" />
+            {t('steam.achievementsTitle')}
+          </p>
+          {library.achievements.games > 0 ? (
+            <>
+              <p className="text-2xl font-bold tabular-nums">
+                {library.achievements.unlocked}
+                <span className="text-base font-normal text-zinc-400"> / {library.achievements.total}</span>
+              </p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                {t('steam.achievementsSub', {
+                  games: library.achievements.games,
+                  perfect: library.achievements.perfect,
+                })}
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('steam.achievementsNone')}</p>
+          )}
+          <button
+            type="button"
+            onClick={refreshAchievements}
+            disabled={syncing}
+            className="ml-auto rounded-full border border-zinc-400/60 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent disabled:opacity-50 dark:border-zinc-600"
+          >
+            {syncing ? t('steam.syncing') : t('steam.syncAchievements')}
+          </button>
+        </div>
+      )}
+
       {/* Amis d'abord : la biblio de jeux peut être immense, les amis se
           retrouveraient sinon enterrés tout en bas */}
       <section className="mb-10">
@@ -235,6 +304,26 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                   </Link>
                   <div className="flex flex-1 flex-col gap-1 p-2 pt-1">
                     <p className="mt-auto text-xs text-zinc-400">{formatPlaytime(game.playtimeMinutes)}</p>
+                    {game.achievements && (
+                      <p
+                        className="flex items-center gap-1 text-xs text-zinc-400"
+                        title={t('steam.achPerGame', {
+                          unlocked: game.achievements.unlocked,
+                          total: game.achievements.total,
+                        })}
+                      >
+                        <StarIcon
+                          className={`h-3 w-3 ${
+                            game.achievements.unlocked === game.achievements.total
+                              ? 'text-amber-500'
+                              : 'text-zinc-400'
+                          }`}
+                        />
+                        <span className="tabular-nums">
+                          {game.achievements.unlocked}/{game.achievements.total}
+                        </span>
+                      </p>
+                    )}
                     {/* PLAYED est porté par le knob ambre ; seuls les autres
                         statuts (playing/backlog) gardent leur étiquette */}
                     {game.playedStatus && game.playedStatus !== 'PLAYED' && (

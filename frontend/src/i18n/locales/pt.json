@@ -516,7 +516,13 @@
     "writeReviewOf": "Escrever uma análise de {{title}}",
     "noMatchedTitle": "Ainda sem jogos correspondentes",
     "noMatchedDesc": "Nenhum dos teus jogos Steam está no nosso catálogo por agora.",
-    "manageLink": "Gere a tua ligação Steam a partir do teu <l>perfil</l>."
+    "manageLink": "Gere a tua ligação Steam a partir do teu <l>perfil</l>.",
+    "achievementsTitle": "Conquistas",
+    "achievementsSub": "{{games}} jogos · {{perfect}} a 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} conquistas",
+    "achievementsNone": "Ainda não há conquistas sincronizadas — o seu perfil Steam pode ser privado.",
+    "syncAchievements": "Atualizar",
+    "syncing": "A sincronizar…"
   },
   "genres": {
     "Adventure": "Aventura",

@@ -516,7 +516,13 @@
     "writeReviewOf": "Écrire une critique de {{title}}",
     "noMatchedTitle": "Aucun jeu reconnu pour l'instant",
     "noMatchedDesc": "Aucun de tes jeux Steam n'est dans notre catalogue pour le moment.",
-    "manageLink": "Gère ta liaison Steam depuis ton <l>profil</l>."
+    "manageLink": "Gère ta liaison Steam depuis ton <l>profil</l>.",
+    "achievementsTitle": "Succès",
+    "achievementsSub": "{{games}} jeux · {{perfect}} à 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} succès",
+    "achievementsNone": "Aucun succès synchronisé — ton profil Steam est peut-être privé.",
+    "syncAchievements": "Actualiser",
+    "syncing": "Synchro…"
   },
   "genres": {
     "Adventure": "Aventure",

@@ -516,7 +516,13 @@
     "writeReviewOf": "Escribir una reseña de {{title}}",
     "noMatchedTitle": "Aún no hay juegos coincidentes",
     "noMatchedDesc": "Ninguno de tus juegos de Steam está en nuestro catálogo por ahora.",
-    "manageLink": "Gestiona tu vinculación de Steam desde tu <l>perfil</l>."
+    "manageLink": "Gestiona tu vinculación de Steam desde tu <l>perfil</l>.",
+    "achievementsTitle": "Logros",
+    "achievementsSub": "{{games}} juegos · {{perfect}} al 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} logros",
+    "achievementsNone": "Aún no hay logros sincronizados: tu perfil de Steam puede ser privado.",
+    "syncAchievements": "Actualizar",
+    "syncing": "Sincronizando…"
   },
   "genres": {
     "Adventure": "Aventura",

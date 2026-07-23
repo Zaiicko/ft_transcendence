@@ -516,7 +516,13 @@
     "writeReviewOf": "Napisz recenzję gry {{title}}",
     "noMatchedTitle": "Brak dopasowanych gier",
     "noMatchedDesc": "Żadna z Twoich gier Steam nie znajduje się obecnie w naszym katalogu.",
-    "manageLink": "Zarządzaj połączeniem ze Steam w swoim <l>profilu</l>."
+    "manageLink": "Zarządzaj połączeniem ze Steam w swoim <l>profilu</l>.",
+    "achievementsTitle": "Osiągnięcia",
+    "achievementsSub": "{{games}} gier · {{perfect}} w 100%",
+    "achPerGame": "{{unlocked}}/{{total}} osiągnięć",
+    "achievementsNone": "Brak zsynchronizowanych osiągnięć — twój profil Steam może być prywatny.",
+    "syncAchievements": "Odśwież",
+    "syncing": "Synchronizacja…"
   },
   "genres": {
     "Adventure": "Przygodowa",

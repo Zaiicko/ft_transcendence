@@ -516,7 +516,13 @@
     "writeReviewOf": "{{title}} için inceleme yaz",
     "noMatchedTitle": "Henüz eşleşen oyun yok",
     "noMatchedDesc": "Steam oyunlarından hiçbiri şu an kataloğumuzda değil.",
-    "manageLink": "Steam bağlantını <l>profilinden</l> yönet."
+    "manageLink": "Steam bağlantını <l>profilinden</l> yönet.",
+    "achievementsTitle": "Başarımlar",
+    "achievementsSub": "{{games}} oyun · {{perfect}} %100",
+    "achPerGame": "{{unlocked}}/{{total}} başarım",
+    "achievementsNone": "Henüz senkronize edilmiş başarım yok — Steam profilin gizli olabilir.",
+    "syncAchievements": "Yenile",
+    "syncing": "Senkronize ediliyor…"
   },
   "genres": {
     "Adventure": "Macera",

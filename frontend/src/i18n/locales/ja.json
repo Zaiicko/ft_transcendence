@@ -516,7 +516,13 @@
     "writeReviewOf": "{{title}} のレビューを書く",
     "noMatchedTitle": "一致するゲームはまだありません",
     "noMatchedDesc": "現在、あなたの Steam ゲームはカタログにありません。",
-    "manageLink": "Steam 連携は<l>プロフィール</l>から管理できます。"
+    "manageLink": "Steam 連携は<l>プロフィール</l>から管理できます。",
+    "achievementsTitle": "実績",
+    "achievementsSub": "{{games}} 本 · {{perfect}} 本が100%",
+    "achPerGame": "{{unlocked}}/{{total}} 実績",
+    "achievementsNone": "実績がまだ同期されていません。Steam プロフィールが非公開の可能性があります。",
+    "syncAchievements": "更新",
+    "syncing": "同期中…"
   },
   "genres": {
     "Adventure": "アドベンチャー",

@@ -516,7 +516,13 @@
     "writeReviewOf": "Rezension zu {{title}} schreiben",
     "noMatchedTitle": "Noch keine passenden Spiele",
     "noMatchedDesc": "Keines deiner Steam-Spiele ist derzeit in unserem Katalog.",
-    "manageLink": "Verwalte deine Steam-Verknüpfung in deinem <l>Profil</l>."
+    "manageLink": "Verwalte deine Steam-Verknüpfung in deinem <l>Profil</l>.",
+    "achievementsTitle": "Erfolge",
+    "achievementsSub": "{{games}} Spiele · {{perfect}} zu 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} Erfolge",
+    "achievementsNone": "Noch keine Erfolge synchronisiert – dein Steam-Profil ist evtl. privat.",
+    "syncAchievements": "Aktualisieren",
+    "syncing": "Synchronisiere…"
   },
   "genres": {
     "Adventure": "Abenteuer",

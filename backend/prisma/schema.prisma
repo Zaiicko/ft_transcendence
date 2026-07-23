@@ -59,6 +59,10 @@ model User {
   provider         AuthProvider @default(LOCAL)
   providerId       String?
   steamId          String?      @unique
+  // Cache des succès Steam (Steam n'a pas d'appel groupé : 1 requête/jeu). Une
+  // fois synchronisé, on stocke ici { syncedAt, perGame: { appId: [obtenus,
+  // total] } } pour ne pas re-tout-charger à chaque affichage. Vidé au (dé)liage.
+  steamAchievements Json?
   // Compte Discord rattaché (connexion secondaire, comme steamId). Sert aussi
   // d'identifiant de login pour les comptes créés via Discord.
   discordId        String?      @unique
