@@ -10,10 +10,12 @@ async function main() {
   });
 
   const count = Number(process.env.SEED_COUNT ?? 1000);
-  console.log(`Seeding the ${count} most rated IGDB games...`);
+  // Seuil de votes IGDB : baisser pour dépasser ~6,8k jeux (voir seedPopular).
+  const minRatings = Number(process.env.SEED_MIN_RATINGS ?? 20);
+  console.log(`Seeding the ${count} most rated IGDB games (min ${minRatings} ratings)...`);
 
   const sync = app.get(GamesSyncService);
-  const imported = await sync.seedPopular(count);
+  const imported = await sync.seedPopular(count, minRatings);
 
   console.log(`Done — ${imported} games imported/updated.`);
   await app.close();

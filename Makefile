@@ -49,7 +49,7 @@ up: .env
 # Use this to grow beyond it, e.g. make seed SEED_COUNT=9000
 seed:
 	@echo "$(BOLD)$(YELLOW)Seeding the game catalog from IGDB... 🎮$(RESET)"
-	@$(COMPOSE) exec -e SEED_COUNT=$${SEED_COUNT:-1000} backend npm run seed
+	@$(COMPOSE) exec -e SEED_COUNT=$${SEED_COUNT:-15000} -e SEED_MIN_RATINGS=$${SEED_MIN_RATINGS:-10} backend npm run seed
 	@echo "$(BOLD)$(GREEN)Catalog seeded! ✅$(RESET)"
 
 # Map games to Steam AppIDs and fetch their % of positive reviews
