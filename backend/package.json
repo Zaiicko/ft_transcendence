@@ -8,6 +8,7 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "seed": "ts-node src/seed.ts",
+    "catalog:ensure": "ts-node src/catalog-ensure.ts",
     "steam:sync": "ts-node src/steam-sync.ts",
     "catalog:export": "ts-node src/catalog-export.ts",
     "catalog:import": "ts-node src/catalog-import.ts",

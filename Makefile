@@ -11,9 +11,13 @@ BOLD = \033[1m
 
 SPINNERS = "🔄 🔁 🔃 🔄 🔁 🔃"
 
+# ─────────────────────────────── Deploy ───────────────────────────────
+
 all: logo up
 
-# Single-command deployment (subject requirement)
+# Single-command deployment (subject requirement). The backend's entrypoint
+# also auto-imports the committed catalog fixture on a fresh DB (catalog:ensure),
+# so `make` alone yields a populated, demoable app — no manual seed needed.
 up: .env
 	@echo "$(BOLD)$(YELLOW)Building & starting containers... 🐳$(RESET)"
 	@$(COMPOSE) up --build -d
@@ -38,8 +42,11 @@ up: .env
 		echo "$(BOLD)$(YELLOW).env created from .env.example — fill in your secrets! 🔑$(RESET)"; \
 	fi
 
-# Import the most rated IGDB games into the catalog (needs IGDB creds in .env)
-# Usage: make seed [SEED_COUNT=1000]
+# ────────────────────────── Catalog & data ────────────────────────────
+
+# Refresh/enlarge the catalog from IGDB (needs IGDB creds in .env). NOT required
+# at first run — `make` auto-imports the committed fixture (catalog_seed.json).
+# Use this to grow beyond it, e.g. make seed SEED_COUNT=9000
 seed:
 	@echo "$(BOLD)$(YELLOW)Seeding the game catalog from IGDB... 🎮$(RESET)"
 	@$(COMPOSE) exec -e SEED_COUNT=$${SEED_COUNT:-1000} backend npm run seed
@@ -52,25 +59,10 @@ steam:
 	@$(COMPOSE) exec -e STEAM_COUNT=$${STEAM_COUNT:-} backend npm run steam:sync
 	@echo "$(BOLD)$(GREEN)Steam scores synced! ✅$(RESET)"
 
-# Share the seeded DB with the team instead of everyone re-downloading it:
-# one member runs db-dump, sends the file, others run db-restore.
-# ⚠️ db-restore REPLACES your whole local database (all tables, all users).
-DUMP_FILE = saveboxd_dump.sql
-
-db-dump:
-	@$(COMPOSE) exec -T postgres sh -c 'pg_dump -U $$POSTGRES_USER -d $$POSTGRES_DB --clean --if-exists' > $(DUMP_FILE)
-	@echo "$(BOLD)$(GREEN)Database exported to $(DUMP_FILE) ($$(du -h $(DUMP_FILE) | cut -f1)) 📦$(RESET)"
-
-# ⚠️ Replaces your WHOLE local database with the dump's content
-db-restore:
-	@test -f $(DUMP_FILE) || (echo "$(BOLD)$(RED)$(DUMP_FILE) not found — put it at the repo root first.$(RESET)" && exit 1)
-	@$(COMPOSE) exec -T postgres sh -c 'psql -q -U $$POSTGRES_USER -d $$POSTGRES_DB' < $(DUMP_FILE)
-	@$(COMPOSE) restart backend > /dev/null
-	@echo "$(BOLD)$(GREEN)Database restored from $(DUMP_FILE) ✅$(RESET)"
-
-# Safer alternative to db-restore: share only the game catalog (Game/Genre/
-# Platform/Company). Upserts by igdbId — never touches Users/Reviews/etc, so
-# it can't wipe anyone's local test data.
+# Share a FULLER catalog than the committed fixture (Game/Genre/Platform/Company
+# only). Upserts by igdbId — never touches Users/Reviews/etc, so it can't wipe
+# anyone's local test data. One member runs catalog-export, sends the file,
+# others run catalog-import.
 CATALOG_FILE = backend/catalog_export.json
 
 catalog-export:
@@ -82,25 +74,37 @@ catalog-import:
 	@$(COMPOSE) exec backend npm run catalog:import
 	@echo "$(BOLD)$(GREEN)Catalog imported — your users/reviews were untouched ✅$(RESET)"
 
+# Share the WHOLE database (all tables, including users/reviews) as a SQL dump.
+# ⚠️ db-restore REPLACES your entire local database.
+DUMP_FILE = saveboxd_dump.sql
+
+db-dump:
+	@$(COMPOSE) exec -T postgres sh -c 'pg_dump -U $$POSTGRES_USER -d $$POSTGRES_DB --clean --if-exists' > $(DUMP_FILE)
+	@echo "$(BOLD)$(GREEN)Database exported to $(DUMP_FILE) ($$(du -h $(DUMP_FILE) | cut -f1)) 📦$(RESET)"
+
+db-restore:
+	@test -f $(DUMP_FILE) || (echo "$(BOLD)$(RED)$(DUMP_FILE) not found — put it at the repo root first.$(RESET)" && exit 1)
+	@$(COMPOSE) exec -T postgres sh -c 'psql -q -U $$POSTGRES_USER -d $$POSTGRES_DB' < $(DUMP_FILE)
+	@$(COMPOSE) restart backend > /dev/null
+	@echo "$(BOLD)$(GREEN)Database restored from $(DUMP_FILE) ✅$(RESET)"
+
+# ───────────────────────────── Lifecycle ──────────────────────────────
+
 logs:
 	@$(COMPOSE) logs -f
 
 ps:
 	@$(COMPOSE) ps
 
-down:
-	@$(COMPOSE) down
-	@echo "$(BOLD)$(RED)Containers stopped | 🛑$(RESET)"
-
 # Stop containers (DB volume is kept)
-clean:
+down clean:
 	@$(COMPOSE) down
-	@echo "$(BOLD)$(RED)Good clean | 🧹🗑️ $(RESET)"
+	@echo "$(BOLD)$(RED)Containers stopped 🛑$(RESET)"
 
 # Stop + remove volumes (wipes the database) and local images
 fclean:
 	@$(COMPOSE) down -v --rmi local
-	@echo "$(BOLD)$(RED)Big clean — database wiped | 🧹🗑️ $(RESET)"
+	@echo "$(BOLD)$(RED)Big clean — database wiped 🧹🗑️$(RESET)"
 
 re: down all
 
@@ -120,4 +124,4 @@ logo:
 	@echo "$(BOLD)            🎮 ft_transcendence — rate your games 🎮$(RESET)"
 	@echo ""
 
-.PHONY: all up seed steam db-dump db-restore catalog-export catalog-import logs ps down clean fclean re logo
+.PHONY: all up seed steam catalog-export catalog-import db-dump db-restore logs ps down clean fclean re logo
