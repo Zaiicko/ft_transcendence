@@ -34,6 +34,7 @@ import { TwoFactorCodeDto } from './dto/two-factor-code.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { OAuthProfile } from './google.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { OptionalJwtAuthGuard } from './optional-jwt-auth.guard';
 
 // Must match AuthService's MFA_CHALLENGE_TTL ('5m') — the cookie should
 // never outlive the JWT it carries.
@@ -132,12 +133,15 @@ export class AuthController {
     this.clearAuthCookies(res);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // Guard optionnel : la page se charge déconnectée aussi. Sans session on
+  // renvoie 200 + null (au lieu d'un 401) — le front lit "pas connecté" sans
+  // que la console/Network ne s'encombre d'une erreur à chaque chargement.
+  @UseGuards(OptionalJwtAuthGuard)
   @Get('me')
-  async me(@CurrentUser() current: JwtPayload) {
+  async me(@CurrentUser() current?: JwtPayload) {
+    if (!current) return null;
     const user = await this.users.findById(current.sub);
-    if (!user) throw new UnauthorizedException();
-    return toPublicUser(user);
+    return user ? toPublicUser(user) : null;
   }
 
   @Post('verify-email')

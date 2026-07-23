@@ -50,7 +50,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      applyUser(await apiFetch<PublicUser>('/auth/me'));
+      const me = await apiFetch<PublicUser | null>('/auth/me');
+      if (me) applyUser(me);
+      else setUser(null);
     } catch {
       setUser(null);
     }
@@ -59,8 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // setState only happens in the promise callbacks (async), never in the
     // effect's synchronous body — see react-hooks/set-state-in-effect
-    apiFetch<PublicUser>('/auth/me')
-      .then(applyUser)
+    // /auth/me renvoie l'utilisateur ou null (200) — plus de 401 déconnecté.
+    apiFetch<PublicUser | null>('/auth/me')
+      .then((me) => (me ? applyUser(me) : setUser(null)))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, [applyUser]);
