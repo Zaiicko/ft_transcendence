@@ -69,8 +69,23 @@ void i18n
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: LANGUAGE_STORAGE_KEY,
       caches: ['localStorage'],
+      // Fold regional variants down to our flat codes AT detection time
+      // (fr-FR → fr), for the navigator value AND any stale regional code
+      // already sitting in localStorage — so i18n.language is always one of
+      // SUPPORTED_LANGUAGES. `load: 'languageOnly'` only affects which resource
+      // files load, not i18n.language itself, hence this extra fold.
+      convertDetectedLanguage: (lng: string) => lng.split('-')[0],
     },
     interpolation: { escapeValue: false },
   });
+
+// Base language code to pass as the games API `?lang=` param. The server
+// validates it with @IsIn(SUPPORTED_LANGUAGES) (flat codes only), so a regional
+// code (fr-FR) would 400. We fold any stray variant down and return '' for
+// English or an unsupported code, meaning "no translation — original text".
+export function apiLang(): string {
+  const base = (i18n.resolvedLanguage || i18n.language || '').split('-')[0];
+  return base !== 'en' && SUPPORTED_LANGUAGES.some((l) => l.code === base) ? base : '';
+}
 
 export default i18n;

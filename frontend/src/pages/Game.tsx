@@ -9,6 +9,7 @@ import ReviewsSection, { ReviewStats } from '../components/ReviewsSection';
 import Select from '../components/Select';
 import Skeleton from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
+import { apiLang } from '../i18n';
 import { apiFetch } from '../lib/api';
 import { translateGenre } from '../lib/genres';
 import { GameDlc, GameSummary } from '../lib/types';
@@ -34,9 +35,11 @@ export default function Game() {
 
   useEffect(() => {
     let cancelled = false;
-    // Description is translated server-side and cached there — English
-    // needs no query param, no need to ask for a translation of itself.
-    const query = i18n.language && i18n.language !== 'en' ? `?lang=${i18n.language}` : '';
+    // Description is translated server-side and cached there. apiLang folds
+    // regional variants (fr-FR → fr) and returns '' for English or an
+    // unsupported code, so the server's @IsIn(SUPPORTED_LANGUAGES) never 400s.
+    const lang = apiLang();
+    const query = lang ? `?lang=${lang}` : '';
     apiFetch<GameSummary>(`/games/${gameId}${query}`)
       .then((g) => {
         if (!cancelled) setLoaded({ id: gameId, game: g });
