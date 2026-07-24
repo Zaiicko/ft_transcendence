@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -48,11 +48,27 @@ const pill =
 export default function LinkedAccounts() {
   const { t } = useTranslation();
   const { user, refreshUser } = useAuth();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // ?connect (depuis les bulles non liées de la bibliothèque) : on amène juste
+  // l'utilisateur devant le bloc de liaison (comme Steam) — l'ouverture de la
+  // modale reste manuelle.
+  const connectParam = searchParams.get('connect');
   const [psnModalOpen, setPsnModalOpen] = useState(false);
   const [xboxModalOpen, setXboxModalOpen] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Fait défiler jusqu'au bloc « comptes liés » puis nettoie ?connect pour qu'un
+  // rechargement ne refasse pas défiler. Une seule fois, au montage.
+  useEffect(() => {
+    if (!connectParam) return;
+    cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const next = new URLSearchParams(searchParams);
+    next.delete('connect');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!user) return null;
 
@@ -137,7 +153,7 @@ export default function LinkedAccounts() {
   }
 
   return (
-    <div className="card mb-10 p-4">
+    <div ref={cardRef} className="card mb-10 p-4">
       <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
         {/* Maillons filaires (trait 1.6, style TiMN) : comptes liés */}
         <svg

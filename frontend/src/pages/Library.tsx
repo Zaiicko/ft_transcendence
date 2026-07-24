@@ -84,20 +84,15 @@ export default function Library() {
       <div className="mb-8 flex flex-wrap gap-2">
         {platforms.map((p) => {
           const isActive = p.key === active;
-          return (
-            <button
-              key={p.key}
-              type="button"
-              disabled={!p.linked}
-              onClick={() => setParams({ platform: p.key }, { replace: true })}
-              className={`flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition ${
-                isActive
-                  ? 'border-accent bg-accent font-medium text-zinc-950'
-                  : p.linked
-                    ? 'border-zinc-400/60 hover:border-accent hover:text-accent dark:border-zinc-600'
-                    : 'cursor-not-allowed border-zinc-300/60 text-zinc-400 opacity-60 dark:border-zinc-700 dark:text-zinc-500'
-              }`}
-            >
+          const cls = `flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition ${
+            isActive
+              ? 'border-accent bg-accent font-medium text-zinc-950'
+              : p.linked
+                ? 'border-zinc-400/60 hover:border-accent hover:text-accent dark:border-zinc-600'
+                : 'border-zinc-300/60 text-zinc-400 hover:border-accent hover:text-accent dark:border-zinc-700 dark:text-zinc-500'
+          }`;
+          const inner = (
+            <>
               {p.mark}
               <span>{p.label}</span>
               {p.comingSoon && (
@@ -110,6 +105,26 @@ export default function Library() {
                   {t('library.notLinked')}
                 </span>
               )}
+            </>
+          );
+          // Plateforme non liée : la bulle renvoie vers la fenêtre de liaison
+          // dans les réglages (?connect=<clé> ouvre la modale correspondante).
+          if (!p.linked && !p.comingSoon) {
+            return (
+              <Link key={p.key} to={`/settings?connect=${p.key}`} className={cls}>
+                {inner}
+              </Link>
+            );
+          }
+          return (
+            <button
+              key={p.key}
+              type="button"
+              disabled={!p.linked}
+              onClick={() => setParams({ platform: p.key }, { replace: true })}
+              className={cls}
+            >
+              {inner}
             </button>
           );
         })}

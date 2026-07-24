@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
@@ -51,11 +50,10 @@ export class XboxController {
       throw new NotFoundException('Aucun compte Xbox public trouvé pour ce gamertag');
     }
 
-    const owner = await this.prisma.user.findUnique({ where: { xboxXuid: account.xuid } });
-    if (owner && owner.id !== current.sub) {
-      throw new ConflictException('Ce compte Xbox est déjà lié à un autre profil');
-    }
-
+    // Aucune vérification d'unicité : la liaison ne prouve pas la propriété (on
+    // lit juste un profil public par gamertag), donc bloquer un XUID déjà utilisé
+    // permettrait à quelqu'un de « réserver » le compte d'autrui. Plusieurs
+    // profils peuvent pointer le même gamertag.
     await this.prisma.user.update({
       where: { id: current.sub },
       // xboxLibrary vidé : le cache d'un éventuel compte précédent ne doit pas

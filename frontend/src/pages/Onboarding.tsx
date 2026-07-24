@@ -291,6 +291,10 @@ export default function Onboarding() {
               ))}
             </ul>
 
+            <p className="text-center text-xs text-zinc-500 dark:text-zinc-400">
+              {t('onboarding.services.laterHint')}
+            </p>
+
             <div className="mt-2 flex items-center justify-between">
               <button
                 type="button"

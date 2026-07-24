@@ -875,7 +875,8 @@
     },
     "services": {
       "title": "Link your game accounts",
-      "subtitle": "Connect your platforms to import your games and stats. You can also do this later in settings.",
+      "subtitle": "Connect your platforms to import your games and stats.",
+      "laterHint": "No rush — you can also link your accounts later in your account settings.",
       "connected": "Connected",
       "connect": "Connect",
       "publicNotice": "Your Steam, PlayStation and Xbox profiles must be set to public — otherwise we can't import your games, friends and/or achievements.",

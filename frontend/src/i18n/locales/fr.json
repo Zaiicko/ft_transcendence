@@ -875,7 +875,8 @@
     },
     "services": {
       "title": "Lie tes comptes de jeu",
-      "subtitle": "Connecte tes plateformes pour importer tes jeux et statistiques. Tu pourras aussi le faire plus tard dans les réglages.",
+      "subtitle": "Connecte tes plateformes pour importer tes jeux et statistiques.",
+      "laterHint": "Pas de panique — tu pourras aussi lier tes comptes plus tard dans les paramètres du compte.",
       "connected": "Connecté",
       "connect": "Connecter",
       "publicNotice": "Tes profils Steam, PlayStation et Xbox doivent être publics — sinon on ne peut pas importer tes jeux, tes amis et/ou tes succès.",

@@ -70,8 +70,10 @@ model User {
   // backend le résout en accountId via sa propre session PSN service (une seule
   // session côté serveur, cf. PSN_SERVICE_NPSSO). On ne stocke aucun jeton par
   // utilisateur. accountId sert au matching d'amis, onlineId à l'affichage.
-  // Import-only (profils publics) : ce n'est pas un moyen de connexion.
-  psnAccountId     String?      @unique
+  // Import-only (profils publics) : ce n'est pas un moyen de connexion. Pas de
+  // @unique : la liaison ne prouve pas la propriété (simple lecture d'un profil
+  // public), donc réserver un accountId bloquerait le compte d'autrui.
+  psnAccountId     String?
   psnOnlineId      String?
   // Cache de la bibliothèque PSN (titres à trophées + résumé), même principe que
   // xboxLibrary/steamAchievements : évite de rappeler PSN à chaque affichage
@@ -81,9 +83,10 @@ model User {
   // Compte Xbox rattaché : l'utilisateur déclare son gamertag public, le backend
   // le résout en XUID via sa clé service OpenXBL (une seule clé côté serveur, cf.
   // XBL_API_KEY) et lit ses jeux/succès publics. Aucun jeton par utilisateur.
-  // xuid sert de clé unique, gamertag à l'affichage. Import-only (profils
-  // publics) : ce n'est pas un moyen de connexion. Miroir de psnAccountId.
-  xboxXuid         String?      @unique
+  // xuid identifie le profil, gamertag sert à l'affichage. Import-only (profils
+  // publics) : ce n'est pas un moyen de connexion. Miroir de psnAccountId, pas
+  // de @unique pour la même raison (réserver un XUID bloquerait autrui).
+  xboxXuid         String?
   xboxGamertag     String?
   // Cache de la bibliothèque Xbox (OpenXBL renvoie ~1000 titres, lent à
   // recharger à chaque affichage). Une fois récupéré, on stocke ici
