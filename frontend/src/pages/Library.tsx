@@ -71,7 +71,7 @@ export default function Library() {
     },
     {
       key: 'switch',
-      label: 'Nintendo Switch',
+      label: 'Nintendo',
       mark: <BrandMark color="#E60012" path={SWITCH_PATH} />,
       linked: false,
       comingSoon: true,

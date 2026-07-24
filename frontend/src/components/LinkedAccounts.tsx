@@ -92,7 +92,7 @@ export default function LinkedAccounts() {
     },
     {
       key: 'switch',
-      label: 'Nintendo Switch',
+      label: 'Nintendo',
       mark: <BrandMark color="#E60012" path={SWITCH_PATH} />,
       available: false,
       linked: false,

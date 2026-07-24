@@ -162,7 +162,7 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
       <div>
         <Skeleton className="mb-3 h-8 w-52" />
         <Skeleton className="mb-6 h-4 w-72" />
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <ul className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
           {Array.from({ length: 10 }).map((_, i) => (
             <li key={i} className="card overflow-hidden">
               <Skeleton className="aspect-[3/4] w-full rounded-none" />
@@ -289,7 +289,7 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
           </p>
 
           {library && library.matched.length > 0 ? (
-            <ul className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <ul className="mb-10 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
               {library.matched.map((game) => (
                 <li key={game.id} className="card flex flex-col overflow-hidden">
                   {/* Jaquette + titre cliquables → fiche du jeu (consultation) */}
