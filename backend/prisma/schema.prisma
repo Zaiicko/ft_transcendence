@@ -73,6 +73,23 @@ model User {
   // Import-only (profils publics) : ce n'est pas un moyen de connexion.
   psnAccountId     String?      @unique
   psnOnlineId      String?
+  // Cache de la bibliothèque PSN (titres à trophées + résumé), même principe que
+  // xboxLibrary/steamAchievements : évite de rappeler PSN à chaque affichage
+  // (une erreur passagère affichait à tort "profil privé"). Resync sur
+  // ?refresh=true, vidé au (dé)liage.
+  psnLibrary       Json?
+  // Compte Xbox rattaché : l'utilisateur déclare son gamertag public, le backend
+  // le résout en XUID via sa clé service OpenXBL (une seule clé côté serveur, cf.
+  // XBL_API_KEY) et lit ses jeux/succès publics. Aucun jeton par utilisateur.
+  // xuid sert de clé unique, gamertag à l'affichage. Import-only (profils
+  // publics) : ce n'est pas un moyen de connexion. Miroir de psnAccountId.
+  xboxXuid         String?      @unique
+  xboxGamertag     String?
+  // Cache de la bibliothèque Xbox (OpenXBL renvoie ~1000 titres, lent à
+  // recharger à chaque affichage). Une fois récupéré, on stocke ici
+  // { syncedAt, titles: [...] } ; on ne resynchronise que sur ?refresh=true.
+  // Vidé au (dé)liage. Pendant de steamAchievements.
+  xboxLibrary      Json?
   twoFactorSecret  String?
   twoFactorEnabled Boolean      @default(false)
   language         String       @default("en")

@@ -2,104 +2,92 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import Avatar from '../components/Avatar';
-import EmptyState, { GamepadIcon, UsersIcon } from '../components/EmptyState';
+import EmptyState, { GamepadIcon } from '../components/EmptyState';
 import Skeleton from '../components/Skeleton';
 import { apiFetch, ApiError } from '../lib/api';
-import type { PublicUser } from '../lib/types';
 
-interface TrophyCounts {
-  bronze: number;
-  silver: number;
-  gold: number;
-  platinum: number;
+interface XboxAchievements {
+  earned: number;
+  gamerscore: number;
+  totalGamerscore: number;
+  progress: number;
 }
 
-interface PsnGame {
+interface XboxGame {
   id: number;
   title: string;
   coverUrl: string | null;
   gameType: string;
-  platform: string;
-  trophies: { earned: TrophyCounts; defined: TrophyCounts; progress: number };
+  achievements: XboxAchievements;
+  lastPlayed: string | null;
   playedStatus: string | null;
   reviewed: boolean;
 }
 
-interface TrophySummary {
-  level: number;
-  tier: number;
-  progress: number;
-  earned: TrophyCounts;
+interface XboxSummary {
+  gamerscore: number;
+  games: number;
+  perfect: number;
 }
 
 interface LibraryResponse {
   private: boolean;
   totalPlayed: number;
-  matched: PsnGame[];
+  matched: XboxGame[];
   unmatchedCount: number;
-  summary: TrophySummary | null;
+  summary: XboxSummary | null;
   syncedAt: string | null;
 }
 
-interface SuggestionsResponse {
-  private: boolean;
-  suggestions: PublicUser[];
-}
-
-const sum = (c: TrophyCounts) => c.bronze + c.silver + c.gold + c.platinum;
-
-// Pastilles colorées des 4 grades de trophées (platine, or, argent, bronze).
-const GRADES: { key: keyof TrophyCounts; color: string }[] = [
-  { key: 'platinum', color: '#8bb9e8' },
-  { key: 'gold', color: '#e6b53c' },
-  { key: 'silver', color: '#b9c2cc' },
-  { key: 'bronze', color: '#cd7f45' },
-];
-
-// Icône de trophée (coupe) colorée selon le grade PSN
-function TrophyIcon({ color, className = '' }: { color: string; className?: string }) {
+// Petit blason "G" du Gamerscore Xbox (pendant du trophée PSN).
+function GamerscoreIcon({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill={color} aria-hidden="true">
-      <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" />
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" className="stroke-current" strokeWidth="2" />
+      <path
+        d="M14.5 9.2A3.5 3.5 0 1 0 15 14h-3"
+        className="stroke-current"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
-function TrophyTally({ counts, className = '' }: { counts: TrophyCounts; className?: string }) {
-  return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
-      {GRADES.map(({ key, color }) => (
-        <span key={key} className="inline-flex items-center gap-1 text-xs tabular-nums">
-          <TrophyIcon color={color} className="h-3.5 w-3.5" />
-          {counts[key]}
-        </span>
-      ))}
-    </span>
-  );
-}
-
 // `embedded` : rendu dans la page globale « Mes bibliothèques » — on masque le
-// titre h1 (l'onglet porte déjà le nom de la plateforme).
-export default function PsnLibrary({ embedded = false }: { embedded?: boolean }) {
+// titre h1 (l'onglet porte déjà le nom de la plateforme). Miroir de PsnLibrary.
+export default function XboxLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const psnLinked = Boolean(user?.psnLinked);
+  const xboxLinked = Boolean(user?.xboxLinked);
 
   const [library, setLibrary] = useState<LibraryResponse | null>(null);
-  const [suggestions, setSuggestions] = useState<SuggestionsResponse | null>(null);
-  const [loading, setLoading] = useState(psnLinked);
+  const [loading, setLoading] = useState(xboxLinked);
   const [error, setError] = useState<string | null>(null);
-  const [requested, setRequested] = useState<Set<number>>(new Set());
-  const [requestError, setRequestError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
 
-  // Resynchronise la bibliothèque depuis PSN (force ?refresh=true) — utile après
-  // avoir joué de nouveaux jeux ou passé son profil en public.
+  useEffect(() => {
+    if (!xboxLinked) return;
+    // Chargement par défaut : sert le cache serveur (instantané). La resync
+    // (lente, appel OpenXBL) se déclenche au bouton via ?refresh=true.
+    apiFetch<LibraryResponse>('/xbox/library')
+      .then(setLibrary)
+      .catch((err: unknown) => {
+        setError(err instanceof ApiError ? err.message : t('xbox.loadError'));
+      })
+      .finally(() => setLoading(false));
+    // t n'est lu que dans le catch : le rajouter referait un fetch à chaque
+    // changement de langue — on charge une seule fois.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xboxLinked]);
+
+  // Resynchronise la bibliothèque depuis Xbox (force ?refresh=true) — utile
+  // après avoir joué de nouveaux jeux ou passé son profil en public.
   async function refreshLibrary() {
     setSyncing(true);
     try {
-      setLibrary(await apiFetch<LibraryResponse>('/psn/library?refresh=true'));
+      setLibrary(await apiFetch<LibraryResponse>('/xbox/library?refresh=true'));
     } catch {
       // silencieux : on garde l'affichage courant
     } finally {
@@ -107,26 +95,7 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
     }
   }
 
-  useEffect(() => {
-    if (!psnLinked) return;
-    Promise.all([
-      apiFetch<LibraryResponse>('/psn/library'),
-      apiFetch<SuggestionsResponse>('/psn/friends/suggestions'),
-    ])
-      .then(([lib, sug]) => {
-        setLibrary(lib);
-        setSuggestions(sug);
-      })
-      .catch((err: unknown) => {
-        setError(err instanceof ApiError ? err.message : t('psn.loadError'));
-      })
-      .finally(() => setLoading(false));
-    // t n'est lu que dans le catch (message d'erreur) : le rajouter referait un
-    // fetch à chaque changement de langue, non voulu — on charge une seule fois.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [psnLinked]);
-
-  async function togglePlayed(game: PsnGame) {
+  async function togglePlayed(game: XboxGame) {
     const marked = game.playedStatus === 'PLAYED';
     await apiFetch(`/games/${game.id}/played`, { method: marked ? 'DELETE' : 'PUT' });
     setLibrary((lib) =>
@@ -141,26 +110,16 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
     );
   }
 
-  async function handleAddFriend(userId: number) {
-    setRequestError(null);
-    try {
-      await apiFetch(`/friends/requests/${userId}`, { method: 'POST' });
-      setRequested((prev) => new Set(prev).add(userId));
-    } catch (err) {
-      setRequestError(err instanceof ApiError ? err.message : t('psn.friendRequestError'));
-    }
-  }
-
-  if (!psnLinked) {
+  if (!xboxLinked) {
     return (
       <div className="mx-auto max-w-lg text-center">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('psn.title')}</h1>
-        <p className="mb-6 text-zinc-400">{t('psn.linkPrompt')}</p>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('xbox.title')}</h1>
+        <p className="mb-6 text-zinc-400">{t('xbox.linkPrompt')}</p>
         <Link
           to="/settings"
           className="rounded border border-zinc-700 px-4 py-2 hover:bg-zinc-900"
         >
-          {t('psn.linkCta')}
+          {t('xbox.linkCta')}
         </Link>
       </div>
     );
@@ -188,7 +147,7 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
   if (error)
     return (
       <div className="mx-auto max-w-lg">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('psn.title')}</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">{t('xbox.title')}</h1>
         <p className="text-red-400">{error}</p>
       </div>
     );
@@ -198,9 +157,9 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center gap-4">
-        {!embedded && <h1 className="text-2xl font-bold tracking-tight">{t('psn.title')}</h1>}
-        {user?.psnOnlineId && (
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">{user.psnOnlineId}</span>
+        {!embedded && <h1 className="text-2xl font-bold tracking-tight">{t('xbox.title')}</h1>}
+        {user?.xboxGamertag && (
+          <span className="text-sm text-zinc-500 dark:text-zinc-400">{user.xboxGamertag}</span>
         )}
         <button
           type="button"
@@ -208,81 +167,49 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
           disabled={syncing}
           className="ml-auto rounded-full border border-zinc-400/60 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent disabled:opacity-50 dark:border-zinc-600"
         >
-          {syncing ? t('psn.syncing') : t('psn.refresh')}
+          {syncing ? t('xbox.syncing') : t('xbox.refresh')}
         </button>
       </div>
       {library?.syncedAt && (
         <p className="mb-6 text-xs text-zinc-500 dark:text-zinc-400">
-          {t('psn.syncedAt', { time: new Date(library.syncedAt).toLocaleString() })}
+          {t('xbox.syncedAt', { time: new Date(library.syncedAt).toLocaleString() })}
         </p>
       )}
 
-      {/* Résumé de trophées : niveau + total par grade */}
+      {/* Résumé : Gamerscore total + nombre de jeux + jeux à 100 % */}
       {summary && (
         <div className="card mb-10 flex flex-wrap items-center gap-x-8 gap-y-3 p-4">
           <div>
-            <p className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              {t('psn.trophyLevel')}
+            <p className="mb-1 flex items-center gap-1.5 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              <GamerscoreIcon className="h-4 w-4 text-[#107C10]" />
+              {t('xbox.gamerscore')}
             </p>
-            <p className="text-2xl font-bold tabular-nums">{summary.level}</p>
+            <p className="text-2xl font-bold tabular-nums">{summary.gamerscore.toLocaleString()}</p>
           </div>
           <div>
-            <p className="mb-1 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              {t('psn.trophiesEarned')}
+            <p className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              {t('xbox.gamesPlayed')}
             </p>
-            <TrophyTally counts={summary.earned} className="text-sm" />
+            <p className="text-2xl font-bold tabular-nums">{summary.games}</p>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              {t('xbox.perfectGames')}
+            </p>
+            <p className="text-2xl font-bold tabular-nums">{summary.perfect}</p>
           </div>
         </div>
       )}
 
-      {/* Amis d'abord (la biblio peut être énorme) */}
-      <section className="mb-10">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('psn.friendsHeading')}
-        </h2>
-        {suggestions?.private && <p className="text-zinc-400">{t('psn.friendsPrivate')}</p>}
-        {suggestions && !suggestions.private && suggestions.suggestions.length === 0 && (
-          <EmptyState
-            icon={<UsersIcon />}
-            title={t('psn.noFriendsTitle')}
-            description={t('psn.noFriendsDesc')}
-          />
-        )}
-        {requestError && <p className="mb-3 text-sm text-red-400">{requestError}</p>}
-        {suggestions && suggestions.suggestions.length > 0 && (
-          <ul className="flex flex-col gap-3">
-            {suggestions.suggestions.map((s) => (
-              <li key={s.id} className="card flex items-center gap-3 p-3">
-                <Avatar username={s.username} avatarUrl={s.avatarUrl} size={40} />
-                <span className="font-medium">{s.username}</span>
-                <div className="ml-auto">
-                  {requested.has(s.id) ? (
-                    <span className="text-sm text-zinc-400">{t('psn.requestSent')}</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleAddFriend(s.id)}
-                      className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
-                    >
-                      {t('psn.addFriend')}
-                    </button>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        {t('psn.yourGames')}
+        {t('xbox.yourGames')}
       </h2>
       {library?.private ? (
-        <p className="mb-8 text-zinc-400">{t('psn.gamesPrivate')}</p>
+        <p className="mb-8 text-zinc-400">{t('xbox.gamesPrivate')}</p>
       ) : (
         <>
           <p className="mb-6 text-sm text-zinc-400">
-            {t(library && library.unmatchedCount > 0 ? 'psn.playedUnmatched' : 'psn.played', {
+            {t(library && library.unmatchedCount > 0 ? 'xbox.playedUnmatched' : 'xbox.played', {
               totalPlayed: library?.totalPlayed ?? 0,
               matched: library?.matched.length ?? 0,
               unmatched: library?.unmatchedCount ?? 0,
@@ -306,18 +233,23 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
                     <p className="p-2 pb-0 text-sm font-medium leading-tight">{game.title}</p>
                   </Link>
                   <div className="flex flex-1 flex-col gap-1 p-2 pt-1">
-                    {/* Progression de trophées : x/y + % */}
+                    {/* Progression de succès : nb obtenus + % */}
                     <p className="mt-auto text-xs text-zinc-400">
-                      {t('psn.trophyProgress', {
-                        earned: sum(game.trophies.earned),
-                        total: sum(game.trophies.defined),
-                        progress: game.trophies.progress,
+                      {t('xbox.achievementProgress', {
+                        earned: game.achievements.earned,
+                        progress: game.achievements.progress,
                       })}
                     </p>
-                    <TrophyTally counts={game.trophies.earned} />
+                    <p className="flex items-center gap-1 text-xs tabular-nums text-zinc-400">
+                      <GamerscoreIcon className="h-3.5 w-3.5 text-[#107C10]" />
+                      {game.achievements.gamerscore.toLocaleString()}
+                      <span className="text-zinc-600">
+                        / {game.achievements.totalGamerscore.toLocaleString()}
+                      </span>
+                    </p>
                     {game.playedStatus && game.playedStatus !== 'PLAYED' && (
                       <span className="self-start rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-300">
-                        {t(game.playedStatus === 'PLAYING' ? 'psn.statusPlaying' : 'psn.statusBacklog')}
+                        {t(game.playedStatus === 'PLAYING' ? 'xbox.statusPlaying' : 'xbox.statusBacklog')}
                       </span>
                     )}
                     <div className="mt-1 flex items-center gap-2">
@@ -346,8 +278,8 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
                       </button>
                       <Link
                         to={`/game/${game.id}#review`}
-                        title={game.reviewed ? t('psn.reviewWritten') : t('psn.writeReview')}
-                        aria-label={t(game.reviewed ? 'psn.viewReviewOf' : 'psn.writeReviewOf', {
+                        title={game.reviewed ? t('xbox.reviewWritten') : t('xbox.writeReview')}
+                        aria-label={t(game.reviewed ? 'xbox.viewReviewOf' : 'xbox.writeReviewOf', {
                           title: game.title,
                         })}
                         className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
@@ -377,8 +309,8 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
             <EmptyState
               className="mb-10"
               icon={<GamepadIcon />}
-              title={t('psn.noMatchedTitle')}
-              description={t('psn.noMatchedDesc')}
+              title={t('xbox.noMatchedTitle')}
+              description={t('xbox.noMatchedDesc')}
             />
           )}
         </>

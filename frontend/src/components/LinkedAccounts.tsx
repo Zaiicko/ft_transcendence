@@ -5,6 +5,7 @@ import { useAuth } from '../auth/AuthContext';
 import { apiFetch, ApiError } from '../lib/api';
 import DiscordBadge from './DiscordBadge';
 import PsnConnectModal from './PsnConnectModal';
+import XboxConnectModal from './XboxConnectModal';
 import SteamBadge from './SteamBadge';
 
 // Logos officiels des services (Simple Icons, CC0), sur fond de la couleur de
@@ -51,6 +52,7 @@ export default function LinkedAccounts() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [psnModalOpen, setPsnModalOpen] = useState(false);
+  const [xboxModalOpen, setXboxModalOpen] = useState(false);
 
   if (!user) return null;
 
@@ -85,8 +87,20 @@ export default function LinkedAccounts() {
       key: 'xbox',
       label: 'Xbox',
       mark: <BrandMark color="#107C10" path={XBOX_PATH} />,
-      available: false,
-      linked: false,
+      available: true,
+      linked: user.xboxLinked,
+      onLink: () => setXboxModalOpen(true),
+      unlinkPath: '/xbox/link',
+      extra: user.xboxLinked ? (
+        <>
+          {user.xboxGamertag && (
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">{user.xboxGamertag}</span>
+          )}
+          <Link to="/library?platform=xbox" className={pill}>
+            {t('settings.xbox.viewLibrary')}
+          </Link>
+        </>
+      ) : undefined,
     },
     {
       key: 'playstation',
@@ -217,6 +231,7 @@ export default function LinkedAccounts() {
       </ul>
 
       {psnModalOpen && <PsnConnectModal onClose={() => setPsnModalOpen(false)} />}
+      {xboxModalOpen && <XboxConnectModal onClose={() => setXboxModalOpen(false)} />}
     </div>
   );
 }

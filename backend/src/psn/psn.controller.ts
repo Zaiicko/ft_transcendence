@@ -8,9 +8,11 @@ import {
   HttpCode,
   NotFoundException,
   Post,
+  Query,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import type { TrophyTitle } from 'psn-api';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -19,7 +21,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
 import { LinkPsnDto } from './dto/link-psn.dto';
-import { PsnApiService } from './psn-api.service';
+import { PsnApiService, PsnTrophySummary } from './psn-api.service';
+
+// Forme du cache stocké dans User.psnLibrary.
+interface PsnCache {
+  syncedAt: string;
+  titles: TrophyTitle[];
+  summary: PsnTrophySummary | null;
+}
 
 // Normalise un titre pour le matching PSN↔catalogue : minuscules + on ne garde
 // que lettres/chiffres (retire ™®©, espaces, ponctuation, éditions "™").
@@ -62,7 +71,9 @@ export class PsnController {
 
     await this.prisma.user.update({
       where: { id: current.sub },
-      data: { psnAccountId: account.accountId, psnOnlineId: account.onlineId },
+      // psnLibrary vidé : le cache d'un éventuel compte précédent ne doit pas
+      // rester après un changement d'Online ID.
+      data: { psnAccountId: account.accountId, psnOnlineId: account.onlineId, psnLibrary: Prisma.DbNull },
     });
 
     return { onlineId: account.onlineId, avatarUrl: account.avatarUrl };
@@ -75,7 +86,7 @@ export class PsnController {
     if (!user) throw new UnauthorizedException();
     await this.prisma.user.update({
       where: { id: current.sub },
-      data: { psnAccountId: null, psnOnlineId: null },
+      data: { psnAccountId: null, psnOnlineId: null, psnLibrary: Prisma.DbNull },
     });
   }
 
@@ -83,15 +94,41 @@ export class PsnController {
   // catalogue par nom, avec la progression de trophées par jeu, + le résumé
   // global de trophées. Miroir de GET /steam/library.
   @Get('library')
-  async library(@CurrentUser() current: JwtPayload) {
-    const accountId = await this.requireAccountId(current.sub);
+  async library(@CurrentUser() current: JwtPayload, @Query('refresh') refresh?: string) {
+    const user = await this.users.findById(current.sub);
+    if (!user) throw new UnauthorizedException();
+    if (!user.psnAccountId) {
+      throw new BadRequestException('Aucun compte PlayStation lié — lie-le d’abord dans les réglages');
+    }
+    const accountId = user.psnAccountId;
 
-    const [titles, summary] = await Promise.all([
-      this.api.getTitles(accountId),
-      this.api.getTrophySummary(accountId),
-    ]);
-    if (titles === null) {
-      return { private: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary };
+    const cached = user.psnLibrary as PsnCache | null;
+    let titles: TrophyTitle[];
+    let summary: PsnTrophySummary | null;
+    let syncedAt: string;
+    if (cached?.titles && refresh !== 'true') {
+      ({ titles, summary, syncedAt } = cached);
+    } else {
+      const [fetched, fetchedSummary] = await Promise.all([
+        this.api.getTitles(accountId),
+        this.api.getTrophySummary(accountId),
+      ]);
+      if (fetched === null) {
+        // Profil privé OU erreur passagère : on ne vide pas la page si on a déjà
+        // un cache — on le ressert. Sinon seulement, on signale "privé".
+        if (!cached?.titles) {
+          return { private: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: fetchedSummary, syncedAt: null };
+        }
+        ({ titles, summary, syncedAt } = cached);
+      } else {
+        titles = fetched;
+        summary = fetchedSummary;
+        syncedAt = new Date().toISOString();
+        await this.prisma.user.update({
+          where: { id: current.sub },
+          data: { psnLibrary: { syncedAt, titles, summary } as unknown as Prisma.InputJsonValue },
+        });
+      }
     }
 
     const matched = await this.matchTitles(current.sub, titles);
@@ -101,6 +138,7 @@ export class PsnController {
       matched,
       unmatchedCount: titles.length - matched.length,
       summary,
+      syncedAt,
     };
   }
 

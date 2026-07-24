@@ -242,6 +242,10 @@ export interface PublicUser {
   // backend ; on n'expose que l'état lié + l'onlineId (affichage).
   psnLinked: boolean;
   psnOnlineId: string | null;
+  // Xbox lié via OpenXBL : la clé service et le XUID restent côté backend ; on
+  // n'expose que l'état lié + le gamertag (affichage). Miroir de psnLinked.
+  xboxLinked: boolean;
+  xboxGamertag: string | null;
   hasPassword: boolean;
   twoFactorEnabled: boolean;
   emailVerifiedAt: string | null;

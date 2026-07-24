@@ -15,6 +15,7 @@ import { PresenceModule } from './presence/presence.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PsnModule } from './psn/psn.module';
+import { XboxModule } from './xbox/xbox.module';
 import { SteamModule } from './steam/steam.module';
 import { UsersModule } from './users/users.module';
 
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module';
     NotificationsModule,
     SteamModule,
     PsnModule,
+    XboxModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
