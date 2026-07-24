@@ -43,9 +43,10 @@ export default function Signup() {
         });
         await refreshUser();
       } else {
-        await signup(email, username, password);
+        // Pseudo choisi ensuite dans le wizard d'onboarding (/welcome).
+        await signup(email, password);
       }
-      navigate('/profile', { replace: true });
+      navigate('/welcome', { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);
@@ -73,18 +74,22 @@ export default function Signup() {
           onChange={(e) => setEmail(e.target.value)}
           className="field px-4 py-1.5"
         />
-        <input
-          type="text"
-          required
-          minLength={3}
-          maxLength={24}
-          pattern="[a-zA-Z0-9_]+"
-          title={t('auth.signup.usernameHint')}
-          placeholder={t('auth.signup.usernamePlaceholder')}
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="field px-4 py-1.5"
-        />
+        {/* Pseudo demandé seulement au flux Steam (pré-rempli par le persona) ;
+            en inscription classique il est choisi ensuite dans /welcome. */}
+        {steamPending && (
+          <input
+            type="text"
+            required
+            minLength={3}
+            maxLength={24}
+            pattern="[a-zA-Z0-9_]+"
+            title={t('auth.signup.usernameHint')}
+            placeholder={t('auth.signup.usernamePlaceholder')}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="field px-4 py-1.5"
+          />
+        )}
         <input
           type="password"
           required={!steamPending}

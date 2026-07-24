@@ -13,6 +13,7 @@ import Game from './pages/Game';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import Onboarding from './pages/Onboarding';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PublicProfile from './pages/PublicProfile';
 import ResetPassword from './pages/ResetPassword';
@@ -33,9 +34,12 @@ import VerifyEmail from './pages/VerifyEmail';
 function LegacyProfileRedirect() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
-  // ?welcome=1 = nouveau compte (onboarding) ; ?steam=… / ?link=… = retour de
-  // liaison d'un compte (Steam, Discord…) : dans ces cas on reste sur les settings.
-  const keepSettings = params.has('welcome') || params.has('steam') || params.has('link');
+  // ?welcome=1 = nouveau compte OAuth → wizard d'onboarding plein écran.
+  const isWelcome = params.has('welcome');
+  // ?steam=… / ?link=… = retour de liaison d'un compte (Steam, Discord…) : dans
+  // ces cas on reste sur les settings (ou /welcome si onboarding pas fini, géré
+  // par ProtectedRoute).
+  const keepSettings = isWelcome || params.has('steam') || params.has('link');
   // Lu une seule fois (initializer) → stable même sous le double-render
   // StrictMode ; le nettoyage se fait dans l'effet ci-dessous.
   const [dest] = useState(() =>
@@ -45,6 +49,7 @@ function LegacyProfileRedirect() {
     sessionStorage.removeItem('postLoginRedirect');
   }, []);
   if (dest) return <Navigate to={dest} replace />;
+  if (isWelcome) return <Navigate to="/welcome" replace />;
   return <Navigate to={`/settings${search}`} replace />;
 }
 
@@ -68,6 +73,7 @@ export default function App() {
             <Route path="/u/:username" element={<PublicProfile />} />
             <Route path="/profile" element={<LegacyProfileRedirect />} />
             <Route element={<ProtectedRoute />}>
+              <Route path="/welcome" element={<Onboarding />} />
               <Route path="/feed" element={<Feed />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/friends" element={<Friends />} />

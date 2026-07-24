@@ -83,6 +83,20 @@ export class UsersController {
     return toPublicUser(updated);
   }
 
+  // Marque le wizard d'onboarding comme terminé (ou explicitement passé) :
+  // pose onboardedAt une seule fois. Tant que c'est nul, le front redirige vers
+  // /welcome ; une fois posé, plus de redirection auto (on repasse par settings).
+  @UseGuards(JwtAuthGuard)
+  @Post('me/onboarded')
+  async markOnboarded(@CurrentUser() current: JwtPayload) {
+    const user = await this.usersService.findById(current.sub);
+    if (!user) throw new NotFoundException();
+    const updated = user.onboardedAt
+      ? user
+      : await this.usersService.update(current.sub, { onboardedAt: new Date() });
+    return toPublicUser(updated);
+  }
+
   // Provider accounts (Steam/42/Google) have no password: they may set one
   // here to also enable email+password login. Accounts that already have one
   // must prove it before changing it.

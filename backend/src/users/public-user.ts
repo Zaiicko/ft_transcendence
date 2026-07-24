@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 
 export type PublicUser = Omit<
   User,
-  'passwordHash' | 'twoFactorSecret' | 'providerId' | 'psnAccountId' | 'xboxXuid'
+  'passwordHash' | 'twoFactorSecret' | 'providerId' | 'psnAccountId' | 'xboxXuid' | 'onboardedAt'
 > & {
   // Lets the frontend offer "add a password" (provider accounts without one)
   // vs "change my password" — the hash itself never leaves the backend.
@@ -13,15 +13,20 @@ export type PublicUser = Omit<
   // Whether an Xbox account is linked. The internal XUID stays backend-only;
   // the gamertag is kept for display (`xboxGamertag`). Mirror of psnLinked.
   xboxLinked: boolean;
+  // Whether the onboarding wizard has been completed or explicitly skipped.
+  // The raw timestamp stays backend-only; the front only needs the boolean.
+  onboarded: boolean;
 };
 
 // Strip auth-internal fields before a User ever leaves the backend
 export function toPublicUser(user: User): PublicUser {
-  const { passwordHash, twoFactorSecret, providerId, psnAccountId, xboxXuid, ...publicUser } = user;
+  const { passwordHash, twoFactorSecret, providerId, psnAccountId, xboxXuid, onboardedAt, ...publicUser } =
+    user;
   return {
     ...publicUser,
     hasPassword: passwordHash !== null,
     psnLinked: psnAccountId !== null,
     xboxLinked: xboxXuid !== null,
+    onboarded: onboardedAt !== null,
   };
 }

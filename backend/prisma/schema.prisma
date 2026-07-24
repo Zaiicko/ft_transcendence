@@ -101,6 +101,9 @@ model User {
   emailVerifiedAt  DateTime?
   // Last WebSocket disconnect time — used for "last seen" once offline
   lastSeenAt       DateTime?
+  // Onboarding wizard completion : null tant que le wizard n'a pas été terminé
+  // ou explicitement passé → le front redirige vers /welcome tant que c'est nul.
+  onboardedAt      DateTime?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 

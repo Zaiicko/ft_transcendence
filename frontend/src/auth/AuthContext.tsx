@@ -28,7 +28,7 @@ interface AuthContextValue {
   loading: boolean;
   login: (email: string, password: string) => Promise<{ requiresTwoFactor: true } | void>;
   completeTwoFactorLogin: (code: string) => Promise<void>;
-  signup: (email: string, username: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -93,11 +93,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signup = useCallback(
-    async (email: string, username: string, password: string) => {
+    // Pas de pseudo : il est choisi ensuite dans le wizard d'onboarding (le
+    // backend en génère un provisoire depuis l'e-mail).
+    async (email: string, password: string) => {
       applyUser(
         await apiFetch<PublicUser>('/auth/signup', {
           method: 'POST',
-          body: JSON.stringify({ email, username, password }),
+          body: JSON.stringify({ email, password }),
         }),
       );
     },

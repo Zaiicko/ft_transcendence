@@ -61,19 +61,42 @@ export class AuthService {
     if (await this.users.findByEmail(dto.email)) {
       throw new ConflictException('Email already in use');
     }
-    if (await this.users.findByUsername(dto.username)) {
-      throw new ConflictException('Username already taken');
+
+    // Pseudo choisi plus tard dans le wizard d'onboarding : s'il est fourni on
+    // le valide, sinon on en génère un unique depuis l'e-mail (comme OAuth).
+    let username: string;
+    if (dto.username) {
+      if (await this.users.findByUsername(dto.username)) {
+        throw new ConflictException('Username already taken');
+      }
+      username = dto.username;
+    } else {
+      username = await this.generateUniqueUsername(dto.email.split('@')[0]);
     }
 
     const passwordHash = await hashPassword(dto.password);
     const user = await this.users.create({
       email: dto.email,
-      username: dto.username,
+      username,
       passwordHash,
       provider: AuthProvider.LOCAL,
     });
     await this.requestEmailVerification(user);
     return user;
+  }
+
+  // Dérive un pseudo unique d'un libellé (nom OAuth ou partie locale d'e-mail) :
+  // minuscules, caractères autorisés uniquement, puis suffixe numérique en cas
+  // de collision. Partagé par l'inscription classique et OAuth.
+  private async generateUniqueUsername(seed: string): Promise<string> {
+    const base = seed.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20) || 'player';
+    let username = base;
+    let suffix = 0;
+    while (await this.users.findByUsername(username)) {
+      suffix += 1;
+      username = `${base}${suffix}`;
+    }
+    return username;
   }
 
   async validateLocalLogin(dto: LoginDto): Promise<User> {
@@ -103,17 +126,7 @@ export class AuthService {
       throw new ConflictException('An account already exists with this email address');
     }
 
-    const base =
-      (displayName || email.split('@')[0])
-        .toLowerCase()
-        .replace(/[^a-z0-9_]/g, '')
-        .slice(0, 20) || 'player';
-    let username = base;
-    let suffix = 0;
-    while (await this.users.findByUsername(username)) {
-      suffix += 1;
-      username = `${base}${suffix}`;
-    }
+    const username = await this.generateUniqueUsername(displayName || email.split('@')[0]);
 
     try {
       // The provider already verified this email address.

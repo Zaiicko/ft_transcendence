@@ -84,7 +84,7 @@ const navLink = ({ isActive }: { isActive: boolean }) =>
 
 export default function Layout() {
   const { t } = useTranslation();
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mode, setMode] = useState<ThemeMode>(storedMode);
@@ -106,6 +106,16 @@ export default function Layout() {
   useEffect(() => {
     applyMode(mode);
   }, [mode]);
+
+  // Garde d'onboarding global : un nouvel inscrit qui n'a pas terminé (ni
+  // explicitement passé) le wizard est ramené sur /welcome, y compris à la
+  // réouverture du site sur une page publique (accueil…) — ProtectedRoute ne
+  // couvre que les pages protégées.
+  useEffect(() => {
+    if (!loading && user && !user.onboarded && location.pathname !== '/welcome') {
+      navigate('/welcome', { replace: true });
+    }
+  }, [loading, user, location.pathname, navigate]);
 
   async function handleLogout() {
     await logout();

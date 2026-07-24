@@ -855,6 +855,52 @@
     "viewReviewOf": "View your review of {{title}}",
     "writeReviewOf": "Write a review of {{title}}"
   },
+  "onboarding": {
+    "welcome": "Welcome!",
+    "subtitle": "Let's set up your profile in a few steps.",
+    "skip": "Skip for now",
+    "next": "Continue",
+    "back": "Back",
+    "finish": "Finish",
+    "genericError": "Something went wrong. Please try again.",
+    "username": {
+      "title": "Choose your username",
+      "subtitle": "We prefilled it from the account you signed up with — change it if you like.",
+      "hint": "3–24 characters: letters, numbers and underscores only."
+    },
+    "avatar": {
+      "title": "Add a profile picture",
+      "subtitle": "We picked up the one from your account. Upload another, then zoom and drag to frame it.",
+      "skip": "Skip this step"
+    },
+    "services": {
+      "title": "Link your game accounts",
+      "subtitle": "Connect your platforms to import your games and stats. You can also do this later in settings.",
+      "connected": "Connected",
+      "connect": "Connect",
+      "publicNotice": "Your Steam, PlayStation and Xbox profiles must be set to public — otherwise we can't import your games, friends and/or achievements.",
+      "steam": {
+        "perks": [
+          "Import your played games library to the site",
+          "Achievements and 100% completed games",
+          "Find Steam friends already here"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "Import your PlayStation game library to the site",
+          "Trophy progress and 100% games per title",
+          "Find PlayStation friends already here"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Import your Xbox game library to the site",
+          "Gamerscore, achievements and 100% games"
+        ]
+      }
+    }
+  },
   "library": {
     "title": "My libraries",
     "noneLinkedTitle": "No account linked",

@@ -247,6 +247,9 @@ export interface PublicUser {
   xboxLinked: boolean;
   xboxGamertag: string | null;
   hasPassword: boolean;
+  // Onboarding wizard terminé ou explicitement passé. Tant que false, on
+  // redirige vers /welcome (voir ProtectedRoute).
+  onboarded: boolean;
   twoFactorEnabled: boolean;
   emailVerifiedAt: string | null;
   language: string;

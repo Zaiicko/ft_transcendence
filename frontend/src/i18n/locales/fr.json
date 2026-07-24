@@ -855,6 +855,52 @@
     "viewReviewOf": "Voir ton avis sur {{title}}",
     "writeReviewOf": "Écrire un avis sur {{title}}"
   },
+  "onboarding": {
+    "welcome": "Bienvenue !",
+    "subtitle": "Configurons ton profil en quelques étapes.",
+    "skip": "Passer pour l'instant",
+    "next": "Continuer",
+    "back": "Retour",
+    "finish": "Terminer",
+    "genericError": "Une erreur est survenue. Réessaie.",
+    "username": {
+      "title": "Choisis ton pseudo",
+      "subtitle": "On l'a pré-rempli avec le compte utilisé pour t'inscrire — modifie-le si tu veux.",
+      "hint": "3 à 24 caractères : lettres, chiffres et tirets bas uniquement."
+    },
+    "avatar": {
+      "title": "Ajoute une photo de profil",
+      "subtitle": "On a repris celle de ton compte. Choisis-en une autre, puis zoome et déplace pour la cadrer.",
+      "skip": "Passer cette étape"
+    },
+    "services": {
+      "title": "Lie tes comptes de jeu",
+      "subtitle": "Connecte tes plateformes pour importer tes jeux et statistiques. Tu pourras aussi le faire plus tard dans les réglages.",
+      "connected": "Connecté",
+      "connect": "Connecter",
+      "publicNotice": "Tes profils Steam, PlayStation et Xbox doivent être publics — sinon on ne peut pas importer tes jeux, tes amis et/ou tes succès.",
+      "steam": {
+        "perks": [
+          "Importe ta bibliothèque de jeux joués sur le site",
+          "Succès et jeux complétés à 100 %",
+          "Retrouve tes amis Steam déjà inscrits"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "Importe ta bibliothèque de jeux PlayStation sur le site",
+          "Progression de trophées et jeux à 100 % par titre",
+          "Retrouve tes amis PlayStation déjà inscrits"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Importe ta bibliothèque de jeux Xbox sur le site",
+          "Gamerscore, succès et jeux à 100 %"
+        ]
+      }
+    }
+  },
   "library": {
     "title": "Mes bibliothèques",
     "noneLinkedTitle": "Aucun compte lié",
