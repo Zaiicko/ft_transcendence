@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 const DEEPL_FREE_URL = 'https://api-free.deepl.com/v2/translate';
-const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2';
 const MYMEMORY_URL = 'https://api.mymemory.translated.net/get';
 // MyMemory's free/keyless tier rejects long queries — comfortably under its
 // ~500 byte cap even for multi-byte scripts.
@@ -14,10 +13,6 @@ const DEEPL_TARGET_OVERRIDES: Record<string, string> = { pt: 'PT-PT' };
 
 interface DeepLResponse {
   translations?: { text: string }[];
-}
-
-interface GoogleTranslateResponse {
-  data?: { translations?: { translatedText: string }[] };
 }
 
 interface MyMemoryResponse {
@@ -33,19 +28,37 @@ export class TranslationService {
   // Machine-translates `text` to `targetLang`. `sourceLang` : code de la langue
   // source ('en' par défaut pour les descriptions de jeux, toujours anglaises) ;
   // null = auto-détection (utilisé pour les avis, écrits dans n'importe quelle
-  // langue). Throws on failure — callers decide the fallback.
+  // langue). Throws only if EVERY provider fails — callers decide the fallback.
+  //
   // Preference order: DeepL (best quality, free tier needs no credit card)
-  // > Google (needs a billing account) > MyMemory (keyless, zero setup).
+  // > MyMemory (keyless, zero setup). On failure (quota DeepL 456, réseau, ...)
+  // on bascule sur MyMemory : une clé DeepL saturée ne laisse pas le texte non
+  // traduit — MyMemory reste dispo comme filet de sécurité.
   async translate(
     text: string,
     targetLang: string,
     sourceLang: string | null = 'en',
   ): Promise<string> {
     const deeplKey = this.config.get<string>('DEEPL_API_KEY');
-    if (deeplKey) return this.translateWithDeepL(text, targetLang, deeplKey, sourceLang);
-    const googleKey = this.config.get<string>('GOOGLE_TRANSLATE_API_KEY');
-    if (googleKey) return this.translateWithGoogle(text, targetLang, googleKey, sourceLang);
-    return this.translateWithMyMemory(text, targetLang, sourceLang);
+
+    const providers: { name: string; run: () => Promise<string> }[] = [];
+    if (deeplKey) {
+      providers.push({ name: 'DeepL', run: () => this.translateWithDeepL(text, targetLang, deeplKey, sourceLang) });
+    }
+    providers.push({ name: 'MyMemory', run: () => this.translateWithMyMemory(text, targetLang, sourceLang) });
+
+    let lastError: unknown;
+    for (const provider of providers) {
+      try {
+        return await provider.run();
+      } catch (err) {
+        lastError = err;
+        this.logger.warn(
+          `${provider.name} translation failed (${(err as Error).message}) — falling back to the next provider`,
+        );
+      }
+    }
+    throw lastError instanceof Error ? lastError : new Error('All translation providers failed');
   }
 
   // DeepL API Free — 500k chars/month, no credit card required at signup.
@@ -77,30 +90,9 @@ export class TranslationService {
     return translated;
   }
 
-  // Used when GOOGLE_TRANSLATE_API_KEY is configured — requires an active
-  // Google Cloud billing account. Broad language coverage, no chunking needed.
-  private async translateWithGoogle(
-    text: string,
-    target: string,
-    apiKey: string,
-    source: string | null,
-  ): Promise<string> {
-    const res = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      // source omis → Google auto-détecte.
-      body: JSON.stringify({ q: text, target, ...(source ? { source } : {}), format: 'text' }),
-    });
-    if (!res.ok) throw new Error(`Google Translate API returned ${res.status}`);
-    const data = (await res.json()) as GoogleTranslateResponse;
-    const translated = data.data?.translations?.[0]?.translatedText;
-    if (!translated) throw new Error('Google Translate API returned no translation');
-    return translated;
-  }
-
-  // Free, keyless fallback so translation works out of the box with zero
-  // setup — lower quality and rate-limited, meant to be swapped for the
-  // Google path once a real API key is available.
+  // Free, keyless last-resort fallback so translation works out of the box with
+  // zero setup AND still runs when DeepL fails (quota, réseau) — lower
+  // quality and rate-limited, but better than leaving the text untranslated.
   private async translateWithMyMemory(
     text: string,
     target: string,
