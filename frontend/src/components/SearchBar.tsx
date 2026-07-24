@@ -6,6 +6,8 @@ import { apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
 
 const gameHref = (id: number) => `/game/${id}`;
+const companyHref = (id: number) => `/company/${id}`;
+type CompanyHit = { id: number; name: string; logoUrl: string | null };
 const MIN_CHARS = 2;
 const DEBOUNCE_MS = 300;
 
@@ -14,6 +16,7 @@ export default function SearchBar() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GameSummary[]>([]);
+  const [companies, setCompanies] = useState<CompanyHit[]>([]);
   const [open, setOpen] = useState(false);
   // searched : une recherche locale a abouti pour la saisie courante — permet
   // de distinguer "pas encore cherché" de "cherché, zéro résultat"
@@ -30,15 +33,22 @@ export default function SearchBar() {
     const timer = setTimeout(async () => {
       if (trimmed.length < MIN_CHARS) {
         setResults([]);
+        setCompanies([]);
         setSearched(false);
         return;
       }
       try {
-        const { data } = await apiFetch<{ data: GameSummary[] }>(
-          `/games/search?q=${encodeURIComponent(trimmed)}`,
-        );
+        // Jeux + studios en parallèle ; la recherche studios ne doit pas faire
+        // échouer l'ensemble si elle plante (catch → liste vide).
+        const [gameRes, companyRes] = await Promise.all([
+          apiFetch<{ data: GameSummary[] }>(`/games/search?q=${encodeURIComponent(trimmed)}`),
+          apiFetch<{ data: CompanyHit[] }>(
+            `/companies/search?q=${encodeURIComponent(trimmed)}`,
+          ).catch(() => ({ data: [] as CompanyHit[] })),
+        ]);
         if (cancelled) return;
-        setResults(data.slice(0, 8));
+        setResults(gameRes.data.slice(0, 8));
+        setCompanies(companyRes.data.slice(0, 5));
         setSearched(true);
         setOpen(true);
       } catch {
@@ -82,7 +92,16 @@ export default function SearchBar() {
     setOpen(false);
     setQuery('');
     setResults([]);
+    setCompanies([]);
     navigate(gameHref(id));
+  }
+
+  function goToCompany(id: number) {
+    setOpen(false);
+    setQuery('');
+    setResults([]);
+    setCompanies([]);
+    navigate(companyHref(id));
   }
 
   async function randomGame() {
@@ -112,7 +131,7 @@ export default function SearchBar() {
     'rounded-full border border-zinc-400/40 bg-zinc-900/5 dark:border-zinc-100/10 dark:bg-zinc-100/5';
 
   const showMenu = open && trimmed.length >= MIN_CHARS;
-  const noResults = searched && results.length === 0;
+  const noResults = searched && results.length === 0 && companies.length === 0;
 
   return (
     <div ref={boxRef} className="relative min-w-0 flex-1">
@@ -153,6 +172,37 @@ export default function SearchBar() {
                       <span className="h-10 w-7 rounded bg-zinc-200 dark:bg-zinc-800" />
                     )}
                     <span className="truncate text-sm">{g.title}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Studios trouvés → lien vers leur fiche */}
+          {companies.length > 0 && (
+            <ul className={results.length > 0 ? 'border-t border-zinc-200 dark:border-zinc-800' : ''}>
+              <li className="px-4 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
+                {t('catalog.studios')}
+              </li>
+              {companies.map((c) => (
+                <li key={c.id}>
+                  <button
+                    type="button"
+                    onClick={() => goToCompany(c.id)}
+                    className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  >
+                    {c.logoUrl ? (
+                      <img
+                        src={c.logoUrl}
+                        alt=""
+                        className="h-8 w-8 shrink-0 rounded bg-white object-contain p-1 ring-1 ring-black/5"
+                      />
+                    ) : (
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-xs font-semibold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                        {c.name.charAt(0)}
+                      </span>
+                    )}
+                    <span className="truncate text-sm">{c.name}</span>
                   </button>
                 </li>
               ))}

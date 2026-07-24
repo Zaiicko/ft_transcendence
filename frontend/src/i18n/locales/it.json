@@ -348,7 +348,10 @@
     "unexpectedError": "Errore imprevisto.",
     "titleTextRequired": "Titolo e testo sono obbligatori.",
     "cancel": "Annulla",
-    "save": "Salva"
+    "save": "Salva",
+    "translate": "Traduci",
+    "showOriginal": "Vedi originale",
+    "translating": "Traduzione…"
   },
   "comments": {
     "sortTop": "Migliori",
@@ -444,7 +447,8 @@
     "randomGame": "Gioco casuale",
     "noneInCatalog": "Nessun gioco «{{query}}» nel catalogo.",
     "importIgdb": "Aggiungi da IGDB",
-    "importing": "Importazione da IGDB…"
+    "importing": "Importazione da IGDB…",
+    "studios": "Studi"
   },
   "game": {
     "markedTitle": "Fatto — clicca per rimuovere",

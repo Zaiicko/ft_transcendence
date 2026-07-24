@@ -348,7 +348,10 @@
     "unexpectedError": "Beklenmeyen hata.",
     "titleTextRequired": "Başlık ve metin gerekli.",
     "cancel": "İptal",
-    "save": "Kaydet"
+    "save": "Kaydet",
+    "translate": "Çevir",
+    "showOriginal": "Orijinali gör",
+    "translating": "Çevriliyor…"
   },
   "comments": {
     "sortTop": "En iyiler",
@@ -444,7 +447,8 @@
     "randomGame": "Rastgele oyun",
     "noneInCatalog": "Katalogda \"{{query}}\" adlı oyun yok.",
     "importIgdb": "IGDB'den ekle",
-    "importing": "IGDB'den içe aktarılıyor…"
+    "importing": "IGDB'den içe aktarılıyor…",
+    "studios": "Stüdyolar"
   },
   "game": {
     "markedTitle": "Bitti — kaldırmak için tıkla",

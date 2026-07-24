@@ -348,7 +348,10 @@
     "unexpectedError": "Onverwachte fout.",
     "titleTextRequired": "Titel en tekst zijn verplicht.",
     "cancel": "Annuleren",
-    "save": "Opslaan"
+    "save": "Opslaan",
+    "translate": "Vertalen",
+    "showOriginal": "Origineel tonen",
+    "translating": "Vertalen…"
   },
   "comments": {
     "sortTop": "Top",
@@ -444,7 +447,8 @@
     "randomGame": "Willekeurige game",
     "noneInCatalog": "Geen game \"{{query}}\" in de catalogus.",
     "importIgdb": "Toevoegen vanaf IGDB",
-    "importing": "Importeren vanaf IGDB…"
+    "importing": "Importeren vanaf IGDB…",
+    "studios": "Studio's"
   },
   "game": {
     "markedTitle": "Klaar — klik om te verwijderen",

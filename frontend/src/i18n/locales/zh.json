@@ -348,7 +348,10 @@
     "unexpectedError": "发生意外错误。",
     "titleTextRequired": "标题和内容为必填项。",
     "cancel": "取消",
-    "save": "保存"
+    "save": "保存",
+    "translate": "翻译",
+    "showOriginal": "查看原文",
+    "translating": "翻译中…"
   },
   "comments": {
     "sortTop": "最热",
@@ -444,7 +447,8 @@
     "randomGame": "随机游戏",
     "noneInCatalog": "目录中没有\"{{query}}\"这款游戏。",
     "importIgdb": "从 IGDB 添加",
-    "importing": "正在从 IGDB 导入…"
+    "importing": "正在从 IGDB 导入…",
+    "studios": "工作室"
   },
   "game": {
     "markedTitle": "已通关 — 点击取消",

@@ -348,7 +348,10 @@
     "unexpectedError": "予期しないエラーが発生しました。",
     "titleTextRequired": "タイトルと本文は必須です。",
     "cancel": "キャンセル",
-    "save": "保存"
+    "save": "保存",
+    "translate": "翻訳",
+    "showOriginal": "原文を表示",
+    "translating": "翻訳中…"
   },
   "comments": {
     "sortTop": "トップ",
@@ -444,7 +447,8 @@
     "randomGame": "ランダムなゲーム",
     "noneInCatalog": "カタログに「{{query}}」というゲームはありません。",
     "importIgdb": "IGDB から追加",
-    "importing": "IGDB からインポート中…"
+    "importing": "IGDB からインポート中…",
+    "studios": "スタジオ"
   },
   "game": {
     "markedTitle": "クリア済み — クリックで解除",

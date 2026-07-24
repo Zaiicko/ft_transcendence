@@ -348,7 +348,10 @@
     "unexpectedError": "예기치 않은 오류입니다.",
     "titleTextRequired": "제목과 내용은 필수입니다.",
     "cancel": "취소",
-    "save": "저장"
+    "save": "저장",
+    "translate": "번역",
+    "showOriginal": "원문 보기",
+    "translating": "번역 중…"
   },
   "comments": {
     "sortTop": "인기순",
@@ -444,7 +447,8 @@
     "randomGame": "랜덤 게임",
     "noneInCatalog": "카탈로그에 \"{{query}}\" 게임이 없습니다.",
     "importIgdb": "IGDB에서 추가",
-    "importing": "IGDB에서 가져오는 중…"
+    "importing": "IGDB에서 가져오는 중…",
+    "studios": "스튜디오"
   },
   "game": {
     "markedTitle": "완료 — 클릭하여 해제",

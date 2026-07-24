@@ -30,6 +30,19 @@ export class CompaniesService {
     return company;
   }
 
+  // Recherche de studios par nom (pour la barre de recherche). Les plus
+  // prolifiques d'abord (pertinence). Renvoie de quoi afficher la vignette.
+  async search(term: string) {
+    if (!term) return { data: [] };
+    const data = await this.prisma.company.findMany({
+      where: { name: { contains: term, mode: 'insensitive' } },
+      orderBy: { games: { _count: 'desc' } },
+      take: 8,
+      select: { id: true, name: true, logoUrl: true },
+    });
+    return { data };
+  }
+
   // One-shot logo backfill for every company without one (npm run companies:logos)
   async syncLogos() {
     const missing = await this.prisma.company.findMany({

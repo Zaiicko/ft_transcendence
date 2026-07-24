@@ -30,22 +30,32 @@ export class TranslationService {
 
   constructor(private readonly config: ConfigService) {}
 
-  // Machine-translates `text` (assumed English) to `targetLang`. Throws on
-  // failure — callers decide the fallback (e.g. keep the original text)
-  // rather than this service silently returning something wrong.
+  // Machine-translates `text` to `targetLang`. `sourceLang` : code de la langue
+  // source ('en' par défaut pour les descriptions de jeux, toujours anglaises) ;
+  // null = auto-détection (utilisé pour les avis, écrits dans n'importe quelle
+  // langue). Throws on failure — callers decide the fallback.
   // Preference order: DeepL (best quality, free tier needs no credit card)
   // > Google (needs a billing account) > MyMemory (keyless, zero setup).
-  async translate(text: string, targetLang: string): Promise<string> {
+  async translate(
+    text: string,
+    targetLang: string,
+    sourceLang: string | null = 'en',
+  ): Promise<string> {
     const deeplKey = this.config.get<string>('DEEPL_API_KEY');
-    if (deeplKey) return this.translateWithDeepL(text, targetLang, deeplKey);
+    if (deeplKey) return this.translateWithDeepL(text, targetLang, deeplKey, sourceLang);
     const googleKey = this.config.get<string>('GOOGLE_TRANSLATE_API_KEY');
-    if (googleKey) return this.translateWithGoogle(text, targetLang, googleKey);
-    return this.translateWithMyMemory(text, targetLang);
+    if (googleKey) return this.translateWithGoogle(text, targetLang, googleKey, sourceLang);
+    return this.translateWithMyMemory(text, targetLang, sourceLang);
   }
 
   // DeepL API Free — 500k chars/month, no credit card required at signup.
   // Best translation quality of the three options; no chunking needed.
-  private async translateWithDeepL(text: string, target: string, apiKey: string): Promise<string> {
+  private async translateWithDeepL(
+    text: string,
+    target: string,
+    apiKey: string,
+    source: string | null,
+  ): Promise<string> {
     const deeplTarget = DEEPL_TARGET_OVERRIDES[target] ?? target.toUpperCase();
     const res = await fetch(DEEPL_FREE_URL, {
       method: 'POST',
@@ -53,7 +63,12 @@ export class TranslationService {
         'Content-Type': 'application/json',
         Authorization: `DeepL-Auth-Key ${apiKey}`,
       },
-      body: JSON.stringify({ text: [text], target_lang: deeplTarget, source_lang: 'EN' }),
+      // source_lang omis → DeepL auto-détecte (pour les avis).
+      body: JSON.stringify({
+        text: [text],
+        target_lang: deeplTarget,
+        ...(source ? { source_lang: source.toUpperCase() } : {}),
+      }),
     });
     if (!res.ok) throw new Error(`DeepL API returned ${res.status}`);
     const data = (await res.json()) as DeepLResponse;
@@ -68,11 +83,13 @@ export class TranslationService {
     text: string,
     target: string,
     apiKey: string,
+    source: string | null,
   ): Promise<string> {
     const res = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ q: text, target, source: 'en', format: 'text' }),
+      // source omis → Google auto-détecte.
+      body: JSON.stringify({ q: text, target, ...(source ? { source } : {}), format: 'text' }),
     });
     if (!res.ok) throw new Error(`Google Translate API returned ${res.status}`);
     const data = (await res.json()) as GoogleTranslateResponse;
@@ -84,12 +101,18 @@ export class TranslationService {
   // Free, keyless fallback so translation works out of the box with zero
   // setup — lower quality and rate-limited, meant to be swapped for the
   // Google path once a real API key is available.
-  private async translateWithMyMemory(text: string, target: string): Promise<string> {
+  private async translateWithMyMemory(
+    text: string,
+    target: string,
+    source: string | null,
+  ): Promise<string> {
+    // MyMemory ne gère pas l'auto-détection : à défaut de source on suppose 'en'.
+    const langpairSource = source ?? 'en';
     const langpairTarget = target === 'zh' ? 'zh-CN' : target;
     const chunks = chunkText(text, MYMEMORY_CHUNK_SIZE);
     const translated: string[] = [];
     for (const chunk of chunks) {
-      const url = `${MYMEMORY_URL}?q=${encodeURIComponent(chunk)}&langpair=en|${langpairTarget}`;
+      const url = `${MYMEMORY_URL}?q=${encodeURIComponent(chunk)}&langpair=${langpairSource}|${langpairTarget}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`MyMemory API returned ${res.status}`);
       const data = (await res.json()) as MyMemoryResponse;

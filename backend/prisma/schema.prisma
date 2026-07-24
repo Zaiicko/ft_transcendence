@@ -255,10 +255,11 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  likes    ReviewLike[]
-  dislikes ReviewDislike[]
-  comments ReviewComment[]
-  messages Message[]
+  likes        ReviewLike[]
+  dislikes     ReviewDislike[]
+  comments     ReviewComment[]
+  messages     Message[]
+  translations ReviewTranslation[]
 
   // One review per user per target. NULLs never collide in a Postgres unique
   // index, so each constraint only bites for its own target kind.
@@ -268,6 +269,20 @@ model Review {
   // above start with userId — useless for WHERE gameId/companyId = ?
   @@index([gameId])
   @@index([companyId])
+}
+
+// Traduction machine (bouton "Traduire") du titre + texte d'un avis, à la
+// demande, mise en cache par langue. Supprimée en cascade avec l'avis, et
+// invalidée à l'édition de l'avis (voir reviews.service.update).
+model ReviewTranslation {
+  id       Int    @id @default(autoincrement())
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId Int
+  language String
+  title    String
+  text     String
+
+  @@unique([reviewId, language])
 }
 
 model ReviewLike {

@@ -348,7 +348,10 @@
     "unexpectedError": "Непредвиденная ошибка.",
     "titleTextRequired": "Заголовок и текст обязательны.",
     "cancel": "Отмена",
-    "save": "Сохранить"
+    "save": "Сохранить",
+    "translate": "Перевести",
+    "showOriginal": "Показать оригинал",
+    "translating": "Перевод…"
   },
   "comments": {
     "sortTop": "Лучшие",
@@ -444,7 +447,8 @@
     "randomGame": "Случайная игра",
     "noneInCatalog": "В каталоге нет игры «{{query}}».",
     "importIgdb": "Добавить из IGDB",
-    "importing": "Импорт из IGDB…"
+    "importing": "Импорт из IGDB…",
+    "studios": "Студии"
   },
   "game": {
     "markedTitle": "Пройдено — нажмите, чтобы убрать",

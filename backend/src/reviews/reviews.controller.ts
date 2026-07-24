@@ -17,6 +17,7 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { HighlightsDto } from './dto/highlights.dto';
+import { TranslateReviewDto } from './dto/translate-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsService } from './reviews.service';
 
@@ -57,6 +58,14 @@ export class ReviewsController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number, @CurrentUser() viewer?: JwtPayload) {
     return this.reviewsService.findOne(id, viewer?.sub);
+  }
+
+  // Traduction "à la demande" (bouton Traduire) du titre + texte vers ?lang= —
+  // public, mise en cache par langue côté service. Deux segments → pas de
+  // collision avec @Get(':id').
+  @Get(':id/translation')
+  translate(@Param('id', ParseIntPipe) id: number, @Query() query: TranslateReviewDto) {
+    return this.reviewsService.translateReview(id, query.lang);
   }
 
   @UseGuards(JwtAuthGuard)

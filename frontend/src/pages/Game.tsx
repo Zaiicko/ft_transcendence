@@ -1,6 +1,5 @@
-import gsap from 'gsap';
 import type { TFunction } from 'i18next';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import AddToListButton from '../components/AddToListButton';
@@ -13,6 +12,7 @@ import { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
 import { apiLang } from '../i18n';
 import { translateGenre } from '../lib/genres';
+import { scrambleText } from '../lib/textScramble';
 import { GameDlc, GameSummary } from '../lib/types';
 
 const screenshot1080 = (g: GameSummary) =>
@@ -39,30 +39,17 @@ export default function Game() {
   // de jeu).
   const summarySeen = useRef<{ id: number; summary: string | null } | null>(null);
 
+  // Résumé traduit du jeu courant (id + texte), séparé du jeu de base pour
+  // qu'un changement de langue ne repasse PAS par l'anglais.
+  const [translated, setTranslated] = useState<{ id: number; text: string } | null>(null);
+
+  // Jeu de base (résumé anglais) — rechargé seulement au changement de JEU :
+  // l'en-tête, la jaquette, les avis s'affichent tout de suite.
   useEffect(() => {
     let cancelled = false;
-    // Chargement principal SANS traduction → instantané (le résumé arrive en
-    // anglais). La traduction (appel DeepL lent au 1er affichage) est ensuite
-    // récupérée EN ARRIÈRE-PLAN et remplace juste le résumé, sans bloquer
-    // l'affichage de l'en-tête, de la jaquette et des avis. apiLang folds
-    // fr-FR→fr et renvoie '' pour l'anglais (pas de 2e requête inutile).
     apiFetch<GameSummary>(`/games/${gameId}`)
       .then((g) => {
-        if (cancelled) return;
-        setLoaded({ id: gameId, game: g });
-        const lang = apiLang();
-        if (!lang) return;
-        apiFetch<GameSummary>(`/games/${gameId}?lang=${lang}`)
-          .then((translated) => {
-            if (cancelled) return;
-            // Tagué par id : on n'écrase que si c'est toujours le même jeu.
-            setLoaded((cur) =>
-              cur?.id === gameId && cur.game
-                ? { id: gameId, game: { ...cur.game, summary: translated.summary } }
-                : cur,
-            );
-          })
-          .catch(() => {});
+        if (!cancelled) setLoaded({ id: gameId, game: g });
       })
       .catch(() => {
         if (!cancelled) setLoaded({ id: gameId, game: null });
@@ -70,25 +57,46 @@ export default function Game() {
     return () => {
       cancelled = true;
     };
+  }, [gameId]);
+
+  // Traduction du résumé — au changement de jeu OU de langue. Récupérée en
+  // arrière-plan (appel DeepL lent au 1er affichage) puis substituée. En anglais
+  // (apiLang() === '') → pas de requête, on repasse au résumé de base.
+  useEffect(() => {
+    let cancelled = false;
+    const lang = apiLang();
+    if (!lang) return; // anglais : displaySummary retombe sur la base (voir plus bas)
+    apiFetch<GameSummary>(`/games/${gameId}?lang=${lang}`)
+      .then((g) => {
+        if (!cancelled) setTranslated({ id: gameId, text: g.summary ?? '' });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, [gameId, i18n.language]);
 
   const game = loaded?.id === gameId ? loaded.game : undefined;
+  // Résumé affiché : en anglais (apiLang() === '') → la base ; sinon la traduction
+  // du jeu courant (on garde l'ancienne le temps que la nouvelle langue arrive →
+  // pas de clignotement anglais entre deux langues).
+  const displaySummary =
+    translated?.id === gameId && apiLang() !== '' ? translated.text : (game?.summary ?? null);
 
-  // Fondu doux quand la traduction (arrivée en arrière-plan) remplace le résumé
-  // anglais : opacité + léger flou, bien plus fluide qu'un swap sec.
-  useEffect(() => {
-    const cur = game?.summary ?? null;
+  // Effet "décodage" (scramble) quand le résumé AFFICHÉ change (traduction
+  // arrivée, ou changement de langue) : décode vers le nouveau texte depuis
+  // l'actuel — jamais de retour à l'anglais entre deux langues. Pas au 1er
+  // affichage d'un jeu ni au changement de jeu (mémorisé par id). useLayoutEffect
+  // : démarre avant le paint (pas de flash du texte final).
+  useLayoutEffect(() => {
+    const cur = displaySummary;
     const seen = summarySeen.current;
-    const isTranslationSwap = !!(seen && seen.id === gameId && seen.summary && cur && seen.summary !== cur);
     summarySeen.current = { id: gameId, summary: cur };
-    if (isTranslationSwap && summaryRef.current) {
-      gsap.fromTo(
-        summaryRef.current,
-        { opacity: 0, filter: 'blur(6px)' },
-        { opacity: 1, filter: 'blur(0px)', duration: 0.55, ease: 'power2.out' },
-      );
+    const el = summaryRef.current;
+    if (el && seen && seen.id === gameId && seen.summary && cur && seen.summary !== cur) {
+      return scrambleText(el, cur);
     }
-  }, [game?.summary, gameId]);
+  }, [displaySummary, gameId]);
 
   if (game === null) return <p className="py-24 text-center text-zinc-400">{t('game.notFound')}</p>;
   if (!game)
@@ -236,12 +244,12 @@ export default function Game() {
         </Link>
       )}
 
-      {game.summary && (
+      {displaySummary && (
         <p
           ref={summaryRef}
           className="max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300"
         >
-          {game.summary}
+          {displaySummary}
         </p>
       )}
 

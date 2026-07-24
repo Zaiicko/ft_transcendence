@@ -348,7 +348,10 @@
     "unexpectedError": "Unexpected error.",
     "titleTextRequired": "Title and text are required.",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "translate": "Translate",
+    "showOriginal": "See original",
+    "translating": "Translating…"
   },
   "comments": {
     "sortTop": "Top",
@@ -444,7 +447,8 @@
     "randomGame": "Random game",
     "noneInCatalog": "No game \"{{query}}\" in the catalog.",
     "importIgdb": "Add from IGDB",
-    "importing": "Importing from IGDB…"
+    "importing": "Importing from IGDB…",
+    "studios": "Studios"
   },
   "game": {
     "markedTitle": "Done — click to remove",

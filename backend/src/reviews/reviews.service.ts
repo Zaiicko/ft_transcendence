@@ -8,6 +8,7 @@ import { PlayStatus, Prisma } from '@prisma/client';
 import { FeedService } from '../feed/feed.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { TranslationService } from '../translation/translation.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsGateway, ReviewTarget } from './reviews.gateway';
@@ -49,7 +50,37 @@ export class ReviewsService {
     private readonly gateway: ReviewsGateway,
     private readonly notifications: NotificationsService,
     private readonly feed: FeedService,
+    private readonly translation: TranslationService,
   ) {}
+
+  // Traduction "à la demande" (bouton Traduire) du titre + texte d'un avis vers
+  // `lang`, mise en cache par (avis, langue). Source auto-détectée (un avis peut
+  // être écrit dans n'importe quelle langue). Si l'avis est déjà dans la langue
+  // cible, la traduction renvoie ~le même texte — le front compare et propose
+  // alors "voir l'original".
+  async translateReview(id: number, lang: string): Promise<{ title: string; text: string }> {
+    const cached = await this.prisma.reviewTranslation.findUnique({
+      where: { reviewId_language: { reviewId: id, language: lang } },
+    });
+    if (cached) return { title: cached.title, text: cached.text };
+
+    const review = await this.prisma.review.findUnique({
+      where: { id },
+      select: { title: true, text: true },
+    });
+    if (!review) throw new NotFoundException(`Review ${id} not found`);
+
+    const [title, text] = await Promise.all([
+      this.translation.translate(review.title, lang, null),
+      this.translation.translate(review.text, lang, null),
+    ]);
+    await this.prisma.reviewTranslation.upsert({
+      where: { reviewId_language: { reviewId: id, language: lang } },
+      create: { reviewId: id, language: lang, title, text },
+      update: { title, text },
+    });
+    return { title, text };
+  }
 
   create(userId: number, gameId: number, dto: CreateReviewDto) {
     return this.createForTarget(userId, { gameId, companyId: null }, dto);
@@ -323,6 +354,9 @@ export class ReviewsService {
   async update(userId: number, id: number, dto: UpdateReviewDto) {
     const target = await this.assertOwner(id, userId);
     const review = await this.prisma.review.update({ where: { id }, data: dto });
+    // Le contenu a changé → les traductions en cache sont périmées : on les jette
+    // (elles seront régénérées à la demande au prochain clic "Traduire").
+    await this.prisma.reviewTranslation.deleteMany({ where: { reviewId: id } });
     this.gateway.emitToTarget(target, 'review:updated', { reviewId: id });
     return review;
   }

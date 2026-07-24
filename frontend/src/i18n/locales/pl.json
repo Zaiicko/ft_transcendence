@@ -348,7 +348,10 @@
     "unexpectedError": "Nieoczekiwany błąd.",
     "titleTextRequired": "Tytuł i tekst są wymagane.",
     "cancel": "Anuluj",
-    "save": "Zapisz"
+    "save": "Zapisz",
+    "translate": "Przetłumacz",
+    "showOriginal": "Pokaż oryginał",
+    "translating": "Tłumaczenie…"
   },
   "comments": {
     "sortTop": "Najlepsze",
@@ -444,7 +447,8 @@
     "randomGame": "Losowa gra",
     "noneInCatalog": "Brak gry „{{query}}” w katalogu.",
     "importIgdb": "Dodaj z IGDB",
-    "importing": "Importowanie z IGDB…"
+    "importing": "Importowanie z IGDB…",
+    "studios": "Studia"
   },
   "game": {
     "markedTitle": "Ukończone — kliknij, aby usunąć",
