@@ -82,6 +82,32 @@ export class ReviewsService {
     return { title, text };
   }
 
+  // Traduction en lot (auto-traduction) : les déjà-cachés en une requête, les
+  // manquants traduits SÉQUENTIELLEMENT (pour ne pas dépasser le débit DeepL).
+  // Un avis qui échoue est simplement absent du résultat → le front garde
+  // l'original.
+  async translateReviews(
+    ids: number[],
+    lang: string,
+  ): Promise<Record<number, { title: string; text: string }>> {
+    const result: Record<number, { title: string; text: string }> = {};
+    const cached = await this.prisma.reviewTranslation.findMany({
+      where: { language: lang, reviewId: { in: ids } },
+      select: { reviewId: true, title: true, text: true },
+    });
+    for (const c of cached) result[c.reviewId] = { title: c.title, text: c.text };
+
+    for (const id of ids) {
+      if (result[id]) continue;
+      try {
+        result[id] = await this.translateReview(id, lang);
+      } catch {
+        /* quota / réseau / avis absent : on saute, le front garde l'original */
+      }
+    }
+    return result;
+  }
+
   create(userId: number, gameId: number, dto: CreateReviewDto) {
     return this.createForTarget(userId, { gameId, companyId: null }, dto);
   }

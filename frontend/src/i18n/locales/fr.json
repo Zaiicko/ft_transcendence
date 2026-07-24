@@ -351,7 +351,8 @@
     "save": "Enregistrer",
     "translate": "Traduire",
     "showOriginal": "Voir l'original",
-    "translating": "Traduction…"
+    "translating": "Traduction…",
+    "showTranslation": "Voir la traduction"
   },
   "comments": {
     "sortTop": "Meilleurs",

@@ -351,7 +351,8 @@
     "save": "Guardar",
     "translate": "Traduzir",
     "showOriginal": "Ver original",
-    "translating": "A traduzir…"
+    "translating": "A traduzir…",
+    "showTranslation": "Ver tradução"
   },
   "comments": {
     "sortTop": "Melhores",

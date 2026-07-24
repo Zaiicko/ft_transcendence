@@ -72,51 +72,60 @@ export default function ReviewsSection({
   const [editingId, setEditingId] = useState<number | null>(null);
   const reviewRef = useRef<HTMLElement>(null);
 
-  // Traduction "à la demande" des avis (bouton Traduire). `translations` = cache
-  // local des traductions chargées ; `showTranslated` = avis affichés traduits ;
-  // `translating` = avis en cours de requête. Langue cible = la langue courante
-  // (base, ex. 'fr'), y compris 'en' — le back auto-détecte la source.
-  const [translations, setTranslations] = useState<Record<number, { title: string; text: string }>>(
+  // Auto-traduction des avis vers la langue courante (batch au chargement). Cache
+  // local par (id, langue). Par défaut on AFFICHE la traduction ; `showOriginal`
+  // = avis pour lesquels on a cliqué "Voir l'original". Le bouton n'apparaît que
+  // si la traduction diffère de l'original (sinon l'avis est déjà dans ta langue).
+  const [translations, setTranslations] = useState<Record<string, { title: string; text: string }>>(
     {},
   );
-  const [showTranslated, setShowTranslated] = useState<Set<number>>(new Set());
-  const [translating, setTranslating] = useState<Set<number>>(new Set());
+  const [showOriginal, setShowOriginal] = useState<Set<number>>(new Set());
   const targetLang = i18n.resolvedLanguage ?? i18n.language ?? 'en';
+  const trKey = (id: number) => `${id}:${targetLang}`;
 
+  const translationOf = (r: ReviewT) => translations[trKey(r.id)];
+  const isTranslatable = (r: ReviewT) => {
+    const tr = translationOf(r);
+    return !!tr && (tr.title !== r.title || tr.text !== r.text);
+  };
   const displayed = (r: ReviewT) => {
-    const tr = showTranslated.has(r.id) ? translations[r.id] : undefined;
-    return tr ?? { title: r.title, text: r.text };
+    const tr = translationOf(r);
+    return tr && !showOriginal.has(r.id) ? tr : { title: r.title, text: r.text };
   };
 
-  async function toggleTranslation(id: number) {
-    // Déjà traduit → bascule original / traduction sans re-requête.
-    if (translations[id]) {
-      setShowTranslated((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
-        return next;
-      });
-      return;
-    }
-    if (translating.has(id)) return;
-    setTranslating((prev) => new Set(prev).add(id));
-    try {
-      const tr = await apiFetch<{ title: string; text: string }>(
-        `/reviews/${id}/translation?lang=${targetLang}`,
-      );
-      setTranslations((m) => ({ ...m, [id]: tr }));
-      setShowTranslated((prev) => new Set(prev).add(id));
-    } catch {
-      /* échec silencieux (quota/réseau) : on laisse l'original */
-    } finally {
-      setTranslating((prev) => {
-        const next = new Set(prev);
-        next.delete(id);
-        return next;
-      });
-    }
-  }
+  // Traduit en lot les avis affichés sans traduction pour la langue courante
+  // (un seul appel). Relancé au chargement de nouveaux avis ou changement de
+  // langue. Clé par (id, langue) → pas de reset d'état entre les langues.
+  useEffect(() => {
+    const missing = reviews.filter((r) => !(trKey(r.id) in translations)).map((r) => r.id);
+    if (missing.length === 0) return;
+    let cancelled = false;
+    apiFetch<Record<number, { title: string; text: string }>>('/reviews/translations', {
+      method: 'POST',
+      body: JSON.stringify({ ids: missing, lang: targetLang }),
+    })
+      .then((map) => {
+        if (cancelled) return;
+        setTranslations((prev) => {
+          const next = { ...prev };
+          for (const [id, tr] of Object.entries(map)) next[`${id}:${targetLang}`] = tr;
+          return next;
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reviews, targetLang]);
+
+  const toggleOriginal = (id: number) =>
+    setShowOriginal((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   const toggleThread = (rid: number) =>
     setOpenThreads((prev) => {
@@ -403,18 +412,17 @@ export default function ReviewsSection({
                   <p className="mt-1 whitespace-pre-line text-sm text-zinc-600 dark:text-zinc-300">
                     {displayed(r).text}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => toggleTranslation(r.id)}
-                    disabled={translating.has(r.id)}
-                    className="mt-1 text-xs text-zinc-500 underline-offset-2 hover:text-accent hover:underline disabled:opacity-50 dark:text-zinc-400"
-                  >
-                    {translating.has(r.id)
-                      ? t('reviews.translating')
-                      : showTranslated.has(r.id) && translations[r.id]
-                        ? t('reviews.showOriginal')
-                        : t('reviews.translate')}
-                  </button>
+                  {isTranslatable(r) && (
+                    <button
+                      type="button"
+                      onClick={() => toggleOriginal(r.id)}
+                      className="mt-1 text-xs text-zinc-500 underline-offset-2 hover:text-accent hover:underline dark:text-zinc-400"
+                    >
+                      {showOriginal.has(r.id)
+                        ? t('reviews.showTranslation')
+                        : t('reviews.showOriginal')}
+                    </button>
+                  )}
                   <div className="mt-3 flex items-center gap-2 text-xs">
                     <button
                       type="button"

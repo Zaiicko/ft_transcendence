@@ -18,6 +18,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { HighlightsDto } from './dto/highlights.dto';
 import { TranslateReviewDto } from './dto/translate-review.dto';
+import { TranslateReviewsDto } from './dto/translate-reviews.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsService } from './reviews.service';
 
@@ -60,12 +61,19 @@ export class ReviewsController {
     return this.reviewsService.findOne(id, viewer?.sub);
   }
 
-  // Traduction "à la demande" (bouton Traduire) du titre + texte vers ?lang= —
-  // public, mise en cache par langue côté service. Deux segments → pas de
-  // collision avec @Get(':id').
+  // Traduction "à la demande" du titre + texte d'UN avis vers ?lang= — public,
+  // mis en cache par langue. Deux segments → pas de collision avec @Get(':id').
   @Get(':id/translation')
   translate(@Param('id', ParseIntPipe) id: number, @Query() query: TranslateReviewDto) {
     return this.reviewsService.translateReview(id, query.lang);
+  }
+
+  // Auto-traduction en lot : { ids, lang } → { [id]: { title, text } }. Une seule
+  // requête pour toute la liste d'avis affichée. Chemin littéral "translations"
+  // (POST) → pas de collision avec @Post(':id/like') etc.
+  @Post('translations')
+  translateMany(@Body() dto: TranslateReviewsDto) {
+    return this.reviewsService.translateReviews(dto.ids, dto.lang);
   }
 
   @UseGuards(JwtAuthGuard)

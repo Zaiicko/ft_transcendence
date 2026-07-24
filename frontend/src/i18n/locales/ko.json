@@ -351,7 +351,8 @@
     "save": "저장",
     "translate": "번역",
     "showOriginal": "원문 보기",
-    "translating": "번역 중…"
+    "translating": "번역 중…",
+    "showTranslation": "번역 보기"
   },
   "comments": {
     "sortTop": "인기순",
