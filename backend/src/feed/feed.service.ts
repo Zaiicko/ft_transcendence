@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FriendshipStatus, PlayStatus } from '@prisma/client';
+import { FriendshipStatus, PlayStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { FeedGateway } from './feed.gateway';
 
@@ -20,6 +20,15 @@ const reviewSelect = {
   _count: { select: { likes: true, dislikes: true, comments: true } },
 } as const;
 
+// Complétion 100 % : acteur + jeu + plateforme pour la carte du feed
+const completionSelect = {
+  id: true,
+  createdAt: true,
+  platform: true,
+  user: { select: actorSelect },
+  game: { select: gameSelect },
+} as const;
+
 // Cible (jeu/studio) minimale pour construire les liens des « likes »
 const reviewTargetSelect = {
   id: true,
@@ -32,7 +41,7 @@ const reviewTargetSelect = {
 export type FeedActor = { id: number; username: string; avatarUrl: string | null };
 
 // Filtre optionnel du feed (onglets en haut de la page). Absent = tout.
-export type FeedFilter = 'reviews' | 'played' | 'likes';
+export type FeedFilter = 'reviews' | 'played' | 'completed' | 'likes';
 
 // Un événement du feed. `at` sert au tri chronologique et de curseur « charger
 // plus ». `id` est unique tous types confondus (préfixé) pour dédupliquer côté
@@ -40,6 +49,7 @@ export type FeedFilter = 'reviews' | 'played' | 'likes';
 export type FeedItem =
   | { id: string; kind: 'review'; at: string; review: unknown }
   | { id: string; kind: 'played'; at: string; actor: FeedActor; game: unknown }
+  | { id: string; kind: 'completed'; at: string; actor: FeedActor; game: unknown; platform: string }
   | { id: string; kind: 'review-like'; at: string; actor: FeedActor; review: unknown }
   | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: unknown };
 
@@ -85,10 +95,11 @@ export class FeedService {
     const take = limit + 1; // +1 par source pour détecter s'il reste des items
     const wantReviews = !filter || filter === 'reviews';
     const wantPlayed = !filter || filter === 'played';
+    const wantCompleted = !filter || filter === 'completed';
     const wantLikes = !filter || filter === 'likes';
 
     // On sur-échantillonne chaque source demandée, on fusionne, on trie, on tronque.
-    const [reviews, playedRaw, reviewLikes, commentLikes] = await Promise.all([
+    const [reviews, playedRaw, completions, reviewLikes, commentLikes] = await Promise.all([
       wantReviews
         ? this.prisma.review.findMany({
             where: { userId: { in: friends }, ...olderThan },
@@ -110,6 +121,14 @@ export class FeedService {
               user: { select: actorSelect },
               game: { select: gameSelect },
             },
+          })
+        : [],
+      wantCompleted
+        ? this.prisma.gameCompletion.findMany({
+            where: { userId: { in: friends }, ...olderThan },
+            orderBy: { createdAt: 'desc' },
+            take,
+            select: completionSelect,
           })
         : [],
       wantLikes
@@ -156,6 +175,7 @@ export class FeedService {
     const items: FeedItem[] = [
       ...reviews.map((r) => this.reviewItem(r)),
       ...played.map((p) => this.playedItem(p)),
+      ...completions.map((c) => this.completedItem(c)),
       ...reviewLikes.map((l) => this.reviewLikeItem(l)),
       ...commentLikes.map((l) => this.commentLikeItem(l)),
     ];
@@ -200,6 +220,23 @@ export class FeedService {
       at: p.createdAt.toISOString(),
       actor: p.user,
       game: p.game,
+    };
+  }
+
+  private completedItem(c: {
+    id: number;
+    createdAt: Date;
+    platform: string;
+    user: FeedActor;
+    game: unknown;
+  }): FeedItem {
+    return {
+      id: `completed-${c.id}`,
+      kind: 'completed',
+      at: c.createdAt.toISOString(),
+      actor: c.user,
+      game: c.game,
+      platform: c.platform,
     };
   }
 
@@ -265,6 +302,66 @@ export class FeedService {
       await this.broadcast(row.user.id, this.playedItem(row));
     } catch (err) {
       this.logger.warn(`onGamePlayed failed: ${(err as Error).message}`);
+    }
+  }
+
+  // Appelé à chaque synchro de bibliothèque d'une plateforme. `completedGameIds`
+  // = jeux du CATALOGUE actuellement à 100 % sur cette plateforme. On enregistre
+  // ceux qu'on ne connaît pas encore. La toute première synchro d'une plateforme
+  // amorce silencieusement l'existant (aucun push feed, sinon tous les vieux
+  // 100 % s'annonceraient d'un coup) ; ensuite chaque nouvelle complétion émet un
+  // événement. Best-effort : ne bloque jamais la réponse bibliothèque.
+  async syncCompletions(
+    userId: number,
+    platform: string,
+    completedGameIds: number[],
+  ): Promise<void> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { completionSeed: true },
+      });
+      if (!user) return;
+      const seed = (user.completionSeed as Record<string, boolean> | null) ?? {};
+      const seeded = seed[platform] === true;
+
+      const existing = await this.prisma.gameCompletion.findMany({
+        where: { userId, platform },
+        select: { gameId: true },
+      });
+      const known = new Set(existing.map((e) => e.gameId));
+      const newIds = completedGameIds.filter((id) => !known.has(id));
+
+      if (newIds.length > 0) {
+        await this.prisma.gameCompletion.createMany({
+          data: newIds.map((gameId) => ({ userId, gameId, platform })),
+          skipDuplicates: true,
+        });
+      }
+
+      // Première passe sur cette plateforme : on marque comme amorcée et on
+      // s'arrête là — l'existant est enregistré mais rien n'est poussé au feed.
+      if (!seeded) {
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { completionSeed: { ...seed, [platform]: true } as Prisma.InputJsonValue },
+        });
+        return;
+      }
+
+      if (newIds.length === 0) return;
+
+      // Push temps réel des complétions fraîchement enregistrées.
+      const rows = await this.prisma.gameCompletion.findMany({
+        where: { userId, platform, gameId: { in: newIds } },
+        select: completionSelect,
+      });
+      for (const row of rows) {
+        if (!row.user) continue;
+        await this.broadcast(row.user.id, this.completedItem(row));
+      }
+    } catch (err) {
+      this.logger.warn(`syncCompletions failed: ${(err as Error).message}`);
     }
   }
 

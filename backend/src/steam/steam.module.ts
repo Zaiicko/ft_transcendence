@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
+import { FeedModule } from '../feed/feed.module';
 import { UsersModule } from '../users/users.module';
 import { SteamAuthController } from './steam-auth.controller';
 import { SteamController } from './steam.controller';
@@ -10,7 +11,7 @@ import { SteamWebApiService } from './steam-web-api.service';
 // friend suggestions. Kept separate from AuthModule (mate's turf) and from
 // games/steam (catalog score sync) on purpose.
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [AuthModule, UsersModule, FeedModule],
   controllers: [SteamAuthController, SteamController],
   providers: [SteamOpenidService, SteamWebApiService],
   // FriendsModule blends Steam friends into its suggestions

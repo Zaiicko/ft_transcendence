@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
+import { FeedModule } from '../feed/feed.module';
 import { UsersModule } from '../users/users.module';
 import { XboxApiService } from './xbox-api.service';
 import { XboxController } from './xbox.controller';
@@ -9,7 +10,7 @@ import { XboxController } from './xbox.controller';
 // public, le backend le résout et lit leurs jeux/succès publics. Aucun jeton par
 // utilisateur. Miroir de PsnModule.
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [AuthModule, UsersModule, FeedModule],
   controllers: [XboxController],
   providers: [XboxApiService],
   exports: [XboxApiService],

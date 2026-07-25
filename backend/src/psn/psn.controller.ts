@@ -16,6 +16,7 @@ import type { TrophyTitle } from 'psn-api';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
@@ -40,6 +41,7 @@ export class PsnController {
     private readonly prisma: PrismaService,
     private readonly users: UsersService,
     private readonly api: PsnApiService,
+    private readonly feed: FeedService,
   ) {}
 
   private async requireAccountId(userId: number): Promise<string> {
@@ -128,6 +130,14 @@ export class PsnController {
     }
 
     const matched = await this.matchTitles(current.sub, titles);
+
+    // Jeux du catalogue à 100 % : tous les trophées obtenus (progress 100) OU un
+    // platine décroché (décision produit : le platine vaut 100 %). → feed.
+    const completed = matched
+      .filter((m) => m.trophies.progress === 100 || (m.trophies.earned?.platinum ?? 0) >= 1)
+      .map((m) => m.id);
+    await this.feed.syncCompletions(current.sub, 'psn', completed);
+
     return {
       private: false,
       totalPlayed: titles.length,

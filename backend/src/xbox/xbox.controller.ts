@@ -15,6 +15,7 @@ import { Prisma } from '@prisma/client';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { LinkXboxDto } from './dto/link-xbox.dto';
@@ -38,6 +39,7 @@ export class XboxController {
     private readonly prisma: PrismaService,
     private readonly users: UsersService,
     private readonly api: XboxApiService,
+    private readonly feed: FeedService,
   ) {}
 
   // Rattache un compte Xbox : on résout le gamertag déclaré en XUID via la clé
@@ -126,6 +128,13 @@ export class XboxController {
       perfect: titles.filter((t) => t.totalGamerscore > 0 && t.currentGamerscore === t.totalGamerscore).length,
     };
     const matched = await this.matchTitles(current.sub, titles);
+
+    // Jeux du catalogue à 100 % (tout le Gamerscore obtenu) → événements de feed.
+    const completed = matched
+      .filter((m) => m.achievements.totalGamerscore > 0 && m.achievements.gamerscore === m.achievements.totalGamerscore)
+      .map((m) => m.id);
+    await this.feed.syncCompletions(current.sub, 'xbox', completed);
+
     return {
       private: false,
       totalPlayed: titles.length,

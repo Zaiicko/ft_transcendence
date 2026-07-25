@@ -107,10 +107,20 @@ model User {
   // Onboarding wizard completion : null tant que le wizard n'a pas été terminé
   // ou explicitement passé → le front redirige vers /welcome tant que c'est nul.
   onboardedAt      DateTime?
+  // Amorçage des complétions 100 % par plateforme : { steam?: true, xbox?: true,
+  // psn?: true }. La 1ʳᵉ synchro d'une plateforme enregistre l'existant SANS rien
+  // pousser au feed (sinon tous les vieux 100 % s'annonceraient d'un coup), puis
+  // marque la plateforme ici ; ensuite seules les nouvelles complétions émettent.
+  completionSeed   Json?
+  // Dernière tentative de re-synchro de fond des complétions (cf. CompletionsService).
+  // Cadence le cron : un compte n'est « à rafraîchir » que si c'est nul ou périmé.
+  // Bumpé à CHAQUE tentative (même en échec) pour ne pas marteler un profil privé.
+  completionCheckedAt DateTime?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
   reviews               Review[]
+  gameCompletions       GameCompletion[]
   reviewLikes           ReviewLike[]
   reviewDislikes        ReviewDislike[]
   reviewComments        ReviewComment[]
@@ -212,6 +222,7 @@ model Game {
 
   reviews   Review[]
   playedBy  PlayedGame[]
+  completions GameCompletion[]
   listItems GameListItem[]
   messages  Message[]
 
@@ -401,6 +412,24 @@ model PlayedGame {
   createdAt DateTime @default(now())
 
   @@unique([userId, gameId])
+  @@index([userId, createdAt])
+}
+
+// Jeu du catalogue complété à 100 % sur une plateforme (tous les succès Steam /
+// gamerscore Xbox complet / 100 % de trophées ou platine PSN). Détecté à la
+// synchro de bibliothèque, en comparant l'état 100 % courant aux lignes déjà
+// enregistrées. Alimente un événement dédié du feed des amis. `platform` fait
+// partie de la clé : un même jeu complété sur Steam ET PSN compte deux fois.
+model GameCompletion {
+  id       Int      @id @default(autoincrement())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  game     Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId   Int
+  platform String // 'steam' | 'xbox' | 'psn'
+  createdAt DateTime @default(now())
+
+  @@unique([userId, gameId, platform])
   @@index([userId, createdAt])
 }
 

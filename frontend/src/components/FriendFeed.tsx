@@ -7,12 +7,25 @@ import { apiFetch } from '../lib/api';
 import type { FeedItem, FeedPage } from '../lib/types';
 import Avatar from './Avatar';
 import EmptyState from './EmptyState';
+import PsnBadge from './PsnBadge';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import Stars from './Stars';
+import SteamBadge from './SteamBadge';
 
 const PAGE = 12;
 const gameHref = (id: number) => `/game/${id}`;
 const companyHref = (id: number) => `/company/${id}`;
+
+// Logo Xbox (Simple Icons, CC0) — badge vert, aligné sur Steam/PSN
+const XBOX_PATH =
+  'M4.102 21.033C6.211 22.881 8.977 24 12 24c3.026 0 5.789-1.119 7.902-2.967 1.877-1.912-4.316-8.709-7.902-11.417-3.582 2.708-9.779 9.505-7.898 11.417zm11.16-14.406c2.5 2.961 7.484 10.313 6.076 12.912C23.002 17.48 24 14.861 24 12.004c0-3.34-1.365-6.362-3.57-8.536 0 0-.027-.022-.082-.042-.063-.022-.152-.045-.281-.045-.592 0-1.985.434-4.805 3.246zM3.654 3.426c-.057.02-.082.041-.086.042C1.365 5.642 0 8.664 0 12.004c0 2.854.998 5.473 2.661 7.533-1.401-2.605 3.579-9.951 6.08-12.91-2.82-2.813-4.216-3.245-4.806-3.245-.131 0-.223.021-.281.046v-.002zM12 3.551S9.055 1.828 6.755 1.746c-.903-.033-1.454.295-1.521.339C7.379.646 9.659 0 11.984 0H12c2.334 0 4.605.646 6.766 2.085-.068-.046-.615-.372-1.52-.339C14.946 1.828 12 3.545 12 3.545v.006z';
+
+// Nom d'affichage de la plateforme (nom propre, identique dans toutes les langues)
+const PLATFORM_LABEL: Record<string, string> = {
+  steam: 'Steam',
+  xbox: 'Xbox',
+  psn: 'PlayStation',
+};
 
 // Gras réutilisé dans les phrases <Trans> (nom d'acteur / cible mis en avant)
 const strongClass = 'font-semibold text-zinc-900 dark:text-zinc-100';
@@ -32,12 +45,13 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString(i18n.language);
 }
 
-type Filter = 'all' | 'reviews' | 'played' | 'likes';
+type Filter = 'all' | 'reviews' | 'played' | 'completed' | 'likes';
 
 const TAB_KEYS: { key: Filter; labelKey: string }[] = [
   { key: 'all', labelKey: 'feed.tabAll' },
   { key: 'reviews', labelKey: 'feed.tabReviews' },
   { key: 'played', labelKey: 'feed.tabPlayed' },
+  { key: 'completed', labelKey: 'feed.tabCompleted' },
   { key: 'likes', labelKey: 'feed.tabLikes' },
 ];
 
@@ -46,6 +60,7 @@ function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
   if (filter === 'all') return true;
   if (filter === 'reviews') return kind === 'review';
   if (filter === 'played') return kind === 'played';
+  if (filter === 'completed') return kind === 'completed';
   return kind === 'review-like' || kind === 'comment-like';
 }
 
@@ -160,6 +175,8 @@ export default function FriendFeed() {
                 return <ReviewItem key={item.id} item={item} />;
               case 'played':
                 return <PlayedItem key={item.id} item={item} />;
+              case 'completed':
+                return <CompletedItem key={item.id} item={item} />;
               case 'review-like':
                 return <ReviewLikeItem key={item.id} item={item} />;
               case 'comment-like':
@@ -359,8 +376,14 @@ function HeartIcon() {
   );
 }
 
-// Libellé « X a noté / a joué à <cible> ». L'action et l'ordre des mots sont
-// portés par la clé (feed.rated / feed.played).
+// Libellé « X a noté / a joué à / a complété <cible> ». L'action et l'ordre des
+// mots sont portés par la clé (feed.rated / feed.played / feed.completed).
+const ACTION_KEY: Record<'rated' | 'played' | 'completed', string> = {
+  rated: 'feed.rated',
+  played: 'feed.played',
+  completed: 'feed.completed',
+};
+
 function ActorLine({
   actor,
   at,
@@ -369,7 +392,7 @@ function ActorLine({
 }: {
   actor: { username: string; avatarUrl: string | null } | null;
   at: string;
-  action: 'rated' | 'played';
+  action: 'rated' | 'played' | 'completed';
   strong: string;
 }) {
   const { t } = useTranslation();
@@ -380,7 +403,7 @@ function ActorLine({
           <Avatar username={actor.username} avatarUrl={actor.avatarUrl} size={20} />
           <span className="min-w-0 truncate">
             <Trans
-              i18nKey={action === 'rated' ? 'feed.rated' : 'feed.played'}
+              i18nKey={ACTION_KEY[action]}
               values={{ user: actor.username, game: strong }}
               components={{ a: <span className={strongClass} />, s: <span className={strongClass} /> }}
             />
@@ -391,6 +414,66 @@ function ActorLine({
       )}
       <span className="ml-auto shrink-0 text-xs text-zinc-400">{relativeTime(at)}</span>
     </div>
+  );
+}
+
+// Petit badge de la plateforme où le jeu a été complété (réutilise Steam/PSN,
+// Xbox en ligne pour rester cohérent avec les autres écrans).
+function PlatformMark({ platform }: { platform: string }) {
+  if (platform === 'steam') return <SteamBadge />;
+  if (platform === 'psn') return <PsnBadge />;
+  if (platform === 'xbox') {
+    return (
+      <span
+        className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-[#107C10] text-white ring-1 ring-zinc-700"
+        title="Xbox"
+      >
+        <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden="true">
+          <path d={XBOX_PATH} />
+        </svg>
+      </span>
+    );
+  }
+  return null;
+}
+
+// « X a complété <jeu> à 100 % » — trophée + badge de la plateforme
+function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }> }) {
+  return (
+    <Link
+      to={gameHref(item.game.id)}
+      className="card flex items-center gap-3 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600"
+    >
+      {item.game.coverUrl && (
+        <img src={item.game.coverUrl} alt="" className="h-16 w-11 shrink-0 rounded object-cover" />
+      )}
+      <div className="min-w-0 flex-1">
+        <ActorLine actor={item.actor} at={item.at} action="completed" strong={item.game.title} />
+        <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+          <PlatformMark platform={item.platform} />
+          <span>{PLATFORM_LABEL[item.platform] ?? item.platform}</span>
+        </div>
+      </div>
+      <span className="shrink-0 text-amber-500" title={i18n.t('feed.completedBadge')}>
+        <TrophyIcon />
+      </span>
+    </Link>
+  );
+}
+
+function TrophyIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5 fill-none stroke-current"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z" />
+      <path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3" />
+    </svg>
   );
 }
 

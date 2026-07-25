@@ -9,6 +9,7 @@ import {
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { toPublicUser } from '../users/public-user';
 import { UsersService } from '../users/users.service';
@@ -21,6 +22,7 @@ export class SteamController {
     private readonly prisma: PrismaService,
     private readonly users: UsersService,
     private readonly webApi: SteamWebApiService,
+    private readonly feed: FeedService,
   ) {}
 
   private async requireSteamId(userId: number): Promise<string> {
@@ -120,6 +122,12 @@ export class SteamController {
       perfect: entries.filter(([u, t]) => t > 0 && u === t).length,
       syncedAt,
     };
+
+    // Jeux du catalogue à 100 % (tous les succès obtenus) → événements de feed.
+    const completed = matched
+      .filter((m) => m.achievements && m.achievements.total > 0 && m.achievements.unlocked === m.achievements.total)
+      .map((m) => m.id);
+    await this.feed.syncCompletions(current.sub, 'steam', completed);
 
     return {
       private: false,

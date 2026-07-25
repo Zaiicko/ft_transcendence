@@ -178,6 +178,7 @@ export interface FeedCommentTarget {
 export type FeedItem =
   | { id: string; kind: 'review'; at: string; review: ReviewHighlight }
   | { id: string; kind: 'played'; at: string; actor: FeedActor; game: FeedGameRef }
+  | { id: string; kind: 'completed'; at: string; actor: FeedActor; game: FeedGameRef; platform: string }
   | { id: string; kind: 'review-like'; at: string; actor: FeedActor; review: FeedReviewTarget }
   | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: FeedCommentTarget };
 
