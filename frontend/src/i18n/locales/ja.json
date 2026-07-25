@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "カタログ",
     "feed": "フィード",
+    "leaderboard": "ランキング",
     "friends": "フレンド",
     "steam": "Steam",
     "login": "ログイン",
@@ -319,6 +320,23 @@
     "timeHours": "{{count}} 時間前",
     "timeYesterday": "昨日",
     "timeDays": "{{count}} 日前"
+  },
+  "leaderboard": {
+    "title": "ランキング",
+    "subtitle": "ランキングの首位は誰か——コンプリート、プレイしたゲーム、レビューで競おう。",
+    "metricCompletions": "コンプリート",
+    "metricPlayed": "プレイしたゲーム",
+    "metricReviews": "レビュー",
+    "scopeFriends": "フレンド",
+    "scopeGlobal": "全体",
+    "windowAll": "全期間",
+    "windowMonth": "今月",
+    "yourRank": "あなたの順位",
+    "rankLabel": "{{rank}} 位",
+    "emptyTitle": "まだランキングがありません",
+    "emptyFriends": "フレンドを追加し、ゲームをコンプリートしたりプレイを記録したりレビューを書いたりして、一緒に順位を上げましょう。",
+    "emptyGlobal": "ランキングの先頭に立とう——ゲームをコンプリートし、プレイを記録し、レビューを書こう。",
+    "findFriends": "フレンドを探す"
   },
   "reviews": {
     "sortPopular": "人気",

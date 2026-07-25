@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Katalog",
     "feed": "Feed",
+    "leaderboard": "Ranking",
     "friends": "Znajomi",
     "steam": "Steam",
     "login": "Zaloguj się",
@@ -319,6 +320,23 @@
     "timeHours": "{{count}} godz. temu",
     "timeYesterday": "wczoraj",
     "timeDays": "{{count}} dni temu"
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "subtitle": "Zobacz, kto jest na szczycie rankingu — ukończenia, zagrane gry i recenzje.",
+    "metricCompletions": "Ukończenia",
+    "metricPlayed": "Zagrane gry",
+    "metricReviews": "Recenzje",
+    "scopeFriends": "Znajomi",
+    "scopeGlobal": "Globalnie",
+    "windowAll": "Od zawsze",
+    "windowMonth": "Ten miesiąc",
+    "yourRank": "Twoja pozycja",
+    "rankLabel": "Pozycja {{rank}}",
+    "emptyTitle": "Nie ma jeszcze nic do sklasyfikowania",
+    "emptyFriends": "Dodaj znajomych i zacznij ukańczać gry, zapisywać rozgrywki i pisać recenzje, aby wspólnie piąć się w rankingu.",
+    "emptyGlobal": "Bądź pierwszy w rankingu — ukańczaj gry, zapisuj rozgrywki i pisz recenzje.",
+    "findFriends": "Znajdź znajomych"
   },
   "reviews": {
     "sortPopular": "Popularne",

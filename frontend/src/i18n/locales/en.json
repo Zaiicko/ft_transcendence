@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Catalog",
     "feed": "Feed",
+    "leaderboard": "Leaderboard",
     "friends": "Friends",
     "steam": "Steam",
     "login": "Log in",
@@ -337,6 +338,23 @@
     "timeHours": "{{count}} h ago",
     "timeYesterday": "yesterday",
     "timeDays": "{{count}} d ago"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "See who tops the rankings — completions, games played and reviews.",
+    "metricCompletions": "Completions",
+    "metricPlayed": "Games played",
+    "metricReviews": "Reviews",
+    "scopeFriends": "Friends",
+    "scopeGlobal": "Global",
+    "windowAll": "All-time",
+    "windowMonth": "This month",
+    "yourRank": "Your rank",
+    "rankLabel": "Rank {{rank}}",
+    "emptyTitle": "Nothing to rank yet",
+    "emptyFriends": "Add friends and start completing games, logging plays and writing reviews to climb the ranks together.",
+    "emptyGlobal": "Be the first on the board — complete games, log plays and write reviews.",
+    "findFriends": "Find friends"
   },
   "reviews": {
     "sortPopular": "Popular",

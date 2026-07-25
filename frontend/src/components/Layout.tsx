@@ -170,6 +170,14 @@ export default function Layout() {
                         {t('nav.feed')}
                       </NavLink>
                       <NavLink
+                        to="/leaderboard"
+                        role="menuitem"
+                        onClick={() => setNavOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                      >
+                        {t('nav.leaderboard')}
+                      </NavLink>
+                      <NavLink
                         to="/friends"
                         role="menuitem"
                         onClick={() => setNavOpen(false)}
@@ -209,6 +217,9 @@ export default function Layout() {
               <>
                 <NavLink to="/feed" className={navLink}>
                   {t('nav.feed')}
+                </NavLink>
+                <NavLink to="/leaderboard" className={navLink}>
+                  {t('nav.leaderboard')}
                 </NavLink>
                 <NavLink to="/friends" className={navLink}>
                   {t('nav.friends')}

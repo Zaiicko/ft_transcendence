@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Catalogue",
     "feed": "Fil",
+    "leaderboard": "Classement",
     "friends": "Amis",
     "steam": "Steam",
     "login": "Connexion",
@@ -337,6 +338,23 @@
     "timeHours": "il y a {{count}} h",
     "timeYesterday": "hier",
     "timeDays": "il y a {{count}} j"
+  },
+  "leaderboard": {
+    "title": "Classement",
+    "subtitle": "Découvre qui domine le classement — complétions, jeux faits et avis.",
+    "metricCompletions": "Complétions",
+    "metricPlayed": "Jeux faits",
+    "metricReviews": "Avis",
+    "scopeFriends": "Amis",
+    "scopeGlobal": "Global",
+    "windowAll": "Depuis toujours",
+    "windowMonth": "Ce mois-ci",
+    "yourRank": "Ton rang",
+    "rankLabel": "Rang {{rank}}",
+    "emptyTitle": "Rien à classer pour l'instant",
+    "emptyFriends": "Ajoute des amis, complète des jeux, marque tes parties et écris des avis pour grimper au classement ensemble.",
+    "emptyGlobal": "Sois le premier au classement — complète des jeux, marque tes parties et écris des avis.",
+    "findFriends": "Trouver des amis"
   },
   "reviews": {
     "sortPopular": "Populaires",

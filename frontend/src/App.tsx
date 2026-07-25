@@ -11,6 +11,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import Friends from './pages/Friends';
 import Game from './pages/Game';
 import Home from './pages/Home';
+import Leaderboard from './pages/Leaderboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Onboarding from './pages/Onboarding';
@@ -75,6 +76,7 @@ export default function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/welcome" element={<Onboarding />} />
               <Route path="/feed" element={<Feed />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/library" element={<Library />} />

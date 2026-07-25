@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Katalog",
     "feed": "Akış",
+    "leaderboard": "Sıralama",
     "friends": "Arkadaşlar",
     "steam": "Steam",
     "login": "Giriş yap",
@@ -319,6 +320,23 @@
     "timeHours": "{{count}} sa önce",
     "timeYesterday": "dün",
     "timeDays": "{{count}} g önce"
+  },
+  "leaderboard": {
+    "title": "Sıralama",
+    "subtitle": "Sıralamada kimin başı çektiğini gör — tamamlamalar, oynanan oyunlar ve incelemeler.",
+    "metricCompletions": "Tamamlamalar",
+    "metricPlayed": "Oynanan oyunlar",
+    "metricReviews": "İncelemeler",
+    "scopeFriends": "Arkadaşlar",
+    "scopeGlobal": "Küresel",
+    "windowAll": "Tüm zamanlar",
+    "windowMonth": "Bu ay",
+    "yourRank": "Sıralamadaki yerin",
+    "rankLabel": "Sıra {{rank}}",
+    "emptyTitle": "Henüz sıralanacak bir şey yok",
+    "emptyFriends": "Arkadaş ekle; birlikte yükselmek için oyunları tamamlamaya, oynadıklarını kaydetmeye ve inceleme yazmaya başla.",
+    "emptyGlobal": "Sıralamada ilk sen ol — oyunları tamamla, oynadıklarını kaydet ve inceleme yaz.",
+    "findFriends": "Arkadaş bul"
   },
   "reviews": {
     "sortPopular": "Popüler",

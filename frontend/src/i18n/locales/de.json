@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Katalog",
     "feed": "Feed",
+    "leaderboard": "Rangliste",
     "friends": "Freunde",
     "steam": "Steam",
     "login": "Anmelden",
@@ -319,6 +320,23 @@
     "timeHours": "vor {{count}} Std.",
     "timeYesterday": "gestern",
     "timeDays": "vor {{count}} T."
+  },
+  "leaderboard": {
+    "title": "Rangliste",
+    "subtitle": "Sieh, wer die Rangliste anführt — Abschlüsse, gespielte Spiele und Rezensionen.",
+    "metricCompletions": "Abschlüsse",
+    "metricPlayed": "Gespielte Spiele",
+    "metricReviews": "Rezensionen",
+    "scopeFriends": "Freunde",
+    "scopeGlobal": "Global",
+    "windowAll": "Allzeit",
+    "windowMonth": "Dieser Monat",
+    "yourRank": "Dein Rang",
+    "rankLabel": "Rang {{rank}}",
+    "emptyTitle": "Noch nichts zu ranken",
+    "emptyFriends": "Füge Freunde hinzu und schließe Spiele ab, trage Gespieltes ein und schreibe Rezensionen, um gemeinsam aufzusteigen.",
+    "emptyGlobal": "Sei der Erste in der Rangliste — schließe Spiele ab, trage Gespieltes ein und schreibe Rezensionen.",
+    "findFriends": "Freunde finden"
   },
   "reviews": {
     "sortPopular": "Beliebt",

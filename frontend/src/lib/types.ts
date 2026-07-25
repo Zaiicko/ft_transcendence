@@ -187,6 +187,26 @@ export interface FeedPage {
   nextCursor: string | null;
 }
 
+// ---- Classements (GET /leaderboard) ----
+export type LeaderboardMetric = 'completions' | 'played' | 'reviews';
+export type LeaderboardScope = 'friends' | 'global';
+export type LeaderboardWindow = 'all' | 'month';
+
+export interface LeaderboardRow {
+  rank: number;
+  user: { id: number; username: string; avatarUrl: string | null };
+  score: number;
+}
+
+export interface LeaderboardResult {
+  metric: LeaderboardMetric;
+  scope: LeaderboardScope;
+  window: LeaderboardWindow;
+  rows: LeaderboardRow[];
+  // Rang du viewer même hors du top affiché ; null s'il n'est pas classé.
+  me: { rank: number; score: number } | null;
+}
+
 // Viewer's relationship with the profile owner (drives the friend button)
 export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 

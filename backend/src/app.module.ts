@@ -11,6 +11,7 @@ import { CompletionsModule } from './completions/completions.module';
 import { FeedModule } from './feed/feed.module';
 import { FriendsModule } from './friends/friends.module';
 import { GamesModule } from './games/games.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ListsModule } from './lists/lists.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PresenceModule } from './presence/presence.module';
@@ -46,6 +47,7 @@ import { UsersModule } from './users/users.module';
     PsnModule,
     XboxModule,
     CompletionsModule,
+    LeaderboardModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

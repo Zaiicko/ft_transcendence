@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "目录",
     "feed": "动态",
+    "leaderboard": "排行榜",
     "friends": "好友",
     "steam": "Steam",
     "login": "登录",
@@ -319,6 +320,23 @@
     "timeHours": "{{count}} 小时前",
     "timeYesterday": "昨天",
     "timeDays": "{{count}} 天前"
+  },
+  "leaderboard": {
+    "title": "排行榜",
+    "subtitle": "看看谁在排行榜上名列前茅——通关数、已玩游戏和评测。",
+    "metricCompletions": "通关数",
+    "metricPlayed": "已玩游戏",
+    "metricReviews": "评测",
+    "scopeFriends": "好友",
+    "scopeGlobal": "全球",
+    "windowAll": "总榜",
+    "windowMonth": "本月",
+    "yourRank": "你的排名",
+    "rankLabel": "第 {{rank}} 名",
+    "emptyTitle": "暂无排名",
+    "emptyFriends": "添加好友，开始完成游戏、记录游玩并撰写评测，一起冲上排行榜。",
+    "emptyGlobal": "成为排行榜第一人——完成游戏、记录游玩并撰写评测。",
+    "findFriends": "查找好友"
   },
   "reviews": {
     "sortPopular": "热门",

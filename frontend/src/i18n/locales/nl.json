@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Catalogus",
     "feed": "Feed",
+    "leaderboard": "Ranglijst",
     "friends": "Vrienden",
     "steam": "Steam",
     "login": "Inloggen",
@@ -319,6 +320,23 @@
     "timeHours": "{{count}} u geleden",
     "timeYesterday": "gisteren",
     "timeDays": "{{count}} d geleden"
+  },
+  "leaderboard": {
+    "title": "Ranglijst",
+    "subtitle": "Ontdek wie bovenaan de ranglijst staat — voltooiingen, gespeelde games en reviews.",
+    "metricCompletions": "Voltooiingen",
+    "metricPlayed": "Gespeelde games",
+    "metricReviews": "Reviews",
+    "scopeFriends": "Vrienden",
+    "scopeGlobal": "Globaal",
+    "windowAll": "Aller tijden",
+    "windowMonth": "Deze maand",
+    "yourRank": "Jouw positie",
+    "rankLabel": "Positie {{rank}}",
+    "emptyTitle": "Nog niets om te ranken",
+    "emptyFriends": "Voeg vrienden toe en begin met het voltooien van games, het bijhouden van gespeelde games en het schrijven van reviews om samen te stijgen.",
+    "emptyGlobal": "Wees de eerste op de ranglijst — voltooi games, houd gespeelde games bij en schrijf reviews.",
+    "findFriends": "Vrienden zoeken"
   },
   "reviews": {
     "sortPopular": "Populair",

@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Каталог",
     "feed": "Лента",
+    "leaderboard": "Рейтинг",
     "friends": "Друзья",
     "steam": "Steam",
     "login": "Войти",
@@ -319,6 +320,23 @@
     "timeHours": "{{count}} ч назад",
     "timeYesterday": "вчера",
     "timeDays": "{{count}} дн назад"
+  },
+  "leaderboard": {
+    "title": "Рейтинг",
+    "subtitle": "Узнайте, кто возглавляет рейтинг — прохождения, сыгранные игры и рецензии.",
+    "metricCompletions": "Прохождения",
+    "metricPlayed": "Сыгранные игры",
+    "metricReviews": "Рецензии",
+    "scopeFriends": "Друзья",
+    "scopeGlobal": "Общий",
+    "windowAll": "За всё время",
+    "windowMonth": "За месяц",
+    "yourRank": "Ваше место",
+    "rankLabel": "Место {{rank}}",
+    "emptyTitle": "Пока нечего ранжировать",
+    "emptyFriends": "Добавляйте друзей, проходите игры на 100 %, отмечайте сыгранное и пишите рецензии, чтобы вместе подниматься в рейтинге.",
+    "emptyGlobal": "Станьте первым в рейтинге — проходите игры, отмечайте сыгранное и пишите рецензии.",
+    "findFriends": "Найти друзей"
   },
   "reviews": {
     "sortPopular": "Популярные",

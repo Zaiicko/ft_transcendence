@@ -20,6 +20,7 @@
   "nav": {
     "catalog": "Catálogo",
     "feed": "Feed",
+    "leaderboard": "Clasificación",
     "friends": "Amigos",
     "steam": "Steam",
     "login": "Iniciar sesión",
@@ -319,6 +320,23 @@
     "timeHours": "hace {{count}} h",
     "timeYesterday": "ayer",
     "timeDays": "hace {{count}} d"
+  },
+  "leaderboard": {
+    "title": "Clasificación",
+    "subtitle": "Descubre quién encabeza la clasificación: juegos completados, jugados y reseñas.",
+    "metricCompletions": "Completados",
+    "metricPlayed": "Juegos jugados",
+    "metricReviews": "Reseñas",
+    "scopeFriends": "Amigos",
+    "scopeGlobal": "Global",
+    "windowAll": "Histórico",
+    "windowMonth": "Este mes",
+    "yourRank": "Tu posición",
+    "rankLabel": "Posición {{rank}}",
+    "emptyTitle": "Aún no hay nada que clasificar",
+    "emptyFriends": "Añade amigos y empieza a completar juegos, registrar partidas y escribir reseñas para subir juntos en la clasificación.",
+    "emptyGlobal": "Sé el primero en la clasificación: completa juegos, registra partidas y escribe reseñas.",
+    "findFriends": "Buscar amigos"
   },
   "reviews": {
     "sortPopular": "Populares",
