@@ -227,7 +227,22 @@
     "avatarReset": "重置",
     "avatarFrameHint": "拖动以移动，滑块缩放",
     "avatarZoom": "缩放",
-    "chooseImage": "选择图片"
+    "chooseImage": "选择图片",
+    "xbox": {
+      "title": "连接 Xbox",
+      "intro": "只需输入您的 Xbox 玩家标签，我们就会找到您的公开个人资料。无需密码或验证码。",
+      "idLabel": "您的 Xbox 玩家标签",
+      "publicHint": "您的 Xbox 个人资料必须设置为公开（游戏历史记录和成就可见），我们才能导入该资料。",
+      "connect": "连接",
+      "connecting": "正在连接……",
+      "connectedAs": "以{{gamertag}}身份登录",
+      "notFound": "未找到与该游戏ID对应的公开 Xbox 账户。请检查拼写，并确认您的个人资料已设为公开。",
+      "alreadyLinked": "该 Xbox 帐户已与另一个个人资料关联。",
+      "invalidId": "这看起来不像一个有效的 Xbox 玩家标签。",
+      "notConfigured": "服务器上尚未配置 Xbox 导入功能。请稍后再试。",
+      "genericError": "连接失败。请重试。",
+      "viewLibrary": "查看我的 Xbox 游戏库"
+    }
   },
   "friends": {
     "title": "好友",
@@ -319,7 +334,10 @@
     "timeMinutes": "{{count}} 分钟前",
     "timeHours": "{{count}} 小时前",
     "timeYesterday": "昨天",
-    "timeDays": "{{count}} 天前"
+    "timeDays": "{{count}} 天前",
+    "tabCompleted": "已完成项目",
+    "completed": "<a>{{user}}</a> 已完成 <s>{{game}}</s> 100%",
+    "completedBadge": "已完成 100%"
   },
   "leaderboard": {
     "title": "排行榜",
@@ -444,7 +462,17 @@
     "menuEmpty": "没有列表 — 在下方创建一个。",
     "privateShort": "私密",
     "quickPlaceholder": "新建列表 + 这款游戏",
-    "createAria": "创建列表"
+    "createAria": "创建列表",
+    "validate": "确认",
+    "gameReviews": "{{title}} 的评价",
+    "noReview": "暂无评价",
+    "undoRemove": "撤销",
+    "viewCompact": "紧凑",
+    "viewDetailed": "详细",
+    "addGamePlaceholder": "添加游戏…",
+    "alreadyIn": "已添加",
+    "limitReached": "列表已满 — 上限 {{max}}",
+    "dragToReorder": "拖动以重新排序"
   },
   "catalog": {
     "title": "游戏目录",
@@ -828,7 +856,10 @@
     "reviewWritten": "已写评价",
     "writeReview": "写评价",
     "viewReviewOf": "查看你对 {{title}} 的评价",
-    "writeReviewOf": "为 {{title}} 写评价"
+    "writeReviewOf": "为 {{title}} 写评价",
+    "refresh": "刷新",
+    "syncing": "令人神清气爽……",
+    "syncedAt": "最后更新时间：{{time}}"
   },
   "library": {
     "title": "我的游戏库",
@@ -847,6 +878,78 @@
       "title": "出错了",
       "body": "发生了意外错误。请尝试重新加载页面。",
       "retry": "重新加载"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "将您的 Xbox 账户关联，以导入您的游戏和成就。",
+    "linkCta": "进入设置",
+    "loadError": "无法加载您的 Xbox 数据。",
+    "yourGames": "您的游戏",
+    "gamesPrivate": "您的 Xbox 游戏记录是私密的。",
+    "gamerscore": "游戏积分",
+    "gamesPlayed": "已进行的比赛",
+    "perfectGames": "已完成 100%",
+    "refresh": "刷新",
+    "syncing": "令人神清气爽……",
+    "syncedAt": "最后更新时间：{{time}}",
+    "played": "{{totalPlayed}} 已玩游戏 · 我们的目录中匹配到{{matched}}",
+    "playedUnmatched": "{{totalPlayed}} 已玩游戏 · {{matched}} 匹配结果 · {{unmatched}} 未收录于我们的目录中",
+    "noMatchedTitle": "没有匹配的游戏",
+    "noMatchedDesc": "您拥有的 Xbox 游戏目前均未收录在我们的目录中。",
+    "achievementProgress": "{{earned}} 成就 · {{progress}} %",
+    "statusPlaying": "播放",
+    "statusBacklog": "积压工作",
+    "reviewWritten": "评论已发布",
+    "writeReview": "撰写评论",
+    "viewReviewOf": "查看您对《{{title}}》的评论",
+    "writeReviewOf": "撰写一篇关于《{{title}}》的书评"
+  },
+  "onboarding": {
+    "welcome": "欢迎！",
+    "subtitle": "让我们通过几个步骤来设置您的个人资料。",
+    "skip": "暂时跳过",
+    "next": "继续",
+    "back": "返回",
+    "finish": "完成",
+    "genericError": "出现错误。请重试。",
+    "username": {
+      "title": "请选择您的用户名",
+      "subtitle": "我们已根据您注册时使用的账户预先填入了相关信息——如果您愿意，可以进行修改。",
+      "hint": "3–24个字符：仅限字母、数字和下划线。"
+    },
+    "avatar": {
+      "title": "添加头像",
+      "subtitle": "我们已经从您的账户中选中了一张。请上传另一张，然后缩放并拖动以调整构图。",
+      "skip": "跳过此步骤"
+    },
+    "services": {
+      "title": "绑定您的游戏账号",
+      "subtitle": "将您的平台连接起来，以导入您的游戏和数据。",
+      "laterHint": "不用着急——您也可以稍后在“账户设置”中关联您的账户。",
+      "connected": "已连接",
+      "connect": "连接",
+      "publicNotice": "您的 Steam、PlayStation 和 Xbox 个人资料必须设置为公开——否则我们将无法导入您的游戏、好友和/或成就。",
+      "steam": {
+        "perks": [
+          "将您的已玩游戏库导入本网站",
+          "成就和已100%通关的游戏",
+          "点击此处查找 Steam 好友"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "将您的 PlayStation 游戏库导入本网站",
+          "奖杯进度及各游戏100%完成度",
+          "立即查找已在此处的 PlayStation 好友"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "将您的 Xbox 游戏库导入本网站",
+          "游戏分数、成就和100%通关的游戏"
+        ]
+      }
     }
   }
 }

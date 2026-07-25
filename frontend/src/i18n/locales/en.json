@@ -462,7 +462,17 @@
     "menuEmpty": "No lists — create one below.",
     "privateShort": "private",
     "quickPlaceholder": "New list + this game",
-    "createAria": "Create list"
+    "createAria": "Create list",
+    "validate": "Confirm",
+    "gameReviews": "Reviews of {{title}}",
+    "noReview": "Not reviewed",
+    "undoRemove": "Undo removal",
+    "viewCompact": "Compact",
+    "viewDetailed": "Detailed",
+    "addGamePlaceholder": "Add a game…",
+    "alreadyIn": "Added",
+    "limitReached": "List full — {{max}} max",
+    "dragToReorder": "Drag to reorder"
   },
   "catalog": {
     "title": "Catalog",

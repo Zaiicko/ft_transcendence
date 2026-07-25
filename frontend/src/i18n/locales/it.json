@@ -227,7 +227,22 @@
     "avatarReset": "Reimposta",
     "avatarFrameHint": "Trascina per spostare, cursore per lo zoom",
     "avatarZoom": "Zoom",
-    "chooseImage": "Scegli un'immagine"
+    "chooseImage": "Scegli un'immagine",
+    "xbox": {
+      "title": "Collega Xbox",
+      "intro": "Basta inserire il tuo gamertag Xbox: troveremo il tuo profilo pubblico. Non servono né password né token.",
+      "idLabel": "Il tuo gamertag Xbox",
+      "publicHint": "Il tuo profilo Xbox deve essere pubblico (con cronologia di gioco e obiettivi visibili) affinché possiamo importarlo.",
+      "connect": "Connettiti",
+      "connecting": "Connessione in corso…",
+      "connectedAs": "Collegato come {{gamertag}}",
+      "notFound": "Non è stato trovato alcun account Xbox pubblico associato a quel gamertag. Controlla l'ortografia e assicurati che il tuo profilo sia pubblico.",
+      "alreadyLinked": "Questo account Xbox è già associato a un altro profilo.",
+      "invalidId": "Non sembra un gamertag Xbox valido.",
+      "notConfigured": "L'importazione da Xbox non è ancora configurata sul server. Riprova più tardi.",
+      "genericError": "Connessione non riuscita. Riprovare.",
+      "viewLibrary": "Visualizza la mia libreria Xbox"
+    }
   },
   "friends": {
     "title": "Amici",
@@ -319,7 +334,10 @@
     "timeMinutes": "{{count}} min fa",
     "timeHours": "{{count}} h fa",
     "timeYesterday": "ieri",
-    "timeDays": "{{count}} g fa"
+    "timeDays": "{{count}} g fa",
+    "tabCompleted": "Realizzazioni",
+    "completed": "<a>{{user}}</a> completato <s>{{game}}</s> al 100%",
+    "completedBadge": "Completato al 100%"
   },
   "leaderboard": {
     "title": "Classifica",
@@ -444,7 +462,17 @@
     "menuEmpty": "Nessuna lista — creane una qui sotto.",
     "privateShort": "privata",
     "quickPlaceholder": "Nuova lista + questo gioco",
-    "createAria": "Crea lista"
+    "createAria": "Crea lista",
+    "validate": "Conferma",
+    "gameReviews": "Recensioni di {{title}}",
+    "noReview": "Nessuna recensione",
+    "undoRemove": "Annulla",
+    "viewCompact": "Compatto",
+    "viewDetailed": "Dettagliato",
+    "addGamePlaceholder": "Aggiungi un gioco…",
+    "alreadyIn": "Aggiunto",
+    "limitReached": "Lista piena — max {{max}}",
+    "dragToReorder": "Trascina per riordinare"
   },
   "catalog": {
     "title": "Catalogo",
@@ -828,7 +856,10 @@
     "reviewWritten": "Recensione scritta",
     "writeReview": "Scrivi una recensione",
     "viewReviewOf": "Vedi la tua recensione di {{title}}",
-    "writeReviewOf": "Scrivi una recensione di {{title}}"
+    "writeReviewOf": "Scrivi una recensione di {{title}}",
+    "refresh": "Aggiorna",
+    "syncing": "Rinfrescante…",
+    "syncedAt": "Ultimo aggiornamento{{time}}"
   },
   "library": {
     "title": "Le mie librerie",
@@ -847,6 +878,78 @@
       "title": "Qualcosa è andato storto",
       "body": "Si è verificato un errore imprevisto. Prova a ricaricare la pagina.",
       "retry": "Ricarica"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Collega il tuo account Xbox per importare i tuoi giochi e i tuoi obiettivi.",
+    "linkCta": "Vai alle impostazioni",
+    "loadError": "Impossibile caricare i dati della tua Xbox.",
+    "yourGames": "I tuoi giochi",
+    "gamesPrivate": "La cronologia dei tuoi giochi Xbox è privata.",
+    "gamerscore": "Punteggio giocatore",
+    "gamesPlayed": "Partite giocate",
+    "perfectGames": "Completato al 100%",
+    "refresh": "Aggiorna",
+    "syncing": "Rinfrescante…",
+    "syncedAt": "Ultimo aggiornamento{{time}}",
+    "played": "{{totalPlayed}} partite giocate · {{matched}} presenti nel nostro catalogo",
+    "playedUnmatched": "{{totalPlayed}} partite giocate · {{matched}} abbinate · {{unmatched}} non presenti nel nostro catalogo",
+    "noMatchedTitle": "Nessun gioco corrispondente",
+    "noMatchedDesc": "Nessuno dei tuoi giochi Xbox è ancora presente nel nostro catalogo.",
+    "achievementProgress": "{{earned}} risultati · {{progress}} %",
+    "statusPlaying": "Giocare",
+    "statusBacklog": "Portafoglio ordini",
+    "reviewWritten": "Recensione scritta",
+    "writeReview": "Scrivi una recensione",
+    "viewReviewOf": "Leggi la tua recensione di “{{title}}”",
+    "writeReviewOf": "Scrivi una recensione su “{{title}}”"
+  },
+  "onboarding": {
+    "welcome": "Benvenuti!",
+    "subtitle": "Configuriamo il tuo profilo in pochi passaggi.",
+    "skip": "Per ora salta questo passaggio",
+    "next": "Continua",
+    "back": "Indietro",
+    "finish": "Fine",
+    "genericError": "Si è verificato un errore. Riprova.",
+    "username": {
+      "title": "Scegli il tuo nome utente",
+      "subtitle": "L'abbiamo precompilato utilizzando l'account con cui ti sei registrato: puoi modificarlo se lo desideri.",
+      "hint": "Da 3 a 24 caratteri: solo lettere, numeri e trattini bassi."
+    },
+    "avatar": {
+      "title": "Aggiungi un'immagine del profilo",
+      "subtitle": "Abbiamo selezionato quella dal tuo account. Caricane un'altra, poi ingrandisci l'immagine e trascina per inquadrarla.",
+      "skip": "Salta questo passaggio"
+    },
+    "services": {
+      "title": "Collega i tuoi account di gioco",
+      "subtitle": "Collega le tue piattaforme per importare i tuoi giochi e le tue statistiche.",
+      "laterHint": "Non c'è fretta: puoi collegare i tuoi account anche in un secondo momento, dalle impostazioni del tuo account.",
+      "connected": "Connesso",
+      "connect": "Connettiti",
+      "publicNotice": "I tuoi profili Steam, PlayStation e Xbox devono essere impostati come pubblici; in caso contrario, non potremo importare i tuoi giochi, i tuoi amici e/o i tuoi obiettivi.",
+      "steam": {
+        "perks": [
+          "Importa sul sito la tua libreria dei giochi a cui hai giocato",
+          "Risultati e giochi completati al 100%",
+          "Trova gli amici di Steam già presenti qui"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "Importa la tua libreria di giochi PlayStation sul sito",
+          "Progressi nei trofei e giochi completati al 100% per titolo",
+          "Trova gli amici PlayStation già presenti qui"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Importa la tua libreria di giochi Xbox sul sito",
+          "Punteggio giocatore, obiettivi e giochi completati al 100%"
+        ]
+      }
     }
   }
 }

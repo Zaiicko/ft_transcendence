@@ -4,9 +4,13 @@ import { useRequireAuth } from '../auth/useRequireAuth';
 import { apiFetch, ApiError } from '../lib/api';
 import type { GameListSummary } from '../lib/types';
 
-// Bouton "signet" sur la fiche jeu : ouvre un menu des listes du viewer avec
-// une coche par liste contenant déjà ce jeu. Cliquer bascule l'appartenance
-// (POST/DELETE item, idempotent). Création rapide d'une liste en bas du menu.
+const MAX_LISTS = 6;
+// Doit rester aligné avec MAX_GAMES_PER_LIST du backend (lists.service)
+const MAX_GAMES = 30;
+
+// Bouton "signet" sur la fiche jeu : ouvre un menu des listes du viewer. On coche
+// / décoche les listes voulues (sans appel réseau), puis "Valider" applique tous
+// les changements d'un coup et referme le menu. Création rapide d'une liste en bas.
 export default function AddToListButton({
   gameId,
   onDark = false,
@@ -18,10 +22,13 @@ export default function AddToListButton({
   const requireAuth = useRequireAuth();
   const [open, setOpen] = useState(false);
   const [lists, setLists] = useState<GameListSummary[] | null>(null);
-  const [busyId, setBusyId] = useState<number | null>(null);
+  // Changements en attente : listId → présence voulue. Appliqués seulement au
+  // clic "Valider". Vide = rien de modifié.
+  const [pending, setPending] = useState<Record<number, boolean>>({});
+  const [saving, setSaving] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Fermeture au clic extérieur / touche Échap
+  // Fermeture au clic extérieur / touche Échap (abandonne les changements)
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
@@ -38,13 +45,16 @@ export default function AddToListButton({
     };
   }, [open]);
 
-  // (Re)charge les listes + l'appartenance de ce jeu à l'ouverture
+  // (Re)charge les listes + l'appartenance de ce jeu à l'ouverture, et repart
+  // d'un état "aucun changement en attente".
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
     apiFetch<GameListSummary[]>(`/lists/mine?gameId=${gameId}`)
       .then((l) => {
-        if (!cancelled) setLists(l);
+        if (cancelled) return;
+        setLists(l);
+        setPending({});
       })
       .catch(() => {
         if (!cancelled) setLists([]);
@@ -54,30 +64,39 @@ export default function AddToListButton({
     };
   }, [open, gameId]);
 
-  async function toggle(list: GameListSummary) {
-    setBusyId(list.id);
-    const adding = !list.contains;
+  const checked = (list: GameListSummary) => (list.id in pending ? pending[list.id] : !!list.contains);
+  const togglePending = (list: GameListSummary) =>
+    setPending((p) => ({ ...p, [list.id]: !checked(list) }));
+
+  // On masque une liste PLEINE (30 jeux) qui ne contient pas ce jeu : on ne peut
+  // pas l'y ajouter. Une liste pleine qui le contient déjà reste visible (pour
+  // pouvoir l'en retirer).
+  const visibleLists = (lists ?? []).filter((l) => l.contains || l.gameCount < MAX_GAMES);
+
+  // Applique tous les changements (seulement ceux qui diffèrent de l'état
+  // serveur), puis referme.
+  async function validate() {
+    if (!lists) return;
+    setSaving(true);
     try {
-      if (adding) {
-        await apiFetch(`/lists/${list.id}/items`, {
-          method: 'POST',
-          body: JSON.stringify({ gameId }),
-        });
-      } else {
-        await apiFetch(`/lists/${list.id}/items/${gameId}`, { method: 'DELETE' });
+      for (const list of lists) {
+        const desired = checked(list);
+        if (desired === !!list.contains) continue;
+        if (desired) {
+          await apiFetch(`/lists/${list.id}/items`, {
+            method: 'POST',
+            body: JSON.stringify({ gameId }),
+          });
+        } else {
+          await apiFetch(`/lists/${list.id}/items/${gameId}`, { method: 'DELETE' });
+        }
       }
-      setLists(
-        (cur) =>
-          cur?.map((l) =>
-            l.id === list.id
-              ? { ...l, contains: adding, gameCount: l.gameCount + (adding ? 1 : -1) }
-              : l,
-          ) ?? null,
-      );
+      setOpen(false);
+      setPending({});
     } catch {
       /* silencieux : l'état reste tel quel */
     } finally {
-      setBusyId(null);
+      setSaving(false);
     }
   }
 
@@ -119,28 +138,28 @@ export default function AddToListButton({
           <div className="max-h-64 overflow-y-auto">
             {lists === null ? (
               <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">{t('lists.loading')}</p>
-            ) : lists.length === 0 ? (
+            ) : visibleLists.length === 0 ? (
               <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
                 {t('lists.menuEmpty')}
               </p>
             ) : (
               <ul className="py-1">
-                {lists.map((list) => (
+                {visibleLists.map((list) => (
                   <li key={list.id}>
                     <button
                       type="button"
-                      onClick={() => toggle(list)}
-                      disabled={busyId === list.id}
-                      className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-800"
+                      onClick={() => togglePending(list)}
+                      aria-pressed={checked(list)}
+                      className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
                     >
                       <span
                         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${
-                          list.contains
+                          checked(list)
                             ? 'border-accent bg-accent text-zinc-950'
                             : 'border-zinc-400 dark:border-zinc-600'
                         }`}
                       >
-                        {list.contains && (
+                        {checked(list) && (
                           <svg
                             viewBox="0 0 24 24"
                             className="h-3.5 w-3.5 fill-none stroke-current"
@@ -163,10 +182,28 @@ export default function AddToListButton({
               </ul>
             )}
           </div>
-          <QuickCreate
-            gameId={gameId}
-            onCreated={(created) => setLists((cur) => [created, ...(cur ?? [])])}
-          />
+
+          {/* Création rapide — masquée une fois la limite de listes atteinte */}
+          {lists && lists.length < MAX_LISTS && (
+            <QuickCreate
+              gameId={gameId}
+              onCreated={(created) => setLists((cur) => [created, ...(cur ?? [])])}
+            />
+          )}
+
+          {/* Barre "Valider" : applique les cases cochées puis ferme */}
+          {visibleLists.length > 0 && (
+            <div className="border-t border-zinc-200 p-2 dark:border-zinc-700">
+              <button
+                type="button"
+                onClick={validate}
+                disabled={saving}
+                className="w-full rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+              >
+                {saving ? t('common.saving') : t('lists.validate')}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -214,19 +251,19 @@ function QuickCreate({
       onSubmit={submit}
       className="flex flex-col gap-2 border-t border-zinc-200 p-2 dark:border-zinc-700"
     >
-      <div className="flex gap-2">
+      <div className="flex items-stretch gap-2">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           maxLength={60}
           placeholder={t('lists.quickPlaceholder')}
-          className="field flex-1 px-2 py-1.5 text-sm"
+          className="field min-w-0 flex-1 px-2 py-1.5 text-sm"
         />
         <button
           type="submit"
           disabled={busy || !name.trim()}
           aria-label={t('lists.createAria')}
-          className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+          className="flex w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-lg font-semibold leading-none text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
         >
           +
         </button>

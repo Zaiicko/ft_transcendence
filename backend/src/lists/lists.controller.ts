@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { AddItemDto } from './dto/add-item.dto';
 import { CreateListDto } from './dto/create-list.dto';
+import { ReorderListDto } from './dto/reorder-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 import { ListsService } from './lists.service';
 
@@ -72,6 +73,16 @@ export class ListsController {
     @Body() dto: AddItemDto,
   ) {
     return this.lists.addItem(current.sub, id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/order')
+  reorder(
+    @CurrentUser() current: JwtPayload,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ReorderListDto,
+  ) {
+    return this.lists.reorder(current.sub, id, dto.gameIds);
   }
 
   @UseGuards(JwtAuthGuard)

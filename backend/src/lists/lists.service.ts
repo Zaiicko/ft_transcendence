@@ -12,6 +12,10 @@ import { UpdateListDto } from './dto/update-list.dto';
 
 // Jeux inclus dans l'aperçu d'une liste (jaquettes empilées sur la carte)
 const PREVIEW_COVERS = 5;
+// Nombre maximum de listes par utilisateur
+const MAX_LISTS = 6;
+// Nombre maximum de jeux par liste
+const MAX_GAMES_PER_LIST = 30;
 
 @Injectable()
 export class ListsService {
@@ -68,16 +72,36 @@ export class ListsService {
     });
     if (!list) throw new NotFoundException();
     if (!list.isPublic && list.userId !== viewerId) throw new ForbiddenException();
+    // Avis du PROPRIÉTAIRE de la liste sur ces jeux (note + extrait affichés à
+    // côté de chaque jeu, façon Letterboxd).
+    const gameIds = list.items.map((it) => it.game.id);
+    const reviews = gameIds.length
+      ? await this.prisma.review.findMany({
+          where: { userId: list.userId, gameId: { in: gameIds } },
+          select: { id: true, gameId: true, rating: true, title: true, text: true },
+        })
+      : [];
+    const reviewByGame = new Map(reviews.map((r) => [r.gameId, r]));
     return {
       id: list.id,
       name: list.name,
       isPublic: list.isPublic,
       owner: list.user,
-      games: list.items.map((it) => it.game),
+      games: list.items.map((it) => {
+        const r = reviewByGame.get(it.game.id);
+        return {
+          ...it.game,
+          review: r ? { id: r.id, rating: r.rating, title: r.title, text: r.text } : null,
+        };
+      }),
     };
   }
 
   async create(userId: number, dto: CreateListDto) {
+    const count = await this.prisma.gameList.count({ where: { userId } });
+    if (count >= MAX_LISTS) {
+      throw new ConflictException(`Limite de ${MAX_LISTS} listes atteinte.`);
+    }
     try {
       const list = await this.prisma.gameList.create({
         data: { userId, name: dto.name.trim(), isPublic: dto.isPublic ?? false },
@@ -120,6 +144,18 @@ export class ListsService {
       select: { id: true },
     });
     if (!game) throw new NotFoundException('Game not found');
+    // Limite atteinte seulement pour un NOUVEAU jeu (re-ajouter un jeu déjà
+    // présent est idempotent et ne doit pas être bloqué).
+    const already = await this.prisma.gameListItem.findUnique({
+      where: { listId_gameId: { listId, gameId: dto.gameId } },
+      select: { id: true },
+    });
+    if (!already) {
+      const count = await this.prisma.gameListItem.count({ where: { listId } });
+      if (count >= MAX_GAMES_PER_LIST) {
+        throw new ConflictException(`Limite de ${MAX_GAMES_PER_LIST} jeux par liste atteinte.`);
+      }
+    }
     const last = await this.prisma.gameListItem.findFirst({
       where: { listId },
       orderBy: { position: 'desc' },
@@ -137,6 +173,21 @@ export class ListsService {
   async removeItem(userId: number, listId: number, gameId: number) {
     await this.assertOwner(userId, listId);
     await this.prisma.gameListItem.deleteMany({ where: { listId, gameId } });
+    return this.findOne(listId, userId);
+  }
+
+  // Réordonne : la position de chaque jeu devient son index dans `gameIds`.
+  // updateMany filtre par listId → ne touche que les items de CETTE liste.
+  async reorder(userId: number, listId: number, gameIds: number[]) {
+    await this.assertOwner(userId, listId);
+    await this.prisma.$transaction(
+      gameIds.map((gameId, index) =>
+        this.prisma.gameListItem.updateMany({
+          where: { listId, gameId },
+          data: { position: index },
+        }),
+      ),
+    );
     return this.findOne(listId, userId);
   }
 

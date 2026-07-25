@@ -227,7 +227,22 @@
     "avatarReset": "Herstellen",
     "avatarFrameHint": "Sleep om te verplaatsen, schuif om te zoomen",
     "avatarZoom": "Zoom",
-    "chooseImage": "Kies een afbeelding"
+    "chooseImage": "Kies een afbeelding",
+    "xbox": {
+      "title": "Xbox verbinden",
+      "intro": "Voer gewoon je Xbox-gamertag in — dan zoeken wij je openbare profiel op. Je hebt geen wachtwoord of token nodig.",
+      "idLabel": "Je Xbox-gamertag",
+      "publicHint": "Je Xbox-profiel moet openbaar zijn (spelgeschiedenis en prestaties moeten zichtbaar zijn) zodat wij het kunnen importeren.",
+      "connect": "Verbinden",
+      "connecting": "Wordt verbonden…",
+      "connectedAs": "Aangemeld als {{gamertag}}",
+      "notFound": "Er is geen openbaar Xbox-account gevonden voor die gamertag. Controleer of je de naam goed hebt gespeld en of je profiel openbaar is.",
+      "alreadyLinked": "Dit Xbox-account is al aan een ander profiel gekoppeld.",
+      "invalidId": "Dat lijkt geen geldige Xbox-gamertag te zijn.",
+      "notConfigured": "De Xbox-import is nog niet ingesteld op de server. Probeer het later nog eens.",
+      "genericError": "De verbinding is mislukt. Probeer het nog eens.",
+      "viewLibrary": "Mijn Xbox-bibliotheek bekijken"
+    }
   },
   "friends": {
     "title": "Vrienden",
@@ -319,7 +334,10 @@
     "timeMinutes": "{{count}} min geleden",
     "timeHours": "{{count}} u geleden",
     "timeYesterday": "gisteren",
-    "timeDays": "{{count}} d geleden"
+    "timeDays": "{{count}} d geleden",
+    "tabCompleted": "Voltooiingen",
+    "completed": "<a>{{user}}</a> voltooid <s>{{game}}</s> 100%",
+    "completedBadge": "100% voltooid"
   },
   "leaderboard": {
     "title": "Ranglijst",
@@ -444,7 +462,17 @@
     "menuEmpty": "Geen lijsten — maak er hieronder een.",
     "privateShort": "privé",
     "quickPlaceholder": "Nieuwe lijst + deze game",
-    "createAria": "Lijst aanmaken"
+    "createAria": "Lijst aanmaken",
+    "validate": "Bevestigen",
+    "gameReviews": "Reviews van {{title}}",
+    "noReview": "Geen review",
+    "undoRemove": "Ongedaan maken",
+    "viewCompact": "Compact",
+    "viewDetailed": "Gedetailleerd",
+    "addGamePlaceholder": "Een spel toevoegen…",
+    "alreadyIn": "Toegevoegd",
+    "limitReached": "Lijst vol — max. {{max}}",
+    "dragToReorder": "Sleep om te herordenen"
   },
   "catalog": {
     "title": "Catalogus",
@@ -828,7 +856,10 @@
     "reviewWritten": "Recensie geschreven",
     "writeReview": "Recensie schrijven",
     "viewReviewOf": "Bekijk je recensie van {{title}}",
-    "writeReviewOf": "Schrijf een recensie van {{title}}"
+    "writeReviewOf": "Schrijf een recensie van {{title}}",
+    "refresh": "Vernieuwen",
+    "syncing": "Verfrissend…",
+    "syncedAt": "Laatst bijgewerkt{{time}}"
   },
   "library": {
     "title": "Mijn bibliotheken",
@@ -847,6 +878,78 @@
       "title": "Er ging iets mis",
       "body": "Er is een onverwachte fout opgetreden. Probeer de pagina opnieuw te laden.",
       "retry": "Opnieuw laden"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Koppel je Xbox-account om je games en prestaties te importeren.",
+    "linkCta": "Ga naar instellingen",
+    "loadError": "Je Xbox-gegevens konden niet worden geladen.",
+    "yourGames": "Jouw spellen",
+    "gamesPrivate": "Je Xbox-spelgeschiedenis is privé.",
+    "gamerscore": "Gamerscore",
+    "gamesPlayed": "Gespeelde wedstrijden",
+    "perfectGames": "100% voltooid",
+    "refresh": "Vernieuwen",
+    "syncing": "Verfrissend…",
+    "syncedAt": "Laatst bijgewerkt{{time}}",
+    "played": "{{totalPlayed}} gespeelde spellen · {{matched}} gevonden in onze catalogus",
+    "playedUnmatched": "{{totalPlayed}} gespeelde spellen · {{matched}} gevonden · {{unmatched}} staat niet in onze catalogus",
+    "noMatchedTitle": "Geen overeenkomende spellen",
+    "noMatchedDesc": "Geen van je Xbox-games staat nog in onze catalogus.",
+    "achievementProgress": "{{earned}} prestaties · {{progress}} %",
+    "statusPlaying": "Spelen",
+    "statusBacklog": "Achterstand",
+    "reviewWritten": "Recensie geschreven",
+    "writeReview": "Schrijf een recensie",
+    "viewReviewOf": "Bekijk je recensie van {{title}}",
+    "writeReviewOf": "Schrijf een recensie over {{title}}"
+  },
+  "onboarding": {
+    "welcome": "Welkom!",
+    "subtitle": "Laten we je profiel in een paar stappen aanmaken.",
+    "skip": "Voorlopig overslaan",
+    "next": "Doorgaan",
+    "back": "Terug",
+    "finish": "Einde",
+    "genericError": "Er is een fout opgetreden. Probeer het nog eens.",
+    "username": {
+      "title": "Kies je gebruikersnaam",
+      "subtitle": "We hebben het automatisch aangevuld met de gegevens van de rekening waarmee je je hebt aangemeld — je kunt dit desgewenst wijzigen.",
+      "hint": "3–24 tekens: uitsluitend letters, cijfers en onderstrepingstekens."
+    },
+    "avatar": {
+      "title": "Een profielfoto toevoegen",
+      "subtitle": "We hebben de foto uit je account opgehaald. Upload nog een foto, zoom vervolgens in en sleep om het beeld te kaderen.",
+      "skip": "Sla deze stap over"
+    },
+    "services": {
+      "title": "Koppel je game-accounts",
+      "subtitle": "Koppel je platforms om je games en statistieken te importeren.",
+      "laterHint": "Geen haast — je kunt je accounts ook later koppelen via je accountinstellingen.",
+      "connected": "Verbonden",
+      "connect": "Verbinden",
+      "publicNotice": "Je Steam-, PlayStation- en Xbox-profielen moeten op ‘openbaar’ staan — anders kunnen we je games, vrienden en/of prestaties niet importeren.",
+      "steam": {
+        "perks": [
+          "Importeer je bibliotheek met gespeelde spellen naar de site",
+          "Prestaties en 100% uitgespeelde spellen",
+          "Vind hier je Steam-vrienden"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "Importeer je PlayStation-spelbibliotheek naar de site",
+          "Voortgang bij het behalen van trofeeën en spellen die voor 100% zijn uitgespeeld per titel",
+          "Zoek hier nu al PlayStation-vrienden"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Importeer je Xbox-spelbibliotheek naar de site",
+          "Gamerscore, prestaties en games die voor 100% zijn uitgespeeld"
+        ]
+      }
     }
   }
 }

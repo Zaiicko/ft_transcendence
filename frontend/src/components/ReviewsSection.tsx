@@ -556,7 +556,7 @@ function ReviewForm({
     <form onSubmit={submit} className="card mb-6 flex flex-col gap-3 p-4">
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">{t('reviews.ratingLabel')}</span>
-        {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+        {Array.from({ length: 11 }, (_, i) => i).map((n) => (
           <button
             key={n}
             type="button"
@@ -649,7 +649,7 @@ function EditReviewForm({
         <span className="mr-1 text-sm text-zinc-500 dark:text-zinc-400">
           {translate('reviews.ratingLabel')}
         </span>
-        {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+        {Array.from({ length: 11 }, (_, i) => i).map((n) => (
           <button
             key={n}
             type="button"

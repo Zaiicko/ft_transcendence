@@ -1,8 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import gsap from 'gsap';
+import { Flip } from 'gsap/Flip';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { apiFetch, ApiError } from '../lib/api';
-import type { GameListDetail, GameListSummary } from '../lib/types';
+import type { GameListDetail, GameListSummary, GameSummary } from '../lib/types';
+import Stars, { StarIcon } from './Stars';
+
+gsap.registerPlugin(Flip);
+
+// Doit rester aligné avec MAX_GAMES_PER_LIST du backend (lists.service)
+const MAX_GAMES_PER_LIST = 30;
 
 // Section "Listes" du profil. Pour le propriétaire (isSelf) : gestion complète
 // (création, renommage, public/privé, suppression, retrait de jeux) sur toutes
@@ -39,7 +47,7 @@ export default function ProfileLists({
         <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           {t('lists.heading')}
         </h2>
-        {isSelf && !creating && (
+        {isSelf && !creating && lists.length < 6 && (
           <button
             type="button"
             onClick={() => setCreating(true)}
@@ -68,7 +76,7 @@ export default function ProfileLists({
           {isSelf ? t('lists.emptyOwn') : t('lists.emptyPublic')}
         </p>
       ) : (
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div className="mt-3 grid items-start gap-3 sm:grid-cols-2">
           {lists.map((list) => (
             <ListCard key={list.id} list={list} isSelf={isSelf} onChanged={reload} />
           ))}
@@ -259,27 +267,211 @@ function ListCard({
         )}
       </div>
 
-      {isSelf && editing && (
-        <EditListRow
+      {/* Édition : nom/visibilité + jeux, tout "en attente" jusqu'à Enregistrer
+          (Annuler abandonne tout, y compris les retraits de jeux). Sinon, déplié
+          = liste en lecture avec les notes/avis. */}
+      {isSelf && editing ? (
+        <EditList
           list={list}
           onDone={() => {
             setEditing(false);
             onChanged();
           }}
         />
+      ) : (
+        expanded && <ListGames listId={list.id} isSelf={isSelf} />
       )}
-
-      {expanded && <ListGames listId={list.id} isSelf={isSelf} onChanged={onChanged} />}
     </div>
   );
 }
 
-function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => void }) {
+// Recherche + ajout de jeux à une liste (mode édition). Ajout immédiat (POST
+// item) puis rafraîchissement. Respecte la limite serveur (30 jeux → 409).
+function AddGamesToList({
+  listId,
+  existingIds,
+  onAdded,
+}: {
+  listId: number;
+  existingIds: Set<number>;
+  onAdded: () => void;
+}) {
+  const { t } = useTranslation();
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<GameSummary[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<number | null>(null);
+  const trimmed = query.trim();
+
+  useEffect(() => {
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      if (trimmed.length < 2) {
+        setResults([]);
+        return;
+      }
+      apiFetch<{ data: GameSummary[] }>(`/games/search?q=${encodeURIComponent(trimmed)}`)
+        .then(({ data }) => {
+          if (!cancelled) setResults(data.slice(0, 6));
+        })
+        .catch(() => {});
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [trimmed]);
+
+  async function add(gameId: number) {
+    setBusyId(gameId);
+    setError(null);
+    try {
+      await apiFetch(`/lists/${listId}/items`, {
+        method: 'POST',
+        body: JSON.stringify({ gameId }),
+      });
+      setQuery('');
+      setResults([]);
+      onAdded();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t('lists.error'));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  const full = existingIds.size >= MAX_GAMES_PER_LIST;
+
+  return (
+    <div>
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        disabled={full}
+        placeholder={
+          full
+            ? t('lists.limitReached', { max: MAX_GAMES_PER_LIST })
+            : t('lists.addGamePlaceholder')
+        }
+        className="field w-full px-3 py-2 text-sm disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400 dark:disabled:bg-zinc-900 dark:disabled:text-zinc-500"
+      />
+      {!full && results.length > 0 && (
+        <ul className="mt-1 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+          {results.map((g) => {
+            const already = existingIds.has(g.id);
+            return (
+              <li key={g.id}>
+                <button
+                  type="button"
+                  onClick={() => add(g.id)}
+                  disabled={already || busyId === g.id}
+                  className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm transition hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-800"
+                >
+                  {g.coverUrl ? (
+                    <img src={g.coverUrl} alt="" className="h-8 w-6 shrink-0 rounded object-cover" />
+                  ) : (
+                    <span className="h-8 w-6 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
+                  )}
+                  <span className="min-w-0 flex-1 truncate">{g.title}</span>
+                  {already ? (
+                    <span className="shrink-0 text-[10px] text-zinc-400">{t('lists.alreadyIn')}</span>
+                  ) : (
+                    <span className="shrink-0 text-lg font-semibold leading-none text-accent" aria-hidden>
+                      +
+                    </span>
+                  )}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+    </div>
+  );
+}
+
+// Édition complète d'une liste : nom, visibilité ET jeux — le tout "en attente".
+// La poubelle MARQUE un jeu à retirer (barré, réversible) sans appel réseau ;
+// "Enregistrer" applique nom/visibilité + les retraits marqués ; "Annuler"
+// (onDone) abandonne tout.
+function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void }) {
   const { t } = useTranslation();
   const [name, setName] = useState(list.name);
   const [isPublic, setIsPublic] = useState(list.isPublic);
+  const [detail, setDetail] = useState<GameListDetail | null>(null);
+  const [removals, setRemovals] = useState<Set<number>>(new Set());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [compactOverride, setCompactOverride] = useState<boolean | null>(null);
+
+  const loadDetail = useCallback(() => {
+    apiFetch<GameListDetail>(`/lists/${list.id}`)
+      .then(setDetail)
+      .catch(() => {});
+  }, [list.id]);
+
+  useEffect(() => {
+    loadDetail();
+  }, [loadDetail]);
+
+  const compact = compactOverride ?? (detail ? detail.games.length > 6 : false);
+
+  const toggleRemoval = (gameId: number) =>
+    setRemovals((prev) => {
+      const next = new Set(prev);
+      if (next.has(gameId)) next.delete(gameId);
+      else next.add(gameId);
+      return next;
+    });
+
+  // Réordonnancement par glisser-déposer LIVE : dès qu'on survole un autre jeu en
+  // le tirant, on le déplace à cette place (les autres glissent via Flip). L'ordre
+  // n'est persisté (PATCH) qu'au relâchement. En cas d'échec, on recharge.
+  const dragId = useRef<number | null>(null);
+  // Dernière cible traitée : onDragEnter rebondit sur les enfants (image, titre…)
+  // → sans ça, moveOver serait appelé en rafale pour la même cible (lag).
+  const lastTarget = useRef<number | null>(null);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const gamesWrapRef = useRef<HTMLDivElement>(null);
+  const flipState = useRef<ReturnType<typeof Flip.getState> | null>(null);
+
+  function moveOver(targetId: number) {
+    const from = dragId.current;
+    if (from == null || from === targetId || !detail) return;
+    if (lastTarget.current === targetId) return;
+    lastTarget.current = targetId;
+    const games = [...detail.games];
+    const fromIdx = games.findIndex((g) => g.id === from);
+    const toIdx = games.findIndex((g) => g.id === targetId);
+    if (fromIdx < 0 || toIdx < 0) return;
+    // Positions AVANT le déplacement, pour l'animation Flip.
+    if (gamesWrapRef.current) {
+      flipState.current = Flip.getState(gamesWrapRef.current.querySelectorAll('[data-flip]'));
+    }
+    const [moved] = games.splice(fromIdx, 1);
+    games.splice(toIdx, 0, moved);
+    setDetail({ ...detail, games });
+  }
+
+  function endDrag() {
+    dragId.current = null;
+    setDraggingId(null);
+    if (!detail) return;
+    apiFetch(`/lists/${list.id}/order`, {
+      method: 'PATCH',
+      body: JSON.stringify({ gameIds: detail.games.map((g) => g.id) }),
+    }).catch(() => loadDetail());
+  }
+
+  // Après chaque déplacement, Flip glisse chaque jaquette de son ancienne position
+  // vers la nouvelle. Pas d'`absolute` : sinon le conteneur s'effondre le temps de
+  // l'anim → clignotement de tout le bloc.
+  useLayoutEffect(() => {
+    if (!flipState.current) return;
+    Flip.from(flipState.current, { duration: 0.28, ease: 'power2.out' });
+    flipState.current = null;
+  }, [detail?.games]);
 
   async function save() {
     setBusy(true);
@@ -289,6 +481,9 @@ function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => vo
         method: 'PATCH',
         body: JSON.stringify({ name: name.trim(), isPublic }),
       });
+      for (const gameId of removals) {
+        await apiFetch(`/lists/${list.id}/items/${gameId}`, { method: 'DELETE' });
+      }
       onDone();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t('lists.error'));
@@ -316,25 +511,185 @@ function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => vo
         className="field px-3 py-2 text-sm"
       />
       <VisibilityToggle isPublic={isPublic} onChange={setIsPublic} />
+
+      {detail && detail.games.length > 0 && (
+        <div ref={gamesWrapRef} className="flex flex-col gap-2">
+          <div className="flex justify-end">
+            <ViewToggle compact={compact} onChange={setCompactOverride} />
+          </div>
+
+          {compact ? (
+            // Compact : grille de jaquettes multi-lignes ; retrait/annuler en
+            // surimpression (jaquette grisée si marquée).
+            <div className="flex flex-wrap gap-2 rounded-lg border border-zinc-200 p-2 dark:border-zinc-800">
+              {detail.games.map((g) => {
+                const marked = removals.has(g.id);
+                return (
+                  <div
+                    key={g.id}
+                    data-flip
+                    draggable
+                    onDragStart={() => {
+                      dragId.current = g.id;
+                      setDraggingId(g.id);
+                    }}
+                    onDragEnter={() => moveOver(g.id)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnd={endDrag}
+                    className={`relative cursor-move ${draggingId === g.id ? 'opacity-40' : ''}`}
+                  >
+                    {g.coverUrl ? (
+                      <img
+                        src={g.coverUrl}
+                        alt={g.title}
+                        className={`h-24 w-16 rounded object-cover ring-1 ring-black/10 transition ${
+                          marked ? 'opacity-40' : ''
+                        }`}
+                      />
+                    ) : (
+                      <span
+                        className={`flex h-24 w-16 items-center justify-center rounded bg-zinc-200 p-1 text-center text-[9px] text-zinc-500 dark:bg-zinc-800 ${
+                          marked ? 'opacity-40' : ''
+                        }`}
+                      >
+                        {g.title}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => toggleRemoval(g.id)}
+                      aria-label={
+                        marked ? t('lists.undoRemove') : t('lists.removeGame', { title: g.title })
+                      }
+                      title={
+                        marked ? t('lists.undoRemove') : t('lists.removeGame', { title: g.title })
+                      }
+                      className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-950/70 text-white transition hover:bg-zinc-950"
+                    >
+                      {marked ? (
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-3.5 w-3.5 fill-none stroke-current"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 7v6h6" />
+                          <path d="M3 13a9 9 0 1 0 3-7.7L3 8" />
+                        </svg>
+                      ) : (
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-3.5 w-3.5 fill-none stroke-current"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6" />
+                          <path d="M10 11v6M14 11v6" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <ul className="flex flex-col divide-y divide-zinc-200 overflow-hidden rounded-lg border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+              {detail.games.map((g) => {
+                const marked = removals.has(g.id);
+                return (
+                  <li
+                    key={g.id}
+                    data-flip
+                    draggable
+                    onDragStart={() => {
+                      dragId.current = g.id;
+                      setDraggingId(g.id);
+                    }}
+                    onDragEnter={() => moveOver(g.id)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnd={endDrag}
+                    className={`flex items-center gap-2 py-2 pl-1.5 pr-1.5 transition ${
+                      marked || draggingId === g.id ? 'opacity-50' : ''
+                    }`}
+                  >
+                    <span
+                      className="shrink-0 cursor-move text-zinc-300 dark:text-zinc-600"
+                      title={t('lists.dragToReorder')}
+                      aria-hidden
+                    >
+                      {/* Poignée (grip) */}
+                      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                        <circle cx="9" cy="6" r="1.4" />
+                        <circle cx="15" cy="6" r="1.4" />
+                        <circle cx="9" cy="12" r="1.4" />
+                        <circle cx="15" cy="12" r="1.4" />
+                        <circle cx="9" cy="18" r="1.4" />
+                        <circle cx="15" cy="18" r="1.4" />
+                      </svg>
+                    </span>
+                    {g.coverUrl ? (
+                      <img src={g.coverUrl} alt="" className="h-10 w-7 shrink-0 rounded object-cover" />
+                    ) : (
+                      <span className="h-10 w-7 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
+                    )}
+                    <span
+                      className={`min-w-0 flex-1 truncate text-sm ${marked ? 'line-through' : ''}`}
+                    >
+                      {g.title}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => toggleRemoval(g.id)}
+                      aria-label={
+                        marked ? t('lists.undoRemove') : t('lists.removeGame', { title: g.title })
+                      }
+                      title={
+                        marked ? t('lists.undoRemove') : t('lists.removeGame', { title: g.title })
+                      }
+                      className={`shrink-0 rounded-full transition ${
+                        marked
+                          ? 'px-2.5 py-1 text-xs font-medium text-accent hover:bg-accent/10'
+                          : 'flex h-8 w-8 items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-red-500 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      {marked ? (
+                        t('lists.cancel')
+                      ) : (
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-4 w-4 fill-none stroke-current"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6" />
+                          <path d="M10 11v6M14 11v6" />
+                        </svg>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      )}
+
       {error && <p className="text-xs text-red-400">{error}</p>}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={save}
-            disabled={busy || !name.trim()}
-            className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
-          >
-            {t('lists.save')}
-          </button>
-          <button
-            type="button"
-            onClick={onDone}
-            className="rounded-full px-3 py-1.5 text-sm text-zinc-500 transition hover:text-zinc-800 dark:hover:text-zinc-200"
-          >
-            {t('lists.cancel')}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={save}
+          disabled={busy || !name.trim()}
+          className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+        >
+          {t('lists.save')}
+        </button>
         <button
           type="button"
           onClick={remove}
@@ -348,19 +703,15 @@ function EditListRow({ list, onDone }: { list: GameListSummary; onDone: () => vo
   );
 }
 
-// Jeux d'une liste, chargés à la demande (repli). Le propriétaire peut retirer.
-function ListGames({
-  listId,
-  isSelf,
-  onChanged,
-}: {
-  listId: number;
-  isSelf: boolean;
-  onChanged: () => void;
-}) {
+// Jeux d'une liste en LECTURE (repli au clic) : jaquette + titre + note/extrait
+// d'avis. Pour le propriétaire (isSelf), un champ d'ajout de jeux est dispo
+// d'office ici (pas besoin de passer par "modifier"). Les retraits sont dans EditList.
+function ListGames({ listId, isSelf }: { listId: number; isSelf: boolean }) {
   const { t } = useTranslation();
   const [detail, setDetail] = useState<GameListDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // null = auto (compact au-delà de 6) ; sinon choix manuel via le switch.
+  const [compactOverride, setCompactOverride] = useState<boolean | null>(null);
 
   const load = useCallback(() => {
     apiFetch<GameListDetail>(`/lists/${listId}`)
@@ -371,14 +722,6 @@ function ListGames({
   useEffect(() => {
     load();
   }, [load]);
-
-  async function removeGame(gameId: number) {
-    const updated = await apiFetch<GameListDetail>(`/lists/${listId}/items/${gameId}`, {
-      method: 'DELETE',
-    });
-    setDetail(updated);
-    onChanged(); // rafraîchit l'aperçu (compteur + jaquettes) de la carte
-  }
 
   if (error)
     return (
@@ -392,42 +735,155 @@ function ListGames({
         {t('lists.loading')}
       </p>
     );
-  if (detail.games.length === 0)
-    return (
-      <p className="border-t border-zinc-200 p-3 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-        {t('lists.listEmpty')}
-      </p>
-    );
+  // Compact = grille de jaquettes multi-lignes (avec badge note) ; détaillé =
+  // lignes avec l'extrait d'avis. Défaut : compact au-delà de 6, sinon détaillé.
+  const compact = compactOverride ?? detail.games.length > 6;
 
   return (
-    <div className="grid grid-cols-4 gap-3 border-t border-zinc-200 p-3 dark:border-zinc-800 sm:grid-cols-5">
-      {detail.games.map((g) => (
-        <div key={g.id} className="group relative">
-          <Link to={`/game/${g.id}`}>
-            {g.coverUrl ? (
-              <img
-                src={g.coverUrl}
-                alt={g.title}
-                className="aspect-[3/4] w-full rounded object-cover transition group-hover:opacity-80"
-              />
-            ) : (
-              <span className="flex aspect-[3/4] items-center justify-center rounded bg-zinc-200 p-1 text-center text-[10px] text-zinc-500 dark:bg-zinc-800">
-                {g.title}
-              </span>
-            )}
-          </Link>
-          {isSelf && (
-            <button
-              type="button"
-              onClick={() => removeGame(g.id)}
-              aria-label={t('lists.removeGame', { title: g.title })}
-              className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-950/70 text-xs text-white opacity-0 transition group-hover:opacity-100 hover:bg-red-500"
-            >
-              ×
-            </button>
-          )}
+    <div className="border-t border-zinc-200 dark:border-zinc-800">
+      {isSelf && (
+        <div className="p-3 pb-0">
+          <AddGamesToList
+            listId={listId}
+            existingIds={new Set(detail.games.map((g) => g.id))}
+            onAdded={load}
+          />
         </div>
-      ))}
+      )}
+
+      {detail.games.length === 0 ? (
+        <p className="p-3 text-xs text-zinc-500 dark:text-zinc-400">{t('lists.listEmpty')}</p>
+      ) : (
+        <>
+          <div className="flex justify-end px-3 pt-2">
+            <ViewToggle compact={compact} onChange={setCompactOverride} />
+          </div>
+
+          {compact ? (
+        <div className="flex flex-wrap gap-2 p-3 pt-2">
+          {detail.games.map((g) => (
+            <Link key={g.id} to={`/game/${g.id}`} title={g.title} className="relative block">
+              {g.coverUrl ? (
+                <img
+                  src={g.coverUrl}
+                  alt={g.title}
+                  className="h-24 w-16 rounded object-cover ring-1 ring-black/10 transition hover:opacity-80"
+                />
+              ) : (
+                <span className="flex h-24 w-16 items-center justify-center rounded bg-zinc-200 p-1 text-center text-[9px] text-zinc-500 dark:bg-zinc-800">
+                  {g.title}
+                </span>
+              )}
+              {g.review && (
+                <span className="absolute bottom-1 left-1 flex items-center gap-0.5 rounded bg-zinc-950/80 px-1 py-0.5 text-[10px] font-semibold text-amber-400">
+                  <StarIcon className="h-2.5 w-2.5" />
+                  {g.review.rating}
+                </span>
+              )}
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <ul className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+          {detail.games.map((g) => (
+            <li key={g.id} className="flex gap-3 p-3">
+              <Link to={`/game/${g.id}`} className="shrink-0">
+                {g.coverUrl ? (
+                  <img
+                    src={g.coverUrl}
+                    alt={g.title}
+                    className="h-16 w-11 rounded object-cover ring-1 ring-black/10 transition hover:opacity-80"
+                  />
+                ) : (
+                  <span className="flex h-16 w-11 items-center justify-center rounded bg-zinc-200 p-1 text-center text-[9px] text-zinc-500 dark:bg-zinc-800">
+                    {g.title}
+                  </span>
+                )}
+              </Link>
+
+              <div className="min-w-0 flex-1">
+                <Link
+                  to={`/game/${g.id}`}
+                  className="block truncate text-sm font-medium hover:text-accent"
+                >
+                  {g.title}
+                </Link>
+
+                {/* Avis du propriétaire : note + extrait, cliquable vers l'avis */}
+                {g.review ? (
+                  <Link to={`/game/${g.id}#review-${g.review.id}`} className="mt-1 block">
+                    <Stars rating={g.review.rating} className="text-amber-500" />
+                    <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500 dark:text-zinc-400">
+                      <span className="font-medium text-zinc-600 dark:text-zinc-300">
+                        « {g.review.title} »
+                      </span>{' '}
+                      {g.review.text}
+                    </p>
+                  </Link>
+                ) : (
+                  <p className="mt-1 text-xs italic text-zinc-400 dark:text-zinc-500">
+                    {t('lists.noReview')}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// Bascule vue compacte (grille de jaquettes) / détaillée (lignes avec avis).
+function ViewToggle({ compact, onChange }: { compact: boolean; onChange: (c: boolean) => void }) {
+  const { t } = useTranslation();
+  const cls = (active: boolean) =>
+    `rounded p-1 transition ${active ? 'bg-accent/15 text-accent' : 'text-zinc-400 hover:text-accent'}`;
+  return (
+    <div className="flex gap-1">
+      <button
+        type="button"
+        onClick={() => onChange(false)}
+        aria-label={t('lists.viewDetailed')}
+        title={t('lists.viewDetailed')}
+        aria-pressed={!compact}
+        className={cls(!compact)}
+      >
+        {/* Lignes (détaillé) */}
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4 w-4 fill-none stroke-current"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange(true)}
+        aria-label={t('lists.viewCompact')}
+        title={t('lists.viewCompact')}
+        aria-pressed={compact}
+        className={cls(compact)}
+      >
+        {/* Grille (compact) */}
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4 w-4 fill-none stroke-current"
+          strokeWidth="1.7"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+      </button>
     </div>
   );
 }

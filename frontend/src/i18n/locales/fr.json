@@ -462,7 +462,17 @@
     "menuEmpty": "Aucune liste — crée-en une ci-dessous.",
     "privateShort": "privée",
     "quickPlaceholder": "Nouvelle liste + ce jeu",
-    "createAria": "Créer la liste"
+    "createAria": "Créer la liste",
+    "validate": "Valider",
+    "gameReviews": "Avis de {{title}}",
+    "noReview": "Pas d'avis",
+    "undoRemove": "Annuler le retrait",
+    "viewCompact": "Compact",
+    "viewDetailed": "Détaillé",
+    "addGamePlaceholder": "Ajouter un jeu…",
+    "alreadyIn": "Déjà ajouté",
+    "limitReached": "Liste pleine — {{max}} max",
+    "dragToReorder": "Glisser pour réordonner"
   },
   "catalog": {
     "title": "Catalogue",

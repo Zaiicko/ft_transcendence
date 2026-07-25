@@ -75,7 +75,14 @@ export interface GameListDetail {
   name: string;
   isPublic: boolean;
   owner: { id: number; username: string; avatarUrl: string | null };
-  games: { id: number; title: string; coverUrl: string | null; releaseDate: string | null }[];
+  games: {
+    id: number;
+    title: string;
+    coverUrl: string | null;
+    releaseDate: string | null;
+    // Avis du propriétaire de la liste sur ce jeu (note + extrait), si noté
+    review: { id: number; rating: number; title: string; text: string } | null;
+  }[];
 }
 
 // ---- Notifications ----

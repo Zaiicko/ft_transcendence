@@ -227,7 +227,22 @@
     "avatarReset": "Sıfırla",
     "avatarFrameHint": "Taşımak için sürükle, yakınlaştırmak için kaydırıcı",
     "avatarZoom": "Yakınlaştırma",
-    "chooseImage": "Bir görsel seç"
+    "chooseImage": "Bir görsel seç",
+    "xbox": {
+      "title": "Xbox'ı Bağla",
+      "intro": "Xbox gamertag'inizi girmeniz yeterlidir — biz de herkese açık profilinizi buluruz. Şifre veya jeton gerekmez.",
+      "idLabel": "Xbox oyun kullanıcı adın",
+      "publicHint": "Profilinizi içe aktarabilmemiz için Xbox profilinizin herkese açık olması (oyun geçmişi ve başarıların görünür olması) gerekir.",
+      "connect": "Bağlan",
+      "connecting": "Bağlanıyor…",
+      "connectedAs": "{{gamertag}} olarak bağlandı",
+      "notFound": "Bu gamertag için herkese açık bir Xbox hesabı bulunamadı. Yazımını kontrol et ve profilinin herkese açık olduğundan emin ol.",
+      "alreadyLinked": "Bu Xbox hesabı halihazırda başka bir profile bağlı.",
+      "invalidId": "Bu, geçerli bir Xbox gamertag'ına benzemiyor.",
+      "notConfigured": "Xbox içe aktarma özelliği sunucuda henüz kurulmamıştır. Lütfen daha sonra tekrar deneyin.",
+      "genericError": "Bağlantı kurulamadı. Lütfen tekrar deneyin.",
+      "viewLibrary": "Xbox kütüphanemi görüntüle"
+    }
   },
   "friends": {
     "title": "Arkadaşlar",
@@ -319,7 +334,10 @@
     "timeMinutes": "{{count}} dk önce",
     "timeHours": "{{count}} sa önce",
     "timeYesterday": "dün",
-    "timeDays": "{{count}} g önce"
+    "timeDays": "{{count}} g önce",
+    "tabCompleted": "Tamamlananlar",
+    "completed": "<a>{{user}}</a> tamamlandı <s>{{game}}</s> %100",
+    "completedBadge": "%100 tamamlandı"
   },
   "leaderboard": {
     "title": "Sıralama",
@@ -444,7 +462,17 @@
     "menuEmpty": "Liste yok — aşağıdan bir tane oluştur.",
     "privateShort": "özel",
     "quickPlaceholder": "Yeni liste + bu oyun",
-    "createAria": "Liste oluştur"
+    "createAria": "Liste oluştur",
+    "validate": "Onayla",
+    "gameReviews": "{{title}} yorumları",
+    "noReview": "Değerlendirme yok",
+    "undoRemove": "Geri al",
+    "viewCompact": "Kompakt",
+    "viewDetailed": "Ayrıntılı",
+    "addGamePlaceholder": "Oyun ekle…",
+    "alreadyIn": "Eklendi",
+    "limitReached": "Liste dolu — en fazla {{max}}",
+    "dragToReorder": "Sıralamak için sürükle"
   },
   "catalog": {
     "title": "Katalog",
@@ -828,7 +856,10 @@
     "reviewWritten": "İnceleme yazıldı",
     "writeReview": "İnceleme yaz",
     "viewReviewOf": "{{title}} incelemene bak",
-    "writeReviewOf": "{{title}} için inceleme yaz"
+    "writeReviewOf": "{{title}} için inceleme yaz",
+    "refresh": "Yenile",
+    "syncing": "Canlandırıcı…",
+    "syncedAt": "Son güncelleme tarihi{{time}}"
   },
   "library": {
     "title": "Kütüphanelerim",
@@ -847,6 +878,78 @@
       "title": "Bir şeyler ters gitti",
       "body": "Beklenmeyen bir hata oluştu. Sayfayı yeniden yüklemeyi deneyin.",
       "retry": "Yeniden yükle"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Xbox hesabınızı bağlayarak oyunlarınızı ve başarılarınızı içe aktarın.",
+    "linkCta": "Ayarlar'a git",
+    "loadError": "Xbox verilerinizi yükleyemedik.",
+    "yourGames": "Oyunlarınız",
+    "gamesPrivate": "Xbox oyun geçmişiniz gizlidir.",
+    "gamerscore": "Oyun Puanı",
+    "gamesPlayed": "Oynanan maçlar",
+    "perfectGames": "%100 tamamlandı",
+    "refresh": "Yenile",
+    "syncing": "Canlandırıcı…",
+    "syncedAt": "Son güncelleme tarihi{{time}}",
+    "played": "{{totalPlayed}} oynanmış oyunlar · kataloğumuzda {{matched}} eşleşmesi bulundu",
+    "playedUnmatched": "{{totalPlayed}} oynanmış oyunlar · {{matched}} eşleşenler · {{unmatched}} kataloğumuzda yok",
+    "noMatchedTitle": "Eşleşen oyun yok",
+    "noMatchedDesc": "Xbox oyunlarınızın hiçbiri henüz kataloğumuzda yer almıyor.",
+    "achievementProgress": "{{earned}} başarılar · {{progress}} %",
+    "statusPlaying": "Oynama",
+    "statusBacklog": "Birikmiş işler",
+    "reviewWritten": "Yazılan yorum",
+    "writeReview": "Bir yorum yazın",
+    "viewReviewOf": "{{title}} hakkındaki yorumunuzu görüntüleyin",
+    "writeReviewOf": "\"{{title}}\" hakkında bir yorum yazın"
+  },
+  "onboarding": {
+    "welcome": "Hoş geldiniz!",
+    "subtitle": "Birkaç adımda profilinizi oluşturalım.",
+    "skip": "Şimdilik atla",
+    "next": "Devam et",
+    "back": "Geri",
+    "finish": "Bitir",
+    "genericError": "Bir hata oluştu. Lütfen tekrar deneyin.",
+    "username": {
+      "title": "Kullanıcı adınızı seçin",
+      "subtitle": "Kayıt olduğunuz hesaptan bilgileri önceden doldurduk — isterseniz değiştirebilirsiniz.",
+      "hint": "3–24 karakter: Yalnızca harfler, rakamlar ve alt çizgiler."
+    },
+    "avatar": {
+      "title": "Profil resmi ekle",
+      "subtitle": "Hesabınızdaki fotoğrafı aldık. Başka bir fotoğraf yükleyin, ardından yakınlaştırıp sürükleyerek kadrajlayın.",
+      "skip": "Bu adımı atla"
+    },
+    "services": {
+      "title": "Oyun hesaplarınızı birbirine bağlayın",
+      "subtitle": "Platformlarınızı bağlayarak oyunlarınızı ve istatistiklerinizi içe aktarın.",
+      "laterHint": "Acele etmeyin — hesap ayarlarınızda daha sonra da hesaplarınızı birbirine bağlayabilirsiniz.",
+      "connected": "Bağlı",
+      "connect": "Bağlan",
+      "publicNotice": "Steam, PlayStation ve Xbox profilleriniz herkese açık olarak ayarlanmış olmalıdır — aksi takdirde oyunlarınızı, arkadaşlarınızı ve/veya başarılarınızı içe aktaramayız.",
+      "steam": {
+        "perks": [
+          "Oynadığınız oyun kütüphanenizi siteye aktarın",
+          "Başarılar ve %100 tamamlanmış oyunlar",
+          "Burada bulunan Steam arkadaşlarını bul"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "PlayStation oyun koleksiyonunuzu siteye aktarın",
+          "Kupa ilerlemesi ve her oyun için %100 tamamlama oranı",
+          "Burada bulunan PlayStation arkadaşlarını bul"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Xbox oyun koleksiyonunuzu siteye aktarın",
+          "Oyun Puanı, başarılar ve %100 tamamlanmış oyunlar"
+        ]
+      }
     }
   }
 }

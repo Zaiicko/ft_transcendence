@@ -227,7 +227,22 @@
     "avatarReset": "リセット",
     "avatarFrameHint": "ドラッグで移動、スライダーでズーム",
     "avatarZoom": "ズーム",
-    "chooseImage": "画像を選択"
+    "chooseImage": "画像を選択",
+    "xbox": {
+      "title": "Xboxを接続する",
+      "intro": "Xboxのゲーマータグを入力するだけで、公開プロフィールを検索します。パスワードやトークンは必要ありません。",
+      "idLabel": "あなたのXboxゲーマータグ",
+      "publicHint": "Xboxプロファイルをインポートするには、そのプロファイルが「公開」設定（ゲーム履歴と実績が表示される状態）になっている必要があります。",
+      "connect": "接続",
+      "connecting": "接続中…",
+      "connectedAs": "{{gamertag}} として接続中",
+      "notFound": "そのゲーマータグに対応する公開Xboxアカウントが見つかりませんでした。スペルを確認し、プロフィールが公開設定になっているかご確認ください。",
+      "alreadyLinked": "このXboxアカウントは、すでに別のプロフィールに紐付けられています。",
+      "invalidId": "それは有効なXboxのゲーマータグには見えません。",
+      "notConfigured": "Xboxのインポート機能は、サーバー上でまだ設定されていません。後ほどもう一度お試しください。",
+      "genericError": "接続に失敗しました。もう一度お試しください。",
+      "viewLibrary": "Xboxライブラリを表示する"
+    }
   },
   "friends": {
     "title": "フレンド",
@@ -319,7 +334,10 @@
     "timeMinutes": "{{count}} 分前",
     "timeHours": "{{count}} 時間前",
     "timeYesterday": "昨日",
-    "timeDays": "{{count}} 日前"
+    "timeDays": "{{count}} 日前",
+    "tabCompleted": "完了件数",
+    "completed": "<a>{{user}}</a> 完了 <s>{{game}}</s> 100%",
+    "completedBadge": "100%完了"
   },
   "leaderboard": {
     "title": "ランキング",
@@ -444,7 +462,17 @@
     "menuEmpty": "リストがありません — 下で作成しましょう。",
     "privateShort": "非公開",
     "quickPlaceholder": "新しいリスト + このゲーム",
-    "createAria": "リストを作成"
+    "createAria": "リストを作成",
+    "validate": "確定",
+    "gameReviews": "{{title}} のレビュー",
+    "noReview": "レビューなし",
+    "undoRemove": "取り消し",
+    "viewCompact": "コンパクト",
+    "viewDetailed": "詳細",
+    "addGamePlaceholder": "ゲームを追加…",
+    "alreadyIn": "追加済み",
+    "limitReached": "リスト満杯 — 最大 {{max}}",
+    "dragToReorder": "ドラッグして並べ替え"
   },
   "catalog": {
     "title": "カタログ",
@@ -828,7 +856,10 @@
     "reviewWritten": "レビュー済み",
     "writeReview": "レビューを書く",
     "viewReviewOf": "{{title}} のあなたのレビューを見る",
-    "writeReviewOf": "{{title}} のレビューを書く"
+    "writeReviewOf": "{{title}} のレビューを書く",
+    "refresh": "更新",
+    "syncing": "爽やか……",
+    "syncedAt": "最終更新日：{{time}}"
   },
   "library": {
     "title": "マイライブラリ",
@@ -847,6 +878,78 @@
       "title": "問題が発生しました",
       "body": "予期しないエラーが発生しました。ページを再読み込みしてください。",
       "retry": "再読み込み"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Xboxアカウントを連携して、ゲームや実績をインポートしましょう。",
+    "linkCta": "設定へ移動",
+    "loadError": "Xboxのデータを読み込めませんでした。",
+    "yourGames": "あなたのゲーム",
+    "gamesPrivate": "Xboxのゲーム履歴は非公開です。",
+    "gamerscore": "ゲーマースコア",
+    "gamesPlayed": "試合数",
+    "perfectGames": "100%完了",
+    "refresh": "更新",
+    "syncing": "爽やか……",
+    "syncedAt": "最終更新日：{{time}}",
+    "played": "{{totalPlayed}} 試合数 · 当サイトのカタログで{{matched}}と一致する結果",
+    "playedUnmatched": "{{totalPlayed}} プレイしたゲーム · {{matched}} 一致したゲーム · {{unmatched}} 当サイトのカタログには掲載されていません",
+    "noMatchedTitle": "一致するゲームはありません",
+    "noMatchedDesc": "お客様のXboxゲームは、現時点では当社のカタログに掲載されていません。",
+    "achievementProgress": "{{earned}} 実績 · {{progress}} %",
+    "statusPlaying": "再生中",
+    "statusBacklog": "未処理案件",
+    "reviewWritten": "レビューが投稿されました",
+    "writeReview": "レビューを書く",
+    "viewReviewOf": "『{{title}}』のレビューを見る",
+    "writeReviewOf": "『{{title}}』のレビューを書いてください"
+  },
+  "onboarding": {
+    "welcome": "ようこそ！",
+    "subtitle": "いくつかの手順で、あなたのプロフィールを設定しましょう。",
+    "skip": "ひとまずスキップする",
+    "next": "続きを読む",
+    "back": "戻る",
+    "finish": "終了",
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "username": {
+      "title": "ユーザー名を選んでください",
+      "subtitle": "ご登録いただいたアカウントから事前に情報を入力しておきました。必要に応じて変更してください。",
+      "hint": "3～24文字：英字、数字、アンダースコアのみ。"
+    },
+    "avatar": {
+      "title": "プロフィール写真を追加する",
+      "subtitle": "お客様のアカウントからその画像を取得しました。別の画像をアップロードし、ズームしてドラッグして構図を調整してください。",
+      "skip": "この手順をスキップする"
+    },
+    "services": {
+      "title": "ゲームアカウントを連携する",
+      "subtitle": "各プラットフォームを連携させて、ゲームや統計データをインポートしましょう。",
+      "laterHint": "急ぐ必要はありません。アカウント設定から、後でアカウントを連携することも可能です。",
+      "connected": "接続済み",
+      "connect": "接続",
+      "publicNotice": "Steam、PlayStation、Xboxのプロフィールは「公開」に設定されている必要があります。そうしないと、ゲーム、フレンド、および実績をインポートできません。",
+      "steam": {
+        "perks": [
+          "プレイ済みのゲームライブラリをこのサイトにインポートする",
+          "実績と100％クリアしたゲーム",
+          "すでに登録されているSteamフレンドを探す"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "PlayStationのゲームライブラリをこのサイトにインポートする",
+          "トロフィーの達成状況と、各タイトルの100％クリア状況",
+          "すでに登録されているPlayStationのフレンドを探す"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Xboxのゲームライブラリをこのサイトにインポートする",
+          "ゲーマースコア、実績、および100％クリアしたゲーム"
+        ]
+      }
     }
   }
 }
