@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { CompaniesModule } from './companies/companies.module';
+import { CompletionsModule } from './completions/completions.module';
 import { FeedModule } from './feed/feed.module';
 import { FriendsModule } from './friends/friends.module';
 import { GamesModule } from './games/games.module';
@@ -22,6 +24,8 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Planificateur (cron) : rafraîchissement de fond des complétions 100 %.
+    ScheduleModule.forRoot(),
     // Baseline rate limit for every HTTP route (WebSocket traffic is
     // unaffected — gated separately by JWT on the socket handshake).
     // Sensitive auth routes tighten this further via @Throttle(...).
@@ -41,6 +45,7 @@ import { UsersModule } from './users/users.module';
     SteamModule,
     PsnModule,
     XboxModule,
+    CompletionsModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
