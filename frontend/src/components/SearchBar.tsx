@@ -114,11 +114,11 @@ export default function SearchBar() {
     if (data[0]) navigate(gameHref(data[0].id));
   }
 
-  const disc = useRef<HTMLImageElement>(null);
+  const disc = useRef<SVGSVGElement>(null);
 
   // Effet vinyle : un tour sur lui-même à chaque clic, dans un sens aléatoire
   // (GSAP cumule la rotation avec '+=' / '-=' pour repartir de l'angle courant).
-  function spinAndPick(img: HTMLImageElement | null) {
+  function spinAndPick(img: SVGSVGElement | null) {
     if (img) {
       const dir = Math.random() < 0.5 ? '+=360' : '-=360';
       gsap.to(img, { rotation: dir, duration: 0.7, ease: 'power2.out' });
@@ -151,7 +151,36 @@ export default function SearchBar() {
           aria-label={t('catalog.randomGame')}
           className={`${field} flex items-center px-3 transition hover:border-accent`}
         >
-          <img ref={disc} src="/disc.png" alt="" className="h-5 w-5 shrink-0" />
+          {/* Boîte mystère filaire (style TiMN, trait 1.6) : cube isométrique
+              avec un « ? » sur chacune des trois faces visibles. La couleur
+              suit currentColor (héritée du bouton), l'animation de rotation
+              GSAP s'applique au <svg> comme avant sur l'image. */}
+          <svg
+            ref={disc}
+            viewBox="0 0 24 24"
+            className="h-6 w-6 shrink-0 fill-none stroke-current"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <path d="M3.3 7 12 12l8.7-5" />
+            <path d="M12 22V12" />
+            <g
+              className="fill-current"
+              stroke="none"
+              fontSize="7"
+              fontWeight="700"
+              textAnchor="middle"
+              dominantBaseline="central"
+            >
+              {/* Un « ? » centré sur chacune des trois faces (haut, gauche, droite) */}
+              <text x="12" y="7">?</text>
+              <text x="7.6" y="14.7">?</text>
+              <text x="16.4" y="14.7">?</text>
+            </g>
+          </svg>
         </button>
       </div>
 
