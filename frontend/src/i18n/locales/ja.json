@@ -35,7 +35,8 @@
     "darkMode": "ダークモード",
     "logout": "ログアウト",
     "closeMenu": "メニューを閉じる",
-    "notificationPrefs": "通知設定"
+    "notificationPrefs": "通知設定",
+    "navigation": "ナビゲーションメニュー"
   },
   "footer": {
     "tagline": "ビデオゲーム版 Letterboxd ・ 42 プロジェクト",
@@ -481,7 +482,11 @@
     "addGamePlaceholder": "ゲームを追加…",
     "alreadyIn": "追加済み",
     "limitReached": "リスト満杯 — 最大 {{max}}",
-    "dragToReorder": "ドラッグして並べ替え"
+    "dragToReorder": "ドラッグして並べ替え",
+    "noCover": "カバーなし",
+    "addCover": "カバーを追加",
+    "changeCover": "カバーを変更",
+    "removeCover": "カバーを削除"
   },
   "catalog": {
     "title": "カタログ",
@@ -960,5 +965,8 @@
         ]
       }
     }
+  },
+  "a11y": {
+    "skipToContent": "メインコンテンツにスキップ"
   }
 }

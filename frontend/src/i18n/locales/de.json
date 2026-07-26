@@ -35,7 +35,8 @@
     "darkMode": "Dunkler Modus",
     "logout": "Abmelden",
     "closeMenu": "Menü schließen",
-    "notificationPrefs": "Benachrichtigungseinstellungen"
+    "notificationPrefs": "Benachrichtigungseinstellungen",
+    "navigation": "Navigationsmenü"
   },
   "footer": {
     "tagline": "Das Letterboxd der Videospiele · 42-Projekt",
@@ -481,7 +482,11 @@
     "addGamePlaceholder": "Spiel hinzufügen…",
     "alreadyIn": "Hinzugefügt",
     "limitReached": "Liste voll — max. {{max}}",
-    "dragToReorder": "Zum Umsortieren ziehen"
+    "dragToReorder": "Zum Umsortieren ziehen",
+    "noCover": "Kein Titelbild",
+    "addCover": "Titelbild hinzufügen",
+    "changeCover": "Titelbild ändern",
+    "removeCover": "Titelbild entfernen"
   },
   "catalog": {
     "title": "Katalog",
@@ -960,5 +965,8 @@
         ]
       }
     }
+  },
+  "a11y": {
+    "skipToContent": "Zum Hauptinhalt springen"
   }
 }

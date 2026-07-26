@@ -57,6 +57,7 @@ export default function ResetPassword() {
           required
           minLength={8}
           placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
+          aria-label={t('auth.resetPassword.newPasswordPlaceholder')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="field px-4 py-1.5"

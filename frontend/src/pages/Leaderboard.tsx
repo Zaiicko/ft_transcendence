@@ -43,9 +43,18 @@ export default function Leaderboard() {
   const [data, setData] = useState<LeaderboardResult | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Tout changement de filtre réaffiche le chargement. Ajustement d'état AU
+  // RENDU (pattern React officiel) plutôt qu'un setLoading synchrone dans
+  // l'effet → évite la règle react-hooks/set-state-in-effect.
+  const queryKey = `${metric}-${scope}-${window}`;
+  const [prevQueryKey, setPrevQueryKey] = useState(queryKey);
+  if (queryKey !== prevQueryKey) {
+    setPrevQueryKey(queryKey);
+    setLoading(true);
+  }
+
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     apiFetch<LeaderboardResult>(
       `/leaderboard?metric=${metric}&scope=${scope}&window=${window}`,
     )

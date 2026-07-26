@@ -5,6 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { existsSync } from 'fs';
+import { unlink } from 'fs/promises';
+import { basename, join } from 'path';
+import { LIST_COVERS_DIR } from '../common/uploads';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddItemDto } from './dto/add-item.dto';
 import { CreateListDto } from './dto/create-list.dto';
@@ -86,6 +90,7 @@ export class ListsService {
       id: list.id,
       name: list.name,
       isPublic: list.isPublic,
+      coverUrl: list.coverUrl,
       owner: list.user,
       games: list.items.map((it) => {
         const r = reviewByGame.get(it.game.id);
@@ -132,7 +137,12 @@ export class ListsService {
 
   async remove(userId: number, id: number) {
     await this.assertOwner(userId, id);
+    const list = await this.prisma.gameList.findUnique({
+      where: { id },
+      select: { coverUrl: true },
+    });
     await this.prisma.gameList.delete({ where: { id } });
+    if (list?.coverUrl) await this.deleteCoverFile(list.coverUrl);
     return { ok: true };
   }
 
@@ -215,6 +225,7 @@ export class ListsService {
     id: number;
     name: string;
     isPublic: boolean;
+    coverUrl: string | null;
     _count: { items: number };
     items: { game: { coverUrl: string | null } }[];
   }) {
@@ -222,9 +233,77 @@ export class ListsService {
       id: list.id,
       name: list.name,
       isPublic: list.isPublic,
+      coverUrl: list.coverUrl,
       gameCount: list._count.items,
       covers: list.items.map((it) => it.game.coverUrl).filter((c): c is string => !!c),
     };
+  }
+
+  // --- Image de couverture de liste (upload, tous formats dont GIF) ---
+
+  async setCover(userId: number, listId: number, url: string) {
+    await this.assertOwner(userId, listId);
+    const prev = await this.prisma.gameList.findUnique({
+      where: { id: listId },
+      select: { coverUrl: true },
+    });
+    const list = await this.prisma.gameList.update({
+      where: { id: listId },
+      data: { coverUrl: url },
+      include: this.summaryInclude(),
+    });
+    if (prev?.coverUrl) await this.deleteCoverFile(prev.coverUrl);
+    return this.toSummary(list);
+  }
+
+  // Cadrage (zoom/centrage) encodé dans coverUrl via #af=scale,x,y. On repart
+  // toujours de la base (fragment retiré) ; défaut (1,0,0) → URL propre.
+  async setCoverFrame(
+    userId: number,
+    listId: number,
+    frame: { scale: number; x: number; y: number },
+  ) {
+    await this.assertOwner(userId, listId);
+    const current = await this.prisma.gameList.findUnique({
+      where: { id: listId },
+      select: { coverUrl: true },
+    });
+    if (!current?.coverUrl) throw new NotFoundException('No cover to frame');
+    const base = current.coverUrl.split('#')[0];
+    const framed =
+      frame.scale === 1 && frame.x === 0 && frame.y === 0
+        ? base
+        : `${base}#af=${frame.scale},${frame.x},${frame.y}`;
+    const list = await this.prisma.gameList.update({
+      where: { id: listId },
+      data: { coverUrl: framed },
+      include: this.summaryInclude(),
+    });
+    return this.toSummary(list);
+  }
+
+  async removeCover(userId: number, listId: number) {
+    await this.assertOwner(userId, listId);
+    const prev = await this.prisma.gameList.findUnique({
+      where: { id: listId },
+      select: { coverUrl: true },
+    });
+    const list = await this.prisma.gameList.update({
+      where: { id: listId },
+      data: { coverUrl: null },
+      include: this.summaryInclude(),
+    });
+    if (prev?.coverUrl) await this.deleteCoverFile(prev.coverUrl);
+    return this.toSummary(list);
+  }
+
+  // coverUrl = /api/uploads/list-covers/<file> — ne supprime que dans le dossier
+  // dédié. split('#') : ignore un éventuel fragment.
+  async deleteCoverFile(coverUrl: string): Promise<void> {
+    const filePath = join(LIST_COVERS_DIR, basename(coverUrl.split('#')[0]));
+    if (filePath.startsWith(LIST_COVERS_DIR) && existsSync(filePath)) {
+      await unlink(filePath);
+    }
   }
 
   // @@unique([userId, name]) violé → 409 avec un message clair

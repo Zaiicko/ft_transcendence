@@ -1,5 +1,6 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link, useSearchParams } from 'react-router-dom';
 import Select from '../components/Select';
 import { CoverGridSkeleton } from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
@@ -27,32 +28,84 @@ interface Page {
   limit: number;
 }
 
+// Snapshot du catalogue mémorisé le temps de la session SPA (perdu au vrai
+// reload navigateur). Permet de revenir EXACTEMENT où on était après avoir
+// ouvert une fiche jeu : filtres, jeux empilés par « charger plus », scroll.
+// La clé de validité est q : elle est reflétée dans l'URL (?q=), donc au retour
+// navigateur l'URL et le cache concordent → réhydratation.
+interface CatalogSnapshot {
+  q: string;
+  sort: SortValue;
+  genre: string | null;
+  platform: string | null;
+  company: string | null;
+  games: GameSummary[];
+  total: number;
+  page: number;
+  scrollY: number;
+}
+let catalogCache: CatalogSnapshot | null = null;
+
 export default function Catalog() {
   const { t, i18n } = useTranslation();
-  // Filtres (les noms viennent des facettes → toujours ≥ 2 caractères, OK pour
-  // la validation back). q est débouncée pour ne pas spammer la recherche.
-  const [q, setQ] = useState('');
-  const [debouncedQ, setDebouncedQ] = useState('');
-  const [sort, setSort] = useState<SortValue>('rating');
-  const [genre, setGenre] = useState<string | null>(null);
-  const [platform, setPlatform] = useState<string | null>(null);
-  const [company, setCompany] = useState<string | null>(null);
+  // useSearchParams : lecture/écriture des query params de l'URL (comme un
+  // useState synchronisé avec la barre d'adresse).
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlQ = searchParams.get('q') ?? '';
+
+  // Réhydratation : seulement si le cache existe ET porte le même q que l'URL
+  // (sinon = nouvelle recherche volontaire depuis le header → départ à neuf).
+  const restore = catalogCache && catalogCache.q === urlQ ? catalogCache : null;
+  const restoreScroll = useRef(restore ? restore.scrollY : null);
+
+  const [q, setQ] = useState(restore ? restore.q : urlQ);
+  const [debouncedQ, setDebouncedQ] = useState(restore ? restore.q : urlQ);
+  const [sort, setSort] = useState<SortValue>(restore ? restore.sort : 'rating');
+  const [genre, setGenre] = useState<string | null>(restore ? restore.genre : null);
+  const [platform, setPlatform] = useState<string | null>(restore ? restore.platform : null);
+  const [company, setCompany] = useState<string | null>(restore ? restore.company : null);
 
   const [facets, setFacets] = useState<GameFacets | null>(null);
-  const [games, setGames] = useState<GameSummary[]>([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [games, setGames] = useState<GameSummary[]>(restore ? restore.games : []);
+  const [total, setTotal] = useState(restore ? restore.total : 0);
+  const [page, setPage] = useState(restore ? restore.page : 1);
+  const [loading, setLoading] = useState(restore ? false : true);
   const [loadingMore, setLoadingMore] = useState(false);
 
   // Le back valide q avec MinLength(2) : on ne l'envoie qu'à partir de 2 lettres
   const query = debouncedQ.trim().length >= 2 ? debouncedQ.trim() : '';
 
-  // Débounce de la recherche
+  // Recherche externe (header/retour navigateur) → état local. Ajustement AU
+  // RENDU plutôt qu'un effet (évite un rendu en cascade + set-state-in-effect).
+  const [prevUrlQ, setPrevUrlQ] = useState(urlQ);
+  if (urlQ !== prevUrlQ) {
+    setPrevUrlQ(urlQ);
+    setQ(urlQ);
+    setDebouncedQ(urlQ);
+  }
+
+  // Débounce de la saisie locale
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedQ(q), 300);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setDebouncedQ(q), 300);
+    return () => clearTimeout(timer);
   }, [q]);
+
+  // Reflet de la recherche dans l'URL (replace = pas de spam d'historique) pour
+  // aligner l'URL et le cache (clé = q).
+  useEffect(() => {
+    if (debouncedQ === (searchParams.get('q') ?? '')) return;
+    const next = new URLSearchParams(searchParams);
+    if (debouncedQ) next.set('q', debouncedQ);
+    else next.delete('q');
+    setSearchParams(next, { replace: true });
+  }, [debouncedQ, searchParams, setSearchParams]);
+
+  // Restauration du scroll après réhydratation : les jeux sont déjà rendus
+  // (état initial depuis le cache) donc la hauteur est correcte. useLayoutEffect
+  // = avant la peinture, pour éviter tout saut visible.
+  useLayoutEffect(() => {
+    if (restoreScroll.current != null) window.scrollTo(0, restoreScroll.current);
+  }, []);
 
   // Facettes chargées une fois
   useEffect(() => {
@@ -73,8 +126,6 @@ export default function Catalog() {
   }, [sort, query, genre, platform, company]);
 
   // Tout changement de filtre repart de la page 1 et réaffiche le squelette.
-  // Ajustement d'état AU RENDU (pattern React officiel) plutôt qu'un effet :
-  // évite un rendu en cascade et la règle react-hooks/set-state-in-effect.
   const [prevParams, setPrevParams] = useState(params);
   if (params !== prevParams) {
     setPrevParams(params);
@@ -82,12 +133,16 @@ export default function Catalog() {
     setLoading(true);
   }
 
-  // Une requête par (filtres, page). page 1 = remplace la grille (nouveau tri /
-  // filtre), page > 1 = empile (« Charger plus »). Un compteur de requête évite
-  // qu'une réponse lente d'un filtre précédent n'écrase une plus récente. Les
-  // flags de chargement sont posés hors de l'effet (au rendu / au clic).
+  // Une requête par couple (filtres, page). page 1 = remplace la grille, page >
+  // 1 = empile (« Charger plus »). lastKey = dernier couple déjà chargé : évite
+  // (1) de re-fetch les jeux empilés restaurés au remontage, (2) le double appel
+  // du double-montage StrictMode qui, en page > 1, empilerait des doublons.
+  const lastKey = useRef(restore ? `${params}::${page}` : '');
   const reqId = useRef(0);
   useEffect(() => {
+    const key = `${params}::${page}`;
+    if (lastKey.current === key) return;
+    lastKey.current = key;
     const id = ++reqId.current;
     apiFetch<Page>(`/games?${params}&page=${page}`)
       .then((res) => {
@@ -105,6 +160,31 @@ export default function Catalog() {
         setLoadingMore(false);
       });
   }, [params, page]);
+
+  // Sauvegarde continue du snapshot (relu au remontage). scrollY est mis à jour
+  // en direct par le listener ci-dessous ; ici on rafraîchit les données.
+  useEffect(() => {
+    catalogCache = {
+      q: debouncedQ,
+      sort,
+      genre,
+      platform,
+      company,
+      games,
+      total,
+      page,
+      scrollY: catalogCache ? catalogCache.scrollY : 0,
+    };
+  }, [debouncedQ, sort, genre, platform, company, games, total, page]);
+
+  // Position de scroll mémorisée en direct (le scroll ne re-rend pas le composant)
+  useEffect(() => {
+    const onScroll = () => {
+      if (catalogCache) catalogCache.scrollY = window.scrollY;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const hasMore = games.length < total;
 
@@ -210,7 +290,7 @@ export default function Catalog() {
 
 function GameCard({ game }: { game: GameSummary }) {
   return (
-    <a href={`/game/${game.id}`} className="group">
+    <Link to={`/game/${game.id}`} className="group">
       {game.coverUrl ? (
         <img
           src={game.coverUrl}
@@ -233,7 +313,7 @@ function GameCard({ game }: { game: GameSummary }) {
           </span>
         )}
       </div>
-    </a>
+    </Link>
   );
 }
 

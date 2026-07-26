@@ -1,9 +1,15 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+// Sélecteur des éléments naturellement focusables (pour le focus initial + le
+// piège à focus). :not([disabled]) / tabindex="-1" exclus.
+const FOCUSABLE =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 // Modale générique : voile assombri + carte centrée scrollable. Se ferme au
-// clic sur le voile, sur la croix, ou avec Échap. Le contenu ne défile pas la
-// page dessous (overflow interne à la carte).
+// clic sur le voile, sur la croix, ou avec Échap. Accessibilité (WCAG 2.4.3) :
+// focus déplacé dans la modale à l'ouverture, piégé au Tab, restauré sur
+// l'élément déclencheur à la fermeture. Le contenu ne défile pas la page dessous.
 export default function Modal({
   title,
   onClose,
@@ -14,19 +20,51 @@ export default function Modal({
   children: ReactNode;
 }) {
   const { t } = useTranslation();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
 
-  // Échap ferme, et on verrouille le scroll de la page tant que la modale est
-  // ouverte (restauré au démontage).
   useEffect(() => {
+    const dialog = dialogRef.current;
+    // Élément qui avait le focus avant l'ouverture (pour le rendre à la fermeture)
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    // Focus initial : 1er élément focusable, sinon la carte elle-même (tabIndex -1)
+    const initial = dialog?.querySelector<HTMLElement>(FOCUSABLE) ?? dialog;
+    initial?.focus();
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !dialog) return;
+      // Piège à focus : Tab boucle à l'intérieur de la modale (offsetParent null
+      // = élément masqué → écarté).
+      const items = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) => el.offsetParent !== null,
+      );
+      if (!items.length) {
+        e.preventDefault();
+        return;
+      }
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
+
     document.addEventListener('keydown', onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = prev;
+      previouslyFocused?.focus?.();
     };
   }, [onClose]);
 
@@ -36,14 +74,18 @@ export default function Modal({
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-labelledby={titleId}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-xl border border-zinc-900/10 bg-white shadow-2xl dark:border-zinc-100/10 dark:bg-zinc-900"
+        className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-xl border border-zinc-900/10 bg-white shadow-2xl focus:outline-none dark:border-zinc-100/10 dark:bg-zinc-900"
       >
         <div className="flex items-center justify-between gap-3 border-b border-zinc-900/10 px-5 py-4 dark:border-zinc-100/10">
-          <h2 className="text-base font-semibold tracking-tight">{title}</h2>
+          <h2 id={titleId} className="text-base font-semibold tracking-tight">
+            {title}
+          </h2>
           <button
             type="button"
             onClick={onClose}

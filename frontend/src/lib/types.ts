@@ -64,6 +64,7 @@ export interface GameListSummary {
   id: number;
   name: string;
   isPublic: boolean;
+  coverUrl: string | null; // image de couverture perso (upload), sinon null
   gameCount: number;
   covers: string[]; // jusqu'à 5 jaquettes pour l'aperçu empilé
   contains?: boolean; // présent quand /lists/mine est appelé avec ?gameId=
@@ -74,6 +75,7 @@ export interface GameListDetail {
   id: number;
   name: string;
   isPublic: boolean;
+  coverUrl: string | null;
   owner: { id: number; username: string; avatarUrl: string | null };
   games: {
     id: number;

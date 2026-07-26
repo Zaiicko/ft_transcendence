@@ -117,6 +117,19 @@ export default function Layout() {
     }
   }, [loading, user, location.pathname, navigate]);
 
+  // Échap ferme tout menu / fenêtre ouvert (WCAG 2.1.2 — pas de piège clavier).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setMenuOpen(false);
+      setNavOpen(false);
+      setNotifPrefsOpen(false);
+      setLanguagePickerOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
   async function handleLogout() {
     await logout();
     navigate('/');
@@ -124,6 +137,14 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col text-zinc-900 dark:text-zinc-100">
+      {/* Skip link (WCAG 2.4.1) : 1er élément tabulable, masqué jusqu'au focus,
+          saute la navigation pour aller droit au contenu. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:font-medium focus:text-zinc-950"
+      >
+        {t('a11y.skipToContent')}
+      </a>
       <header className="px-4 pb-4 pt-5 sm:px-6">
         <nav className="mx-auto flex max-w-6xl items-center gap-3 sm:gap-6">
           {/* Burger : liens de nav sur petit écran (la barre inline est masquée < sm) */}
@@ -133,7 +154,7 @@ export default function Layout() {
               onClick={() => setNavOpen((o) => !o)}
               aria-haspopup="menu"
               aria-expanded={navOpen}
-              aria-label="Menu de navigation"
+              aria-label={t('menu.navigation')}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
             >
               <Icon className="h-5 w-5">{menuIcon}</Icon>
@@ -280,7 +301,7 @@ export default function Layout() {
                   {/* Full-screen catcher so any outside click closes the menu */}
                   <button
                     type="button"
-                    aria-label="Close menu"
+                    aria-label={t('menu.closeMenu')}
                     tabIndex={-1}
                     onClick={() => setMenuOpen(false)}
                     className="fixed inset-0 z-10 cursor-default"
@@ -350,7 +371,7 @@ export default function Layout() {
         </nav>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-6xl flex-1 px-6 py-8 focus:outline-none">
         <Outlet />
       </main>
 
@@ -396,7 +417,7 @@ export default function Layout() {
               </h2>
               <button
                 type="button"
-                aria-label="Fermer"
+                aria-label={t('common.close')}
                 onClick={() => setNotifPrefsOpen(false)}
                 className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-900/5 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-100/10 dark:hover:text-zinc-100"
               >
