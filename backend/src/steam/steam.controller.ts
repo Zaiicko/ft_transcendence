@@ -81,11 +81,14 @@ export class SteamController {
     // Succès : synchronisés une seule fois puis mis en cache sur l'utilisateur
     // (Steam n'a pas d'appel groupé, c'est 1 requête/jeu — trop lourd à refaire
     // à chaque affichage). On resynchronise si le cache est absent ou si
-    // ?refresh=true. `perGame` : { appId: [obtenus, total] }.
+    // ?refresh=true.
+    // perGame : { appId: [obtenus, total, lastUnlock] }. lastUnlock = unix s du
+    // dernier succès (0 si aucun) → date réelle du 100 %. (Anciennes entrées en
+    // cache sont des paires [obtenus, total] : le 3ᵉ champ retombe sur 0.)
     const cached = user.steamAchievements as
-      | { syncedAt: string; perGame: Record<string, [number, number]> }
+      | { syncedAt: string; perGame: Record<string, [number, number, number]> }
       | null;
-    let perGame: Record<string, [number, number]>;
+    let perGame: Record<string, [number, number, number]>;
     let syncedAt: string;
     if (cached?.perGame && refresh !== 'true') {
       perGame = cached.perGame;
@@ -112,18 +115,6 @@ export class SteamController {
       })
       .sort((a, b) => b.playtimeMinutes - a.playtimeMinutes);
 
-    // Dernière date de lancement Steam (rtime_last_played, unix s) → calendrier
-    // « joué ». Seulement les jeux réellement lancés.
-    await this.users.recordLastPlayed(
-      current.sub,
-      games
-        .map((g) => {
-          const rt = byAppId.get(g.steamAppId!)?.rtime_last_played ?? 0;
-          return rt > 0 ? { gameId: g.id, lastPlayed: new Date(rt * 1000) } : null;
-        })
-        .filter((x): x is { gameId: number; lastPlayed: Date } => x !== null),
-    );
-
     // Résumé global : sur TOUS les jeux synchronisés (pas seulement ceux du
     // catalogue), pour refléter la vraie progression Steam de l'utilisateur.
     const entries = Object.values(perGame);
@@ -135,10 +126,18 @@ export class SteamController {
       syncedAt,
     };
 
-    // Jeux du catalogue à 100 % (tous les succès obtenus) → événements de feed.
+    // Jeux du catalogue à 100 % (tous les succès obtenus) → événements de feed +
+    // calendrier « Terminé ». Date réelle du 100 % = dernier succès débloqué
+    // (lastUnlock, unix s) ; 0 → on laisse le défaut (now) côté insertion.
     const completed = matched
       .filter((m) => m.achievements && m.achievements.total > 0 && m.achievements.unlocked === m.achievements.total)
-      .map((m) => m.id);
+      .map((m) => {
+        const lastUnlock = m.steamAppId ? (perGame[String(m.steamAppId)]?.[2] ?? 0) : 0;
+        return {
+          gameId: m.id,
+          completedAt: lastUnlock > 0 ? new Date(lastUnlock * 1000) : undefined,
+        };
+      });
     await this.feed.syncCompletions(current.sub, 'steam', completed);
 
     return {
@@ -156,7 +155,7 @@ export class SteamController {
   private async syncAchievements(
     steamId: string,
     owned: { appid: number; playtime_forever: number }[],
-  ): Promise<Record<string, [number, number]>> {
+  ): Promise<Record<string, [number, number, number]>> {
     const SAFETY_CAP = 1000;
     const CONCURRENCY = 10;
     const played = owned
@@ -164,13 +163,13 @@ export class SteamController {
       .sort((a, b) => b.playtime_forever - a.playtime_forever)
       .slice(0, SAFETY_CAP);
 
-    const perGame: Record<string, [number, number]> = {};
+    const perGame: Record<string, [number, number, number]> = {};
     for (let i = 0; i < played.length; i += CONCURRENCY) {
       const batch = played.slice(i, i + CONCURRENCY);
       await Promise.all(
         batch.map(async (g) => {
           const a = await this.webApi.getPlayerAchievements(steamId, g.appid);
-          if (a) perGame[String(g.appid)] = [a.unlocked, a.total];
+          if (a) perGame[String(g.appid)] = [a.unlocked, a.total, a.lastUnlock];
         }),
       );
     }

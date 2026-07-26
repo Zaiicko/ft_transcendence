@@ -370,16 +370,17 @@ export class FeedService {
     }
   }
 
-  // Appelé à chaque synchro de bibliothèque d'une plateforme. `completedGameIds`
-  // = jeux du CATALOGUE actuellement à 100 % sur cette plateforme. On enregistre
-  // ceux qu'on ne connaît pas encore. La toute première synchro d'une plateforme
-  // amorce silencieusement l'existant (aucun push feed, sinon tous les vieux
-  // 100 % s'annonceraient d'un coup) ; ensuite chaque nouvelle complétion émet un
-  // événement. Best-effort : ne bloque jamais la réponse bibliothèque.
+  // Appelé à chaque synchro de bibliothèque d'une plateforme. `completed` =
+  // jeux du CATALOGUE actuellement à 100 % sur cette plateforme, avec la date
+  // réelle du 100 % quand la plateforme la fournit (sinon `completedAt` absent →
+  // défaut now). On enregistre ceux qu'on ne connaît pas encore. La toute
+  // première synchro d'une plateforme amorce silencieusement l'existant (aucun
+  // push feed, sinon tous les vieux 100 % s'annonceraient d'un coup) ; ensuite
+  // chaque nouvelle complétion émet un événement. Best-effort.
   async syncCompletions(
     userId: number,
     platform: string,
-    completedGameIds: number[],
+    completed: { gameId: number; completedAt?: Date }[],
   ): Promise<void> {
     try {
       const user = await this.prisma.user.findUnique({
@@ -392,16 +393,45 @@ export class FeedService {
 
       const existing = await this.prisma.gameCompletion.findMany({
         where: { userId, platform },
-        select: { gameId: true },
+        select: { gameId: true, completedAt: true },
       });
-      const known = new Set(existing.map((e) => e.gameId));
-      const newIds = completedGameIds.filter((id) => !known.has(id));
+      const knownAt = new Map(existing.map((e) => [e.gameId, e.completedAt]));
+      const newItems = completed.filter((c) => !knownAt.has(c.gameId));
+      const newIds = newItems.map((c) => c.gameId);
 
-      if (newIds.length > 0) {
+      if (newItems.length > 0) {
         await this.prisma.gameCompletion.createMany({
-          data: newIds.map((gameId) => ({ userId, gameId, platform })),
+          // completedAt omis → défaut Prisma (now). On ne pousse une date que si
+          // la plateforme l'a fournie.
+          data: newItems.map((c) => ({
+            userId,
+            gameId: c.gameId,
+            platform,
+            ...(c.completedAt ? { completedAt: c.completedAt } : {}),
+          })),
           skipDuplicates: true,
         });
+      }
+
+      // Backfill : les complétions déjà enregistrées avant qu'on remonte la vraie
+      // date portent un completedAt approximatif (défaut d'insertion). Dès qu'une
+      // resynchro fournit la vraie date et qu'elle tombe un autre JOUR, on corrige
+      // la ligne. Le même jour → on ne réécrit pas (évite un write inutile à
+      // chaque synchro). N'émet aucun événement feed.
+      const sameDay = (a: Date, b: Date) => a.toISOString().slice(0, 10) === b.toISOString().slice(0, 10);
+      const toFix = completed.filter(
+        (c): c is { gameId: number; completedAt: Date } =>
+          !!c.completedAt && knownAt.has(c.gameId) && !sameDay(knownAt.get(c.gameId)!, c.completedAt),
+      );
+      if (toFix.length > 0) {
+        await this.prisma.$transaction(
+          toFix.map((c) =>
+            this.prisma.gameCompletion.update({
+              where: { userId_gameId_platform: { userId, gameId: c.gameId, platform } },
+              data: { completedAt: c.completedAt },
+            }),
+          ),
+        );
       }
 
       // Première passe sur cette plateforme : on marque comme amorcée et on

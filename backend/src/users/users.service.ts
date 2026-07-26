@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FriendshipStatus, PlayStatus, Prisma } from '@prisma/client';
+import { FriendshipStatus, Prisma } from '@prisma/client';
 import { existsSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { basename, join } from 'path';
@@ -66,7 +66,6 @@ export class UsersService {
       playedCount,
       topReviews,
       recentReviews,
-      playedDated,
       completedRaw,
       friendState,
       publicLists,
@@ -99,24 +98,15 @@ export class UsersService {
             },
           },
         }),
-        // « Joué » : marquage manuel (playedAt) OU dernière date de lancement
-        // remontée par une plateforme (lastPlayedAt) — les deux alimentent le
-        // calendrier « joué ».
-        this.prisma.playedGame.findMany({
-          where: {
-            userId: user.id,
-            OR: [{ playedAt: { not: null } }, { lastPlayedAt: { not: null } }],
-          },
-          orderBy: { playedAt: 'desc' },
-          select: { playedAt: true, lastPlayedAt: true, game: gameRef },
-        }),
-        // « Terminé » : complétions 100 % (succès Steam / platine PSN…), datées
-        // par createdAt. Un même jeu peut avoir plusieurs lignes (une par
-        // plateforme) → dédupliqué par jeu plus bas (garde la plus récente).
+        // Complétions, datées par completedAt (date réelle). `platform` distingue
+        // les deux séries du calendrier : 'manual' = marqué « fait » à la main
+        // (ambre) ; steam/xbox/psn = 100 % plateforme (vert). Un même jeu peut
+        // avoir plusieurs lignes (une par source) → dédupliqué par jeu et par
+        // série plus bas (garde la plus récente, déjà en tête car tri desc).
         this.prisma.gameCompletion.findMany({
           where: { userId: user.id },
-          orderBy: { createdAt: 'desc' },
-          select: { createdAt: true, game: gameRef },
+          orderBy: { completedAt: 'desc' },
+          select: { completedAt: true, platform: true, game: gameRef },
         }),
         this.friendState(user.id, viewerId),
         // Listes publiques : les privées ne sont jamais exposées ici
@@ -141,46 +131,21 @@ export class UsersService {
         .filter((r) => r.game)
         .map((r) => ({ rating: r.rating, game: r.game! })),
       recentReviews,
-      // Une entrée par date (manuelle et/ou plateforme) ; on évite le doublon
-      // si les deux tombent le même jour.
-      calendar: playedDated.flatMap((p) => {
-        const day = (d: Date) => d.toISOString().slice(0, 10);
-        const out: { playedAt: Date; game: (typeof p)['game'] }[] = [];
-        if (p.playedAt) out.push({ playedAt: p.playedAt, game: p.game });
-        if (p.lastPlayedAt && (!p.playedAt || day(p.lastPlayedAt) !== day(p.playedAt))) {
-          out.push({ playedAt: p.lastPlayedAt, game: p.game });
-        }
-        return out;
-      }),
-      // Une entrée par jeu terminé (la plus récente, déjà en tête car tri desc)
+      // Série ambre du calendrier : jeux marqués « fait » à la main.
       completions: dedupeByGame(
-        completedRaw.map((c) => ({ playedAt: c.createdAt, game: c.game })),
+        completedRaw
+          .filter((c) => c.platform === 'manual')
+          .map((c) => ({ playedAt: c.completedAt, game: c.game })),
+      ),
+      // Série verte du calendrier : jeux 100 % sur une plateforme (Steam/Xbox/PSN).
+      perfectGames: dedupeByGame(
+        completedRaw
+          .filter((c) => c.platform !== 'manual')
+          .map((c) => ({ playedAt: c.completedAt, game: c.game })),
       ),
       friendState,
       publicLists,
     };
-  }
-
-  // Enregistre la dernière date de lancement remontée par une plateforme sur des
-  // jeux du catalogue → calendrier « joué ». N'écrase JAMAIS playedAt/status : à
-  // la création on pose PLAYED (le jeu a bien été lancé), en update seulement
-  // lastPlayedAt. Appelé par les synchros Steam/Xbox/PSN.
-  async recordLastPlayed(userId: number, items: { gameId: number; lastPlayed: Date }[]) {
-    if (!items.length) return;
-    await this.prisma.$transaction(
-      items.map((it) =>
-        this.prisma.playedGame.upsert({
-          where: { userId_gameId: { userId, gameId: it.gameId } },
-          update: { lastPlayedAt: it.lastPlayed },
-          create: {
-            userId,
-            gameId: it.gameId,
-            status: PlayStatus.PLAYED,
-            lastPlayedAt: it.lastPlayed,
-          },
-        }),
-      ),
-    );
   }
 
   // Full list of games this user has logged (any status), newest-played first

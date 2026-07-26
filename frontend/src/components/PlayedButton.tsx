@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import { apiFetch } from '../lib/api';
 
-// Compteur "l'ont fait" + la marque du viewer (null si anonyme / pas marqué) +
-// s'il a marqué le jeu « terminé » à la main (completedByMe).
+// Compteur "l'ont terminé" + si le viewer l'a marqué « fait » (completedByMe).
 type PlayedInfo = {
   count: number;
   completedCount: number;
@@ -13,10 +12,22 @@ type PlayedInfo = {
   completedByMe: boolean;
 };
 
-// Deux boutons filaires : « je l'ai fait » (coche cerclée, ambre) et « terminé »
-// (trophée, emerald). Le premier marque PLAYED ; le second crée une complétion
-// manuelle (calendrier vert + feed). Terminer implique avoir joué → le back pose
-// aussi PLAYED, d'où le rechargement de l'état après coup.
+// Date du jour au format YYYY-MM-DD (heure locale), pour pré-remplir le sélecteur.
+function todayStr(): string {
+  const d = new Date();
+  const off = d.getTimezoneOffset();
+  return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
+}
+
+// YYYY-MM-DD → ISO (midi local, pour ne pas décaler le jour selon le fuseau).
+function toIso(dateStr: string): string {
+  return new Date(`${dateStr}T12:00:00`).toISOString();
+}
+
+// Bouton unique « je l'ai fait » (coche cerclée) : marque le jeu comme terminé
+// (complétion manuelle → calendrier « Terminé » + feed). Marquer ouvre un petit
+// sélecteur de date pré-rempli à aujourd'hui : l'user peut dater un jeu terminé
+// avant son inscription ou un autre jour.
 export default function PlayedButton({
   gameId,
   onDark = false,
@@ -26,14 +37,20 @@ export default function PlayedButton({
   gameId: number;
   onDark?: boolean;
   showCount?: boolean;
-  // Incrémenté par le parent (ex : après avoir posté un avis, qui marque le jeu
-  // "fait" côté serveur) pour forcer un rechargement de l'état "fait".
+  // Incrémenté par le parent (ex : après avoir posté un avis) pour forcer un
+  // rechargement de l'état.
   refreshKey?: number;
 }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
   const [played, setPlayed] = useState<PlayedInfo | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [dateStr, setDateStr] = useState(todayStr);
+  const [saving, setSaving] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  // Position fixe du popover (le bandeau de la fiche jeu masque le débordement).
+  const [coords, setCoords] = useState<{ left: number; top: number } | null>(null);
 
   // Rechargé quand la session change : `mine` dépend du cookie du viewer
   useEffect(() => {
@@ -48,35 +65,60 @@ export default function PlayedButton({
     };
   }, [gameId, user?.id, refreshKey]);
 
-  const marked = played?.mine?.status === 'PLAYED';
-  const completed = played?.completedByMe ?? false;
+  const done = played?.completedByMe ?? false;
+
+  // Ancre le popover sous le bouton (position fixe → échappe à l'overflow).
+  useLayoutEffect(() => {
+    if (!pickerOpen) return;
+    const place = () => {
+      const r = wrapRef.current?.getBoundingClientRect();
+      if (!r) return;
+      setCoords({
+        left: Math.max(8, Math.min(r.left, window.innerWidth - 256 - 8)),
+        top: r.bottom + 8,
+      });
+    };
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', place, true);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', place, true);
+    };
+  }, [pickerOpen]);
 
   async function toggle() {
-    // Invité → redirection login (retour ici après connexion) ; sinon on agit.
-    if (!requireAuth()) return;
-    if (!played) return;
-    if (marked) {
-      await apiFetch(`/games/${gameId}/played`, { method: 'DELETE' });
-      setPlayed({ ...played, count: Math.max(0, played.count - 1), mine: null });
+    // Invité → redirection login ; déjà terminé → on retire directement ;
+    // sinon on ouvre le sélecteur de date.
+    if (!requireAuth() || !played) return;
+    if (done) {
+      await apiFetch(`/games/${gameId}/completed`, { method: 'DELETE' });
+      const fresh = await apiFetch<PlayedInfo>(`/games/${gameId}/played`).catch(() => null);
+      if (fresh) setPlayed(fresh);
     } else {
-      const mine = await apiFetch<PlayedInfo['mine']>(`/games/${gameId}/played`, {
-        method: 'PUT',
-      });
-      setPlayed({ ...played, count: played.count + 1, mine });
+      setDateStr(todayStr());
+      setPickerOpen((o) => !o);
     }
   }
 
-  async function toggleCompleted() {
-    if (!requireAuth()) return;
-    if (!played) return;
-    await apiFetch(`/games/${gameId}/completed`, { method: completed ? 'DELETE' : 'PUT' });
-    // Marquer « terminé » pose aussi PLAYED côté back → on recharge l'état complet.
-    const fresh = await apiFetch<PlayedInfo>(`/games/${gameId}/played`).catch(() => null);
-    if (fresh) setPlayed(fresh);
+  // Valide la date choisie et marque le jeu terminé à cette date.
+  async function confirmDate() {
+    if (!played || saving) return;
+    setSaving(true);
+    try {
+      await apiFetch(`/games/${gameId}/completed`, {
+        method: 'PUT',
+        body: JSON.stringify({ date: toIso(dateStr) }),
+      });
+      const fresh = await apiFetch<PlayedInfo>(`/games/${gameId}/played`).catch(() => null);
+      if (fresh) setPlayed(fresh);
+      setPickerOpen(false);
+    } finally {
+      setSaving(false);
+    }
   }
 
-  const showPhrase =
-    showCount && played != null && (played.count > 0 || played.completedCount > 0);
+  const showPhrase = showCount && played != null && played.completedCount > 0;
 
   const knob = (active: boolean, activeCls: string) =>
     `flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition ${
@@ -88,13 +130,14 @@ export default function PlayedButton({
     }`;
 
   return (
-    <div className="flex items-center gap-2">
+    <div ref={wrapRef} className="flex items-center gap-2">
       <button
         type="button"
         onClick={toggle}
-        title={marked ? t('game.markedTitle') : t('game.markTitle')}
-        aria-label={marked ? t('game.unmarkAria') : t('game.markAria')}
-        className={knob(marked, 'border-accent bg-accent text-zinc-950')}
+        title={done ? t('game.markedTitle') : t('game.markTitle')}
+        aria-label={done ? t('game.unmarkAria') : t('game.markAria')}
+        aria-pressed={done}
+        className={knob(done, 'border-accent bg-accent text-zinc-950')}
       >
         {/* Coche cerclée filaire (trait 1.6, style TiMN) : "fait" */}
         <svg
@@ -110,49 +153,56 @@ export default function PlayedButton({
         </svg>
       </button>
 
-      <button
-        type="button"
-        onClick={toggleCompleted}
-        title={completed ? t('game.completedTitle') : t('game.completeTitle')}
-        aria-label={completed ? t('game.uncompleteAria') : t('game.completeAria')}
-        aria-pressed={completed}
-        className={knob(completed, 'border-emerald-500 bg-emerald-500 text-zinc-950')}
-      >
-        {/* Trophée filaire : "terminé" */}
-        <svg
-          viewBox="0 0 24 24"
-          className="h-4 w-4 shrink-0 fill-none stroke-current"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
-          <path d="M7 6H5a2 2 0 0 0 0 4h1.5M17 6h2a2 2 0 0 1 0 4h-1.5" />
-          <path d="M12 14v3M9 21h6M10 21c0-1.5.5-2.5 2-2.5s2 1 2 2.5" />
-        </svg>
-      </button>
-
       {showPhrase && (
-        // Empilé (2 lignes courtes) : compact en largeur, clair à côté du bookmark.
         <span
-          className={`ml-1 flex flex-col text-xs leading-tight ${
+          className={`ml-1 text-xs leading-tight ${
             onDark ? 'text-zinc-300' : 'text-zinc-500 dark:text-zinc-400'
           }`}
         >
-          {played.count > 0 && (
-            <span>
-              {t(played.count === 1 ? 'game.playedOne' : 'game.playedMany', { count: played.count })}
-            </span>
-          )}
-          {played.completedCount > 0 && (
-            <span>
-              {t(played.completedCount === 1 ? 'game.completedCountOne' : 'game.completedCountMany', {
-                count: played.completedCount,
-              })}
-            </span>
-          )}
+          {t(played.completedCount === 1 ? 'game.completedCountOne' : 'game.completedCountMany', {
+            count: played.completedCount,
+          })}
         </span>
+      )}
+
+      {pickerOpen && coords && (
+        <>
+          {/* Fond cliquable pour fermer sans valider */}
+          <div className="fixed inset-0 z-30" onClick={() => setPickerOpen(false)} aria-hidden="true" />
+          <div
+            className="fixed z-40 w-64 rounded-xl border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
+            style={{ left: coords.left, top: coords.top }}
+          >
+            <p className="mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-100">
+              {t('game.completeDateTitle')}
+            </p>
+            <input
+              type="date"
+              value={dateStr}
+              max={todayStr()}
+              onChange={(e) => setDateStr(e.target.value)}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-accent focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+            />
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{t('game.markDateHint')}</p>
+            <div className="mt-3 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setPickerOpen(false)}
+                className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                type="button"
+                onClick={confirmDate}
+                disabled={saving || !dateStr}
+                className="rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-zinc-950 hover:opacity-90 disabled:opacity-50"
+              >
+                {t('common.confirm')}
+              </button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

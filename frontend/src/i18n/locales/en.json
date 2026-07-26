@@ -447,7 +447,11 @@
     "calCompletedLabel": "completed",
     "calPlayedLabel": "played",
     "calViewPlayed": "Played",
-    "calViewCompleted": "Completed"
+    "calViewCompleted": "Completed",
+    "calDoneLabel": "done",
+    "calPerfectLabel": "at 100%",
+    "calDoneLegend": "Done",
+    "calPerfectLegend": "100%"
   },
   "lists": {
     "heading": "Lists",
@@ -538,7 +542,10 @@
     "completeAria": "Mark this game as completed",
     "uncompleteAria": "Remove completed mark",
     "completedCountOne": "{{count}} player completed this game",
-    "completedCountMany": "{{count}} players completed this game"
+    "completedCountMany": "{{count}} players completed this game",
+    "markDateTitle": "When did you play it?",
+    "completeDateTitle": "When did you finish it?",
+    "markDateHint": "Pick a past date if you played it before joining."
   },
   "share": {
     "defaultTitle": "Share with a friend",

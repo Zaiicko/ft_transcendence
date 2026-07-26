@@ -447,7 +447,11 @@
     "calCompletedLabel": "voltooid",
     "calPlayedLabel": "gespeeld",
     "calViewPlayed": "Gespeeld",
-    "calViewCompleted": "Voltooid"
+    "calViewCompleted": "Voltooid",
+    "calDoneLabel": "gedaan",
+    "calPerfectLabel": "op 100%",
+    "calDoneLegend": "Gedaan",
+    "calPerfectLegend": "100%"
   },
   "lists": {
     "heading": "Lijsten",
@@ -538,7 +542,10 @@
     "completeAria": "Dit spel als voltooid markeren",
     "uncompleteAria": "Voltooid-markering verwijderen",
     "completedCountOne": "{{count}} speler heeft dit spel voltooid",
-    "completedCountMany": "{{count}} spelers hebben dit spel voltooid"
+    "completedCountMany": "{{count}} spelers hebben dit spel voltooid",
+    "markDateTitle": "Wanneer heb je het gespeeld?",
+    "completeDateTitle": "Wanneer heb je het uitgespeeld?",
+    "markDateHint": "Kies een datum in het verleden als je het vóór je aanmelding speelde."
   },
   "share": {
     "defaultTitle": "Delen met een vriend",

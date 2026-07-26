@@ -447,7 +447,11 @@
     "calCompletedLabel": "завершено",
     "calPlayedLabel": "сыграно",
     "calViewPlayed": "Сыграно",
-    "calViewCompleted": "Завершено"
+    "calViewCompleted": "Завершено",
+    "calDoneLabel": "сделано",
+    "calPerfectLabel": "на 100%",
+    "calDoneLegend": "Сделано",
+    "calPerfectLegend": "100%"
   },
   "lists": {
     "heading": "Списки",
@@ -538,7 +542,10 @@
     "completeAria": "Отметить эту игру как завершённую",
     "uncompleteAria": "Убрать отметку о завершении",
     "completedCountOne": "{{count}} игрок завершил эту игру",
-    "completedCountMany": "{{count}} игроков завершили эту игру"
+    "completedCountMany": "{{count}} игроков завершили эту игру",
+    "markDateTitle": "Когда вы играли?",
+    "completeDateTitle": "Когда вы прошли?",
+    "markDateHint": "Выберите прошедшую дату, если играли до регистрации."
   },
   "share": {
     "defaultTitle": "Поделиться с другом",

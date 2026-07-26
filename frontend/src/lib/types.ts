@@ -272,10 +272,10 @@ export interface PublicProfile {
   playedCount: number;
   topGames: { rating: number; game: GameRef }[];
   recentReviews: ProfileReview[];
-  calendar: { playedAt: string; game: GameRef }[];
-  // Jeux terminés à 100 % (succès Steam / platine PSN…), datés — série
-  // « Terminé » du calendrier, à côté de `calendar` (« Joué »).
+  // Calendrier de complétion — deux séries : `completions` = jeux marqués
+  // « fait » à la main (ambre), `perfectGames` = 100 % plateforme (vert).
   completions: { playedAt: string; game: GameRef }[];
+  perfectGames: { playedAt: string; game: GameRef }[];
   friendState: FriendState;
   publicLists: GameListSummary[];
 }

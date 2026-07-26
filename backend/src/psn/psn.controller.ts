@@ -132,10 +132,14 @@ export class PsnController {
     const matched = await this.matchTitles(current.sub, titles);
 
     // Jeux du catalogue à 100 % : tous les trophées obtenus (progress 100) OU un
-    // platine décroché (décision produit : le platine vaut 100 %). → feed.
+    // platine décroché (décision produit : le platine vaut 100 %). → feed +
+    // calendrier « Terminé ». Date réelle = dernier trophée (lastUpdatedDateTime).
     const completed = matched
       .filter((m) => m.trophies.progress === 100 || (m.trophies.earned?.platinum ?? 0) >= 1)
-      .map((m) => m.id);
+      .map((m) => {
+        const d = m.lastUpdatedDateTime ? new Date(m.lastUpdatedDateTime) : null;
+        return { gameId: m.id, completedAt: d && !isNaN(d.getTime()) ? d : undefined };
+      });
     await this.feed.syncCompletions(current.sub, 'psn', completed);
 
     return {
@@ -227,17 +231,6 @@ export class PsnController {
     const playedBy = new Map(played.map((p) => [p.gameId, p]));
     const reviewedIds = new Set(reviewed.map((r) => r.gameId));
 
-    // Dernière activité PSN (lastUpdatedDateTime des trophées) → calendrier « joué »
-    await this.users.recordLastPlayed(
-      userId,
-      matched
-        .map(({ game, title }) => {
-          const d = title.lastUpdatedDateTime ? new Date(title.lastUpdatedDateTime) : null;
-          return d && !isNaN(d.getTime()) ? { gameId: game.id, lastPlayed: d } : null;
-        })
-        .filter((x): x is { gameId: number; lastPlayed: Date } => x !== null),
-    );
-
     return matched
       .map(({ game, title }) => ({
         id: game.id,
@@ -250,6 +243,9 @@ export class PsnController {
           defined: title.definedTrophies,
           progress: title.progress,
         },
+        // Date du dernier trophée obtenu (≈ date du 100 % / platine) → calendrier
+        // « Terminé ». ISO string ou null.
+        lastUpdatedDateTime: title.lastUpdatedDateTime ?? null,
         playedStatus: playedBy.get(game.id)?.status ?? null,
         reviewed: reviewedIds.has(game.id),
       }))

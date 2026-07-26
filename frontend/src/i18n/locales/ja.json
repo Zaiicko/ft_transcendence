@@ -447,7 +447,11 @@
     "calCompletedLabel": "完了",
     "calPlayedLabel": "プレイ済み",
     "calViewPlayed": "プレイ",
-    "calViewCompleted": "完了"
+    "calViewCompleted": "完了",
+    "calDoneLabel": "済み",
+    "calPerfectLabel": "100%",
+    "calDoneLegend": "済み",
+    "calPerfectLegend": "100%"
   },
   "lists": {
     "heading": "リスト",
@@ -538,7 +542,10 @@
     "completeAria": "このゲームを完了としてマーク",
     "uncompleteAria": "完了マークを外す",
     "completedCountOne": "{{count}} 人のプレイヤーがこのゲームを完了しました",
-    "completedCountMany": "{{count}} 人のプレイヤーがこのゲームを完了しました"
+    "completedCountMany": "{{count}} 人のプレイヤーがこのゲームを完了しました",
+    "markDateTitle": "いつプレイしましたか？",
+    "completeDateTitle": "いつクリアしましたか？",
+    "markDateHint": "登録前にプレイした場合は過去の日付を選んでください。"
   },
   "share": {
     "defaultTitle": "友達に共有",

@@ -155,16 +155,23 @@ export class CompletionsService {
         const a = g.steamAppId ? perGame[String(g.steamAppId)] : undefined;
         return a && a[1] > 0 && a[0] === a[1]; // tous les succès obtenus
       })
-      .map((g) => g.id);
+      .map((g) => {
+        const lastUnlock = g.steamAppId ? (perGame[String(g.steamAppId)]?.[2] ?? 0) : 0;
+        return {
+          gameId: g.id,
+          completedAt: lastUnlock > 0 ? new Date(lastUnlock * 1000) : undefined,
+        };
+      });
     await this.feed.syncCompletions(userId, 'steam', completed);
   }
 
   // Copie assumée de SteamController.syncAchievements (Steam n'a pas d'appel
-  // groupé) : les deux chemins doivent rester identiques.
+  // groupé) : les deux chemins doivent rester identiques. perGame :
+  // [obtenus, total, lastUnlock] — lastUnlock (unix s) = date réelle du 100 %.
   private async syncSteamAchievements(
     steamId: string,
     owned: SteamOwnedGame[],
-  ): Promise<Record<string, [number, number]>> {
+  ): Promise<Record<string, [number, number, number]>> {
     const SAFETY_CAP = 1000;
     const CONCURRENCY = 10;
     const played = owned
@@ -172,13 +179,13 @@ export class CompletionsService {
       .sort((a, b) => b.playtime_forever - a.playtime_forever)
       .slice(0, SAFETY_CAP);
 
-    const perGame: Record<string, [number, number]> = {};
+    const perGame: Record<string, [number, number, number]> = {};
     for (let i = 0; i < played.length; i += CONCURRENCY) {
       const batch = played.slice(i, i + CONCURRENCY);
       await Promise.all(
         batch.map(async (g) => {
           const a = await this.steam.getPlayerAchievements(steamId, g.appid);
-          if (a) perGame[String(g.appid)] = [a.unlocked, a.total];
+          if (a) perGame[String(g.appid)] = [a.unlocked, a.total, a.lastUnlock];
         }),
       );
     }
@@ -205,6 +212,8 @@ export class CompletionsService {
       titles,
       (t) => t.name,
       (t) => t.totalGamerscore > 0 && t.currentGamerscore === t.totalGamerscore,
+      // Xbox : pas de date par succès sans appel par jeu → approx. lastPlayed.
+      (t) => (t.lastPlayed ? new Date(t.lastPlayed) : undefined),
     );
     await this.feed.syncCompletions(userId, 'xbox', completed);
   }
@@ -229,32 +238,46 @@ export class CompletionsService {
       titles,
       (t) => t.trophyTitleName,
       (t) => t.progress === 100 || (t.earnedTrophies?.platinum ?? 0) >= 1,
+      // PSN : date du dernier trophée (≈ 100 % / platine).
+      (t) => (t.lastUpdatedDateTime ? new Date(t.lastUpdatedDateTime) : undefined),
     );
     await this.feed.syncCompletions(userId, 'psn', completed);
   }
 
-  // Titres complétés → identifiants du catalogue, par nom normalisé (même SQL que
-  // les contrôleurs). Un nom compte comme complété dès qu'un de ses titres l'est.
+  // Titres complétés → { gameId, completedAt } du catalogue, par nom normalisé
+  // (même SQL que les contrôleurs). Un nom compte comme complété dès qu'un de ses
+  // titres l'est ; on retient la date de complétion la plus récente pour ce nom.
   private async matchCompleted<T>(
     titles: T[],
     getName: (t: T) => string,
     isComplete: (t: T) => boolean,
-  ): Promise<number[]> {
-    const completeNorms = new Set<string>();
+    getDate: (t: T) => Date | undefined,
+  ): Promise<{ gameId: number; completedAt?: Date }[]> {
+    // norm -> date de complétion la plus récente (ou undefined si non datée)
+    const dateByNorm = new Map<string, Date | undefined>();
     for (const t of titles) {
       if (!isComplete(t)) continue;
       const n = normalize(getName(t));
-      if (n) completeNorms.add(n);
+      if (!n) continue;
+      const d = getDate(t);
+      const valid = d && !isNaN(d.getTime()) ? d : undefined;
+      const prev = dateByNorm.get(n);
+      if (!dateByNorm.has(n) || (valid && (!prev || valid > prev))) dateByNorm.set(n, valid);
     }
-    if (completeNorms.size === 0) return [];
+    if (dateByNorm.size === 0) return [];
 
     const rows = await this.prisma.$queryRaw<{ id: number; norm: string }[]>`
       SELECT id, lower(regexp_replace(title, '[^a-zA-Z0-9]', '', 'g')) AS norm
       FROM "Game"
-      WHERE lower(regexp_replace(title, '[^a-zA-Z0-9]', '', 'g')) = ANY(${[...completeNorms]})
+      WHERE lower(regexp_replace(title, '[^a-zA-Z0-9]', '', 'g')) = ANY(${[...dateByNorm.keys()]})
     `;
-    const byNorm = new Map<string, number>();
-    for (const r of rows) if (!byNorm.has(r.norm)) byNorm.set(r.norm, r.id);
-    return [...byNorm.values()];
+    const seen = new Set<number>();
+    const out: { gameId: number; completedAt?: Date }[] = [];
+    for (const r of rows) {
+      if (seen.has(r.id)) continue;
+      seen.add(r.id);
+      out.push({ gameId: r.id, completedAt: dateByNorm.get(r.norm) });
+    }
+    return out;
   }
 }

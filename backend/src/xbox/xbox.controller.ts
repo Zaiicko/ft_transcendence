@@ -129,10 +129,16 @@ export class XboxController {
     };
     const matched = await this.matchTitles(current.sub, titles);
 
-    // Jeux du catalogue à 100 % (tout le Gamerscore obtenu) → événements de feed.
+    // Jeux du catalogue à 100 % (tout le Gamerscore obtenu) → événements de feed
+    // + calendrier « Terminé ». OpenXBL ne donne pas la date par succès sans un
+    // appel par jeu ; on approxime la date du 100 % par lastPlayed (dernière
+    // session) — 0/invalide → défaut (now) côté insertion.
     const completed = matched
       .filter((m) => m.achievements.totalGamerscore > 0 && m.achievements.gamerscore === m.achievements.totalGamerscore)
-      .map((m) => m.id);
+      .map((m) => {
+        const d = m.lastPlayed ? new Date(m.lastPlayed) : null;
+        return { gameId: m.id, completedAt: d && !isNaN(d.getTime()) ? d : undefined };
+      });
     await this.feed.syncCompletions(current.sub, 'xbox', completed);
 
     return {
@@ -192,18 +198,6 @@ export class XboxController {
     ]);
     const playedBy = new Map(played.map((p) => [p.gameId, p]));
     const reviewedIds = new Set(reviewed.map((r) => r.gameId));
-
-    // Dernière date de lancement Xbox (lastTimePlayed) → calendrier « joué »
-    await this.users.recordLastPlayed(
-      userId,
-      matched
-        .map(({ game, title }) => {
-          if (!title.lastPlayed) return null;
-          const d = new Date(title.lastPlayed);
-          return isNaN(d.getTime()) ? null : { gameId: game.id, lastPlayed: d };
-        })
-        .filter((x): x is { gameId: number; lastPlayed: Date } => x !== null),
-    );
 
     return matched
       .map(({ game, title }) => ({

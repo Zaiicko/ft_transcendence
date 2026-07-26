@@ -447,7 +447,11 @@
     "calCompletedLabel": "已完成",
     "calPlayedLabel": "已玩",
     "calViewPlayed": "已玩",
-    "calViewCompleted": "已完成"
+    "calViewCompleted": "已完成",
+    "calDoneLabel": "已完成",
+    "calPerfectLabel": "100%",
+    "calDoneLegend": "已完成",
+    "calPerfectLegend": "100%"
   },
   "lists": {
     "heading": "列表",
@@ -538,7 +542,10 @@
     "completeAria": "将此游戏标记为已完成",
     "uncompleteAria": "移除已完成标记",
     "completedCountOne": "{{count}} 名玩家完成了这款游戏",
-    "completedCountMany": "{{count}} 名玩家完成了这款游戏"
+    "completedCountMany": "{{count}} 名玩家完成了这款游戏",
+    "markDateTitle": "你什么时候玩的？",
+    "completeDateTitle": "你什么时候通关的？",
+    "markDateHint": "如果是注册前玩的，请选择过去的日期。"
   },
   "share": {
     "defaultTitle": "分享给好友",

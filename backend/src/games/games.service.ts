@@ -293,22 +293,26 @@ export class GamesService {
     return { count, completedCount: completers.length, mine, completedByMe: !!completed };
   }
 
-  // Idempotent: re-marking an already-played game keeps its original date
-  // (the completion calendar must not drift on double clicks)
-  async markPlayed(userId: number, gameId: number) {
+  // Marque le jeu « fait ». `playedAt` optionnel = date choisie par l'user
+  // (jeux faits avant le compte / pas le jour même) ; défaut = maintenant.
+  // Sans date fournie : re-marquer un jeu déjà « fait » garde sa date d'origine
+  // (le calendrier ne doit pas dériver sur un double-clic). Avec une date
+  // fournie : on la pose toujours (l'user corrige explicitement la date).
+  async markPlayed(userId: number, gameId: number, playedAt?: Date) {
     const exists = await this.prisma.game.findUnique({ where: { id: gameId }, select: { id: true } });
     if (!exists) throw new NotFoundException(`Game ${gameId} not found`);
     const current = await this.prisma.playedGame.findUnique({
       where: { userId_gameId: { userId, gameId } },
       select: { status: true },
     });
+    const when = playedAt ?? new Date();
     const row = await this.prisma.playedGame.upsert({
       where: { userId_gameId: { userId, gameId } },
       update:
-        current?.status === PlayStatus.PLAYED
-          ? {}
-          : { status: PlayStatus.PLAYED, playedAt: new Date() },
-      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: new Date() },
+        playedAt || current?.status !== PlayStatus.PLAYED
+          ? { status: PlayStatus.PLAYED, playedAt: when }
+          : {},
+      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when },
     });
     // Nouvelle transition vers « fait » → pousse dans le feed des amis
     // (best-effort ; le service ignore le cas où un avis existe déjà)
@@ -324,26 +328,30 @@ export class GamesService {
   // « Terminé » manuel : crée une GameCompletion(platform='manual') — même
   // pipeline que les 100 % plateformes (calendrier vert + feed « terminé »).
   // Terminer implique avoir joué → on garantit aussi un PlayedGame PLAYED.
-  async markCompleted(userId: number, gameId: number) {
+  async markCompleted(userId: number, gameId: number, completedAt?: Date) {
     const exists = await this.prisma.game.findUnique({ where: { id: gameId }, select: { id: true } });
     if (!exists) throw new NotFoundException(`Game ${gameId} not found`);
     const current = await this.prisma.playedGame.findUnique({
       where: { userId_gameId: { userId, gameId } },
       select: { status: true },
     });
+    const when = completedAt ?? new Date();
+    // Terminer implique avoir joué : si pas encore « fait », on pose PLAYED à la
+    // même date que la complétion (cohérence des deux calendriers).
     await this.prisma.playedGame.upsert({
       where: { userId_gameId: { userId, gameId } },
-      update: current?.status === PlayStatus.PLAYED ? {} : { status: PlayStatus.PLAYED, playedAt: new Date() },
-      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: new Date() },
+      update: current?.status === PlayStatus.PLAYED ? {} : { status: PlayStatus.PLAYED, playedAt: when },
+      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when },
     });
     const before = await this.prisma.gameCompletion.findUnique({
       where: { userId_gameId_platform: { userId, gameId, platform: 'manual' } },
       select: { id: true },
     });
+    // Avec une date fournie : on la (re)pose toujours (l'user corrige la date).
     await this.prisma.gameCompletion.upsert({
       where: { userId_gameId_platform: { userId, gameId, platform: 'manual' } },
-      update: {},
-      create: { userId, gameId, platform: 'manual' },
+      update: completedAt ? { completedAt: when } : {},
+      create: { userId, gameId, platform: 'manual', completedAt: when },
     });
     // Nouvelle complétion → feed (et « fait » si le jeu ne l'était pas encore)
     if (!before) {

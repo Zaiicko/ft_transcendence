@@ -12,14 +12,14 @@ export interface SteamOwnedGame {
   name?: string;
   // Total playtime, in minutes
   playtime_forever: number;
-  // Unix seconds du dernier lancement (0/absent si jamais lancé). Renvoyé par
-  // GetOwnedGames — sert à dater le jeu dans le calendrier « joué ».
-  rtime_last_played?: number;
 }
 
 export interface SteamAchievements {
   unlocked: number;
   total: number;
+  // Unix seconds du dernier succès débloqué (0 si aucun). Quand le jeu est à
+  // 100 %, c'est la date réelle de complétion → calendrier « Terminé ».
+  lastUnlock: number;
 }
 
 @Injectable()
@@ -83,13 +83,19 @@ export class SteamWebApiService {
       );
       if (!res.ok) return null; // 400 = pas de stats, 403 = privé
       const data = (await res.json()) as {
-        playerstats?: { success?: boolean; achievements?: { achieved: number }[] };
+        playerstats?: {
+          success?: boolean;
+          achievements?: { achieved: number; unlocktime?: number }[];
+        };
       };
       const stats = data.playerstats;
       if (!stats?.success || !stats.achievements?.length) return null;
+      const unlockedAch = stats.achievements.filter((a) => a.achieved === 1);
       return {
-        unlocked: stats.achievements.filter((a) => a.achieved === 1).length,
+        unlocked: unlockedAch.length,
         total: stats.achievements.length,
+        // Date réelle du 100 % = dernier succès obtenu (max unlocktime).
+        lastUnlock: unlockedAch.reduce((max, a) => Math.max(max, a.unlocktime ?? 0), 0),
       };
     } catch {
       return null;

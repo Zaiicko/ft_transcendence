@@ -447,7 +447,11 @@
     "calCompletedLabel": "ukończone",
     "calPlayedLabel": "zagrane",
     "calViewPlayed": "Zagrane",
-    "calViewCompleted": "Ukończone"
+    "calViewCompleted": "Ukończone",
+    "calDoneLabel": "zrobione",
+    "calPerfectLabel": "w 100%",
+    "calDoneLegend": "Zrobione",
+    "calPerfectLegend": "100%"
   },
   "lists": {
     "heading": "Listy",
@@ -538,7 +542,10 @@
     "completeAria": "Oznacz tę grę jako ukończoną",
     "uncompleteAria": "Usuń oznaczenie ukończenia",
     "completedCountOne": "{{count}} gracz ukończył tę grę",
-    "completedCountMany": "{{count}} graczy ukończyło tę grę"
+    "completedCountMany": "{{count}} graczy ukończyło tę grę",
+    "markDateTitle": "Kiedy w to grałeś?",
+    "completeDateTitle": "Kiedy to ukończyłeś?",
+    "markDateHint": "Wybierz wcześniejszą datę, jeśli grałeś przed rejestracją."
   },
   "share": {
     "defaultTitle": "Udostępnij znajomemu",

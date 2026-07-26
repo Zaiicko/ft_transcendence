@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -15,6 +16,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { GetGameDto } from './dto/get-game.dto';
 import { ListGamesDto } from './dto/list-games.dto';
+import { MarkDateDto } from './dto/mark-date.dto';
 import { SearchGamesDto } from './dto/search-games.dto';
 import { GamesService } from './games.service';
 
@@ -64,8 +66,12 @@ export class GamesController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/played')
-  markPlayed(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: JwtPayload) {
-    return this.gamesService.markPlayed(user.sub, id);
+  markPlayed(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: JwtPayload,
+    @Body() body: MarkDateDto,
+  ) {
+    return this.gamesService.markPlayed(user.sub, id, body.date ? new Date(body.date) : undefined);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -78,8 +84,12 @@ export class GamesController {
   // « Terminé » manuel (complétion) — alimente le calendrier vert + le feed
   @UseGuards(JwtAuthGuard)
   @Put(':id/completed')
-  markCompleted(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: JwtPayload) {
-    return this.gamesService.markCompleted(user.sub, id);
+  markCompleted(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: JwtPayload,
+    @Body() body: MarkDateDto,
+  ) {
+    return this.gamesService.markCompleted(user.sub, id, body.date ? new Date(body.date) : undefined);
   }
 
   @UseGuards(JwtAuthGuard)

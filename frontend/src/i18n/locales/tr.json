@@ -447,7 +447,11 @@
     "calCompletedLabel": "tamamlandı",
     "calPlayedLabel": "oynandı",
     "calViewPlayed": "Oynanan",
-    "calViewCompleted": "Tamamlanan"
+    "calViewCompleted": "Tamamlanan",
+    "calDoneLabel": "yapıldı",
+    "calPerfectLabel": "%100",
+    "calDoneLegend": "Yapıldı",
+    "calPerfectLegend": "%100"
   },
   "lists": {
     "heading": "Listeler",
@@ -538,7 +542,10 @@
     "completeAria": "Bu oyunu tamamlandı olarak işaretle",
     "uncompleteAria": "Tamamlandı işaretini kaldır",
     "completedCountOne": "{{count}} oyuncu bu oyunu tamamladı",
-    "completedCountMany": "{{count}} oyuncu bu oyunu tamamladı"
+    "completedCountMany": "{{count}} oyuncu bu oyunu tamamladı",
+    "markDateTitle": "Ne zaman oynadın?",
+    "completeDateTitle": "Ne zaman bitirdin?",
+    "markDateHint": "Kaydolmadan önce oynadıysan geçmiş bir tarih seç."
   },
   "share": {
     "defaultTitle": "Bir arkadaşınla paylaş",

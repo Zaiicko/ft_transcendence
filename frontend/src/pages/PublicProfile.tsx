@@ -34,7 +34,7 @@ function dateKey(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-type CalGame = Profile['calendar'][number]['game'];
+type CalGame = Profile['completions'][number]['game'];
 
 function formatDay(key: string): string {
   return new Date(`${key}T00:00:00Z`).toLocaleDateString(i18n.language, {
@@ -46,12 +46,12 @@ function formatDay(key: string): string {
   });
 }
 
-// Deux couleurs plates sur un même calendrier : « joué » (accent) et « terminé
-// 100 % » (emerald). Pas de dégradé d'intensité — le nombre de jeux est donné en
-// clair dans le panneau du jour. Le vert prime si un jour a les deux.
+// Deux types plats sur un même calendrier : « fait » à la main (ambre/accent) et
+// 100 % plateforme (emerald). Pas de dégradé — le nombre de jeux est donné en
+// clair dans le panneau du jour. Le vert (100 %) prime si un jour a les deux.
 const EMPTY_CELL = 'bg-zinc-200 dark:bg-zinc-800';
-const PLAYED_COLOR = 'bg-accent';
-const DONE_COLOR = 'bg-emerald-500';
+const DONE_COLOR = 'bg-accent';
+const PERFECT_COLOR = 'bg-emerald-500';
 
 // Libellé court d'un mois / jour de semaine dans la langue active (Intl → pas de
 // clés i18n à maintenir). Date de référence en UTC pour éviter tout décalage.
@@ -65,11 +65,11 @@ const weekdayShort = (dow: number) =>
   });
 
 function CompletionCalendar({
-  played,
-  completed,
+  done,
+  perfect,
 }: {
-  played: Profile['calendar'];
-  completed: Profile['calendar'];
+  done: Profile['completions'];
+  perfect: Profile['perfectGames'];
 }) {
   const { t } = useTranslation();
   const [yearSel, setYearSel] = useState<string | null>(null);
@@ -77,33 +77,33 @@ function CompletionCalendar({
   const [pinnedKey, setPinnedKey] = useState<string | null>(null);
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
-  // dateKey -> { joués, terminés } ce jour-là (les deux séries sur UN calendrier)
+  // dateKey -> { faits (ambre), 100 % (vert) } ce jour-là (2 séries, 1 calendrier)
   const byDay = useMemo(() => {
-    const map = new Map<string, { played: CalGame[]; done: CalGame[] }>();
-    const add = (arr: Profile['calendar'], kind: 'played' | 'done') => {
+    const map = new Map<string, { done: CalGame[]; perfect: CalGame[] }>();
+    const add = (arr: Profile['completions'], kind: 'done' | 'perfect') => {
       for (const e of arr) {
         const key = e.playedAt.slice(0, 10);
-        const entry = map.get(key) ?? { played: [], done: [] };
+        const entry = map.get(key) ?? { done: [], perfect: [] };
         entry[kind].push(e.game);
         map.set(key, entry);
       }
     };
-    add(played, 'played');
-    add(completed, 'done');
+    add(done, 'done');
+    add(perfect, 'perfect');
     return map;
-  }, [played, completed]);
+  }, [done, perfect]);
 
   const years = useMemo(() => {
-    const set = new Set([...played, ...completed].map((e) => e.playedAt.slice(0, 4)));
+    const set = new Set([...done, ...perfect].map((e) => e.playedAt.slice(0, 4)));
     return [...set].sort().reverse();
-  }, [played, completed]);
+  }, [done, perfect]);
 
   // Année affichée : la sélection si elle existe encore, sinon la plus récente.
   const year = yearSel && years.includes(yearSel) ? yearSel : (years[0] ?? String(new Date().getFullYear()));
 
   // Colonnes = semaines de 7 jours (dimanche en haut). Padding avant le 1er jan
   // + après le 31 déc pour des colonnes pleines. Mémoïsé sur l'année affichée.
-  const { weeks, monthCols, playedTotal, doneTotal } = useMemo(() => {
+  const { weeks, monthCols, doneTotal, perfectTotal } = useMemo(() => {
     const yr = Number(year);
     const startD = new Date(Date.UTC(yr, 0, 1));
     const endD = new Date(Date.UTC(yr, 11, 31));
@@ -117,16 +117,16 @@ function CompletionCalendar({
       const first = w.find((d) => d && d.getUTCDate() === 1);
       return first ? monthShort(first.getUTCMonth()) : null;
     });
-    const inYear = (e: Profile['calendar'][number]) => e.playedAt.slice(0, 4) === year;
+    const inYear = (e: Profile['completions'][number]) => e.playedAt.slice(0, 4) === year;
     return {
       weeks: cols,
       monthCols: labels,
-      playedTotal: played.filter(inYear).length,
-      doneTotal: completed.filter(inYear).length,
+      doneTotal: done.filter(inYear).length,
+      perfectTotal: perfect.filter(inYear).length,
     };
-  }, [year, played, completed]);
+  }, [year, done, perfect]);
 
-  if (played.length === 0 && completed.length === 0) {
+  if (done.length === 0 && perfect.length === 0) {
     return (
       <EmptyState
         icon={<CalendarIcon />}
@@ -139,27 +139,27 @@ function CompletionCalendar({
   // A pinned day (clicked) wins: hovering other days no longer changes the panel
   const activeKey = pinnedKey ?? hoveredKey;
   const activeDay = activeKey ? byDay.get(activeKey) : undefined;
-  // Liste combinée du jour actif : terminés d'abord (badge vert), puis joués non
-  // déjà terminés ce jour-là (évite les doublons).
+  // Liste combinée du jour actif : 100 % d'abord (pastille verte), puis faits non
+  // déjà 100 % ce jour-là (évite les doublons).
   const activeItems = activeDay
     ? (() => {
-        const doneIds = new Set(activeDay.done.map((g) => g.id));
+        const perfectIds = new Set(activeDay.perfect.map((g) => g.id));
         return [
-          ...activeDay.done.map((g) => ({ g, done: true })),
-          ...activeDay.played.filter((g) => !doneIds.has(g.id)).map((g) => ({ g, done: false })),
+          ...activeDay.perfect.map((g) => ({ g, perfect: true })),
+          ...activeDay.done.filter((g) => !perfectIds.has(g.id)).map((g) => ({ g, perfect: false })),
         ];
       })()
     : undefined;
 
   return (
     <div>
-      {/* En-tête : totaux joués / terminés (gauche) ; sélecteur d'année (droite) */}
+      {/* En-tête : totaux faits / 100 % (gauche) ; sélecteur d'année (droite) */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          <span className="font-semibold text-zinc-900 dark:text-zinc-100">{playedTotal}</span>{' '}
-          {t('profile.calPlayedLabel')} <span className="text-zinc-400 dark:text-zinc-600">·</span>{' '}
-          <span className="font-semibold text-emerald-600 dark:text-emerald-400">{doneTotal}</span>{' '}
-          {t('profile.calCompletedLabel')}
+          <span className="font-semibold text-zinc-900 dark:text-zinc-100">{doneTotal}</span>{' '}
+          {t('profile.calDoneLabel')} <span className="text-zinc-400 dark:text-zinc-600">·</span>{' '}
+          <span className="font-semibold text-emerald-600 dark:text-emerald-400">{perfectTotal}</span>{' '}
+          {t('profile.calPerfectLabel')}
         </p>
         {years.length > 1 && (
           <div className="flex gap-1">
@@ -220,14 +220,14 @@ function CompletionCalendar({
                     if (!d) return <span key={di} className="w-full" />;
                     const key = dateKey(d);
                     const day = byDay.get(key);
-                    const pN = day?.played.length ?? 0;
-                    const dN = day?.done.length ?? 0;
-                    // Terminé (vert) prime ; sinon joué (accent) ; sinon inerte.
-                    const cls = dN ? DONE_COLOR : pN ? PLAYED_COLOR : EMPTY_CELL;
+                    const doneN = day?.done.length ?? 0;
+                    const perfN = day?.perfect.length ?? 0;
+                    // 100 % (vert) prime ; sinon fait (ambre) ; sinon inerte.
+                    const cls = perfN ? PERFECT_COLOR : doneN ? DONE_COLOR : EMPTY_CELL;
                     if (!day) return <span key={di} className={`w-full rounded-sm ${cls}`} />;
                     const parts: string[] = [];
-                    if (pN) parts.push(`${pN} ${t('profile.calPlayedLabel')}`);
-                    if (dN) parts.push(`${dN} ${t('profile.calCompletedLabel')}`);
+                    if (doneN) parts.push(`${doneN} ${t('profile.calDoneLabel')}`);
+                    if (perfN) parts.push(`${perfN} ${t('profile.calPerfectLabel')}`);
                     const label = `${formatDay(key)} — ${parts.join(', ')}`;
                     return (
                       <button
@@ -253,37 +253,37 @@ function CompletionCalendar({
         </div>
       </div>
 
-      {/* Légende : les deux couleurs */}
+      {/* Légende : les deux types */}
       <div className="mt-1 flex items-center justify-end gap-3 text-[10px] text-zinc-400 dark:text-zinc-500">
         <span className="flex items-center gap-1">
-          <span className={`h-3 w-3 rounded-sm ${PLAYED_COLOR}`} /> {t('profile.calViewPlayed')}
+          <span className={`h-3 w-3 rounded-sm ${DONE_COLOR}`} /> {t('profile.calDoneLegend')}
         </span>
         <span className="flex items-center gap-1">
-          <span className={`h-3 w-3 rounded-sm ${DONE_COLOR}`} /> {t('profile.calViewCompleted')}
+          <span className={`h-3 w-3 rounded-sm ${PERFECT_COLOR}`} /> {t('profile.calPerfectLegend')}
         </span>
       </div>
 
-      {/* Jeux du jour survolé/cliqué (pastille verte = terminé, accent = joué) */}
+      {/* Jeux du jour survolé/cliqué (pastille verte = 100 %, ambre = fait) */}
       {activeItems && activeKey ? (
         <div className="card mt-3 p-3">
           <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
             <span className="font-medium text-zinc-500 dark:text-zinc-400">{formatDay(activeKey)}</span>
-            {(activeDay?.played.length ?? 0) > 0 && (
-              <span className="inline-flex items-center gap-1 text-zinc-600 dark:text-zinc-300">
-                <span className={`h-2 w-2 rounded-full ${PLAYED_COLOR}`} />
-                {activeDay!.played.length} {t('profile.calViewPlayed')}
-              </span>
-            )}
             {(activeDay?.done.length ?? 0) > 0 && (
               <span className="inline-flex items-center gap-1 text-zinc-600 dark:text-zinc-300">
                 <span className={`h-2 w-2 rounded-full ${DONE_COLOR}`} />
-                {activeDay!.done.length} {t('profile.calViewCompleted')}
+                {activeDay!.done.length} {t('profile.calDoneLabel')}
+              </span>
+            )}
+            {(activeDay?.perfect.length ?? 0) > 0 && (
+              <span className="inline-flex items-center gap-1 text-zinc-600 dark:text-zinc-300">
+                <span className={`h-2 w-2 rounded-full ${PERFECT_COLOR}`} />
+                {activeDay!.perfect.length} {t('profile.calPerfectLabel')}
               </span>
             )}
           </div>
           <ul className="flex flex-wrap gap-3">
-            {activeItems.map(({ g, done }) => (
-              <li key={`${done ? 'd' : 'p'}-${g.id}`}>
+            {activeItems.map(({ g, perfect: isPerfect }) => (
+              <li key={`${isPerfect ? 'p' : 'd'}-${g.id}`}>
                 <Link to={`/game/${g.id}`} className="flex items-center gap-2 hover:opacity-80">
                   <span className="relative">
                     {g.coverUrl ? (
@@ -293,7 +293,7 @@ function CompletionCalendar({
                     )}
                     <span
                       className={`absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-zinc-900 ${
-                        done ? 'bg-emerald-500' : 'bg-accent'
+                        isPerfect ? 'bg-emerald-500' : 'bg-accent'
                       }`}
                     />
                   </span>
@@ -540,7 +540,7 @@ export default function PublicProfile() {
       {/* Completion calendar */}
       <section className="mb-10">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('profile.completionCalendar')}</h2>
-        <CompletionCalendar played={profile.calendar} completed={profile.completions} />
+        <CompletionCalendar done={profile.completions} perfect={profile.perfectGames} />
       </section>
 
       {/* Recent reviews — limitées à 10, triables, "Charger plus" */}
