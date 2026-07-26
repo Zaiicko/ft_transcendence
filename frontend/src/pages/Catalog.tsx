@@ -133,16 +133,16 @@ export default function Catalog() {
     setLoading(true);
   }
 
-  // Une requête par (filtres, page). page 1 = remplace la grille, page > 1 =
-  // empile (« Charger plus »). reqId = anti-course. Au remontage avec cache, on
-  // saute la 1re requête pour ne pas écraser les jeux empilés restaurés.
-  const skipFirstFetch = useRef(restore != null);
+  // Une requête par couple (filtres, page). page 1 = remplace la grille, page >
+  // 1 = empile (« Charger plus »). lastKey = dernier couple déjà chargé : évite
+  // (1) de re-fetch les jeux empilés restaurés au remontage, (2) le double appel
+  // du double-montage StrictMode qui, en page > 1, empilerait des doublons.
+  const lastKey = useRef(restore ? `${params}::${page}` : '');
   const reqId = useRef(0);
   useEffect(() => {
-    if (skipFirstFetch.current) {
-      skipFirstFetch.current = false;
-      return;
-    }
+    const key = `${params}::${page}`;
+    if (lastKey.current === key) return;
+    lastKey.current = key;
     const id = ++reqId.current;
     apiFetch<Page>(`/games?${params}&page=${page}`)
       .then((res) => {
