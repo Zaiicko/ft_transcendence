@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import { apiFetch, ApiError } from '../lib/api';
@@ -27,6 +27,15 @@ export default function AddToListButton({
   const [pending, setPending] = useState<Record<number, boolean>>({});
   const [saving, setSaving] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  // Position calculée (en `fixed`) du menu quand il est posé sur la bannière
+  // (onDark) : celle-ci a `overflow-hidden`, donc un menu en `absolute` qui
+  // s'ouvre vers le haut se fait rogner dès qu'il y a beaucoup de listes. En
+  // `fixed`, ancré au bouton, il échappe au rognage et sa hauteur est bornée à
+  // l'espace réellement disponible au-dessus (il défile plutôt que d'être coupé).
+  const [coords, setCoords] = useState<{ left: number; bottom: number; maxHeight: number } | null>(
+    null,
+  );
 
   // Fermeture au clic extérieur / touche Échap (abandonne les changements)
   useEffect(() => {
@@ -63,6 +72,34 @@ export default function AddToListButton({
       cancelled = true;
     };
   }, [open, gameId]);
+
+  // Calcule/recalcule la position du menu quand il est sur la bannière. Recalé
+  // au resize et au scroll (capture) pour rester collé au bouton.
+  useLayoutEffect(() => {
+    if (!open || !onDark) return;
+    function compute() {
+      const b = btnRef.current;
+      if (!b) return;
+      const r = b.getBoundingClientRect();
+      const GAP = 8;
+      const width = 256; // w-64
+      setCoords({
+        // aligné à gauche du bouton, borné pour ne pas déborder de l'écran
+        left: Math.max(8, Math.min(r.left, window.innerWidth - width - 8)),
+        // posé au-dessus du bouton
+        bottom: window.innerHeight - r.top + GAP,
+        // jamais plus haut que l'espace libre au-dessus → défilement
+        maxHeight: Math.max(120, r.top - GAP - 8),
+      });
+    }
+    compute();
+    window.addEventListener('resize', compute);
+    window.addEventListener('scroll', compute, true);
+    return () => {
+      window.removeEventListener('resize', compute);
+      window.removeEventListener('scroll', compute, true);
+    };
+  }, [open, onDark]);
 
   const checked = (list: GameListSummary) => (list.id in pending ? pending[list.id] : !!list.contains);
   const togglePending = (list: GameListSummary) =>
@@ -103,6 +140,7 @@ export default function AddToListButton({
   return (
     <div ref={ref} className="relative">
       <button
+        ref={btnRef}
         type="button"
         onClick={() => requireAuth() && setOpen((v) => !v)}
         title={t('lists.addToList')}
@@ -127,15 +165,22 @@ export default function AddToListButton({
         </svg>
       </button>
 
-      {open && (
-        // Sur la bannière (onDark), l'en-tête est dans un conteneur
-        // overflow-hidden : on ouvre vers le haut pour ne pas être rogné.
+      {open && (!onDark || coords) && (
+        // Sur la bannière (onDark), le conteneur parent a `overflow-hidden` : on
+        // sort le menu du flux avec un positionnement `fixed` (ancré au bouton)
+        // pour qu'il ne soit pas rogné, avec une hauteur bornée qui le fait
+        // défiler. Hors bannière, simple menu déroulant en dessous.
         <div
-          className={`absolute left-0 z-20 w-64 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900 ${
-            onDark ? 'bottom-full mb-2' : 'mt-2'
+          style={
+            onDark && coords
+              ? { position: 'fixed', left: coords.left, bottom: coords.bottom, maxHeight: coords.maxHeight, zIndex: 30 }
+              : undefined
+          }
+          className={`flex w-64 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900 ${
+            onDark ? '' : 'absolute left-0 z-20 mt-2'
           }`}
         >
-          <div className="max-h-64 overflow-y-auto">
+          <div className={onDark ? 'min-h-0 flex-1 overflow-y-auto' : 'max-h-64 overflow-y-auto'}>
             {lists === null ? (
               <p className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">{t('lists.loading')}</p>
             ) : visibleLists.length === 0 ? (
@@ -193,7 +238,7 @@ export default function AddToListButton({
 
           {/* Barre "Valider" : applique les cases cochées puis ferme */}
           {visibleLists.length > 0 && (
-            <div className="border-t border-zinc-200 p-2 dark:border-zinc-700">
+            <div className="shrink-0 border-t border-zinc-200 p-2 dark:border-zinc-700">
               <button
                 type="button"
                 onClick={validate}
@@ -249,7 +294,7 @@ function QuickCreate({
   return (
     <form
       onSubmit={submit}
-      className="flex flex-col gap-2 border-t border-zinc-200 p-2 dark:border-zinc-700"
+      className="flex shrink-0 flex-col gap-2 border-t border-zinc-200 p-2 dark:border-zinc-700"
     >
       <div className="flex items-stretch gap-2">
         <input
