@@ -341,7 +341,10 @@
     "timeDays": "{{count}} 日前",
     "tabCompleted": "完了件数",
     "completed": "<a>{{user}}</a> 完了 <s>{{game}}</s> 100%",
-    "completedBadge": "100%完了"
+    "completedBadge": "100%完了",
+    "rankLine": "<a>{{user}}</a> が<s>トップ{{rank}}</s>入り — {{category}}",
+    "rankScopeGlobal": "グローバルランキング",
+    "rankScopeFriends": "友達の中で"
   },
   "leaderboard": {
     "title": "ランキング",
@@ -355,6 +358,8 @@
     "windowMonth": "今月",
     "yourRank": "あなたの順位",
     "rankLabel": "{{rank}} 位",
+    "badgeTitle": "グローバルトップ3",
+    "badgeAria": "ランキングの実績",
     "emptyTitle": "まだランキングがありません",
     "emptyFriends": "フレンドを追加し、ゲームをコンプリートしたりプレイを記録したりレビューを書いたりして、一緒に順位を上げましょう。",
     "emptyGlobal": "ランキングの先頭に立とう——ゲームをコンプリートし、プレイを記録し、レビューを書こう。",

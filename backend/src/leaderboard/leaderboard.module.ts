@@ -9,5 +9,6 @@ import { LeaderboardService } from './leaderboard.service';
   imports: [AuthModule],
   controllers: [LeaderboardController],
   providers: [LeaderboardService],
+  exports: [LeaderboardService],
 })
 export class LeaderboardModule {}

@@ -341,7 +341,10 @@
     "timeDays": "{{count}}일 전",
     "tabCompleted": "완료 건수",
     "completed": "<a>{{user}}</a> 완료 <s>{{game}}</s> 100%",
-    "completedBadge": "100% 완료"
+    "completedBadge": "100% 완료",
+    "rankLine": "<a>{{user}}</a>님이 <s>top {{rank}}</s>에 진입 — {{category}}",
+    "rankScopeGlobal": "글로벌 순위",
+    "rankScopeFriends": "친구들 중에서"
   },
   "leaderboard": {
     "title": "순위표",
@@ -355,6 +358,8 @@
     "windowMonth": "이번 달",
     "yourRank": "내 순위",
     "rankLabel": "{{rank}}위",
+    "badgeTitle": "글로벌 상위 3위",
+    "badgeAria": "리더보드 순위 배지",
     "emptyTitle": "아직 순위가 없습니다",
     "emptyFriends": "친구를 추가하고 게임을 완료하고 플레이를 기록하고 리뷰를 작성하여 함께 순위를 올려보세요.",
     "emptyGlobal": "순위표의 첫 번째 주인공이 되어보세요 — 게임을 완료하고 플레이를 기록하고 리뷰를 작성하세요.",

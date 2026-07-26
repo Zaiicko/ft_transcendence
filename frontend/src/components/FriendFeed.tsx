@@ -181,6 +181,8 @@ export default function FriendFeed() {
                 return <ReviewLikeItem key={item.id} item={item} />;
               case 'comment-like':
                 return <CommentLikeItem key={item.id} item={item} />;
+              case 'rank':
+                return <RankItem key={item.id} item={item} />;
             }
           })}
           {cursor && (
@@ -473,6 +475,70 @@ function TrophyIcon() {
     >
       <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z" />
       <path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3" />
+    </svg>
+  );
+}
+
+// Libellés de métrique déjà traduits (13 langues) réutilisés de la page Classement.
+const RANK_METRIC_LABEL: Record<string, string> = {
+  completions: 'leaderboard.metricCompletions',
+  played: 'leaderboard.metricPlayed',
+  reviews: 'leaderboard.metricReviews',
+};
+const RANK_MEDAL_COLOR: Record<number, string> = {
+  1: 'text-amber-400',
+  2: 'text-zinc-400',
+  3: 'text-amber-700',
+};
+
+// « X entre dans le top N » d'un classement (global ou entre tes amis). Renvoie
+// vers la page Classement. La médaille prend la teinte du rang atteint.
+function RankItem({ item }: { item: Extract<FeedItem, { kind: 'rank' }> }) {
+  const { t } = useTranslation();
+  const category = t(RANK_METRIC_LABEL[item.metric] ?? '');
+  return (
+    <Link
+      to="/leaderboard"
+      className="card flex items-center gap-3 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600"
+    >
+      <span className={`shrink-0 ${RANK_MEDAL_COLOR[item.rank] ?? 'text-zinc-400'}`}>
+        <MedalIcon />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <Avatar username={item.actor.username} avatarUrl={item.actor.avatarUrl} size={20} />
+          <span className="min-w-0 truncate">
+            <Trans
+              i18nKey="feed.rankLine"
+              values={{ user: item.actor.username, rank: item.rank, category }}
+              components={{ a: <span className={strongClass} />, s: <span className={strongClass} /> }}
+            />
+          </span>
+          <span className="ml-auto shrink-0 text-xs text-zinc-400">{relativeTime(item.at)}</span>
+        </div>
+        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          {t(item.scope === 'global' ? 'feed.rankScopeGlobal' : 'feed.rankScopeFriends')}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// Médaille filaire (même tracé que la page Classement) — teinte via currentColor.
+function MedalIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5 fill-none stroke-current"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15" />
+      <path d="M11 12 5.12 2.2M13 12l5.88-9.8M8 7h8" />
+      <circle cx="12" cy="17" r="5" />
+      <path d="M12 18v-2h-.5" />
     </svg>
   );
 }

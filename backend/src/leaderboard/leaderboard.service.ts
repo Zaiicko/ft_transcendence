@@ -43,6 +43,17 @@ export interface LeaderboardResult {
   me: { rank: number; score: number } | null;
 }
 
+// Jalon fraîchement enregistré, renvoyé pour diffusion temps réel dans le feed.
+export interface RecordedMilestone {
+  id: number;
+  subject: { id: number; username: string; avatarUrl: string | null };
+  metric: LeaderboardMetric;
+  scope: 'global' | 'friends';
+  viewerId: number | null; // null = global (tous les amis du sujet), sinon l'observateur
+  rank: number;
+  createdAt: Date;
+}
+
 @Injectable()
 export class LeaderboardService {
   constructor(private readonly prisma: PrismaService) {}
@@ -122,6 +133,143 @@ export class LeaderboardService {
 
     const me = await this.computeMyRank(viewerId, table, where);
     return { metric, scope, window, rows, me };
+  }
+
+  // Récompenses de classement d'un utilisateur : pour chaque métrique, son rang
+  // GLOBAL all-time, ne gardant que les podiums (rang ≤ 3). Sert à afficher un
+  // badge à côté du pseudo. Même départage que le classement (score DESC puis
+  // premier arrivé au score). Portée globale (userIds indéfini) et fenêtre all
+  // (since indéfini).
+  async getRankBadges(userId: number): Promise<{ metric: LeaderboardMetric; rank: number }[]> {
+    const metrics: LeaderboardMetric[] = ['completions', 'played', 'reviews'];
+    const badges: { metric: LeaderboardMetric; rank: number }[] = [];
+    for (const metric of metrics) {
+      const table = Prisma.raw(`"${TABLE[metric]}"`);
+      const where = this.whereSql(metric, undefined, undefined);
+      const me = await this.computeMyRank(userId, table, where);
+      if (me && me.rank <= 3) badges.push({ metric, rank: me.rank });
+    }
+    return badges;
+  }
+
+  // Détecte et enregistre les jalons « entrée dans le top 3 » déclenchés par une
+  // action du sujet sur `metric` (chaque action = +1 au score). Renvoie les
+  // jalons NOUVELLEMENT créés (pour push feed). Coût : ~quelques requêtes
+  // indexées, indépendant du nombre d'amis (la portée amis est ensembliste).
+  async recordMilestones(
+    subjectId: number,
+    metric: LeaderboardMetric,
+  ): Promise<RecordedMilestone[]> {
+    const table = Prisma.raw(`"${TABLE[metric]}"`);
+    const where = this.whereSql(metric, undefined, undefined);
+
+    // Score + dernière occurrence du sujet (global all-time). Départage : le
+    // premier arrivé au score passe devant ⇒ MAX(createdAt) le plus ancien gagne.
+    const mine = await this.prisma.$queryRaw<{ score: number; lastAt: Date | null }[]>(Prisma.sql`
+      SELECT COUNT(*)::int AS "score", MAX("createdAt") AS "lastAt"
+      FROM ${table} WHERE ${where} AND "userId" = ${subjectId}
+    `);
+    const score = mine[0]?.score ?? 0;
+    const lastAt = mine[0]?.lastAt ?? null;
+    if (score === 0 || !lastAt) return [];
+
+    const candidates: { scope: 'global' | 'friends'; viewerId: number | null; rank: number }[] = [];
+
+    // --- GLOBAL : rang exact (même départage que le classement) ---
+    const aboveGlobal = await this.prisma.$queryRaw<{ above: number }[]>(Prisma.sql`
+      SELECT COUNT(*)::int AS "above" FROM (
+        SELECT "userId" FROM ${table} WHERE ${where} GROUP BY "userId"
+        HAVING COUNT(*) > ${score} OR (COUNT(*) = ${score} AND MAX("createdAt") < ${lastAt})
+      ) t
+    `);
+    const globalRank = (aboveGlobal[0]?.above ?? 0) + 1;
+
+    if (globalRank <= 3) {
+      candidates.push({ scope: 'global', viewerId: null, rank: globalRank });
+    }
+
+    // --- AMIS : UNE requête ensembliste renvoie les observateurs V (amis du
+    // sujet) dont le cercle place le sujet dans le top 3, sans boucle applicative.
+    // Tournée MÊME si le sujet est top 3 global (choix « toujours les deux » :
+    // un ami top 3 global déclenche aussi la carte « top 3 de tes amis »).
+    const hits = await this.prisma.$queryRaw<{ viewer: number; rank: number }[]>(Prisma.sql`
+      WITH scores AS (
+        SELECT "userId" AS uid, COUNT(*)::int AS sc, MAX("createdAt") AS last
+        FROM ${table} WHERE ${where} GROUP BY "userId"
+      ),
+      viewers AS (
+        SELECT DISTINCT
+          CASE WHEN "requesterId" = ${subjectId} THEN "addresseeId" ELSE "requesterId" END AS v
+        FROM "Friendship"
+        WHERE "status" = 'ACCEPTED' AND ${subjectId} IN ("requesterId", "addresseeId")
+      ),
+      members AS (
+        SELECT v AS v, v AS uid FROM viewers
+        UNION
+        SELECT viewers.v AS v,
+               CASE WHEN f."requesterId" = viewers.v THEN f."addresseeId" ELSE f."requesterId" END AS uid
+        FROM viewers
+        JOIN "Friendship" f ON f."status" = 'ACCEPTED'
+          AND (f."requesterId" = viewers.v OR f."addresseeId" = viewers.v)
+      )
+      SELECT m.v AS "viewer",
+             (COUNT(*) FILTER (
+                WHERE sc.sc > ${score} OR (sc.sc = ${score} AND sc.last < ${lastAt})
+             ))::int + 1 AS "rank"
+      FROM members m
+      JOIN scores sc ON sc.uid = m.uid
+      WHERE m.uid <> ${subjectId}
+      GROUP BY m.v
+      HAVING COUNT(*) FILTER (
+        WHERE sc.sc > ${score} OR (sc.sc = ${score} AND sc.last < ${lastAt})
+      ) <= 2
+    `);
+    for (const h of hits) candidates.push({ scope: 'friends', viewerId: h.viewer, rank: h.rank });
+
+    if (candidates.length === 0) return [];
+
+    // --- Anti-spam : ne garder que les NOUVEAUX meilleurs rangs par
+    // (scope, viewer). Un utilisateur ne reçoit donc qu'un event quand il
+    // progresse (3 → 2 → 1), jamais de doublon ni d'oscillation.
+    const existing = await this.prisma.leaderboardMilestone.findMany({
+      where: { subjectId, metric },
+      select: { scope: true, viewerId: true, rank: true },
+    });
+    const bestByKey = new Map<string, number>();
+    for (const e of existing) {
+      const k = `${e.scope}:${e.viewerId ?? 'null'}`;
+      const cur = bestByKey.get(k);
+      if (cur === undefined || e.rank < cur) bestByKey.set(k, e.rank);
+    }
+    const toCreate = candidates.filter((c) => {
+      const best = bestByKey.get(`${c.scope}:${c.viewerId ?? 'null'}`);
+      return best === undefined || c.rank < best;
+    });
+    if (toCreate.length === 0) return [];
+
+    const created: RecordedMilestone[] = [];
+    for (const c of toCreate) {
+      const row = await this.prisma.leaderboardMilestone.create({
+        data: { subjectId, metric, scope: c.scope, viewerId: c.viewerId, rank: c.rank },
+        select: {
+          id: true,
+          rank: true,
+          viewerId: true,
+          createdAt: true,
+          subject: { select: actorSelect },
+        },
+      });
+      created.push({
+        id: row.id,
+        subject: row.subject,
+        metric,
+        scope: c.scope,
+        viewerId: row.viewerId,
+        rank: row.rank,
+        createdAt: row.createdAt,
+      });
+    }
+    return created;
   }
 
   // Rang exact du viewer, calculé côté Postgres (aucun chargement de la liste

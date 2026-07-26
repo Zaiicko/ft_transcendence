@@ -1,5 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FriendshipStatus, PlayStatus, Prisma } from '@prisma/client';
+import {
+  LeaderboardMetric,
+  LeaderboardService,
+  RecordedMilestone,
+} from '../leaderboard/leaderboard.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { FeedGateway } from './feed.gateway';
 
@@ -51,7 +56,16 @@ export type FeedItem =
   | { id: string; kind: 'played'; at: string; actor: FeedActor; game: unknown }
   | { id: string; kind: 'completed'; at: string; actor: FeedActor; game: unknown; platform: string }
   | { id: string; kind: 'review-like'; at: string; actor: FeedActor; review: unknown }
-  | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: unknown };
+  | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: unknown }
+  | {
+      id: string;
+      kind: 'rank';
+      at: string;
+      actor: FeedActor;
+      metric: LeaderboardMetric;
+      scope: 'global' | 'friends';
+      rank: number;
+    };
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 50;
@@ -63,6 +77,7 @@ export class FeedService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly gateway: FeedGateway,
+    private readonly leaderboard: LeaderboardService,
   ) {}
 
   // IDs des amis acceptés (dans les deux sens de la relation)
@@ -97,9 +112,12 @@ export class FeedService {
     const wantPlayed = !filter || filter === 'played';
     const wantCompleted = !filter || filter === 'completed';
     const wantLikes = !filter || filter === 'likes';
+    // Les jalons de classement n'apparaissent que dans l'onglet « tout ».
+    const wantRank = !filter;
 
     // On sur-échantillonne chaque source demandée, on fusionne, on trie, on tronque.
-    const [reviews, playedRaw, completions, reviewLikes, commentLikes] = await Promise.all([
+    const [reviews, playedRaw, completions, reviewLikes, commentLikes, milestones] =
+      await Promise.all([
       wantReviews
         ? this.prisma.review.findMany({
             where: { userId: { in: friends }, ...olderThan },
@@ -166,6 +184,29 @@ export class FeedService {
             },
           })
         : [],
+      wantRank
+        ? this.prisma.leaderboardMilestone.findMany({
+            where: {
+              ...olderThan,
+              OR: [
+                // Jalons GLOBAUX d'un ami (visibles par tous ses amis)
+                { scope: 'global', subjectId: { in: friends } },
+                // Jalons « top 3 de MES amis » qui me sont adressés
+                { scope: 'friends', viewerId: viewerId },
+              ],
+            },
+            orderBy: { createdAt: 'desc' },
+            take,
+            select: {
+              id: true,
+              createdAt: true,
+              metric: true,
+              scope: true,
+              rank: true,
+              subject: { select: actorSelect },
+            },
+          })
+        : [],
     ]);
 
     // Déduplication : un « jeu fait » dont l'user a aussi écrit un avis est
@@ -178,6 +219,7 @@ export class FeedService {
       ...completions.map((c) => this.completedItem(c)),
       ...reviewLikes.map((l) => this.reviewLikeItem(l)),
       ...commentLikes.map((l) => this.commentLikeItem(l)),
+      ...milestones.map((m) => this.rankItem(m)),
     ];
 
     items.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
@@ -270,6 +312,25 @@ export class FeedService {
     };
   }
 
+  private rankItem(m: {
+    id: number;
+    createdAt: Date;
+    metric: string;
+    scope: string;
+    rank: number;
+    subject: FeedActor;
+  }): FeedItem {
+    return {
+      id: `rank-${m.id}`,
+      kind: 'rank',
+      at: m.createdAt.toISOString(),
+      actor: m.subject,
+      metric: m.metric as LeaderboardMetric,
+      scope: m.scope as 'global' | 'friends',
+      rank: m.rank,
+    };
+  }
+
   // ---- Push temps réel (best-effort, jamais bloquant pour l'action) ----
 
   async onReviewCreated(reviewId: number): Promise<void> {
@@ -280,6 +341,7 @@ export class FeedService {
       });
       if (!review?.user) return;
       await this.broadcast(review.user.id, this.reviewItem(review));
+      await this.onRankAction(review.user.id, 'reviews');
     } catch (err) {
       this.logger.warn(`onReviewCreated failed: ${(err as Error).message}`);
     }
@@ -289,6 +351,9 @@ export class FeedService {
   // jeu, on n'émet pas (l'avis le représente déjà).
   async onGamePlayed(userId: number, gameId: number): Promise<void> {
     try {
+      // Le jeu compte pour la métrique « played » même si un avis existe : on
+      // détecte le jalon indépendamment de la carte « jeu fait » ci-dessous.
+      await this.onRankAction(userId, 'played');
       const hasReview = await this.prisma.review.findFirst({
         where: { userId, gameId },
         select: { id: true },
@@ -360,6 +425,8 @@ export class FeedService {
         if (!row.user) continue;
         await this.broadcast(row.user.id, this.completedItem(row));
       }
+      // Une seule détection de jalon après le batch de nouvelles complétions.
+      await this.onRankAction(userId, 'completions');
     } catch (err) {
       this.logger.warn(`syncCompletions failed: ${(err as Error).message}`);
     }
@@ -416,5 +483,27 @@ export class FeedService {
   private async broadcast(actorId: number, item: FeedItem): Promise<void> {
     const friends = await this.friendIds(actorId);
     for (const id of friends) this.gateway.emitToUser(id, 'feed:new', item);
+  }
+
+  // Détecte les jalons de classement provoqués par une action (+1 sur `metric`)
+  // et les pousse au feed. Best-effort : n'interrompt jamais l'action appelante.
+  async onRankAction(userId: number, metric: LeaderboardMetric): Promise<void> {
+    try {
+      const created = await this.leaderboard.recordMilestones(userId, metric);
+      for (const m of created) await this.broadcastMilestone(m);
+    } catch (err) {
+      this.logger.warn(`onRankAction(${metric}) failed: ${(err as Error).message}`);
+    }
+  }
+
+  // Global ⇒ à tous les amis du sujet ; amis ⇒ au seul observateur concerné.
+  private async broadcastMilestone(m: RecordedMilestone): Promise<void> {
+    const item = this.rankItem(m);
+    if (m.scope === 'global') {
+      const friends = await this.friendIds(m.subject.id);
+      for (const id of friends) this.gateway.emitToUser(id, 'feed:new', item);
+    } else if (m.viewerId != null) {
+      this.gateway.emitToUser(m.viewerId, 'feed:new', item);
+    }
   }
 }

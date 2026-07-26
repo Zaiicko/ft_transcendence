@@ -341,7 +341,10 @@
     "timeDays": "{{count}} dni temu",
     "tabCompleted": "Zakończenia",
     "completed": "<a>{{user}}</a> zakończono <s>{{game}}</s> 100%",
-    "completedBadge": "Zrealizowano w 100%"
+    "completedBadge": "Zrealizowano w 100%",
+    "rankLine": "<a>{{user}}</a> wszedł do <s>top {{rank}}</s> — {{category}}",
+    "rankScopeGlobal": "Ranking globalny",
+    "rankScopeFriends": "Wśród Twoich znajomych"
   },
   "leaderboard": {
     "title": "Ranking",
@@ -355,6 +358,8 @@
     "windowMonth": "Ten miesiąc",
     "yourRank": "Twoja pozycja",
     "rankLabel": "Pozycja {{rank}}",
+    "badgeTitle": "Światowy top 3",
+    "badgeAria": "Wyróżnienia w rankingu",
     "emptyTitle": "Nie ma jeszcze nic do sklasyfikowania",
     "emptyFriends": "Dodaj znajomych i zacznij ukańczać gry, zapisywać rozgrywki i pisać recenzje, aby wspólnie piąć się w rankingu.",
     "emptyGlobal": "Bądź pierwszy w rankingu — ukańczaj gry, zapisuj rozgrywki i pisz recenzje.",

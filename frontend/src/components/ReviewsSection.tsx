@@ -8,6 +8,7 @@ import { ReviewTargetKind, useReviewSocket } from '../games/useReviewSocket';
 import { ApiError, apiFetch } from '../lib/api';
 import Avatar from './Avatar';
 import EmptyState, { PencilIcon } from './EmptyState';
+import LeaderboardRankBadge from './LeaderboardRankBadge';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import ReviewComments from './ReviewComments';
 import ShareButton from './ShareButton';
@@ -369,18 +370,22 @@ export default function ReviewsSection({
             >
               <div className="flex items-center gap-3">
                 {r.user ? (
-                  <Link
-                    to={`/u/${r.user.username}`}
-                    className="flex min-w-0 items-center gap-3 hover:opacity-80"
-                  >
-                    <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={32} />
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold">{r.user.username}</div>
-                      <div className="text-xs text-zinc-500">
-                        {new Date(r.createdAt).toLocaleDateString(i18n.language)}
+                  <>
+                    <Link
+                      to={`/u/${r.user.username}`}
+                      className="flex min-w-0 items-center gap-3 hover:opacity-80"
+                    >
+                      <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={32} />
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-semibold">{r.user.username}</div>
+                        <div className="text-xs text-zinc-500">
+                          {new Date(r.createdAt).toLocaleDateString(i18n.language)}
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                    {/* Badge de rang (top 3 global) à côté du pseudo, hors du lien */}
+                    <LeaderboardRankBadge userId={r.user.id} />
+                  </>
                 ) : (
                   <div className="flex min-w-0 items-center gap-3">
                     <Avatar username="?" size={32} />

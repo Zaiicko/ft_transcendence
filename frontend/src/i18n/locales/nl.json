@@ -341,7 +341,10 @@
     "timeDays": "{{count}} d geleden",
     "tabCompleted": "Voltooiingen",
     "completed": "<a>{{user}}</a> voltooid <s>{{game}}</s> 100%",
-    "completedBadge": "100% voltooid"
+    "completedBadge": "100% voltooid",
+    "rankLine": "<a>{{user}}</a> staat in de <s>top {{rank}}</s> — {{category}}",
+    "rankScopeGlobal": "Wereldwijde ranglijst",
+    "rankScopeFriends": "Onder je vrienden"
   },
   "leaderboard": {
     "title": "Ranglijst",
@@ -355,6 +358,8 @@
     "windowMonth": "Deze maand",
     "yourRank": "Jouw positie",
     "rankLabel": "Positie {{rank}}",
+    "badgeTitle": "Wereldwijde top 3",
+    "badgeAria": "Ranglijst-onderscheidingen",
     "emptyTitle": "Nog niets om te ranken",
     "emptyFriends": "Voeg vrienden toe en begin met het voltooien van games, het bijhouden van gespeelde games en het schrijven van reviews om samen te stijgen.",
     "emptyGlobal": "Wees de eerste op de ranglijst — voltooi games, houd gespeelde games bij en schrijf reviews.",

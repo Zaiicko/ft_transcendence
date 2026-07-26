@@ -341,7 +341,10 @@
     "timeDays": "{{count}} g önce",
     "tabCompleted": "Tamamlananlar",
     "completed": "<a>{{user}}</a> tamamlandı <s>{{game}}</s> %100",
-    "completedBadge": "%100 tamamlandı"
+    "completedBadge": "%100 tamamlandı",
+    "rankLine": "<a>{{user}}</a> <s>ilk {{rank}}</s> arasına girdi — {{category}}",
+    "rankScopeGlobal": "Küresel sıralama",
+    "rankScopeFriends": "Arkadaşların arasında"
   },
   "leaderboard": {
     "title": "Sıralama",
@@ -355,6 +358,8 @@
     "windowMonth": "Bu ay",
     "yourRank": "Sıralamadaki yerin",
     "rankLabel": "Sıra {{rank}}",
+    "badgeTitle": "Küresel ilk 3",
+    "badgeAria": "Sıralama ödülleri",
     "emptyTitle": "Henüz sıralanacak bir şey yok",
     "emptyFriends": "Arkadaş ekle; birlikte yükselmek için oyunları tamamlamaya, oynadıklarını kaydetmeye ve inceleme yazmaya başla.",
     "emptyGlobal": "Sıralamada ilk sen ol — oyunları tamamla, oynadıklarını kaydet ve inceleme yaz.",

@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtPayload } from '../auth/auth.service';
@@ -45,5 +45,12 @@ export class LeaderboardController {
       w,
       Number.isFinite(n) ? n : undefined,
     );
+  }
+
+  // Récompenses de classement d'un utilisateur (podiums globaux all-time) : sert
+  // à afficher un badge à côté de son pseudo. Chemin distinct de @Get() racine.
+  @Get('badges/:userId')
+  badges(@Param('userId', ParseIntPipe) userId: number) {
+    return this.leaderboard.getRankBadges(userId);
   }
 }

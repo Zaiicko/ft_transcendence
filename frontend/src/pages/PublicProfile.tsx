@@ -9,6 +9,7 @@ import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import LeaderboardRankBadge from '../components/LeaderboardRankBadge';
 import Modal from '../components/Modal';
 import ProfileLists from '../components/ProfileLists';
 import ProfilePlayedGames from '../components/ProfilePlayedGames';
@@ -309,6 +310,7 @@ export default function PublicProfile() {
             {profile.provider === 'FORTYTWO' && <FortyTwoBadge />}
             {profile.provider === 'DISCORD' && <DiscordBadge />}
             {profile.steamId && <SteamBadge />}
+            <LeaderboardRankBadge userId={profile.id} />
           </h1>
           {profile.bio && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{profile.bio}</p>}
           <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">

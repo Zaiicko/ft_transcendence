@@ -187,7 +187,16 @@ export type FeedItem =
   | { id: string; kind: 'played'; at: string; actor: FeedActor; game: FeedGameRef }
   | { id: string; kind: 'completed'; at: string; actor: FeedActor; game: FeedGameRef; platform: string }
   | { id: string; kind: 'review-like'; at: string; actor: FeedActor; review: FeedReviewTarget }
-  | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: FeedCommentTarget };
+  | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: FeedCommentTarget }
+  | {
+      id: string;
+      kind: 'rank';
+      at: string;
+      actor: FeedActor;
+      metric: LeaderboardMetric;
+      scope: 'global' | 'friends';
+      rank: number;
+    };
 
 export interface FeedPage {
   items: FeedItem[];
@@ -212,6 +221,13 @@ export interface LeaderboardResult {
   rows: LeaderboardRow[];
   // Rang du viewer même hors du top affiché ; null s'il n'est pas classé.
   me: { rank: number; score: number } | null;
+}
+
+// Podium global (all-time) d'un utilisateur sur une métrique : alimente le badge
+// de rang affiché à côté du pseudo. Seuls les rangs 1 à 3 sont renvoyés.
+export interface LeaderboardBadge {
+  metric: LeaderboardMetric;
+  rank: number;
 }
 
 // Viewer's relationship with the profile owner (drives the friend button)

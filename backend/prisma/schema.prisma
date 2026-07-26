@@ -136,6 +136,8 @@ model User {
   notifications      Notification[]
   refreshTokens      RefreshToken[]
   verificationTokens VerificationToken[]
+  milestonesAsSubject LeaderboardMilestone[] @relation("MilestoneSubject")
+  milestonesAsViewer  LeaderboardMilestone[] @relation("MilestoneViewer")
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -172,6 +174,28 @@ model Friendship {
   createdAt   DateTime         @default(now())
 
   @@unique([requesterId, addresseeId])
+}
+
+// Jalon de classement : instant où un utilisateur (subject) entre dans le top 3
+// d'un classement, pour l'afficher dans le feed. `scope` = 'global' (viewerId
+// null, visible par tous ses amis) ou 'friends' (viewerId = l'observateur dont
+// le cercle est concerné, car « top 3 de tes amis » est relatif à chacun).
+// Anti-spam applicatif : on n'enregistre qu'un NOUVEAU meilleur rang par
+// (subject, metric, scope, viewer).
+model LeaderboardMilestone {
+  id        Int      @id @default(autoincrement())
+  subject   User     @relation("MilestoneSubject", fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId Int
+  metric    String // 'completions' | 'played' | 'reviews'
+  scope     String // 'global' | 'friends'
+  viewer    User?    @relation("MilestoneViewer", fields: [viewerId], references: [id], onDelete: Cascade)
+  viewerId  Int? // null pour global ; l'observateur concerné pour la portée amis
+  rank      Int
+  createdAt DateTime @default(now())
+
+  @@index([viewerId, createdAt])
+  @@index([subjectId, createdAt])
+  @@index([subjectId, metric, scope, viewerId])
 }
 
 // ---------- Game catalog (imported from IGDB) ----------
