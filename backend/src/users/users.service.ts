@@ -108,6 +108,10 @@ export class UsersService {
       bio: user.bio,
       provider: user.provider,
       steamId: user.steamId,
+      // Badges PlayStation / Xbox sur le profil (même jeu de badges que la liste
+      // d'amis). On n'expose que le booléen de liaison, jamais l'ID interne.
+      psnLinked: user.psnAccountId !== null,
+      xboxLinked: user.xboxXuid !== null,
       createdAt: user.createdAt,
       reviewCount,
       playedCount,

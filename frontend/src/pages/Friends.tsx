@@ -1,5 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import EmptyState, { UsersIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
@@ -7,6 +8,7 @@ import FortyTwoBadge from '../components/FortyTwoBadge';
 import PsnBadge from '../components/PsnBadge';
 import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
+import XboxBadge from '../components/XboxBadge';
 import { useFriendSocket } from '../friends/useFriendSocket';
 import { usePresenceSocket } from '../friends/usePresenceSocket';
 import { apiFetch, ApiError } from '../lib/api';
@@ -177,14 +179,20 @@ export default function Friends() {
           <ul className="flex flex-col gap-2">
             {incoming.map((r) => (
               <li key={r.id} className="card flex items-center gap-3 px-3 py-2">
-                <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
-                <span className="flex items-center gap-2">
-                  {r.user.username}
-                  {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                  {r.user.provider === 'DISCORD' && <DiscordBadge />}
-                  {r.user.steamId && <SteamBadge />}
-                  {r.user.psnLinked && <PsnBadge />}
-                </span>
+                <Link
+                  to={`/u/${r.user.username}`}
+                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
+                >
+                  <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate">{r.user.username}</span>
+                    {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                    {r.user.provider === 'DISCORD' && <DiscordBadge />}
+                    {r.user.steamId && <SteamBadge />}
+                    {r.user.psnLinked && <PsnBadge />}
+                    {r.user.xboxLinked && <XboxBadge />}
+                  </span>
+                </Link>
                 <div className="ml-auto flex gap-2">
                   <button
                     type="button"
@@ -236,14 +244,20 @@ export default function Friends() {
           <ul className="flex flex-col gap-2">
             {outgoing.map((r) => (
               <li key={r.id} className="card flex items-center gap-3 px-3 py-2">
-                <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
-                <span className="flex items-center gap-2">
-                  {r.user.username}
-                  {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                  {r.user.provider === 'DISCORD' && <DiscordBadge />}
-                  {r.user.steamId && <SteamBadge />}
-                  {r.user.psnLinked && <PsnBadge />}
-                </span>
+                <Link
+                  to={`/u/${r.user.username}`}
+                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
+                >
+                  <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate">{r.user.username}</span>
+                    {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                    {r.user.provider === 'DISCORD' && <DiscordBadge />}
+                    {r.user.steamId && <SteamBadge />}
+                    {r.user.psnLinked && <PsnBadge />}
+                    {r.user.xboxLinked && <XboxBadge />}
+                  </span>
+                </Link>
                 <span className="ml-auto text-sm text-zinc-500">{t('friends.pending')}</span>
                 <button
                   type="button"
@@ -275,14 +289,20 @@ export default function Friends() {
           <ul className="flex flex-col gap-2">
             {suggestions.map((s) => (
               <li key={s.id} className="card flex items-center gap-3 px-3 py-2">
-                <Avatar username={s.username} avatarUrl={s.avatarUrl} size={28} />
-                <span className="flex items-center gap-2">
-                  {s.username}
-                  {s.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                  {s.provider === 'DISCORD' && <DiscordBadge />}
-                  {s.steamId && <SteamBadge />}
-                  {s.psnLinked && <PsnBadge />}
-                </span>
+                <Link
+                  to={`/u/${s.username}`}
+                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
+                >
+                  <Avatar username={s.username} avatarUrl={s.avatarUrl} size={28} />
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate">{s.username}</span>
+                    {s.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                    {s.provider === 'DISCORD' && <DiscordBadge />}
+                    {s.steamId && <SteamBadge />}
+                    {s.psnLinked && <PsnBadge />}
+                    {s.xboxLinked && <XboxBadge />}
+                  </span>
+                </Link>
                 <button
                   type="button"
                   onClick={() => sendRequest(s.username)}
@@ -308,23 +328,30 @@ export default function Friends() {
           <ul className="flex flex-col gap-2">
             {friends.map((f) => (
               <li key={f.id} className="card flex items-center gap-3 px-3 py-2">
-                {/* Avatar + pastille de présence posée sur son coin bas-droit */}
-                <span className="relative shrink-0">
-                  <Avatar username={f.username} avatarUrl={f.avatarUrl} size={32} />
-                  <span
-                    className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-zinc-50 dark:border-zinc-900 ${
-                      f.isOnline ? 'bg-green-500' : 'bg-zinc-400 dark:bg-zinc-600'
-                    }`}
-                    title={f.isOnline ? t('friends.online') : t('friends.offline')}
-                  />
-                </span>
-                <span className="flex items-center gap-2">
-                  {f.username}
-                  {f.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                  {f.provider === 'DISCORD' && <DiscordBadge />}
-                  {f.steamId && <SteamBadge />}
-                  {f.psnLinked && <PsnBadge />}
-                </span>
+                {/* Avatar + pseudo cliquables → profil public de l'ami */}
+                <Link
+                  to={`/u/${f.username}`}
+                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
+                >
+                  {/* Avatar + pastille de présence posée sur son coin bas-droit */}
+                  <span className="relative shrink-0">
+                    <Avatar username={f.username} avatarUrl={f.avatarUrl} size={32} />
+                    <span
+                      className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-zinc-50 dark:border-zinc-900 ${
+                        f.isOnline ? 'bg-green-500' : 'bg-zinc-400 dark:bg-zinc-600'
+                      }`}
+                      title={f.isOnline ? t('friends.online') : t('friends.offline')}
+                    />
+                  </span>
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate">{f.username}</span>
+                    {f.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                    {f.provider === 'DISCORD' && <DiscordBadge />}
+                    {f.steamId && <SteamBadge />}
+                    {f.psnLinked && <PsnBadge />}
+                    {f.xboxLinked && <XboxBadge />}
+                  </span>
+                </Link>
                 <button
                   type="button"
                   onClick={() => unfriend(f.id)}

@@ -263,6 +263,8 @@ export interface PublicProfile {
   bio: string | null;
   provider: AuthProvider;
   steamId: string | null;
+  psnLinked: boolean;
+  xboxLinked: boolean;
   createdAt: string;
   reviewCount: number;
   playedCount: number;

@@ -11,6 +11,8 @@ import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import LeaderboardRankBadge from '../components/LeaderboardRankBadge';
 import Modal from '../components/Modal';
+import PsnBadge from '../components/PsnBadge';
+import XboxBadge from '../components/XboxBadge';
 import ProfileLists from '../components/ProfileLists';
 import ProfilePlayedGames from '../components/ProfilePlayedGames';
 import ProfileReviews from '../components/ProfileReviews';
@@ -310,6 +312,8 @@ export default function PublicProfile() {
             {profile.provider === 'FORTYTWO' && <FortyTwoBadge />}
             {profile.provider === 'DISCORD' && <DiscordBadge />}
             {profile.steamId && <SteamBadge />}
+            {profile.psnLinked && <PsnBadge />}
+            {profile.xboxLinked && <XboxBadge />}
             <LeaderboardRankBadge userId={profile.id} />
           </h1>
           {profile.bio && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{profile.bio}</p>}
