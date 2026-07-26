@@ -184,7 +184,11 @@
       "add": "Aggiungi password",
       "saving": "Salvataggio…",
       "saved": "Password salvata!",
-      "error": "Impossibile salvare la password"
+      "error": "Impossibile salvare la password",
+      "forgot": "Password dimenticata?",
+      "forgotSending": "Invio…",
+      "forgotSent": "Un link per il reset è stato inviato a {{email}}.",
+      "forgotError": "Impossibile inviare l'email di reset"
     },
     "delete": {
       "title": "Elimina account",

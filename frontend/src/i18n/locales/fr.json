@@ -184,7 +184,11 @@
       "add": "Ajouter le mot de passe",
       "saving": "Enregistrement…",
       "saved": "Mot de passe enregistré !",
-      "error": "Impossible d'enregistrer le mot de passe"
+      "error": "Impossible d'enregistrer le mot de passe",
+      "forgot": "Mot de passe oublié ?",
+      "forgotSending": "Envoi…",
+      "forgotSent": "Un lien de réinitialisation a été envoyé à {{email}}.",
+      "forgotError": "Impossible d'envoyer l'email de réinitialisation"
     },
     "delete": {
       "title": "Supprimer le compte",

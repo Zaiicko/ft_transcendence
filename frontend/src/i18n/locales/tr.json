@@ -184,7 +184,11 @@
       "add": "Şifre ekle",
       "saving": "Kaydediliyor…",
       "saved": "Şifre kaydedildi!",
-      "error": "Şifre kaydedilemedi"
+      "error": "Şifre kaydedilemedi",
+      "forgot": "Şifreni mi unuttun?",
+      "forgotSending": "Gönderiliyor…",
+      "forgotSent": "{{email}} adresine sıfırlama bağlantısı gönderildi.",
+      "forgotError": "Sıfırlama e-postası gönderilemedi"
     },
     "delete": {
       "title": "Hesabı sil",

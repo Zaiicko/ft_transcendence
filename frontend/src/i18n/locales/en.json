@@ -184,7 +184,11 @@
       "add": "Add password",
       "saving": "Saving…",
       "saved": "Password saved!",
-      "error": "Could not save password"
+      "error": "Could not save password",
+      "forgot": "Forgot your password?",
+      "forgotSending": "Sending…",
+      "forgotSent": "A reset link has been sent to {{email}}.",
+      "forgotError": "Could not send the reset email"
     },
     "delete": {
       "title": "Delete account",

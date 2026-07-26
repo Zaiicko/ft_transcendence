@@ -184,7 +184,11 @@
       "add": "Dodaj hasło",
       "saving": "Zapisywanie…",
       "saved": "Hasło zapisane!",
-      "error": "Nie udało się zapisać hasła"
+      "error": "Nie udało się zapisać hasła",
+      "forgot": "Nie pamiętasz hasła?",
+      "forgotSending": "Wysyłanie…",
+      "forgotSent": "Link do resetowania został wysłany na {{email}}.",
+      "forgotError": "Nie udało się wysłać e-maila resetującego"
     },
     "delete": {
       "title": "Usuń konto",

@@ -69,6 +69,9 @@ export default function Settings() {
   const [savingPassword, setSavingPassword] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSaved, setPasswordSaved] = useState(false);
+  const [forgotSending, setForgotSending] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotError, setForgotError] = useState<string | null>(null);
 
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
@@ -170,6 +173,27 @@ export default function Settings() {
       setPasswordError(err instanceof ApiError ? err.message : t('settings.password.error'));
     } finally {
       setSavingPassword(false);
+    }
+  }
+
+  // « Mot de passe oublié ? » depuis les paramètres (déjà connecté) : envoie le
+  // même email de réinitialisation que la page publique, à sa propre adresse.
+  // Utile quand on a oublié son mot de passe actuel et qu'on ne peut donc pas
+  // remplir le champ requis du formulaire de changement.
+  async function handleForgotPassword() {
+    setForgotError(null);
+    setForgotSent(false);
+    setForgotSending(true);
+    try {
+      await apiFetch('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email: user!.email }),
+      });
+      setForgotSent(true);
+    } catch (err) {
+      setForgotError(err instanceof ApiError ? err.message : t('settings.password.forgotError'));
+    } finally {
+      setForgotSending(false);
     }
   }
 
@@ -397,14 +421,36 @@ export default function Settings() {
         )}
         <div className="flex flex-col gap-3">
           {user.hasPassword && (
-            <input
-              type="password"
-              required
-              placeholder={t('settings.password.currentPasswordPlaceholder')}
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="field px-4 py-1.5"
-            />
+            <>
+              <input
+                type="password"
+                required
+                placeholder={t('settings.password.currentPasswordPlaceholder')}
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="field px-4 py-1.5"
+              />
+              {/* Oublié son mot de passe actuel : envoi d'un lien de réinit par email */}
+              <div className="-mt-1 text-sm">
+                {forgotSent ? (
+                  <p className="text-green-400">
+                    {t('settings.password.forgotSent', { email: user.email })}
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={forgotSending}
+                    className="self-start text-zinc-400 underline transition hover:text-accent disabled:opacity-50"
+                  >
+                    {forgotSending
+                      ? t('settings.password.forgotSending')
+                      : t('settings.password.forgot')}
+                  </button>
+                )}
+                {forgotError && <p className="mt-1 text-red-400">{forgotError}</p>}
+              </div>
+            </>
           )}
           <input
             type="password"

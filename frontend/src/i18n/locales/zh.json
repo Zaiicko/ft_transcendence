@@ -184,7 +184,11 @@
       "add": "添加密码",
       "saving": "保存中…",
       "saved": "密码已保存！",
-      "error": "无法保存密码"
+      "error": "无法保存密码",
+      "forgot": "忘记密码？",
+      "forgotSending": "发送中…",
+      "forgotSent": "重置链接已发送至 {{email}}。",
+      "forgotError": "无法发送重置邮件"
     },
     "delete": {
       "title": "删除账号",

@@ -184,7 +184,11 @@
       "add": "Adicionar palavra-passe",
       "saving": "A guardar…",
       "saved": "Palavra-passe guardada!",
-      "error": "Não foi possível guardar a palavra-passe"
+      "error": "Não foi possível guardar a palavra-passe",
+      "forgot": "Esqueceu a senha?",
+      "forgotSending": "Enviando…",
+      "forgotSent": "Um link de redefinição foi enviado para {{email}}.",
+      "forgotError": "Não foi possível enviar o email de redefinição"
     },
     "delete": {
       "title": "Eliminar conta",

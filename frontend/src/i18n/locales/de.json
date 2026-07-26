@@ -184,7 +184,11 @@
       "add": "Passwort hinzufügen",
       "saving": "Speichert…",
       "saved": "Passwort gespeichert!",
-      "error": "Passwort konnte nicht gespeichert werden"
+      "error": "Passwort konnte nicht gespeichert werden",
+      "forgot": "Passwort vergessen?",
+      "forgotSending": "Wird gesendet…",
+      "forgotSent": "Ein Link zum Zurücksetzen wurde an {{email}} gesendet.",
+      "forgotError": "Zurücksetzungs-E-Mail konnte nicht gesendet werden"
     },
     "delete": {
       "title": "Konto löschen",

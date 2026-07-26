@@ -184,7 +184,11 @@
       "add": "Añadir contraseña",
       "saving": "Guardando…",
       "saved": "¡Contraseña guardada!",
-      "error": "No se pudo guardar la contraseña"
+      "error": "No se pudo guardar la contraseña",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "forgotSending": "Enviando…",
+      "forgotSent": "Se ha enviado un enlace de restablecimiento a {{email}}.",
+      "forgotError": "No se pudo enviar el correo de restablecimiento"
     },
     "delete": {
       "title": "Eliminar cuenta",

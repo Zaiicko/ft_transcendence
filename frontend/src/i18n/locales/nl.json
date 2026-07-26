@@ -184,7 +184,11 @@
       "add": "Wachtwoord toevoegen",
       "saving": "Bezig met opslaan…",
       "saved": "Wachtwoord opgeslagen!",
-      "error": "Kon wachtwoord niet opslaan"
+      "error": "Kon wachtwoord niet opslaan",
+      "forgot": "Wachtwoord vergeten?",
+      "forgotSending": "Verzenden…",
+      "forgotSent": "Er is een resetlink verstuurd naar {{email}}.",
+      "forgotError": "Kon de reset-e-mail niet verzenden"
     },
     "delete": {
       "title": "Account verwijderen",
