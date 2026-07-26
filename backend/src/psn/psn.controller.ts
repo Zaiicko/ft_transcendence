@@ -227,6 +227,17 @@ export class PsnController {
     const playedBy = new Map(played.map((p) => [p.gameId, p]));
     const reviewedIds = new Set(reviewed.map((r) => r.gameId));
 
+    // Dernière activité PSN (lastUpdatedDateTime des trophées) → calendrier « joué »
+    await this.users.recordLastPlayed(
+      userId,
+      matched
+        .map(({ game, title }) => {
+          const d = title.lastUpdatedDateTime ? new Date(title.lastUpdatedDateTime) : null;
+          return d && !isNaN(d.getTime()) ? { gameId: game.id, lastPlayed: d } : null;
+        })
+        .filter((x): x is { gameId: number; lastPlayed: Date } => x !== null),
+    );
+
     return matched
       .map(({ game, title }) => ({
         id: game.id,

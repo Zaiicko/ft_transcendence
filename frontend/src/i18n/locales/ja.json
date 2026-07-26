@@ -441,7 +441,13 @@
     "reviewOne": "レビュー {{count}} 件",
     "reviewMany": "レビュー {{count}} 件",
     "playedGameOne": "プレイ済み {{count}} 本",
-    "playedGameMany": "プレイ済み {{count}} 本"
+    "playedGameMany": "プレイ済み {{count}} 本",
+    "calLess": "少",
+    "calMore": "多",
+    "calCompletedLabel": "完了",
+    "calPlayedLabel": "プレイ済み",
+    "calViewPlayed": "プレイ",
+    "calViewCompleted": "完了"
   },
   "lists": {
     "heading": "リスト",
@@ -526,7 +532,13 @@
     "dlcExpansion": "拡張",
     "dlcStandalone": "スタンドアロン",
     "dlcGeneric": "DLC",
-    "rate": "評価する"
+    "rate": "評価する",
+    "completeTitle": "完了としてマーク",
+    "completedTitle": "完了",
+    "completeAria": "このゲームを完了としてマーク",
+    "uncompleteAria": "完了マークを外す",
+    "completedCountOne": "{{count}} 人のプレイヤーがこのゲームを完了しました",
+    "completedCountMany": "{{count}} 人のプレイヤーがこのゲームを完了しました"
   },
   "share": {
     "defaultTitle": "友達に共有",

@@ -112,6 +112,18 @@ export class SteamController {
       })
       .sort((a, b) => b.playtimeMinutes - a.playtimeMinutes);
 
+    // Dernière date de lancement Steam (rtime_last_played, unix s) → calendrier
+    // « joué ». Seulement les jeux réellement lancés.
+    await this.users.recordLastPlayed(
+      current.sub,
+      games
+        .map((g) => {
+          const rt = byAppId.get(g.steamAppId!)?.rtime_last_played ?? 0;
+          return rt > 0 ? { gameId: g.id, lastPlayed: new Date(rt * 1000) } : null;
+        })
+        .filter((x): x is { gameId: number; lastPlayed: Date } => x !== null),
+    );
+
     // Résumé global : sur TOUS les jeux synchronisés (pas seulement ceux du
     // catalogue), pour refléter la vraie progression Steam de l'utilisateur.
     const entries = Object.values(perGame);

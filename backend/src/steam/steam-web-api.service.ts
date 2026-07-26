@@ -12,6 +12,9 @@ export interface SteamOwnedGame {
   name?: string;
   // Total playtime, in minutes
   playtime_forever: number;
+  // Unix seconds du dernier lancement (0/absent si jamais lancé). Renvoyé par
+  // GetOwnedGames — sert à dater le jeu dans le calendrier « joué ».
+  rtime_last_played?: number;
 }
 
 export interface SteamAchievements {

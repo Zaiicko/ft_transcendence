@@ -441,7 +441,13 @@
     "reviewOne": "{{count}} inceleme",
     "reviewMany": "{{count}} inceleme",
     "playedGameOne": "{{count}} oyun oynandı",
-    "playedGameMany": "{{count}} oyun oynandı"
+    "playedGameMany": "{{count}} oyun oynandı",
+    "calLess": "Az",
+    "calMore": "Çok",
+    "calCompletedLabel": "tamamlandı",
+    "calPlayedLabel": "oynandı",
+    "calViewPlayed": "Oynanan",
+    "calViewCompleted": "Tamamlanan"
   },
   "lists": {
     "heading": "Listeler",
@@ -526,7 +532,13 @@
     "dlcExpansion": "Ek Paket",
     "dlcStandalone": "Bağımsız",
     "dlcGeneric": "DLC",
-    "rate": "Değerlendir"
+    "rate": "Değerlendir",
+    "completeTitle": "Tamamlandı olarak işaretle",
+    "completedTitle": "Tamamlandı",
+    "completeAria": "Bu oyunu tamamlandı olarak işaretle",
+    "uncompleteAria": "Tamamlandı işaretini kaldır",
+    "completedCountOne": "{{count}} oyuncu bu oyunu tamamladı",
+    "completedCountMany": "{{count}} oyuncu bu oyunu tamamladı"
   },
   "share": {
     "defaultTitle": "Bir arkadaşınla paylaş",

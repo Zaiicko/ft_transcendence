@@ -441,7 +441,13 @@
     "reviewOne": "{{count}} обзор",
     "reviewMany": "{{count}} обзоров",
     "playedGameOne": "{{count}} пройденная игра",
-    "playedGameMany": "{{count}} пройденных игр"
+    "playedGameMany": "{{count}} пройденных игр",
+    "calLess": "Меньше",
+    "calMore": "Больше",
+    "calCompletedLabel": "завершено",
+    "calPlayedLabel": "сыграно",
+    "calViewPlayed": "Сыграно",
+    "calViewCompleted": "Завершено"
   },
   "lists": {
     "heading": "Списки",
@@ -526,7 +532,13 @@
     "dlcExpansion": "Дополнение",
     "dlcStandalone": "Самостоятельное",
     "dlcGeneric": "DLC",
-    "rate": "Оценить"
+    "rate": "Оценить",
+    "completeTitle": "Отметить как завершённое",
+    "completedTitle": "Завершено",
+    "completeAria": "Отметить эту игру как завершённую",
+    "uncompleteAria": "Убрать отметку о завершении",
+    "completedCountOne": "{{count}} игрок завершил эту игру",
+    "completedCountMany": "{{count}} игроков завершили эту игру"
   },
   "share": {
     "defaultTitle": "Поделиться с другом",

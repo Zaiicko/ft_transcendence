@@ -441,7 +441,13 @@
     "reviewOne": "{{count}} avis",
     "reviewMany": "{{count}} avis",
     "playedGameOne": "{{count}} jeu fait",
-    "playedGameMany": "{{count}} jeux faits"
+    "playedGameMany": "{{count}} jeux faits",
+    "calLess": "Moins",
+    "calMore": "Plus",
+    "calCompletedLabel": "complétés",
+    "calPlayedLabel": "joués",
+    "calViewPlayed": "Joué",
+    "calViewCompleted": "Terminé"
   },
   "lists": {
     "heading": "Listes",
@@ -526,7 +532,13 @@
     "dlcExpansion": "Extension",
     "dlcStandalone": "Standalone",
     "dlcGeneric": "DLC",
-    "rate": "Noter"
+    "rate": "Noter",
+    "completeTitle": "Marquer comme terminé",
+    "completedTitle": "Terminé",
+    "completeAria": "Marquer ce jeu comme terminé",
+    "uncompleteAria": "Retirer la marque « terminé »",
+    "completedCountOne": "{{count}} joueur a fini ce jeu",
+    "completedCountMany": "{{count}} joueurs ont fini ce jeu"
   },
   "share": {
     "defaultTitle": "Partager à un ami",

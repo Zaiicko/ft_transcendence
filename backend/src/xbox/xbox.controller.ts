@@ -193,6 +193,18 @@ export class XboxController {
     const playedBy = new Map(played.map((p) => [p.gameId, p]));
     const reviewedIds = new Set(reviewed.map((r) => r.gameId));
 
+    // Dernière date de lancement Xbox (lastTimePlayed) → calendrier « joué »
+    await this.users.recordLastPlayed(
+      userId,
+      matched
+        .map(({ game, title }) => {
+          if (!title.lastPlayed) return null;
+          const d = new Date(title.lastPlayed);
+          return isNaN(d.getTime()) ? null : { gameId: game.id, lastPlayed: d };
+        })
+        .filter((x): x is { gameId: number; lastPlayed: Date } => x !== null),
+    );
+
     return matched
       .map(({ game, title }) => ({
         id: game.id,

@@ -74,4 +74,18 @@ export class GamesController {
   unmarkPlayed(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: JwtPayload) {
     return this.gamesService.unmarkPlayed(user.sub, id);
   }
+
+  // « Terminé » manuel (complétion) — alimente le calendrier vert + le feed
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/completed')
+  markCompleted(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: JwtPayload) {
+    return this.gamesService.markCompleted(user.sub, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/completed')
+  @HttpCode(204)
+  unmarkCompleted(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: JwtPayload) {
+    return this.gamesService.unmarkCompleted(user.sub, id);
+  }
 }

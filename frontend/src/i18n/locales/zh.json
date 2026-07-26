@@ -441,7 +441,13 @@
     "reviewOne": "{{count}} 条评价",
     "reviewMany": "{{count}} 条评价",
     "playedGameOne": "玩过 {{count}} 款游戏",
-    "playedGameMany": "玩过 {{count}} 款游戏"
+    "playedGameMany": "玩过 {{count}} 款游戏",
+    "calLess": "少",
+    "calMore": "多",
+    "calCompletedLabel": "已完成",
+    "calPlayedLabel": "已玩",
+    "calViewPlayed": "已玩",
+    "calViewCompleted": "已完成"
   },
   "lists": {
     "heading": "列表",
@@ -526,7 +532,13 @@
     "dlcExpansion": "扩展",
     "dlcStandalone": "独立作品",
     "dlcGeneric": "DLC",
-    "rate": "评价"
+    "rate": "评价",
+    "completeTitle": "标记为已完成",
+    "completedTitle": "已完成",
+    "completeAria": "将此游戏标记为已完成",
+    "uncompleteAria": "移除已完成标记",
+    "completedCountOne": "{{count}} 名玩家完成了这款游戏",
+    "completedCountMany": "{{count}} 名玩家完成了这款游戏"
   },
   "share": {
     "defaultTitle": "分享给好友",

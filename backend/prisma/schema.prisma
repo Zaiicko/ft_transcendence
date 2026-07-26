@@ -431,6 +431,10 @@ model PlayedGame {
   gameId   Int
   status   PlayStatus
   playedAt DateTime?
+  // Dernière date de lancement remontée par une plateforme (Steam rtime_last_played,
+  // Xbox lastTimePlayed, PSN). Distincte de playedAt (marquage manuel) : n'écrase
+  // jamais ce dernier. Alimente le calendrier « joué » (union des deux dates).
+  lastPlayedAt DateTime?
   // Horodatage de l'action (distinct de playedAt, choisi par l'user) : ordonne
   // le feed d'activité des amis
   createdAt DateTime @default(now())

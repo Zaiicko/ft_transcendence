@@ -264,9 +264,17 @@ export class GamesService {
   // "I played it" — the per-game heart count + the viewer's own mark (null
   // when anonymous or not marked). Backs the game page toggle button.
   async playedStatus(gameId: number, viewerId?: number) {
-    const [count, mine] = await Promise.all([
+    const [count, completers, mine, completed] = await Promise.all([
       this.prisma.playedGame.count({
         where: { gameId, status: PlayStatus.PLAYED },
+      }),
+      // Nb de JOUEURS distincts ayant terminé ce jeu (manuel ou 100 % plateforme).
+      // distinct userId : un même joueur compté une fois même s'il l'a fini sur
+      // plusieurs plateformes.
+      this.prisma.gameCompletion.findMany({
+        where: { gameId },
+        distinct: ['userId'],
+        select: { userId: true },
       }),
       viewerId
         ? this.prisma.playedGame.findUnique({
@@ -274,8 +282,15 @@ export class GamesService {
             select: { status: true, playedAt: true },
           })
         : null,
+      // Le viewer a-t-il marqué ce jeu « terminé » à la main ?
+      viewerId
+        ? this.prisma.gameCompletion.findUnique({
+            where: { userId_gameId_platform: { userId: viewerId, gameId, platform: 'manual' } },
+            select: { id: true },
+          })
+        : null,
     ]);
-    return { count, mine };
+    return { count, completedCount: completers.length, mine, completedByMe: !!completed };
   }
 
   // Idempotent: re-marking an already-played game keeps its original date
@@ -304,6 +319,43 @@ export class GamesService {
   // 204 even when nothing was marked (same idempotence rule as reactions)
   async unmarkPlayed(userId: number, gameId: number) {
     await this.prisma.playedGame.deleteMany({ where: { userId, gameId } });
+  }
+
+  // « Terminé » manuel : crée une GameCompletion(platform='manual') — même
+  // pipeline que les 100 % plateformes (calendrier vert + feed « terminé »).
+  // Terminer implique avoir joué → on garantit aussi un PlayedGame PLAYED.
+  async markCompleted(userId: number, gameId: number) {
+    const exists = await this.prisma.game.findUnique({ where: { id: gameId }, select: { id: true } });
+    if (!exists) throw new NotFoundException(`Game ${gameId} not found`);
+    const current = await this.prisma.playedGame.findUnique({
+      where: { userId_gameId: { userId, gameId } },
+      select: { status: true },
+    });
+    await this.prisma.playedGame.upsert({
+      where: { userId_gameId: { userId, gameId } },
+      update: current?.status === PlayStatus.PLAYED ? {} : { status: PlayStatus.PLAYED, playedAt: new Date() },
+      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: new Date() },
+    });
+    const before = await this.prisma.gameCompletion.findUnique({
+      where: { userId_gameId_platform: { userId, gameId, platform: 'manual' } },
+      select: { id: true },
+    });
+    await this.prisma.gameCompletion.upsert({
+      where: { userId_gameId_platform: { userId, gameId, platform: 'manual' } },
+      update: {},
+      create: { userId, gameId, platform: 'manual' },
+    });
+    // Nouvelle complétion → feed (et « fait » si le jeu ne l'était pas encore)
+    if (!before) {
+      if (current?.status !== PlayStatus.PLAYED) void this.feed.onGamePlayed(userId, gameId);
+      void this.feed.onGameCompleted(userId, gameId);
+    }
+    return { completedByMe: true };
+  }
+
+  // 204 idempotent : ne retire que la complétion MANUELLE (pas les 100 % plateformes)
+  async unmarkCompleted(userId: number, gameId: number) {
+    await this.prisma.gameCompletion.deleteMany({ where: { userId, gameId, platform: 'manual' } });
   }
 
   // Local search always; the IGDB on-demand import only runs when the caller

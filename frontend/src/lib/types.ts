@@ -273,6 +273,9 @@ export interface PublicProfile {
   topGames: { rating: number; game: GameRef }[];
   recentReviews: ProfileReview[];
   calendar: { playedAt: string; game: GameRef }[];
+  // Jeux terminés à 100 % (succès Steam / platine PSN…), datés — série
+  // « Terminé » du calendrier, à côté de `calendar` (« Joué »).
+  completions: { playedAt: string; game: GameRef }[];
   friendState: FriendState;
   publicLists: GameListSummary[];
 }

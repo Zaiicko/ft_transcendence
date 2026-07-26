@@ -441,7 +441,13 @@
     "reviewOne": "{{count}} reseña",
     "reviewMany": "{{count}} reseñas",
     "playedGameOne": "{{count}} juego jugado",
-    "playedGameMany": "{{count}} juegos jugados"
+    "playedGameMany": "{{count}} juegos jugados",
+    "calLess": "Menos",
+    "calMore": "Más",
+    "calCompletedLabel": "completados",
+    "calPlayedLabel": "jugados",
+    "calViewPlayed": "Jugados",
+    "calViewCompleted": "Completados"
   },
   "lists": {
     "heading": "Listas",
@@ -526,7 +532,13 @@
     "dlcExpansion": "Expansión",
     "dlcStandalone": "Independiente",
     "dlcGeneric": "DLC",
-    "rate": "Valorar"
+    "rate": "Valorar",
+    "completeTitle": "Marcar como completado",
+    "completedTitle": "Completado",
+    "completeAria": "Marcar este juego como completado",
+    "uncompleteAria": "Quitar la marca de completado",
+    "completedCountOne": "{{count}} jugador completó este juego",
+    "completedCountMany": "{{count}} jugadores completaron este juego"
   },
   "share": {
     "defaultTitle": "Compartir con un amigo",

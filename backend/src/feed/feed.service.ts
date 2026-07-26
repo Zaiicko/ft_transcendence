@@ -432,6 +432,23 @@ export class FeedService {
     }
   }
 
+  // Complétion MANUELLE (bouton « Terminé » de la page jeu) → carte « terminé »
+  // temps réel dans le feed des amis + jalon de classement. Miroir de
+  // onGamePlayed pour la complétion.
+  async onGameCompleted(userId: number, gameId: number): Promise<void> {
+    try {
+      await this.onRankAction(userId, 'completions');
+      const row = await this.prisma.gameCompletion.findFirst({
+        where: { userId, gameId, platform: 'manual' },
+        select: completionSelect,
+      });
+      if (!row?.user) return;
+      await this.broadcast(row.user.id, this.completedItem(row));
+    } catch (err) {
+      this.logger.warn(`onGameCompleted failed: ${(err as Error).message}`);
+    }
+  }
+
   // Un ami a aimé un avis
   async onReviewLiked(userId: number, reviewId: number): Promise<void> {
     try {

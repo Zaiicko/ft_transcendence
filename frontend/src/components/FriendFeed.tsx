@@ -451,10 +451,13 @@ function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }
       )}
       <div className="min-w-0 flex-1">
         <ActorLine actor={item.actor} at={item.at} action="completed" strong={item.game.title} />
-        <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-          <PlatformMark platform={item.platform} />
-          <span>{PLATFORM_LABEL[item.platform] ?? item.platform}</span>
-        </div>
+        {/* Complétion manuelle : pas de plateforme à afficher */}
+        {item.platform !== 'manual' && (
+          <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+            <PlatformMark platform={item.platform} />
+            <span>{PLATFORM_LABEL[item.platform] ?? item.platform}</span>
+          </div>
+        )}
       </div>
       <span className="shrink-0 text-amber-500" title={i18n.t('feed.completedBadge')}>
         <TrophyIcon />

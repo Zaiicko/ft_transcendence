@@ -441,7 +441,13 @@
     "reviewOne": "{{count}} recensie",
     "reviewMany": "{{count}} recensies",
     "playedGameOne": "{{count}} game gespeeld",
-    "playedGameMany": "{{count}} games gespeeld"
+    "playedGameMany": "{{count}} games gespeeld",
+    "calLess": "Minder",
+    "calMore": "Meer",
+    "calCompletedLabel": "voltooid",
+    "calPlayedLabel": "gespeeld",
+    "calViewPlayed": "Gespeeld",
+    "calViewCompleted": "Voltooid"
   },
   "lists": {
     "heading": "Lijsten",
@@ -526,7 +532,13 @@
     "dlcExpansion": "Uitbreiding",
     "dlcStandalone": "Standalone",
     "dlcGeneric": "DLC",
-    "rate": "Beoordelen"
+    "rate": "Beoordelen",
+    "completeTitle": "Markeren als voltooid",
+    "completedTitle": "Voltooid",
+    "completeAria": "Dit spel als voltooid markeren",
+    "uncompleteAria": "Voltooid-markering verwijderen",
+    "completedCountOne": "{{count}} speler heeft dit spel voltooid",
+    "completedCountMany": "{{count}} spelers hebben dit spel voltooid"
   },
   "share": {
     "defaultTitle": "Delen met een vriend",
