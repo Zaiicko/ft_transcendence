@@ -1,10 +1,19 @@
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  type DragEvent as ReactDragEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { apiFetch, ApiError } from '../lib/api';
 import type { GameListDetail, GameListSummary, GameSummary } from '../lib/types';
+import { framedImgStyle, parseFrame } from './Avatar';
+import ListCoverFramer from './ListCoverFramer';
 import Stars, { StarIcon } from './Stars';
 
 gsap.registerPlugin(Flip);
@@ -195,6 +204,11 @@ function ListCard({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
+  // coverUrl local : maj immédiate après cadrage (le prop se resynchronise via
+  // onChanged, mais on évite l'attente du rechargement).
+  const [coverUrl, setCoverUrl] = useState(list.coverUrl);
+  const [coverOpen, setCoverOpen] = useState(false);
+  const cover = coverUrl ? parseFrame(coverUrl) : null;
 
   return (
     <div className="card overflow-hidden">
@@ -202,11 +216,27 @@ function ListCard({
         {/* Aperçu : jaquettes empilées en éventail */}
         <button
           type="button"
-          onClick={() => setExpanded((v) => !v)}
+          onClick={() => (editing ? setCoverOpen((v) => !v) : setExpanded((v) => !v))}
           className="relative h-16 w-24 shrink-0"
-          aria-label={t('lists.viewGames')}
+          aria-label={editing ? (coverUrl ? t('lists.changeCover') : t('lists.addCover')) : t('lists.viewGames')}
         >
-          {list.covers.length > 0 ? (
+          {cover ? (
+            <span className="relative block h-16 w-24 overflow-hidden rounded shadow ring-1 ring-black/10">
+              <img src={cover.src} alt="" style={framedImgStyle(cover.scale, cover.x, cover.y)} />
+              {/* Édition : message explicite « cliquer pour changer », toujours visible */}
+              {editing && (
+                <span className="absolute inset-x-0 bottom-0 bg-black/55 py-0.5 text-center text-[9px] font-medium leading-tight text-white">
+                  ✎ {t('lists.changeCover')}
+                </span>
+              )}
+            </span>
+          ) : editing ? (
+            // Pas de couverture en édition : emplacement dédié, clairement cliquable
+            <span className="flex h-16 w-full flex-col items-center justify-center gap-0.5 rounded border border-dashed border-zinc-400/70 bg-zinc-200/50 text-center text-[10px] font-medium text-zinc-500 dark:border-zinc-600 dark:bg-zinc-800/50">
+              <span aria-hidden="true">✎</span>
+              {t('lists.addCover')}
+            </span>
+          ) : list.covers.length > 0 ? (
             list.covers.slice(0, 4).map((c, i) => (
               <img
                 key={i}
@@ -248,7 +278,10 @@ function ListCard({
         {isSelf && (
           <button
             type="button"
-            onClick={() => setEditing((v) => !v)}
+            onClick={() => {
+              setEditing((v) => !v);
+              setCoverOpen(false);
+            }}
             aria-label={t('lists.editList')}
             className="shrink-0 self-start rounded-full p-1.5 text-zinc-400 transition hover:text-accent"
           >
@@ -270,11 +303,26 @@ function ListCard({
       {/* Édition : nom/visibilité + jeux, tout "en attente" jusqu'à Enregistrer
           (Annuler abandonne tout, y compris les retraits de jeux). Sinon, déplié
           = liste en lecture avec les notes/avis. */}
+      {isSelf && editing && coverOpen && (
+        <div className="px-3 pb-1">
+          <ListCoverFramer
+            listId={list.id}
+            coverUrl={coverUrl}
+            onChange={(url) => {
+              setCoverUrl(url);
+              onChanged();
+            }}
+            onClose={() => setCoverOpen(false)}
+          />
+        </div>
+      )}
+
       {isSelf && editing ? (
         <EditList
           list={list}
           onDone={() => {
             setEditing(false);
+            setCoverOpen(false);
             onChanged();
           }}
         />
@@ -429,29 +477,40 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
   // le tirant, on le déplace à cette place (les autres glissent via Flip). L'ordre
   // n'est persisté (PATCH) qu'au relâchement. En cas d'échec, on recharge.
   const dragId = useRef<number | null>(null);
-  // Dernière cible traitée : onDragEnter rebondit sur les enfants (image, titre…)
-  // → sans ça, moveOver serait appelé en rafale pour la même cible (lag).
-  const lastTarget = useRef<number | null>(null);
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const gamesWrapRef = useRef<HTMLDivElement>(null);
   const flipState = useRef<ReturnType<typeof Flip.getState> | null>(null);
 
-  function moveOver(targetId: number) {
+  // Réordonnancement live géré au niveau du CONTENEUR (pas item par item) → marche
+  // même dans les gaps, aux bords, ou quand le curseur dépasse le cadre : on insère
+  // à la place la plus proche. Règle unifiée liste/grille : l'index d'insertion =
+  // nombre d'items (hors celui tiré) dont le centre (x+y) précède le curseur.
+  function moveOver(e: ReactDragEvent<HTMLElement>) {
+    e.preventDefault(); // autorise le drop / dragend partout dans le conteneur
     const from = dragId.current;
-    if (from == null || from === targetId || !detail) return;
-    if (lastTarget.current === targetId) return;
-    lastTarget.current = targetId;
-    const games = [...detail.games];
-    const fromIdx = games.findIndex((g) => g.id === from);
-    const toIdx = games.findIndex((g) => g.id === targetId);
-    if (fromIdx < 0 || toIdx < 0) return;
-    // Positions AVANT le déplacement, pour l'animation Flip.
-    if (gamesWrapRef.current) {
-      flipState.current = Flip.getState(gamesWrapRef.current.querySelectorAll('[data-flip]'));
+    const wrap = gamesWrapRef.current;
+    if (from == null || !detail || !wrap) return;
+    const items = Array.from(wrap.querySelectorAll<HTMLElement>('[data-flip]'));
+    let insertIdx = 0;
+    for (const el of items) {
+      if (Number(el.dataset.id) === from) continue;
+      const r = el.getBoundingClientRect();
+      // Liste (pleine largeur) : comparer UNIQUEMENT en Y (sinon centerX ≫ curseur
+      // à gauche fausse tout). Grille : centre 2D (x+y) pour l'ordre de lecture.
+      const beforeCursor = compact
+        ? r.left + r.width / 2 + (r.top + r.height / 2) < e.clientX + e.clientY
+        : r.top + r.height / 2 < e.clientY;
+      if (beforeCursor) insertIdx += 1;
     }
-    const [moved] = games.splice(fromIdx, 1);
-    games.splice(toIdx, 0, moved);
-    setDetail({ ...detail, games });
+    const games = detail.games;
+    const fromIdx = games.findIndex((g) => g.id === from);
+    if (fromIdx < 0) return;
+    const next = [...games];
+    const [moved] = next.splice(fromIdx, 1);
+    next.splice(insertIdx, 0, moved);
+    if (next.every((g, i) => g.id === games[i].id)) return; // aucun changement
+    flipState.current = Flip.getState(items);
+    setDetail({ ...detail, games: next });
   }
 
   function endDrag() {
@@ -469,7 +528,7 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
   // l'anim → clignotement de tout le bloc.
   useLayoutEffect(() => {
     if (!flipState.current) return;
-    Flip.from(flipState.current, { duration: 0.28, ease: 'power2.out' });
+    Flip.from(flipState.current, { duration: 0.2, ease: 'power2.out' });
     flipState.current = null;
   }, [detail?.games]);
 
@@ -513,7 +572,7 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
       <VisibilityToggle isPublic={isPublic} onChange={setIsPublic} />
 
       {detail && detail.games.length > 0 && (
-        <div ref={gamesWrapRef} className="flex flex-col gap-2">
+        <div ref={gamesWrapRef} onDragOver={moveOver} className="flex flex-col gap-2">
           <div className="flex justify-end">
             <ViewToggle compact={compact} onChange={setCompactOverride} />
           </div>
@@ -528,13 +587,12 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
                   <div
                     key={g.id}
                     data-flip
+                    data-id={g.id}
                     draggable
                     onDragStart={() => {
                       dragId.current = g.id;
                       setDraggingId(g.id);
                     }}
-                    onDragEnter={() => moveOver(g.id)}
-                    onDragOver={(e) => e.preventDefault()}
                     onDragEnd={endDrag}
                     className={`relative cursor-move ${draggingId === g.id ? 'opacity-40' : ''}`}
                   >
@@ -604,13 +662,12 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
                   <li
                     key={g.id}
                     data-flip
+                    data-id={g.id}
                     draggable
                     onDragStart={() => {
                       dragId.current = g.id;
                       setDraggingId(g.id);
                     }}
-                    onDragEnter={() => moveOver(g.id)}
-                    onDragOver={(e) => e.preventDefault()}
                     onDragEnd={endDrag}
                     className={`flex items-center gap-2 py-2 pl-1.5 pr-1.5 transition ${
                       marked || draggingId === g.id ? 'opacity-50' : ''

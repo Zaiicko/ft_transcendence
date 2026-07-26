@@ -70,6 +70,7 @@ export default function Signup() {
           type="email"
           required
           placeholder={t('auth.signup.emailPlaceholder')}
+          aria-label={t('auth.signup.emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="field px-4 py-1.5"
@@ -85,6 +86,7 @@ export default function Signup() {
             pattern="[a-zA-Z0-9_]+"
             title={t('auth.signup.usernameHint')}
             placeholder={t('auth.signup.usernamePlaceholder')}
+            aria-label={t('auth.signup.usernamePlaceholder')}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="field px-4 py-1.5"
@@ -95,6 +97,7 @@ export default function Signup() {
           required={!steamPending}
           minLength={8}
           placeholder={steamPending ? t('auth.signup.passwordPlaceholderSteam') : t('auth.signup.passwordPlaceholder')}
+          aria-label={steamPending ? t('auth.signup.passwordPlaceholderSteam') : t('auth.signup.passwordPlaceholder')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="field px-4 py-1.5"

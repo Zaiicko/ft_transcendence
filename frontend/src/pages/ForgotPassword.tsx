@@ -41,6 +41,7 @@ export default function ForgotPassword() {
           type="email"
           required
           placeholder={t('auth.forgotPassword.emailPlaceholder')}
+          aria-label={t('auth.forgotPassword.emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="field px-4 py-1.5"

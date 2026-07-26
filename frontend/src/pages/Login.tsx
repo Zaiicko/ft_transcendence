@@ -81,6 +81,7 @@ export default function Login() {
             required
             autoFocus
             placeholder="123456"
+            aria-label={t('auth.twoFactor.title')}
             value={code}
             onChange={(e) => setCode(e.target.value)}
             className="field px-4 py-1.5 text-center tracking-widest"
@@ -111,6 +112,7 @@ export default function Login() {
           type="email"
           required
           placeholder={t('auth.login.emailPlaceholder')}
+          aria-label={t('auth.login.emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="field px-4 py-1.5"
@@ -119,6 +121,7 @@ export default function Login() {
           type="password"
           required
           placeholder={t('auth.login.passwordPlaceholder')}
+          aria-label={t('auth.login.passwordPlaceholder')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="field px-4 py-1.5"

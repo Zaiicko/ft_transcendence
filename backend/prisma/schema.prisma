@@ -441,6 +441,8 @@ model GameList {
   userId    Int
   name      String
   isPublic  Boolean  @default(false)
+  // Image de couverture perso (upload), servie via /api/uploads/list-covers/…
+  coverUrl  String?
   createdAt DateTime @default(now())
 
   items GameListItem[]

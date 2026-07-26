@@ -35,7 +35,8 @@
     "darkMode": "Тёмная тема",
     "logout": "Выйти",
     "closeMenu": "Закрыть меню",
-    "notificationPrefs": "Настройки уведомлений"
+    "notificationPrefs": "Настройки уведомлений",
+    "navigation": "Меню навигации"
   },
   "footer": {
     "tagline": "Letterboxd для видеоигр · проект 42",
@@ -472,7 +473,11 @@
     "addGamePlaceholder": "Добавить игру…",
     "alreadyIn": "Добавлено",
     "limitReached": "Список полон — макс. {{max}}",
-    "dragToReorder": "Перетащите для сортировки"
+    "dragToReorder": "Перетащите для сортировки",
+    "noCover": "Нет обложки",
+    "addCover": "Добавить обложку",
+    "changeCover": "Изменить обложку",
+    "removeCover": "Удалить обложку"
   },
   "catalog": {
     "title": "Каталог",
@@ -951,5 +956,8 @@
         ]
       }
     }
+  },
+  "a11y": {
+    "skipToContent": "Перейти к основному содержанию"
   }
 }

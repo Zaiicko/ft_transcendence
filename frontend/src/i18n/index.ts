@@ -79,6 +79,15 @@ void i18n
     interpolation: { escapeValue: false },
   });
 
+// <html lang> synchronisé avec la langue active (WCAG 3.1.1 — Language of Page).
+// resolvedLanguage = code plat réellement chargé (fr, jamais fr-FR). Mis à jour
+// à l'init ET à chaque changement de langue.
+function syncHtmlLang() {
+  document.documentElement.lang = i18n.resolvedLanguage || i18n.language || 'en';
+}
+i18n.on('initialized', syncHtmlLang);
+i18n.on('languageChanged', syncHtmlLang);
+
 // Base language code to pass as the games API `?lang=` param. The server
 // validates it with @IsIn(SUPPORTED_LANGUAGES) (flat codes only), so a regional
 // code (fr-FR) 400s and the page falls back to "Game not found". We fold any

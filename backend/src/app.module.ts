@@ -30,7 +30,12 @@ import { UsersModule } from './users/users.module';
     // Baseline rate limit for every HTTP route (WebSocket traffic is
     // unaffected — gated separately by JWT on the socket handshake).
     // Sensitive auth routes tighten this further via @Throttle(...).
-    ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 120 }]),
+    // skipIf : désactivé sous NODE_ENV=test — les suites e2e (reviews/ranking)
+    // créent >5 comptes et sinon se prennent des 429 sur signup. Zéro effet prod.
+    ThrottlerModule.forRoot({
+      throttlers: [{ name: 'default', ttl: 60_000, limit: 120 }],
+      skipIf: () => process.env.NODE_ENV === 'test',
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,

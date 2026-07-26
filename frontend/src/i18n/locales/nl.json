@@ -35,7 +35,8 @@
     "darkMode": "Donkere modus",
     "logout": "Uitloggen",
     "closeMenu": "Menu sluiten",
-    "notificationPrefs": "Meldingsvoorkeuren"
+    "notificationPrefs": "Meldingsvoorkeuren",
+    "navigation": "Navigatiemenu"
   },
   "footer": {
     "tagline": "De Letterboxd van videogames · 42-project",
@@ -472,7 +473,11 @@
     "addGamePlaceholder": "Een spel toevoegen…",
     "alreadyIn": "Toegevoegd",
     "limitReached": "Lijst vol — max. {{max}}",
-    "dragToReorder": "Sleep om te herordenen"
+    "dragToReorder": "Sleep om te herordenen",
+    "noCover": "Geen omslag",
+    "addCover": "Omslag toevoegen",
+    "changeCover": "Omslag wijzigen",
+    "removeCover": "Omslag verwijderen"
   },
   "catalog": {
     "title": "Catalogus",
@@ -951,5 +956,8 @@
         ]
       }
     }
+  },
+  "a11y": {
+    "skipToContent": "Ga naar hoofdinhoud"
   }
 }

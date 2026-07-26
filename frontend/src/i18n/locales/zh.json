@@ -35,7 +35,8 @@
     "darkMode": "深色模式",
     "logout": "退出登录",
     "closeMenu": "关闭菜单",
-    "notificationPrefs": "通知偏好设置"
+    "notificationPrefs": "通知偏好设置",
+    "navigation": "导航菜单"
   },
   "footer": {
     "tagline": "电子游戏版的 Letterboxd · 42 项目",
@@ -472,7 +473,11 @@
     "addGamePlaceholder": "添加游戏…",
     "alreadyIn": "已添加",
     "limitReached": "列表已满 — 上限 {{max}}",
-    "dragToReorder": "拖动以重新排序"
+    "dragToReorder": "拖动以重新排序",
+    "noCover": "无封面",
+    "addCover": "添加封面",
+    "changeCover": "更换封面",
+    "removeCover": "移除封面"
   },
   "catalog": {
     "title": "游戏目录",
@@ -951,5 +956,8 @@
         ]
       }
     }
+  },
+  "a11y": {
+    "skipToContent": "跳到主要内容"
   }
 }

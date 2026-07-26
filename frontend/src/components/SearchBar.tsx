@@ -88,6 +88,16 @@ export default function SearchBar() {
     }
   }
 
+  // Entrée → page de résultats complète (le catalogue, piloté par ?q=)
+  function submitSearch() {
+    if (trimmed.length < MIN_CHARS) return;
+    setOpen(false);
+    setResults([]);
+    setCompanies([]);
+    navigate(`/games?q=${encodeURIComponent(trimmed)}`);
+    setQuery('');
+  }
+
   function goTo(id: number) {
     setOpen(false);
     setQuery('');
@@ -140,7 +150,10 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpen(true)}
-          onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setOpen(false);
+            else if (e.key === 'Enter') submitSearch();
+          }}
           placeholder={t('catalog.searchNav')}
           className={`${field} w-full min-w-0 flex-1 px-4 py-1.5 text-sm placeholder-zinc-500 focus:border-accent focus:outline-none`}
         />

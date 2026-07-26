@@ -18,7 +18,7 @@ const RING = 'ring-1 ring-black/20 dark:ring-white/30';
 // (fragment retiré) charge l'image ; le fragment pilote le transform CSS.
 // Absent → cadrage neutre. Le navigateur ne transmet jamais le fragment au
 // serveur, donc l'image se charge normalement.
-function parseFrame(url: string): { src: string; scale: number; x: number; y: number } {
+export function parseFrame(url: string): { src: string; scale: number; x: number; y: number } {
   const [src, frag] = url.split('#af=');
   if (!frag) return { src: url, scale: 1, x: 0, y: 0 };
   const [scale, x, y] = frag.split(',').map(Number);

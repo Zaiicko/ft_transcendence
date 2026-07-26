@@ -35,7 +35,8 @@
     "darkMode": "Ciemny motyw",
     "logout": "Wyloguj się",
     "closeMenu": "Zamknij menu",
-    "notificationPrefs": "Preferencje powiadomień"
+    "notificationPrefs": "Preferencje powiadomień",
+    "navigation": "Menu nawigacji"
   },
   "footer": {
     "tagline": "Letterboxd dla gier wideo · projekt 42",
@@ -472,7 +473,11 @@
     "addGamePlaceholder": "Dodaj grę…",
     "alreadyIn": "Dodano",
     "limitReached": "Lista pełna — maks. {{max}}",
-    "dragToReorder": "Przeciągnij, aby zmienić kolejność"
+    "dragToReorder": "Przeciągnij, aby zmienić kolejność",
+    "noCover": "Brak okładki",
+    "addCover": "Dodaj okładkę",
+    "changeCover": "Zmień okładkę",
+    "removeCover": "Usuń okładkę"
   },
   "catalog": {
     "title": "Katalog",
@@ -951,5 +956,8 @@
         ]
       }
     }
+  },
+  "a11y": {
+    "skipToContent": "Przejdź do treści głównej"
   }
 }

@@ -35,7 +35,8 @@
     "darkMode": "다크 모드",
     "logout": "로그아웃",
     "closeMenu": "메뉴 닫기",
-    "notificationPrefs": "알림 설정"
+    "notificationPrefs": "알림 설정",
+    "navigation": "탐색 메뉴"
   },
   "footer": {
     "tagline": "비디오 게임의 Letterboxd · 42 프로젝트",
@@ -472,7 +473,11 @@
     "addGamePlaceholder": "게임 추가…",
     "alreadyIn": "추가됨",
     "limitReached": "목록 가득 참 — 최대 {{max}}",
-    "dragToReorder": "드래그하여 순서 변경"
+    "dragToReorder": "드래그하여 순서 변경",
+    "noCover": "커버 없음",
+    "addCover": "커버 추가",
+    "changeCover": "커버 변경",
+    "removeCover": "커버 제거"
   },
   "catalog": {
     "title": "카탈로그",
@@ -951,5 +956,8 @@
         ]
       }
     }
+  },
+  "a11y": {
+    "skipToContent": "본문으로 건너뛰기"
   }
 }
