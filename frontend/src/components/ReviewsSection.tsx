@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import SectionHead from './SectionHead';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
@@ -14,7 +15,12 @@ import ReviewComments from './ReviewComments';
 import ShareButton from './ShareButton';
 import Stars from './Stars';
 
-export type ReviewStats = { _avg: { rating: number | null }; _count: number };
+export type ReviewStats = {
+  _avg: { rating: number | null };
+  _count: number;
+  // Répartition des notes 0–10 (index = note) — alimente l'histogramme de la fiche.
+  distribution?: number[];
+};
 
 // Contrat du module reviews (docs/reviews-api.md §1) — user null = compte
 // supprimé (contenu anonymisé, à tolérer partout)
@@ -71,6 +77,8 @@ export default function ReviewsSection({
   const [openThreads, setOpenThreads] = useState<Set<number>>(new Set());
   const [commentVersions, setCommentVersions] = useState<Record<number, number>>({});
   const [editingId, setEditingId] = useState<number | null>(null);
+  // Le formulaire d'avis est replié par défaut, ouvert par un bouton.
+  const [showForm, setShowForm] = useState(false);
   const reviewRef = useRef<HTMLElement>(null);
 
   // Auto-traduction des avis vers la langue courante (batch au chargement). Cache
@@ -293,13 +301,20 @@ export default function ReviewsSection({
 
   const alreadyReviewed = user != null && reviews.some((r) => r.user?.id === user.id);
 
+  // « Critiquer » (hero / barre d'actions) mène à #review → on déplie directement
+  // le formulaire pour l'utilisateur qui n'a pas encore d'avis.
+  useEffect(() => {
+    if (hash === '#review' && user && !alreadyReviewed) setShowForm(true);
+  }, [hash, user, alreadyReviewed]);
+
   return (
     <section ref={reviewRef} id="review" className="scroll-mt-24">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('reviews.heading')}
-          {reviews.length > 0 ? ` (${reviews.length})` : ''}
-        </h2>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <SectionHead
+          className="mb-0"
+          eyebrow={t('reviews.eyebrow')}
+          title={`${t('reviews.heading')}${reviews.length > 0 ? ` (${reviews.length})` : ''}`}
+        />
         <div className="flex gap-2">
           {SORTS.map((s) => (
             <button
@@ -319,22 +334,37 @@ export default function ReviewsSection({
       </div>
 
       {user && !alreadyReviewed && (
-        <ReviewForm
-          base={base}
-          kind={kind}
-          onCreated={() => {
-            setSort('recent');
-            apiFetch<ReviewT[]>(`${base}/reviews?sort=recent&page=1&limit=${PAGE_SIZE}`)
-              .then((list) => {
-                setReviews(list);
-                setPage(1);
-                setReachedEnd(list.length < PAGE_SIZE);
-              })
-              .catch(() => {});
-            refreshStats();
-            onReviewCreated?.();
-          }}
-        />
+        showForm ? (
+          <ReviewForm
+            base={base}
+            kind={kind}
+            onCancel={() => setShowForm(false)}
+            onCreated={() => {
+              setShowForm(false);
+              setSort('recent');
+              apiFetch<ReviewT[]>(`${base}/reviews?sort=recent&page=1&limit=${PAGE_SIZE}`)
+                .then((list) => {
+                  setReviews(list);
+                  setPage(1);
+                  setReachedEnd(list.length < PAGE_SIZE);
+                })
+                .catch(() => {});
+              refreshStats();
+              onReviewCreated?.();
+            }}
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowForm(true)}
+            className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-sm shadow-accent/30 transition hover:brightness-110"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-none stroke-current" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+            </svg>
+            {t('home.writeReview')}
+          </button>
+        )
       )}
       {!user && (
         <button
@@ -366,7 +396,7 @@ export default function ReviewsSection({
             <article
               key={r.id}
               id={`review-${r.id}`}
-              className="card scroll-mt-24 p-4 transition target:ring-2 target:ring-accent"
+              className="card scroll-mt-24 p-5 transition target:ring-2 target:ring-accent"
             >
               <div className="flex items-center gap-3">
                 {r.user ? (
@@ -378,9 +408,6 @@ export default function ReviewsSection({
                       <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={32} />
                       <div className="min-w-0">
                         <div className="truncate text-sm font-semibold">{r.user.username}</div>
-                        <div className="text-xs text-zinc-500">
-                          {new Date(r.createdAt).toLocaleDateString(i18n.language)}
-                        </div>
                       </div>
                     </Link>
                     {/* Badge de rang (top 3 global) à côté du pseudo, hors du lien */}
@@ -393,13 +420,18 @@ export default function ReviewsSection({
                       <div className="truncate text-sm">
                         <em>{t('reviews.deletedUser')}</em>
                       </div>
-                      <div className="text-xs text-zinc-500">
-                        {new Date(r.createdAt).toLocaleDateString(i18n.language)}
-                      </div>
                     </div>
                   </div>
                 )}
-                {editingId !== r.id && <Stars rating={r.rating} className="ml-auto" />}
+                {editingId !== r.id && (
+                  <div className="ml-auto flex items-center gap-3">
+                    <Stars rating={r.rating} showValue={false} />
+                    <span className="font-display text-2xl font-extrabold leading-none tabular-nums text-accent">
+                      {r.rating}
+                      <span className="text-sm font-bold text-zinc-400">/10</span>
+                    </span>
+                  </div>
+                )}
               </div>
               {editingId === r.id ? (
                 <EditReviewForm
@@ -413,8 +445,8 @@ export default function ReviewsSection({
                 />
               ) : (
                 <>
-                  <div className="mt-3 text-sm font-semibold">« {displayed(r).title} »</div>
-                  <p className="mt-1 whitespace-pre-line text-sm text-zinc-600 dark:text-zinc-300">
+                  <div className="mt-3 font-display text-base font-bold">« {displayed(r).title} »</div>
+                  <p className="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
                     {displayed(r).text}
                   </p>
                   {isTranslatable(r) && (
@@ -467,24 +499,28 @@ export default function ReviewsSection({
                       title={t('reviews.shareReview')}
                       triggerClassName="inline-flex items-center justify-center rounded-full border border-zinc-400/60 px-2.5 py-1 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
                     />
-                    {user && r.user?.id === user.id && (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => setEditingId(r.id)}
-                          className="ml-auto text-zinc-500 transition hover:text-accent"
-                        >
-                          {t('reviews.edit')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => removeOwn(r)}
-                          className="text-zinc-500 transition hover:text-red-400"
-                        >
-                          {t('reviews.delete')}
-                        </button>
-                      </>
-                    )}
+                    <div className="ml-auto flex items-center gap-3 text-zinc-400 dark:text-zinc-500">
+                      {user && r.user?.id === user.id && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => setEditingId(r.id)}
+                            className="transition hover:text-accent"
+                          >
+                            {t('reviews.edit')}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeOwn(r)}
+                            className="transition hover:text-red-400"
+                          >
+                            {t('reviews.delete')}
+                          </button>
+                        </>
+                      )}
+                      {/* Date en bas à droite de l'avis */}
+                      <span>{new Date(r.createdAt).toLocaleDateString(i18n.language)}</span>
+                    </div>
                   </div>
                 </>
               )}
@@ -518,10 +554,12 @@ function ReviewForm({
   base,
   kind,
   onCreated,
+  onCancel,
 }: {
   base: string;
   kind: ReviewTargetKind;
   onCreated: () => void;
+  onCancel: () => void;
 }) {
   const { t } = useTranslation();
   const [rating, setRating] = useState<number | null>(null);
@@ -595,13 +633,22 @@ function ReviewForm({
         className="rounded border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950"
       />
       {error && <p className="text-sm text-red-400">{error}</p>}
-      <button
-        type="submit"
-        disabled={sending}
-        className="self-end rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
-      >
-        {t('reviews.publish')}
-      </button>
+      <div className="flex items-center justify-end gap-2">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-full px-4 py-2 text-sm text-zinc-500 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+        >
+          {t('common.cancel')}
+        </button>
+        <button
+          type="submit"
+          disabled={sending}
+          className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+        >
+          {t('reviews.publish')}
+        </button>
+      </div>
     </form>
   );
 }

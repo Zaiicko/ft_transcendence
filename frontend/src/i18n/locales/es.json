@@ -427,7 +427,8 @@
     "translate": "Traducir",
     "showOriginal": "Ver original",
     "translating": "Traduciendo…",
-    "showTranslation": "Ver traducción"
+    "showTranslation": "Ver traducción",
+    "eyebrow": "La comunidad opina"
   },
   "comments": {
     "sortTop": "Mejores",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}} jugadores completaron este juego",
     "markDateTitle": "¿Cuándo lo jugaste?",
     "completeDateTitle": "¿Cuándo lo terminaste?",
-    "markDateHint": "Elige una fecha anterior si lo jugaste antes de registrarte."
+    "markDateHint": "Elige una fecha anterior si lo jugaste antes de registrarte.",
+    "distributionTitle": "Distribución de notas",
+    "reviewCountOne": "{{count}} reseña de jugador",
+    "reviewCountMany": "{{count}} reseñas de jugadores",
+    "eyeDistribution": "Nota de la comunidad",
+    "eyeDlc": "Contenido adicional",
+    "eyeAbout": "Acerca de",
+    "aboutTitle": "El juego"
   },
   "share": {
     "defaultTitle": "Compartir con un amigo",

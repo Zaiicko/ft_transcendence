@@ -427,7 +427,8 @@
     "translate": "번역",
     "showOriginal": "원문 보기",
     "translating": "번역 중…",
-    "showTranslation": "번역 보기"
+    "showTranslation": "번역 보기",
+    "eyebrow": "커뮤니티의 목소리"
   },
   "comments": {
     "sortTop": "인기순",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}}명의 플레이어가 이 게임을 완료했습니다",
     "markDateTitle": "언제 플레이했나요?",
     "completeDateTitle": "언제 완료했나요?",
-    "markDateHint": "가입 전에 했다면 과거 날짜를 선택하세요."
+    "markDateHint": "가입 전에 했다면 과거 날짜를 선택하세요.",
+    "distributionTitle": "평점 분포",
+    "reviewCountOne": "플레이어 리뷰 {{count}}개",
+    "reviewCountMany": "플레이어 리뷰 {{count}}개",
+    "eyeDistribution": "커뮤니티 평점",
+    "eyeDlc": "추가 콘텐츠",
+    "eyeAbout": "소개",
+    "aboutTitle": "게임"
   },
   "share": {
     "defaultTitle": "친구에게 공유",

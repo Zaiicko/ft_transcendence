@@ -427,7 +427,8 @@
     "translate": "翻译",
     "showOriginal": "查看原文",
     "translating": "翻译中…",
-    "showTranslation": "查看翻译"
+    "showTranslation": "查看翻译",
+    "eyebrow": "社区在发声"
   },
   "comments": {
     "sortTop": "最热",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}} 名玩家完成了这款游戏",
     "markDateTitle": "你什么时候玩的？",
     "completeDateTitle": "你什么时候通关的？",
-    "markDateHint": "如果是注册前玩的，请选择过去的日期。"
+    "markDateHint": "如果是注册前玩的，请选择过去的日期。",
+    "distributionTitle": "评分分布",
+    "reviewCountOne": "{{count}} 条玩家评测",
+    "reviewCountMany": "{{count}} 条玩家评测",
+    "eyeDistribution": "社区评分",
+    "eyeDlc": "附加内容",
+    "eyeAbout": "关于",
+    "aboutTitle": "游戏简介"
   },
   "share": {
     "defaultTitle": "分享给好友",

@@ -427,7 +427,8 @@
     "translate": "Перевести",
     "showOriginal": "Показать оригинал",
     "translating": "Перевод…",
-    "showTranslation": "Показать перевод"
+    "showTranslation": "Показать перевод",
+    "eyebrow": "Мнение сообщества"
   },
   "comments": {
     "sortTop": "Лучшие",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}} игроков завершили эту игру",
     "markDateTitle": "Когда вы играли?",
     "completeDateTitle": "Когда вы прошли?",
-    "markDateHint": "Выберите прошедшую дату, если играли до регистрации."
+    "markDateHint": "Выберите прошедшую дату, если играли до регистрации.",
+    "distributionTitle": "Распределение оценок",
+    "reviewCountOne": "{{count}} отзыв игрока",
+    "reviewCountMany": "{{count}} отзывов игроков",
+    "eyeDistribution": "Оценка сообщества",
+    "eyeDlc": "Дополнения",
+    "eyeAbout": "Об игре",
+    "aboutTitle": "Игра"
   },
   "share": {
     "defaultTitle": "Поделиться с другом",

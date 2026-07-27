@@ -427,7 +427,8 @@
     "translate": "Translate",
     "showOriginal": "See original",
     "translating": "Translating…",
-    "showTranslation": "See translation"
+    "showTranslation": "See translation",
+    "eyebrow": "The community weighs in"
   },
   "comments": {
     "sortTop": "Top",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}} players completed this game",
     "markDateTitle": "When did you play it?",
     "completeDateTitle": "When did you finish it?",
-    "markDateHint": "Pick a past date if you played it before joining."
+    "markDateHint": "Pick a past date if you played it before joining.",
+    "distributionTitle": "Rating breakdown",
+    "reviewCountOne": "{{count}} player review",
+    "reviewCountMany": "{{count}} player reviews",
+    "eyeDistribution": "Community score",
+    "eyeDlc": "Add-on content",
+    "eyeAbout": "About",
+    "aboutTitle": "The game"
   },
   "share": {
     "defaultTitle": "Share with a friend",

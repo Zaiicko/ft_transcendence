@@ -427,7 +427,8 @@
     "translate": "Çevir",
     "showOriginal": "Orijinali gör",
     "translating": "Çevriliyor…",
-    "showTranslation": "Çeviriyi gör"
+    "showTranslation": "Çeviriyi gör",
+    "eyebrow": "Topluluk söz alıyor"
   },
   "comments": {
     "sortTop": "En iyiler",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}} oyuncu bu oyunu tamamladı",
     "markDateTitle": "Ne zaman oynadın?",
     "completeDateTitle": "Ne zaman bitirdin?",
-    "markDateHint": "Kaydolmadan önce oynadıysan geçmiş bir tarih seç."
+    "markDateHint": "Kaydolmadan önce oynadıysan geçmiş bir tarih seç.",
+    "distributionTitle": "Puan dağılımı",
+    "reviewCountOne": "{{count}} oyuncu incelemesi",
+    "reviewCountMany": "{{count}} oyuncu incelemesi",
+    "eyeDistribution": "Topluluk puanı",
+    "eyeDlc": "Ek içerik",
+    "eyeAbout": "Hakkında",
+    "aboutTitle": "Oyun"
   },
   "share": {
     "defaultTitle": "Bir arkadaşınla paylaş",

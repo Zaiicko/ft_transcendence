@@ -14,6 +14,7 @@ export interface GameSummary {
   userRatingCount?: number;
   igdbRating?: number | null;
   genres?: { id: number; name: string }[];
+  platforms?: { id: number; name: string }[];
   companies?: { id: number; name: string; logoUrl: string | null }[];
   // Présents uniquement sur GET /games/:id (fiche) : le jeu parent si ce jeu
   // est un DLC/extension, et la liste de ses propres DLC/extensions.

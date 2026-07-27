@@ -427,7 +427,8 @@
     "translate": "Vertalen",
     "showOriginal": "Origineel tonen",
     "translating": "Vertalen…",
-    "showTranslation": "Vertaling tonen"
+    "showTranslation": "Vertaling tonen",
+    "eyebrow": "De community laat van zich horen"
   },
   "comments": {
     "sortTop": "Top",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}} spelers hebben dit spel voltooid",
     "markDateTitle": "Wanneer heb je het gespeeld?",
     "completeDateTitle": "Wanneer heb je het uitgespeeld?",
-    "markDateHint": "Kies een datum in het verleden als je het vóór je aanmelding speelde."
+    "markDateHint": "Kies een datum in het verleden als je het vóór je aanmelding speelde.",
+    "distributionTitle": "Verdeling van beoordelingen",
+    "reviewCountOne": "{{count}} spelersrecensie",
+    "reviewCountMany": "{{count}} spelersrecensies",
+    "eyeDistribution": "Communityscore",
+    "eyeDlc": "Extra content",
+    "eyeAbout": "Over",
+    "aboutTitle": "De game"
   },
   "share": {
     "defaultTitle": "Delen met een vriend",

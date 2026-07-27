@@ -427,7 +427,8 @@
     "translate": "翻訳",
     "showOriginal": "原文を表示",
     "translating": "翻訳中…",
-    "showTranslation": "翻訳を表示"
+    "showTranslation": "翻訳を表示",
+    "eyebrow": "コミュニティの声"
   },
   "comments": {
     "sortTop": "トップ",
@@ -588,7 +589,14 @@
     "completedCountMany": "{{count}} 人のプレイヤーがこのゲームを完了しました",
     "markDateTitle": "いつプレイしましたか？",
     "completeDateTitle": "いつクリアしましたか？",
-    "markDateHint": "登録前にプレイした場合は過去の日付を選んでください。"
+    "markDateHint": "登録前にプレイした場合は過去の日付を選んでください。",
+    "distributionTitle": "評価の分布",
+    "reviewCountOne": "プレイヤーレビュー{{count}}件",
+    "reviewCountMany": "プレイヤーレビュー{{count}}件",
+    "eyeDistribution": "コミュニティ評価",
+    "eyeDlc": "追加コンテンツ",
+    "eyeAbout": "概要",
+    "aboutTitle": "このゲーム"
   },
   "share": {
     "defaultTitle": "友達に共有",

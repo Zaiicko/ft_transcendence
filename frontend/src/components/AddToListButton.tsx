@@ -177,7 +177,7 @@ export default function AddToListButton({
               : undefined
           }
           className={`flex w-64 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900 ${
-            onDark ? '' : 'absolute left-0 z-20 mt-2'
+            onDark ? '' : 'absolute right-0 z-20 mt-2'
           }`}
         >
           <div className={onDark ? 'min-h-0 flex-1 overflow-y-auto' : 'max-h-64 overflow-y-auto'}>
