@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { basename, join } from 'path';
 import { AVATARS_DIR } from '../common/uploads';
+import { ALL_ACHIEVEMENTS } from '../achievements/achievements.catalog';
 import { ListsService } from '../lists/lists.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -146,6 +147,71 @@ export class UsersService {
       friendState,
       publicLists,
     };
+  }
+
+  // Résumé chiffré « ton année en jeux » pour la bande de stats de l'accueil du
+  // connecté : jeux faits (série ambre) / 100 % plateforme (série verte),
+  // critiques + note moyenne, rang mondial (complétions), succès débloqués.
+  // Tout est recalculé à la volée en Prisma (pas de dépendance cross-module :
+  // UsersModule resterait pris dans un cycle via Auth s'il importait
+  // Leaderboard/Achievements — d'où le rang calculé en requête brute ici).
+  async getHomeStats(userId: number) {
+    const [reviewAgg, doneRows, perfectRows, achievementCount, rank] = await Promise.all([
+      this.prisma.review.aggregate({
+        where: { userId },
+        _count: { _all: true },
+        _avg: { rating: true },
+      }),
+      // Jeux marqués « fait » à la main (distincts) — série ambre du calendrier.
+      this.prisma.gameCompletion.findMany({
+        where: { userId, platform: 'manual' },
+        distinct: ['gameId'],
+        select: { gameId: true },
+      }),
+      // Jeux 100 % sur une plateforme (distincts) — série verte.
+      this.prisma.gameCompletion.findMany({
+        where: { userId, platform: { not: 'manual' } },
+        distinct: ['gameId'],
+        select: { gameId: true },
+      }),
+      this.prisma.userAchievement.count({ where: { userId } }),
+      this.completionsRank(userId),
+    ]);
+
+    return {
+      done: doneRows.length,
+      perfect: perfectRows.length,
+      reviews: reviewAgg._count._all,
+      avgRating: reviewAgg._avg.rating, // null si aucune critique
+      achievements: { unlocked: achievementCount, total: ALL_ACHIEVEMENTS.length },
+      rank, // { rank } global (complétions), ou null si non classé
+    };
+  }
+
+  // Rang mondial de l'utilisateur au classement « complétions » (all-time,
+  // global). Même départage que LeaderboardService (score DESC, puis premier
+  // arrivé à ce score = MAX createdAt le plus ancien). null s'il n'a rien
+  // complété (score 0 ⇒ non classé). Requête brute pour ne pas coupler
+  // UsersModule à LeaderboardModule (cycle via AuthModule).
+  private async completionsRank(userId: number): Promise<{ rank: number } | null> {
+    const mine = await this.prisma.$queryRaw<{ score: number; lastAt: Date | null }[]>`
+      SELECT COUNT(*)::int AS "score", MAX("createdAt") AS "lastAt"
+      FROM "GameCompletion" WHERE "userId" = ${userId}
+    `;
+    const score = mine[0]?.score ?? 0;
+    const lastAt = mine[0]?.lastAt ?? null;
+    if (score === 0 || !lastAt) return null;
+
+    const above = await this.prisma.$queryRaw<{ above: number }[]>`
+      SELECT COUNT(*)::int AS "above" FROM (
+        SELECT "userId"
+        FROM "GameCompletion"
+        GROUP BY "userId"
+        HAVING COUNT(*) > ${score}
+            OR (COUNT(*) = ${score} AND MAX("createdAt") < ${lastAt})
+      ) t
+    `;
+    return { rank: (above[0]?.above ?? 0) + 1 };
   }
 
   // Full list of games this user has logged (any status), newest-played first

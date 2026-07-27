@@ -498,7 +498,50 @@ export class GamesService {
       limit,
     );
 
-    return { data };
+    // Attache le même score bayésien que la liste du catalogue, pour afficher la
+    // pastille de note sur les cartes « Recommandés » (comme « Populaires »).
+    const scores = await this.scoresByIds(data.map((g) => g.id));
+    return { data: data.map((g) => ({ ...g, score: scores.get(g.id) })) };
+  }
+
+  // Score bayésien (même formule que la liste du catalogue) pour un ensemble
+  // d'ids, renvoyé en table id → score. Sert aux recommandations, qui tirent
+  // leurs jeux hors de la requête notée du catalogue.
+  private async scoresByIds(ids: number[]): Promise<Map<number, number>> {
+    if (ids.length === 0) return new Map();
+    const rows = await this.prisma.$queryRaw<{ id: number; score: number }[]>(Prisma.sql`
+      SELECT s.id,
+        ((s."userRatingCount" * COALESCE(s."avgUserRating", 0)
+          + ${RATING_CONFIDENCE_WEIGHT}
+            * COALESCE((s.igdb_d + s.steam_d) / 2, s.igdb_d, s.steam_d, 50) / 10.0)
+          / (s."userRatingCount" + ${RATING_CONFIDENCE_WEIGHT}))::float AS score
+      FROM (
+        SELECT g.id,
+          r.avg            AS "avgUserRating",
+          COALESCE(r.n, 0) AS "userRatingCount",
+          CASE WHEN g."igdbRating" IS NOT NULL THEN
+            (COALESCE(g."igdbRatingCount", 0) * g."igdbRating"
+              + ${IGDB_VOTES_CONFIDENCE} * pr.igdb_avg)
+            / (COALESCE(g."igdbRatingCount", 0) + ${IGDB_VOTES_CONFIDENCE})
+          END AS igdb_d,
+          CASE WHEN g."steamScore" IS NOT NULL THEN
+            (COALESCE(g."steamRatingCount", ${STEAM_COUNT_FALLBACK}) * g."steamScore"
+              + ${STEAM_REVIEWS_CONFIDENCE} * pr.steam_avg)
+            / (COALESCE(g."steamRatingCount", ${STEAM_COUNT_FALLBACK}) + ${STEAM_REVIEWS_CONFIDENCE})
+          END AS steam_d
+        FROM "Game" g
+        CROSS JOIN (
+          SELECT AVG("igdbRating") AS igdb_avg, AVG("steamScore") AS steam_avg
+          FROM "Game"
+        ) pr
+        LEFT JOIN (
+          SELECT "gameId", AVG(rating)::float AS avg, COUNT(*)::int AS n
+          FROM "Review" GROUP BY "gameId"
+        ) r ON r."gameId" = g.id
+        WHERE g.id IN (${Prisma.join(ids)})
+      ) s
+    `);
+    return new Map(rows.map((r) => [r.id, Math.round(r.score * 100) / 100]));
   }
 }
 

@@ -62,6 +62,14 @@ export class UsersController {
     return rows;
   }
 
+  // Bande de stats « ton année en jeux » sur l'accueil du connecté. Deux
+  // segments ⇒ pas de conflit avec @Get(':id'). Réservé au propriétaire (soi).
+  @UseGuards(JwtAuthGuard)
+  @Get('me/home-stats')
+  homeStats(@CurrentUser() current: JwtPayload) {
+    return this.usersService.getHomeStats(current.sub);
+  }
+
   // Public profile only — never return passwordHash / twoFactorSecret / providerId
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
