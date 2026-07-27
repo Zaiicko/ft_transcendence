@@ -570,7 +570,8 @@
     "activeFilters": "Активные фильтры",
     "clearAll": "Очистить всё",
     "removeFilter": "Убрать {{name}}",
-    "viewGame": "Открыть"
+    "viewGame": "Открыть",
+    "showLess": "Показать меньше"
   },
   "game": {
     "markedTitle": "Пройдено — нажмите, чтобы убрать",

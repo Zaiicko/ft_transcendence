@@ -332,18 +332,47 @@ export default function Catalog() {
               <GameCard key={g.id} game={g} />
             ))}
           </div>
-          {hasMore && (
-            <button
-              type="button"
-              onClick={() => {
-                setLoadingMore(true);
-                setPage((p) => p + 1);
-              }}
-              disabled={loadingMore}
-              className="mx-auto mt-2 rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
-            >
-              {loadingMore ? t('catalog.loading') : t('catalog.loadMore')}
-            </button>
+          {(hasMore || games.length > PAGE_SIZE) && (
+            <div className="mt-2 flex items-center justify-center gap-3">
+              {/* Flèche haut : replie au premier palier (sans re-fetch) */}
+              {games.length > PAGE_SIZE && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Fige la clé de la page courante pour que l'effet ne
+                    // recharge pas au retour à la page 1.
+                    lastKey.current = `${params}::1`;
+                    setGames((g) => g.slice(0, PAGE_SIZE));
+                    setPage(1);
+                  }}
+                  aria-label={t('catalog.showLess')}
+                  title={t('catalog.showLess')}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400 hover:opacity-70 dark:border-zinc-700"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2">
+                    <path d="m6 15 6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              )}
+              {/* Flèche bas : charge la page suivante */}
+              {hasMore && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoadingMore(true);
+                    setPage((p) => p + 1);
+                  }}
+                  disabled={loadingMore}
+                  aria-label={t('catalog.loadMore')}
+                  title={t('catalog.loadMore')}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400 hover:opacity-70 disabled:opacity-50 dark:border-zinc-700"
+                >
+                  <svg viewBox="0 0 24 24" className={`h-5 w-5 fill-none stroke-current stroke-2 ${loadingMore ? 'animate-pulse' : ''}`}>
+                    <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              )}
+            </div>
           )}
         </>
       )}

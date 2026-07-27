@@ -570,7 +570,8 @@
     "activeFilters": "適用中のフィルター",
     "clearAll": "すべて解除",
     "removeFilter": "{{name}} を外す",
-    "viewGame": "詳細を見る"
+    "viewGame": "詳細を見る",
+    "showLess": "表示を減らす"
   },
   "game": {
     "markedTitle": "クリア済み — クリックで解除",

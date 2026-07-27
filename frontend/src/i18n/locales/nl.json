@@ -570,7 +570,8 @@
     "activeFilters": "Actieve filters",
     "clearAll": "Alles wissen",
     "removeFilter": "{{name}} verwijderen",
-    "viewGame": "Bekijken"
+    "viewGame": "Bekijken",
+    "showLess": "Minder tonen"
   },
   "game": {
     "markedTitle": "Klaar — klik om te verwijderen",

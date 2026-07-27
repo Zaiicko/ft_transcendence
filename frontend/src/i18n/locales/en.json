@@ -570,7 +570,8 @@
     "activeFilters": "Active filters",
     "clearAll": "Clear all",
     "removeFilter": "Remove {{name}}",
-    "viewGame": "View game"
+    "viewGame": "View game",
+    "showLess": "Show less"
   },
   "game": {
     "markedTitle": "Done — click to remove",

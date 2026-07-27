@@ -570,7 +570,8 @@
     "activeFilters": "已启用筛选",
     "clearAll": "全部清除",
     "removeFilter": "移除 {{name}}",
-    "viewGame": "查看详情"
+    "viewGame": "查看详情",
+    "showLess": "收起"
   },
   "game": {
     "markedTitle": "已通关 — 点击取消",

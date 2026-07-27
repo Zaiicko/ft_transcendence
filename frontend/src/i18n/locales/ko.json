@@ -570,7 +570,8 @@
     "activeFilters": "적용된 필터",
     "clearAll": "모두 지우기",
     "removeFilter": "{{name}} 제거",
-    "viewGame": "자세히 보기"
+    "viewGame": "자세히 보기",
+    "showLess": "간략히 보기"
   },
   "game": {
     "markedTitle": "완료 — 클릭하여 해제",

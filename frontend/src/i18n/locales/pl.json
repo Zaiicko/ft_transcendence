@@ -570,7 +570,8 @@
     "activeFilters": "Aktywne filtry",
     "clearAll": "Wyczyść wszystko",
     "removeFilter": "Usuń {{name}}",
-    "viewGame": "Zobacz grę"
+    "viewGame": "Zobacz grę",
+    "showLess": "Pokaż mniej"
   },
   "game": {
     "markedTitle": "Ukończone — kliknij, aby usunąć",

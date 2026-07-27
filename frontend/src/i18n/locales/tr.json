@@ -570,7 +570,8 @@
     "activeFilters": "Etkin filtreler",
     "clearAll": "Tümünü temizle",
     "removeFilter": "{{name}} kaldır",
-    "viewGame": "Görüntüle"
+    "viewGame": "Görüntüle",
+    "showLess": "Daha az göster"
   },
   "game": {
     "markedTitle": "Bitti — kaldırmak için tıkla",
