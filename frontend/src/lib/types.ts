@@ -21,6 +21,16 @@ export interface GameSummary {
   dlcs?: GameDlc[];
 }
 
+// GET /users/me/home-stats — bande de stats « ton année en jeux » de l'accueil
+export interface HomeStats {
+  done: number; // jeux marqués « fait » (série ambre)
+  perfect: number; // jeux 100 % sur une plateforme (série verte)
+  reviews: number;
+  avgRating: number | null; // null si aucune critique
+  achievements: { unlocked: number; total: number };
+  rank: { rank: number } | null; // rang mondial (complétions), null si non classé
+}
+
 // GET /companies/:id — fiche studio + ses jeux principaux
 export interface CompanyDetail {
   id: number;

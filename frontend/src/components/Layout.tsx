@@ -145,10 +145,11 @@ export default function Layout() {
       >
         {t('a11y.skipToContent')}
       </a>
-      <header className="px-4 pb-4 pt-5 sm:px-6">
+      <header className="sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/80 px-4 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/80">
         <nav className="mx-auto flex max-w-6xl items-center gap-3 sm:gap-6">
-          {/* Burger : liens de nav sur petit écran (la barre inline est masquée < sm) */}
-          <div className="relative shrink-0 sm:hidden">
+          {/* Burger : liens de nav sur petit/moyen écran (la barre inline est
+              masquée < lg — trop chargée en dessous : 5 liens + recherche + icônes) */}
+          <div className="relative shrink-0 lg:hidden">
             <button
               type="button"
               onClick={() => setNavOpen((o) => !o)}
@@ -230,7 +231,7 @@ export default function Layout() {
           </Link>
           {/* Le nom du site (à gauche) renvoie déjà à l'accueil — pas de lien
               "Home" redondant */}
-          <div className="hidden items-center gap-7 text-sm sm:flex">
+          <div className="hidden items-center gap-7 text-sm lg:flex">
             <NavLink to="/games" className={navLink}>
               {t('nav.catalog')}
             </NavLink>

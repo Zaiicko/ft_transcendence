@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import EmptyState, { PencilIcon } from '../components/EmptyState';
+import HomeActivity from '../components/HomeActivity';
 import PlayedButton from '../components/PlayedButton';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
 import { CoverGridSkeleton } from '../components/Skeleton';
@@ -13,14 +14,14 @@ import Stars, { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
 import { translateGenre } from '../lib/genres';
 import { imageSize } from '../lib/theme';
-import { GameSummary, ReviewHighlight } from '../lib/types';
+import { GameSummary, HomeStats, ReviewHighlight } from '../lib/types';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const HIGHLIGHTS_STEP = 6;
-const POPULAR_STEP = 6;
-// 6 jeux au départ + 2 clics sur ⌄ maximum
-const POPULAR_MAX = POPULAR_STEP * 3;
+const POPULAR_STEP = 8;
+// 8 jeux au départ + clics sur ⌄
+const POPULAR_MAX = 24;
 // Recommandations : mêmes 6 au départ, le bouton ⌄ dévoile la suite (le backend
 // en renvoie jusqu'à 12)
 const RECO_STEP = 6;
@@ -48,6 +49,7 @@ export default function Home() {
   const [featured, setFeatured] = useState<GameSummary | null>(null);
   const [highlights, setHighlights] = useState<ReviewHighlight[]>([]);
   const [recommended, setRecommended] = useState<GameSummary[]>([]);
+  const [stats, setStats] = useState<HomeStats | null>(null);
   const [shown, setShown] = useState(HIGHLIGHTS_STEP);
   const [shownPopular, setShownPopular] = useState(POPULAR_STEP);
   const [shownReco, setShownReco] = useState(RECO_STEP);
@@ -95,16 +97,20 @@ export default function Home() {
     };
   }, []);
 
-  // Personnalisé : rien à charger pour un visiteur anonyme. Pas besoin de
-  // vider `recommended` au logout — la section est de toute façon gated par
-  // `user` au rendu (voir plus bas), et une navigation loin de Home démonte
-  // le composant.
+  // Personnalisé : recommandations + bande de stats « ton année en jeux ».
+  // Rien à charger pour un visiteur anonyme. Les sections sont de toute façon
+  // gated par `user` au rendu.
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
     apiFetch<{ data: GameSummary[] }>('/games/recommendations')
       .then((r) => {
         if (!cancelled) setRecommended(r.data);
+      })
+      .catch(() => {});
+    apiFetch<HomeStats>('/users/me/home-stats')
+      .then((s) => {
+        if (!cancelled) setStats(s);
       })
       .catch(() => {});
     return () => {
@@ -132,21 +138,16 @@ export default function Home() {
     return () => ctx.revert();
   }, [featured]);
 
-  // Tout le reste (jaquettes + cartes de critiques) ne s'anime que quand
-  // l'élément entre dans le viewport. Les boutons ⌄ / « voir plus » ajoutent
-  // des éléments après coup : à chaque rendu on ne câble que ceux pas encore
-  // marqués data-revealed, sans toucher aux animations déjà jouées.
+  // Tout le reste (jaquettes + cartes de critiques + tuiles de stats) ne s'anime
+  // que quand l'élément entre dans le viewport. Les boutons ⌄ / « voir plus »
+  // ajoutent des éléments après coup : à chaque rendu on ne câble que ceux pas
+  // encore marqués data-revealed, sans toucher aux animations déjà jouées.
   useLayoutEffect(() => {
-    if (
-      visiblePopular.length === 0 &&
-      visibleRecommended.length === 0 &&
-      visibleHighlights.length === 0
-    )
-      return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const fresh = Array.from(
-      rootRef.current?.querySelectorAll<HTMLElement>('[data-anim="cover"], [data-anim="card"]') ??
-        [],
+      rootRef.current?.querySelectorAll<HTMLElement>(
+        '[data-anim="cover"], [data-anim="card"], [data-anim="stat"]',
+      ) ?? [],
     ).filter((el) => !el.dataset.revealed);
     if (fresh.length === 0) return;
     fresh.forEach((el) => {
@@ -164,7 +165,7 @@ export default function Home() {
     // Les nouveaux éléments décalent ceux d'en dessous : on refait mesurer
     // toutes les positions de déclenchement
     ScrollTrigger.refresh();
-  }, [visiblePopular, visibleRecommended, visibleHighlights]);
+  }, [visiblePopular, visibleRecommended, visibleHighlights, stats]);
 
   // Démontage : tuer les triggers encore en attente et rendre visibles les
   // éléments masqués, pour repartir propre si le composant est remonté
@@ -181,7 +182,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div ref={rootRef} className="flex flex-col gap-10">
+    <div ref={rootRef} className="flex flex-col gap-12">
       {featured ? (
         <Hero game={featured} />
       ) : (
@@ -189,13 +190,14 @@ export default function Home() {
         // screenshot 1080p : sans ça, les sections du dessous se câblent en
         // haut de page (→ animations déclenchées à tort au chargement) puis
         // sont poussées vers le bas quand la carte s'insère (double saut)
-        <div className="h-[42vh] animate-pulse rounded-xl bg-zinc-200 md:h-[52vh] dark:bg-zinc-900" />
+        <div className="h-[46vh] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
       )}
+
+      {user && stats && <StatsBand stats={stats} />}
+
       {user && recommended.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            {t('home.recommendedForYou')}
-          </h2>
+          <SectionHead eyebrow={t('home.recoEyebrow')} title={t('home.recommendedForYou')} />
           <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
             {visibleRecommended.map((g) => (
               <GameCard key={g.id} game={g} />
@@ -211,34 +213,41 @@ export default function Home() {
           />
         </section>
       )}
-      {(popular.length > 0 || loading) && (
-        <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            {t('home.popularNow')}
-          </h2>
-          {popular.length > 0 ? (
-            <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
-              {visiblePopular.map((g) => (
-                <GameCard key={g.id} game={g} />
-              ))}
-            </div>
-          ) : (
-            <CoverGridSkeleton count={6} />
-          )}
-          <GridExpander
-            shown={shownPopular}
-            step={POPULAR_STEP}
-            total={popular.length}
-            onChange={setShownPopular}
-            moreLabel={t('home.showMorePopular')}
-            lessLabel={t('home.showLessPopular')}
-          />
-        </section>
-      )}
+
+      {/* Populaires (gauche) + Activité des amis (droite, connectés seulement) */}
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('home.popularReviews')}
-        </h2>
+        <div className={user ? 'grid gap-8 lg:grid-cols-[1fr_360px]' : ''}>
+          <div>
+            <SectionHead eyebrow={t('home.popularEyebrow')} title={t('home.popularNow')} />
+            {popular.length > 0 ? (
+              <div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
+                {visiblePopular.map((g) => (
+                  <GameCard key={g.id} game={g} />
+                ))}
+              </div>
+            ) : (
+              <CoverGridSkeleton count={8} />
+            )}
+            <GridExpander
+              shown={shownPopular}
+              step={POPULAR_STEP}
+              total={popular.length}
+              onChange={setShownPopular}
+              moreLabel={t('home.showMorePopular')}
+              lessLabel={t('home.showLessPopular')}
+            />
+          </div>
+          {user && (
+            <aside>
+              <SectionHead eyebrow={t('home.activityEyebrow')} title={t('home.activityTitle')} />
+              <HomeActivity />
+            </aside>
+          )}
+        </div>
+      </section>
+
+      <section>
+        <SectionHead eyebrow={t('home.reviewsEyebrow')} title={t('home.popularReviews')} />
         {highlights.length === 0 ? (
           loading ? null : (
             <EmptyState
@@ -270,6 +279,19 @@ export default function Home() {
   );
 }
 
+// En-tête de section : petit "eyebrow" ambre au-dessus d'un titre display, pour
+// donner de la hiérarchie (au lieu du même minuscule label gris partout).
+function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div className="mb-4">
+      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        <span className="text-accent">●</span> {eyebrow}
+      </div>
+      <h2 className="font-display mt-1.5 text-2xl font-bold tracking-tight">{title}</h2>
+    </div>
+  );
+}
+
 // "2023 · RPG · Aventure" — l'année de sortie et jusqu'à trois genres (traduits)
 function heroMeta(game: GameSummary, t: TFunction): string {
   const year = game.releaseDate?.slice(0, 4);
@@ -281,94 +303,69 @@ function heroMeta(game: GameSummary, t: TFunction): string {
 }
 
 function Hero({ game }: { game: GameSummary }) {
-  // Carte "cinéma" façon TiMN : l'image vit dans un grand cadre arrondi et
-  // bordé qui respire dans le conteneur, au lieu d'une bannière pleine largeur
+  // Hero "cinéma" : grande carte arrondie, halo ambre, dégradé profond et
+  // jaquette officielle posée dessus. Toute la carte renvoie à la fiche.
   const { t } = useTranslation();
   const { user } = useAuth();
   const banner = screenshot1080(game);
   return (
     <div data-anim="hero" className="relative">
-      {/* Toute la carte est cliquable → fiche du jeu (simple consultation) */}
       <a
         href={gameHref(game.id)}
         aria-label={t('home.viewGame', { title: game.title })}
-        className="group relative block overflow-hidden rounded-xl border border-zinc-900/10 dark:border-zinc-100/10"
-      >
-      {banner ? (
-        <img
-          data-anim="hero-bg"
-          src={banner}
-          alt=""
-          className="h-[42vh] w-full scale-110 object-cover md:h-[52vh]"
-        />
-      ) : (
-        <div
-          data-anim="hero-bg"
-          className="absolute inset-0 scale-125 bg-cover bg-center opacity-50 blur-2xl"
-          style={game.coverUrl ? { backgroundImage: `url(${game.coverUrl})` } : undefined}
-        />
-      )}
-      <span className="absolute left-4 top-4 rounded-full border border-zinc-100/15 bg-zinc-950/40 px-3 py-1 text-xs text-zinc-200 backdrop-blur">
-        {t('home.featuredBadge')}
-      </span>
-      <div
-        className={
-          banner
-            ? 'absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/90 via-zinc-950/35 to-transparent p-6 md:p-10'
-            : 'relative flex flex-col items-center gap-4 py-10'
-        }
+        className="group relative block overflow-hidden rounded-3xl border border-zinc-900/10 shadow-2xl shadow-black/30 dark:border-zinc-100/10"
       >
         {banner ? (
-          <>
-            {/* La jaquette officielle en grand : certains screenshots IGDB ne
-                ressemblent pas au jeu, elle fait foi */}
-            {game.coverUrl && (
-              <img
-                src={game.coverUrl}
-                alt=""
-                className="h-40 w-auto shrink-0 rounded-lg border border-zinc-100/15 shadow-2xl md:h-56"
-              />
-            )}
-            <div className="min-w-0 pb-1">
-              <h1 className="max-w-2xl text-balance text-3xl font-bold tracking-tight text-zinc-100 md:text-4xl">
-                {game.title}
-              </h1>
-              <div className="mt-2 flex items-center gap-3 text-sm text-zinc-300">
-                {game.score !== undefined && <ScoreBadge score={game.score} />}
-                {heroMeta(game, t) && <span>{heroMeta(game, t)}</span>}
-              </div>
-            </div>
-          </>
+          <img
+            data-anim="hero-bg"
+            src={banner}
+            alt=""
+            className="h-[46vh] w-full scale-110 object-cover md:h-[56vh]"
+          />
         ) : (
-          <>
-            {game.coverUrl && (
-              <img src={game.coverUrl} alt={game.title} className="h-80 rounded-xl shadow-2xl" />
-            )}
-            <div className="flex items-center gap-3 rounded-full bg-zinc-950/70 px-5 py-2 text-zinc-100 backdrop-blur">
-              <span className="font-semibold">{game.title}</span>
-              {game.score !== undefined && <ScoreBadge score={game.score} />}
-            </div>
-          </>
+          <div
+            data-anim="hero-bg"
+            className="h-[46vh] scale-125 bg-cover bg-center opacity-60 blur-2xl md:h-[56vh]"
+            style={game.coverUrl ? { backgroundImage: `url(${game.coverUrl})` } : undefined}
+          />
         )}
-      </div>
+        {/* Halo ambre signature en haut à droite */}
+        <div className="pointer-events-none absolute -right-24 -top-40 h-[32rem] w-[32rem] rounded-full bg-accent/25 blur-3xl" />
+        {/* Badge "à la une" */}
+        <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-zinc-100/20 bg-zinc-950/40 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-100 backdrop-blur">
+          <span className="text-accent">✦</span> {t('home.featuredBadge')}
+        </span>
+        <div className="absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent p-6 md:p-10">
+          {game.coverUrl && (
+            <img
+              src={game.coverUrl}
+              alt=""
+              className="hidden h-40 w-auto shrink-0 rounded-xl border border-zinc-100/15 shadow-2xl sm:block md:h-56"
+            />
+          )}
+          <div className="min-w-0 pb-1">
+            <h1 className="font-display max-w-2xl text-balance text-3xl font-extrabold leading-[0.98] tracking-tight text-zinc-50 md:text-5xl">
+              {game.title}
+            </h1>
+            <div className="mt-3 flex items-center gap-3 text-sm text-zinc-300">
+              {game.score !== undefined && <ScoreBadge score={game.score} />}
+              {heroMeta(game, t) && <span>{heroMeta(game, t)}</span>}
+            </div>
+          </div>
+        </div>
       </a>
-      {/* Posés par-dessus le lien de la carte (sortis du <a>, plus haut dans
-          l'empilement) : le knob "fait" et le raccourci direct vers le champ
-          de critique (#review défile en bas de la fiche) */}
-      {/* Actions réservées aux connectés (comme le knob "fait") — un visiteur
-          anonyme clique la carte pour consulter, sans CTA de critique */}
+      {/* Actions (connectés) posées par-dessus le lien de la carte */}
       {user && (
         <div className="absolute bottom-6 right-6 flex items-center gap-3 md:bottom-10 md:right-10">
           <PlayedButton gameId={game.id} onDark />
           <a
             href={`${gameHref(game.id)}#review`}
-            className="flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-medium text-zinc-950 shadow-lg transition hover:brightness-110"
+            className="flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-lg shadow-accent/30 transition hover:brightness-110"
           >
-            {/* Crayon filaire (trait 1.6, style TiMN) : critique */}
             <svg
               viewBox="0 0 24 24"
               className="h-4 w-4 shrink-0 fill-none stroke-current"
-              strokeWidth="1.6"
+              strokeWidth="1.8"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
@@ -384,10 +381,136 @@ function Hero({ game }: { game: GameSummary }) {
   );
 }
 
+// Bande "ton année en jeux" : jeux faits, 100 %, critiques (+ moyenne), rang
+// mondial, succès (avec anneau de progression). Densité + couleur signature.
+function StatsBand({ stats }: { stats: HomeStats }) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const year = new Date().getFullYear();
+  const achPct = stats.achievements.total
+    ? stats.achievements.unlocked / stats.achievements.total
+    : 0;
+  return (
+    <section>
+      <div className="mb-4 flex items-end justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+            <span className="text-accent">●</span> {t('home.statsEyebrow')}
+          </div>
+          <h2 className="font-display mt-1.5 text-2xl font-bold tracking-tight">
+            {t('home.statsHeading', { year })}
+          </h2>
+        </div>
+        {user && (
+          <a
+            href={`/u/${user.username}`}
+            className="hidden text-sm text-zinc-500 transition hover:text-accent sm:inline dark:text-zinc-400"
+          >
+            {t('home.seeProfile')} →
+          </a>
+        )}
+      </div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <StatTile
+          label={t('home.statDone')}
+          value={stats.done}
+          caption={t('home.statDoneCaption')}
+          tone="accent"
+        />
+        <StatTile
+          label={t('home.statPerfect')}
+          value={stats.perfect}
+          caption={t('home.statPerfectCaption')}
+          tone="emerald"
+        />
+        <StatTile
+          label={t('home.statReviews')}
+          value={stats.reviews}
+          caption={
+            stats.avgRating != null
+              ? t('home.statAvg', { value: (stats.avgRating / 2).toFixed(1) })
+              : t('home.statNoReviews')
+          }
+        />
+        <StatTile
+          label={t('home.statRank')}
+          value={stats.rank ? `#${stats.rank.rank}` : '—'}
+          caption={stats.rank ? t('home.statRankCaption') : t('home.statUnranked')}
+          tone="accent"
+        />
+        <StatTile
+          label={t('home.statAchievements')}
+          value={`${stats.achievements.unlocked}`}
+          suffix={`/${stats.achievements.total}`}
+          ring={achPct}
+        />
+      </div>
+    </section>
+  );
+}
+
+function StatTile({
+  label,
+  value,
+  caption,
+  suffix,
+  tone,
+  ring,
+}: {
+  label: string;
+  value: number | string;
+  caption?: string;
+  suffix?: string;
+  tone?: 'accent' | 'emerald';
+  ring?: number;
+}) {
+  const valueColor =
+    tone === 'accent' ? 'text-accent' : tone === 'emerald' ? 'text-emerald-500' : '';
+  return (
+    <div
+      data-anim="stat"
+      className="card relative overflow-hidden !rounded-2xl p-4"
+    >
+      <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
+        {label}
+      </div>
+      <div className={`font-display mt-1.5 text-3xl font-extrabold tabular-nums tracking-tight ${valueColor}`}>
+        {value}
+        {suffix && <span className="text-base font-bold text-zinc-400">{suffix}</span>}
+      </div>
+      {caption && <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{caption}</div>}
+      {ring !== undefined && <ProgressRing pct={ring} />}
+    </div>
+  );
+}
+
+// Petit anneau de progression (succès débloqués / total).
+function ProgressRing({ pct }: { pct: number }) {
+  const r = 15;
+  const c = 2 * Math.PI * r;
+  return (
+    <svg className="absolute right-3 top-3" width="32" height="32" viewBox="0 0 36 36" aria-hidden="true">
+      <circle cx="18" cy="18" r={r} fill="none" stroke="currentColor" strokeWidth="4" className="text-zinc-900/10 dark:text-zinc-100/10" />
+      <circle
+        cx="18"
+        cy="18"
+        r={r}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeDasharray={c}
+        strokeDashoffset={c * (1 - Math.min(Math.max(pct, 0), 1))}
+        transform="rotate(-90 18 18)"
+        className="text-accent"
+      />
+    </svg>
+  );
+}
+
 // Contrôles ⌄ / ⌃ sous une grille de jaquettes : déroule ou replie par pas de
-// `step` (mêmes paliers 6/12/18 partout). La flèche bas apparaît tant qu'il
-// reste à montrer, la flèche haut dès qu'on a dépassé le palier initial ; rien
-// ne s'affiche quand la grille est à la fois au minimum et au maximum.
+// `step`. La flèche bas apparaît tant qu'il reste à montrer, la flèche haut dès
+// qu'on a dépassé le palier initial.
 function GridExpander({
   shown,
   step,
@@ -441,47 +564,63 @@ function GridExpander({
 }
 
 function GameCard({ game }: { game: GameSummary }) {
+  const { t } = useTranslation();
+  const genres = game.genres?.slice(0, 2).map((g) => translateGenre(g.name, t)) ?? [];
   return (
-    <a href={gameHref(game.id)} data-anim="cover" className="group">
-      {game.coverUrl ? (
-        <img
-          src={game.coverUrl}
-          alt={game.title}
-          className="aspect-[3/4] w-full rounded-lg object-cover transition group-hover:scale-105 group-hover:shadow-xl"
-        />
-      ) : (
-        <div className="flex aspect-[3/4] items-center justify-center rounded-lg bg-zinc-200 p-2 text-center text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-          {game.title}
-        </div>
-      )}
-      <div className="mt-1 flex items-center justify-between gap-1">
-        <span className="truncate text-xs text-zinc-600 dark:text-zinc-400" title={game.title}>
-          {game.title}
-        </span>
-        {game.score !== undefined && <ScoreBadge score={game.score} small />}
+    <a href={gameHref(game.id)} data-anim="cover" className="group relative block">
+      <div className="relative overflow-hidden rounded-xl border border-zinc-900/10 shadow-lg shadow-black/10 transition duration-300 group-hover:-translate-y-1.5 group-hover:shadow-2xl dark:border-zinc-100/10">
+        {game.coverUrl ? (
+          <img
+            src={game.coverUrl}
+            alt={game.title}
+            className="aspect-[3/4] w-full object-cover"
+          />
+        ) : (
+          <div className="flex aspect-[3/4] items-center justify-center bg-zinc-200 p-2 text-center text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+            {game.title}
+          </div>
+        )}
+        {game.score !== undefined && (
+          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-amber-300 to-accent px-2 py-0.5 text-xs font-bold tabular-nums text-zinc-950 shadow">
+            <StarIcon className="h-3 w-3" />
+            {game.score.toFixed(1)}
+          </span>
+        )}
+        {/* Voile + genres révélés au survol */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/10 to-transparent opacity-0 transition group-hover:opacity-100" />
+        {genres.length > 0 && (
+          <div className="pointer-events-none absolute inset-x-2 bottom-2 flex translate-y-2 flex-wrap gap-1.5 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
+            {genres.map((g) => (
+              <span
+                key={g}
+                className="rounded-full border border-zinc-100/30 bg-zinc-950/40 px-2 py-0.5 text-[10px] font-semibold text-zinc-100 backdrop-blur"
+              >
+                {g}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="mt-1.5 truncate text-xs text-zinc-600 dark:text-zinc-400" title={game.title}>
+        {game.title}
       </div>
     </a>
   );
 }
 
-function ScoreBadge({ score, small = false }: { score: number; small?: boolean }) {
+function ScoreBadge({ score }: { score: number }) {
   return (
-    <span
-      className={`inline-flex shrink-0 items-center gap-1 rounded font-bold text-amber-500 ${
-        small ? 'text-xs' : 'bg-zinc-950/40 px-2 py-0.5 text-sm'
-      }`}
-    >
-      <StarIcon className={small ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gradient-to-br from-amber-300 to-accent px-2.5 py-1 text-sm font-bold tabular-nums text-zinc-950">
+      <StarIcon className="h-3.5 w-3.5" />
       {score.toFixed(1)}
     </span>
   );
 }
 
 function ReviewCard({ review }: { review: ReviewHighlight }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   // Le lien pointe sur l'avis précis (#review-<id>) : la fiche jeu/studio défile
-  // dessus et l'encadre, comme depuis un profil (l'épinglage gère le cas où il
-  // n'est pas dans le premier lot chargé).
+  // dessus et l'encadre, comme depuis un profil.
   const target = review.game
     ? {
         name: review.game.title,
@@ -500,7 +639,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
     <a
       href={target.href}
       data-anim="card"
-      className="card flex flex-col gap-2 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600"
+      className="card flex flex-col gap-3 p-5 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600"
     >
       <div className="flex items-center gap-3">
         {target.cover && (
@@ -509,30 +648,35 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
             alt=""
             className={
               target.isCompany
-                ? 'h-14 w-10 shrink-0 rounded bg-white object-contain p-0.5'
-                : 'h-14 w-10 shrink-0 rounded object-cover'
+                ? 'h-16 w-11 shrink-0 rounded-lg bg-white object-contain p-0.5'
+                : 'h-16 w-11 shrink-0 rounded-lg object-cover'
             }
           />
         )}
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold">{target.name}</div>
-          <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+          <div className="mt-1">
             <Stars rating={review.rating} showValue={false} />
-            {review.user ? (
-              <span className="flex items-center gap-1.5">
-                <Avatar username={review.user.username} avatarUrl={review.user.avatarUrl} size={16} />
-                {review.user.username}
-              </span>
-            ) : (
-              <em>{t('home.deletedUser')}</em>
-            )}
           </div>
+        </div>
+        {/* Note en gros chiffre ambre — l'accent du bloc (sur 10) */}
+        <div className="font-display shrink-0 text-3xl font-extrabold tabular-nums leading-none text-accent">
+          {review.rating}
+          <span className="text-base font-bold text-zinc-400">/10</span>
         </div>
       </div>
       <div className="text-sm font-semibold">« {review.title} »</div>
       <p className="line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">{review.text}</p>
-      <div className="mt-auto flex items-center gap-3 pt-1 text-xs text-zinc-500">
-        <span className="inline-flex items-center gap-1">
+      <div className="mt-auto flex items-center gap-3 border-t border-zinc-900/5 pt-3 text-xs text-zinc-500 dark:border-zinc-100/5">
+        {review.user ? (
+          <span className="flex items-center gap-1.5 font-medium text-zinc-600 dark:text-zinc-300">
+            <Avatar username={review.user.username} avatarUrl={review.user.avatarUrl} size={18} />
+            {review.user.username}
+          </span>
+        ) : (
+          <em>{t('home.deletedUser')}</em>
+        )}
+        <span className="ml-auto inline-flex items-center gap-1">
           <ThumbsUpIcon className="h-3.5 w-3.5" /> {review._count.likes}
         </span>
         <span className="inline-flex items-center gap-1">
@@ -541,7 +685,6 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
         <span className="inline-flex items-center gap-1">
           <CommentIcon className="h-3.5 w-3.5" /> {review._count.comments}
         </span>
-        <span className="ml-auto">{new Date(review.createdAt).toLocaleDateString(i18n.language)}</span>
       </div>
     </a>
   );
