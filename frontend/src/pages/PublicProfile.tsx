@@ -11,20 +11,175 @@ import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import AchievementsSection from '../components/AchievementsSection';
 import LeaderboardRankBadge from '../components/LeaderboardRankBadge';
-import Modal from '../components/Modal';
 import PsnBadge from '../components/PsnBadge';
 import XboxBadge from '../components/XboxBadge';
 import ProfileLists from '../components/ProfileLists';
 import ProfilePlayedGames from '../components/ProfilePlayedGames';
 import ProfileReviews from '../components/ProfileReviews';
+import SectionHead from '../components/SectionHead';
 import Skeleton from '../components/Skeleton';
-import Stars from '../components/Stars';
+import Stars, { StarIcon } from '../components/Stars';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
-import type { FriendState, PublicProfile as Profile } from '../lib/types';
+import type { FriendState, ProfileReview, PublicProfile as Profile } from '../lib/types';
 
 function memberSince(iso: string): string {
   return new Date(iso).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' });
+}
+
+// Onglets de la section profil : Aperçu (résumé de chaque module) puis le détail
+type ProfileTab = 'overview' | 'reviews' | 'games' | 'lists';
+
+// Jaquette « coup de cœur » : même format que l'accueil/maquette — pastille de
+// note (celle donnée par l'utilisateur) en haut à droite, lift au survol.
+function TopGameCover({ game, rating }: { game: Profile['topGames'][number]['game']; rating: number }) {
+  return (
+    <Link to={`/game/${game.id}`} className="group block">
+      <div className="relative overflow-hidden rounded-xl border border-zinc-900/10 shadow-lg shadow-black/10 transition duration-300 group-hover:-translate-y-1.5 group-hover:shadow-2xl dark:border-zinc-100/10">
+        {game.coverUrl ? (
+          <img src={game.coverUrl} alt={game.title} className="aspect-[3/4] w-full object-cover" />
+        ) : (
+          <div className="flex aspect-[3/4] items-center justify-center bg-zinc-200 p-2 text-center text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+            {game.title}
+          </div>
+        )}
+        <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-amber-300 to-accent px-2 py-0.5 text-xs font-bold tabular-nums text-zinc-950 shadow">
+          <StarIcon className="h-3 w-3" />
+          {rating}
+        </span>
+      </div>
+      <p className="mt-1.5 truncate text-sm font-medium">{game.title}</p>
+    </Link>
+  );
+}
+
+// Bio du profil : simple texte pour un visiteur ; éditable en place (textarea +
+// enregistrer) pour le propriétaire, via PATCH /users/me.
+function BioBlock({
+  bio,
+  isSelf,
+  onSaved,
+}: {
+  bio: string | null;
+  isSelf: boolean;
+  onSaved: (bio: string) => void;
+}) {
+  const { t } = useTranslation();
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(bio ?? '');
+  const [busy, setBusy] = useState(false);
+
+  if (!isSelf) {
+    return bio ? <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-300">{bio}</p> : null;
+  }
+
+  if (editing) {
+    const save = async () => {
+      setBusy(true);
+      try {
+        const next = value.trim();
+        await apiFetch('/users/me', { method: 'PATCH', body: JSON.stringify({ bio: next }) });
+        onSaved(next);
+        setEditing(false);
+      } catch {
+        /* réseau : on garde l'édition ouverte */
+      } finally {
+        setBusy(false);
+      }
+    };
+    return (
+      <div className="mt-2 max-w-2xl">
+        <textarea
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          maxLength={280}
+          rows={3}
+          autoFocus
+          placeholder={t('profile.bioPlaceholder')}
+          className="field w-full resize-none !rounded-xl px-3 py-2"
+        />
+        <div className="mt-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={save}
+            disabled={busy}
+            className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+          >
+            {busy ? t('common.saving') : t('common.save')}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setEditing(false);
+              setValue(bio ?? '');
+            }}
+            className="text-sm text-zinc-500 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            {t('common.cancel')}
+          </button>
+          <span className="ml-auto text-xs text-zinc-400">{value.length}/280</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => setEditing(true)}
+      className="group mt-2 flex max-w-2xl items-start gap-1.5 text-left text-sm text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+    >
+      <span className={bio ? '' : 'italic text-zinc-400 dark:text-zinc-500'}>
+        {bio || t('profile.bioAdd')}
+      </span>
+      <svg
+        viewBox="0 0 24 24"
+        className="mt-0.5 h-3.5 w-3.5 shrink-0 fill-none stroke-current opacity-0 transition group-hover:opacity-100"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+      </svg>
+    </button>
+  );
+}
+
+// Carte de critique compacte (éditoriale, note sur /10) pour l'aperçu du profil.
+function ReviewPreviewCard({ review }: { review: ProfileReview }) {
+  const target = review.game
+    ? { name: review.game.title, cover: review.game.coverUrl, href: `/game/${review.game.id}#review-${review.id}`, isCompany: false }
+    : {
+        name: review.company?.name ?? '?',
+        cover: review.company?.logoUrl ?? null,
+        href: review.company ? `/company/${review.company.id}#review-${review.id}` : '/',
+        isCompany: true,
+      };
+  return (
+    <Link to={target.href} className="card flex flex-col gap-3 p-5 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600">
+      <div className="flex items-center gap-3">
+        {target.cover && (
+          <img
+            src={target.cover}
+            alt=""
+            className={target.isCompany ? 'h-16 w-11 shrink-0 rounded-lg bg-white object-contain p-0.5' : 'h-16 w-11 shrink-0 rounded-lg object-cover'}
+          />
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-semibold">{target.name}</div>
+          <div className="mt-1"><Stars rating={review.rating} showValue={false} /></div>
+        </div>
+        <div className="font-display shrink-0 text-3xl font-extrabold tabular-nums leading-none text-accent">
+          {review.rating}
+          <span className="text-base font-bold text-zinc-400">/10</span>
+        </div>
+      </div>
+      <div className="text-sm font-semibold">« {review.title} »</div>
+      <p className="line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">{review.text}</p>
+    </Link>
+  );
 }
 
 // ---- Yearly completion calendar (GitHub-style heatmap) ----
@@ -371,8 +526,8 @@ export default function PublicProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Modale ouverte au clic sur un compteur de l'en-tête (avis / jeux faits)
-  const [modal, setModal] = useState<'reviews' | 'played' | null>(null);
+  // Onglet actif : « Aperçu » par défaut (résumé de chaque module)
+  const [tab, setTab] = useState<ProfileTab>('overview');
 
   // No synchronous setState in the body (react-hooks/set-state-in-effect):
   // every update happens in a promise callback.
@@ -417,149 +572,236 @@ export default function PublicProfile() {
     );
   if (error || !profile) return <p className="text-red-400">{error ?? t('profile.notFound')}</p>;
 
-  // Réutilisés comme label du compteur ET comme titre de la modale
-  const reviewLabel = t(profile.reviewCount === 1 ? 'profile.reviewOne' : 'profile.reviewMany', {
-    count: profile.reviewCount,
-  });
-  const playedLabel = t(profile.playedCount === 1 ? 'profile.playedGameOne' : 'profile.playedGameMany', {
-    count: profile.playedCount,
-  });
+  const isSelf = profile.friendState === 'self';
+
+  // Stats intégrées à l'en-tête (mêmes libellés que la bande de l'accueil).
+  const stats: { label: string; value: string | number; tone?: 'accent' | 'emerald'; goto?: ProfileTab }[] = [
+    { label: t('home.statDone'), value: profile.completions.length, tone: 'accent', goto: 'games' },
+    { label: t('home.statPerfect'), value: profile.perfectGames.length, tone: 'emerald', goto: 'games' },
+    { label: t('home.statReviews'), value: profile.reviewCount, goto: 'reviews' },
+    { label: t('home.statRank'), value: profile.rank ? `#${profile.rank.rank}` : '—', tone: 'accent' },
+  ];
+
+  const tabs: { key: ProfileTab; label: string; n?: number }[] = [
+    { key: 'overview', label: t('profile.tabOverview') },
+    { key: 'reviews', label: t('profile.tabReviews'), n: profile.reviewCount },
+    { key: 'games', label: t('profile.tabGames'), n: profile.completions.length + profile.perfectGames.length },
+    { key: 'lists', label: t('profile.tabLists'), n: profile.listCount },
+  ];
 
   return (
-    <div className="mx-auto max-w-3xl">
-      {/* Header */}
-      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-        <Avatar username={profile.username} avatarUrl={profile.avatarUrl} size={96} />
-        <div className="flex-1">
-          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
-            {profile.username}
-            {profile.provider === 'FORTYTWO' && <FortyTwoBadge />}
-            {profile.provider === 'DISCORD' && <DiscordBadge />}
-            {profile.steamId && <SteamBadge />}
-            {profile.psnLinked && <PsnBadge />}
-            {profile.xboxLinked && <XboxBadge />}
-            <LeaderboardRankBadge userId={profile.id} />
-          </h1>
-          {profile.bio && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{profile.bio}</p>}
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-            {t('profile.memberSince', { date: memberSince(profile.createdAt) })} ·{' '}
-            {profile.reviewCount > 0 ? (
-              <button
-                type="button"
-                onClick={() => setModal('reviews')}
-                className="underline decoration-dotted underline-offset-2 transition hover:text-accent"
-              >
-                {reviewLabel}
-              </button>
-            ) : (
-              reviewLabel
-            )}{' '}
-            ·{' '}
-            {profile.playedCount > 0 ? (
-              <button
-                type="button"
-                onClick={() => setModal('played')}
-                className="underline decoration-dotted underline-offset-2 transition hover:text-accent"
-              >
-                {playedLabel}
-              </button>
-            ) : (
-              playedLabel
-            )}
-          </p>
+    <div className="mx-auto max-w-5xl">
+      {/* ---- En-tête immersif ---- */}
+      {/* Pas d'overflow-hidden ici : l'avatar remonte dans la bannière (-mt-14)
+          et serait rogné. C'est la bannière qui porte l'arrondi + le clip. */}
+      <div className="rounded-3xl border border-zinc-900/10 bg-zinc-50 shadow-xl shadow-black/5 dark:border-zinc-100/10 dark:bg-zinc-900">
+        {/* Bannière : dégradé chaud explicite (crème→ambre en clair, ambre→prune
+            en sombre) + halo, fondue vers le corps. Couleurs en dur pour rester
+            clairement colorée (l'ambre translucide sur zinc-900 rendait un band
+            quasi noir). */}
+        <div className="relative h-20 overflow-hidden rounded-t-3xl sm:h-24">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f7ecd9] via-[#f1dfc4] to-[#ece2ef] dark:from-[#2c1708] dark:via-[#3d2010] dark:to-[#1c1531]" />
+          <div className="pointer-events-none absolute -right-10 -top-16 h-64 w-64 rounded-full bg-accent/40 blur-3xl" />
+          {/* Fondu vers la couleur du corps (bas de la bannière) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-50 via-transparent to-transparent dark:from-zinc-900" />
         </div>
-        <div className="flex items-center gap-2 sm:self-start">
-          {/* Partager ce profil à un ami */}
-          {user && (
-            <ShareButton
-              target={{ type: 'PROFILE', sharedUserId: profile.id }}
-              title={t('profile.shareProfile')}
-              triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
-            />
-          )}
-          {profile.friendState === 'self' ? (
-            <Link
-              to="/settings"
-              title={t('profile.editProfile')}
-              aria-label={t('profile.editProfile')}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
-            >
-              {/* Rouage filaire (trait 1.6, style TiMN) */}
-              <svg
-                viewBox="0 0 24 24"
-                className="h-4 w-4 fill-none stroke-current"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </Link>
-          ) : user ? (
-            <FriendAction
-              state={profile.friendState}
-              username={profile.username}
-              onSent={() => setProfile({ ...profile, friendState: 'outgoing' })}
-            />
-          ) : null}
+
+        <div className="px-5 pb-5 sm:px-7 sm:pb-6">
+          {/* Avatar posé sur la bannière. `relative z-10` est ESSENTIEL : la
+              bannière est en position:relative (halos absolus) donc elle se peint
+              APRÈS l'avatar statique et le recouvrait (haut coupé). z-10 remet
+              l'avatar au-dessus. */}
+          <div className="relative z-10 -mt-11 w-fit rounded-full ring-4 ring-zinc-50 dark:ring-zinc-900">
+            <Avatar username={profile.username} avatarUrl={profile.avatarUrl} size={88} />
+          </div>
+
+          {/* Nom + actions, sous l'avatar */}
+          <div className="mt-2.5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0 flex-1">
+              <h1 className="font-display flex flex-wrap items-center gap-2 text-2xl font-extrabold tracking-tight">
+                {profile.username}
+                {profile.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                {profile.provider === 'DISCORD' && <DiscordBadge />}
+                {profile.steamId && <SteamBadge />}
+                {profile.psnLinked && <PsnBadge />}
+                {profile.xboxLinked && <XboxBadge />}
+                <LeaderboardRankBadge userId={profile.id} />
+              </h1>
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                {t('profile.memberSince', { date: memberSince(profile.createdAt) })}
+              </p>
+              <BioBlock
+                bio={profile.bio}
+                isSelf={isSelf}
+                onSaved={(bio) => setProfile({ ...profile, bio })}
+              />
+            </div>
+            {/* Actions */}
+            <div className="flex shrink-0 items-center gap-2">
+              {user && (
+                <ShareButton
+                  target={{ type: 'PROFILE', sharedUserId: profile.id }}
+                  title={t('profile.shareProfile')}
+                  triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+                />
+              )}
+              {isSelf ? (
+                <Link
+                  to="/settings"
+                  title={t('profile.editProfile')}
+                  aria-label={t('profile.editProfile')}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4 fill-none stroke-current"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                  </svg>
+                </Link>
+              ) : user ? (
+                <FriendAction
+                  state={profile.friendState}
+                  username={profile.username}
+                  onSent={() => setProfile({ ...profile, friendState: 'outgoing' })}
+                />
+              ) : null}
+            </div>
+          </div>
+
+          {/* Stats intégrées */}
+          <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-zinc-900/10 bg-zinc-900/10 sm:grid-cols-4 dark:border-zinc-100/10 dark:bg-zinc-100/10">
+            {stats.map((s, i) => {
+              const valueColor =
+                s.tone === 'accent' ? 'text-accent' : s.tone === 'emerald' ? 'text-emerald-500' : '';
+              const clickable = s.goto !== undefined;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  disabled={!clickable}
+                  onClick={() => s.goto && setTab(s.goto)}
+                  className={`bg-zinc-50 px-3 py-2.5 text-center transition dark:bg-zinc-900 ${
+                    clickable ? 'hover:bg-zinc-100 dark:hover:bg-zinc-800' : 'cursor-default'
+                  }`}
+                >
+                  <div className={`font-display text-xl font-extrabold tabular-nums tracking-tight ${valueColor}`}>
+                    {s.value}
+                  </div>
+                  <div className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
+                    {s.label}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Top 5 games */}
-      {profile.topGames.length > 0 && (
-        <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('profile.topRated')}</h2>
-          <div className="grid grid-cols-3 gap-4 sm:grid-cols-5">
-            {profile.topGames.map(({ game, rating }) => (
-              <Link key={game.id} to={`/game/${game.id}`} className="group">
-                {game.coverUrl ? (
-                  <img
-                    src={game.coverUrl}
-                    alt={game.title}
-                    className="aspect-[3/4] w-full rounded-lg object-cover shadow transition group-hover:opacity-80"
+      {/* ---- Onglets ---- */}
+      <div className="mt-6 flex gap-1 border-b border-zinc-900/10 dark:border-zinc-100/10">
+        {tabs.map((tb) => (
+          <button
+            key={tb.key}
+            type="button"
+            onClick={() => setTab(tb.key)}
+            className={`relative px-4 py-2.5 text-sm font-semibold transition ${
+              tab === tb.key
+                ? 'text-zinc-900 dark:text-zinc-100'
+                : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
+            }`}
+          >
+            {tb.label}
+            {tb.n !== undefined && (
+              <span className="ml-1.5 text-xs text-zinc-400 dark:text-zinc-500">{tb.n}</span>
+            )}
+            {tab === tb.key && (
+              <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-accent" />
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* ---- Contenu de l'onglet ---- */}
+      <div className="mt-6">
+        {/* APERÇU : un résumé de chaque module (coups de cœur, activité,
+            dernières critiques, succès) avec un renvoi vers l'onglet détaillé. */}
+        {tab === 'overview' && (
+          <div className="flex flex-col gap-10">
+            <section>
+              <SectionHead eyebrow={t('profile.eyeActivity')} title={t('profile.completionCalendar')} />
+              <div className="card p-4 sm:p-5">
+                <CompletionCalendar done={profile.completions} perfect={profile.perfectGames} />
+              </div>
+            </section>
+
+            {profile.topGames.length > 0 && (
+              <section>
+                <SectionHead eyebrow={t('profile.eyeTopRated')} title={t('profile.topRated')} />
+                <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+                  {profile.topGames.map(({ game, rating }) => (
+                    <TopGameCover key={game.id} game={game} rating={rating} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {profile.recentReviews.length > 0 && (
+              <section>
+                <div className="mb-4 flex items-end justify-between gap-3">
+                  <SectionHead
+                    className="mb-0"
+                    eyebrow={t('profile.eyeReviews')}
+                    title={t('profile.recentReviewsTitle')}
                   />
-                ) : (
-                  <div className="aspect-[3/4] w-full rounded-lg bg-zinc-200 dark:bg-zinc-800" />
-                )}
-                <p className="mt-1 truncate text-sm font-medium">{game.title}</p>
-                <Stars rating={rating} />
-              </Link>
-            ))}
+                  {profile.reviewCount > 2 && (
+                    <button
+                      type="button"
+                      onClick={() => setTab('reviews')}
+                      className="text-sm text-zinc-500 transition hover:text-accent dark:text-zinc-400"
+                    >
+                      {t('profile.seeAllReviews')} →
+                    </button>
+                  )}
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {profile.recentReviews.slice(0, 2).map((r) => (
+                    <ReviewPreviewCard key={r.id} review={r} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Résumé des succès (une pastille par famille, dépliable) */}
+            <AchievementsSection userId={profile.id} />
           </div>
-        </section>
-      )}
+        )}
 
-      {/* Lists / playlists — gestion complète pour le propriétaire, publiques
-          seulement pour un visiteur (le composant se masque si rien à montrer) */}
-      <ProfileLists
-        isSelf={profile.friendState === 'self'}
-        publicLists={profile.publicLists}
-      />
+        {tab === 'reviews' && (
+          <ProfileReviews username={profile.username} seed={profile.recentReviews} />
+        )}
 
-      {/* Completion calendar */}
-      <section className="mb-10">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('profile.completionCalendar')}</h2>
-        <CompletionCalendar done={profile.completions} perfect={profile.perfectGames} />
-      </section>
+        {tab === 'games' && (
+          <div className="flex flex-col gap-10">
+            <section>
+              <SectionHead eyebrow={t('profile.eyeActivity')} title={t('profile.completionCalendar')} />
+              <div className="card p-4 sm:p-5">
+                <CompletionCalendar done={profile.completions} perfect={profile.perfectGames} />
+              </div>
+            </section>
+            <ProfilePlayedGames username={profile.username} />
+          </div>
+        )}
 
-      {/* Succès « maison » */}
-      <AchievementsSection userId={profile.id} />
-
-      {/* Recent reviews — limitées à 10, triables, "Charger plus" */}
-      <ProfileReviews username={profile.username} seed={profile.recentReviews} />
-
-      {modal === 'reviews' && (
-        <Modal title={reviewLabel} onClose={() => setModal(null)}>
-          <ProfileReviews username={profile.username} seed={profile.recentReviews} embedded />
-        </Modal>
-      )}
-      {modal === 'played' && (
-        <Modal title={playedLabel} onClose={() => setModal(null)}>
-          <ProfilePlayedGames username={profile.username} />
-        </Modal>
-      )}
+        {tab === 'lists' && (
+          <ProfileLists isSelf={isSelf} publicLists={profile.publicLists} />
+        )}
+      </div>
     </div>
   );
 }

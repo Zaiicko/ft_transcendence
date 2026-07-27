@@ -478,7 +478,21 @@
     "calDoneLabel": "gedaan",
     "calPerfectLabel": "op 100%",
     "calDoneLegend": "Gedaan",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "Recensies",
+    "tabGames": "Games",
+    "tabLists": "Lijsten",
+    "tabAchievements": "Prestaties",
+    "tabOverview": "Overzicht",
+    "recentReviewsTitle": "Nieuwste recensies",
+    "seeAllReviews": "Alle recensies bekijken",
+    "bioAdd": "Bio toevoegen",
+    "bioPlaceholder": "Vertel iets over jezelf…",
+    "eyeTopRated": "Favorieten",
+    "eyeActivity": "Activiteit",
+    "eyeReviews": "Hun mening",
+    "eyeLists": "Collecties",
+    "eyeAchievements": "Prestaties"
   },
   "lists": {
     "heading": "Lijsten",

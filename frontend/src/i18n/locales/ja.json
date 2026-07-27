@@ -478,7 +478,21 @@
     "calDoneLabel": "済み",
     "calPerfectLabel": "100%",
     "calDoneLegend": "済み",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "レビュー",
+    "tabGames": "ゲーム",
+    "tabLists": "リスト",
+    "tabAchievements": "実績",
+    "tabOverview": "概要",
+    "recentReviewsTitle": "最新のレビュー",
+    "seeAllReviews": "すべてのレビューを見る",
+    "bioAdd": "自己紹介を追加",
+    "bioPlaceholder": "自己紹介を書こう…",
+    "eyeTopRated": "お気に入り",
+    "eyeActivity": "アクティビティ",
+    "eyeReviews": "彼の評価",
+    "eyeLists": "コレクション",
+    "eyeAchievements": "実績"
   },
   "lists": {
     "heading": "リスト",

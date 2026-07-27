@@ -478,7 +478,21 @@
     "calDoneLabel": "yapıldı",
     "calPerfectLabel": "%100",
     "calDoneLegend": "Yapıldı",
-    "calPerfectLegend": "%100"
+    "calPerfectLegend": "%100",
+    "tabReviews": "İncelemeler",
+    "tabGames": "Oyunlar",
+    "tabLists": "Listeler",
+    "tabAchievements": "Başarımlar",
+    "tabOverview": "Genel bakış",
+    "recentReviewsTitle": "Son incelemeler",
+    "seeAllReviews": "Tüm incelemeleri gör",
+    "bioAdd": "Bio ekle",
+    "bioPlaceholder": "Kendinden biraz bahset…",
+    "eyeTopRated": "Favoriler",
+    "eyeActivity": "Etkinlik",
+    "eyeReviews": "Görüşleri",
+    "eyeLists": "Koleksiyonlar",
+    "eyeAchievements": "Başarımlar"
   },
   "lists": {
     "heading": "Listeler",

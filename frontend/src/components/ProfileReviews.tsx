@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import SectionHead from './SectionHead';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import type { ProfileReview } from '../lib/types';
@@ -70,11 +71,9 @@ export default function ProfileReviews({
 
   return (
     <section>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         {!embedded && (
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            {t('profile.recentReviews')}
-          </h2>
+          <SectionHead className="mb-0" eyebrow={t('profile.eyeReviews')} title={t('profile.recentReviews')} />
         )}
         {reviews.length > 0 && (
           <div className="flex gap-2">

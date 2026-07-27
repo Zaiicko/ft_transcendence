@@ -328,6 +328,7 @@ export interface PublicProfile {
   createdAt: string;
   reviewCount: number;
   playedCount: number;
+  rank: { rank: number } | null; // rang mondial (complétions), null si non classé
   topGames: { rating: number; game: GameRef }[];
   recentReviews: ProfileReview[];
   // Calendrier de complétion — deux séries : `completions` = jeux marqués
@@ -336,6 +337,9 @@ export interface PublicProfile {
   perfectGames: { playedAt: string; game: GameRef }[];
   friendState: FriendState;
   publicLists: GameListSummary[];
+  // Nb de listes affiché dans l'onglet : total (privées incluses) pour le
+  // propriétaire, sinon seulement les publiques.
+  listCount: number;
 }
 
 export interface PublicUser {

@@ -478,7 +478,21 @@
     "calDoneLabel": "hechos",
     "calPerfectLabel": "al 100%",
     "calDoneLegend": "Hecho",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "Reseñas",
+    "tabGames": "Juegos",
+    "tabLists": "Listas",
+    "tabAchievements": "Logros",
+    "tabOverview": "Resumen",
+    "recentReviewsTitle": "Últimas reseñas",
+    "seeAllReviews": "Ver todas las reseñas",
+    "bioAdd": "Añadir una bio",
+    "bioPlaceholder": "Cuéntanos algo sobre ti…",
+    "eyeTopRated": "Favoritos",
+    "eyeActivity": "Actividad",
+    "eyeReviews": "Sus opiniones",
+    "eyeLists": "Colecciones",
+    "eyeAchievements": "Logros"
   },
   "lists": {
     "heading": "Listas",

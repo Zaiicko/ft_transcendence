@@ -478,7 +478,21 @@
     "calDoneLabel": "已完成",
     "calPerfectLabel": "100%",
     "calDoneLegend": "已完成",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "评测",
+    "tabGames": "游戏",
+    "tabLists": "列表",
+    "tabAchievements": "成就",
+    "tabOverview": "概览",
+    "recentReviewsTitle": "最新评测",
+    "seeAllReviews": "查看全部评测",
+    "bioAdd": "添加简介",
+    "bioPlaceholder": "介绍一下你自己…",
+    "eyeTopRated": "心头好",
+    "eyeActivity": "动态",
+    "eyeReviews": "他的点评",
+    "eyeLists": "合集",
+    "eyeAchievements": "成就"
   },
   "lists": {
     "heading": "列表",

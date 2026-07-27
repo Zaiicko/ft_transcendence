@@ -478,7 +478,21 @@
     "calDoneLabel": "faits",
     "calPerfectLabel": "à 100%",
     "calDoneLegend": "Fait",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "Critiques",
+    "tabGames": "Jeux",
+    "tabLists": "Listes",
+    "tabAchievements": "Succès",
+    "tabOverview": "Aperçu",
+    "recentReviewsTitle": "Dernières critiques",
+    "seeAllReviews": "Voir toutes les critiques",
+    "bioAdd": "Ajouter une bio",
+    "bioPlaceholder": "Parle un peu de toi…",
+    "eyeTopRated": "Coups de cœur",
+    "eyeActivity": "Activité",
+    "eyeReviews": "Ses avis",
+    "eyeLists": "Collections",
+    "eyeAchievements": "Succès maison"
   },
   "lists": {
     "heading": "Listes",

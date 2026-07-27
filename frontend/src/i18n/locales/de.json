@@ -478,7 +478,21 @@
     "calDoneLabel": "erledigt",
     "calPerfectLabel": "auf 100%",
     "calDoneLegend": "Erledigt",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "Rezensionen",
+    "tabGames": "Spiele",
+    "tabLists": "Listen",
+    "tabAchievements": "Erfolge",
+    "tabOverview": "Übersicht",
+    "recentReviewsTitle": "Neueste Rezensionen",
+    "seeAllReviews": "Alle Rezensionen ansehen",
+    "bioAdd": "Bio hinzufügen",
+    "bioPlaceholder": "Erzähl etwas über dich…",
+    "eyeTopRated": "Herzensspiele",
+    "eyeActivity": "Aktivität",
+    "eyeReviews": "Ihre Meinung",
+    "eyeLists": "Sammlungen",
+    "eyeAchievements": "Erfolge"
   },
   "lists": {
     "heading": "Listen",

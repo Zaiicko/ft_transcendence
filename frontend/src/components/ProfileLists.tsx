@@ -9,6 +9,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import SectionHead from './SectionHead';
 import { Link } from 'react-router-dom';
 import { apiFetch, ApiError } from '../lib/api';
 import type { GameListDetail, GameListSummary, GameSummary } from '../lib/types';
@@ -52,10 +53,8 @@ export default function ProfileLists({
 
   return (
     <section className="mb-10">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('lists.heading')}
-        </h2>
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <SectionHead className="mb-0" eyebrow={t('profile.eyeLists')} title={t('lists.heading')} />
         {isSelf && !creating && lists.length < 6 && (
           <button
             type="button"

@@ -478,7 +478,21 @@
     "calDoneLabel": "done",
     "calPerfectLabel": "at 100%",
     "calDoneLegend": "Done",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "Reviews",
+    "tabGames": "Games",
+    "tabLists": "Lists",
+    "tabAchievements": "Achievements",
+    "tabOverview": "Overview",
+    "recentReviewsTitle": "Latest reviews",
+    "seeAllReviews": "See all reviews",
+    "bioAdd": "Add a bio",
+    "bioPlaceholder": "Tell us a bit about yourself…",
+    "eyeTopRated": "Favorites",
+    "eyeActivity": "Activity",
+    "eyeReviews": "Their takes",
+    "eyeLists": "Collections",
+    "eyeAchievements": "Achievements"
   },
   "lists": {
     "heading": "Lists",

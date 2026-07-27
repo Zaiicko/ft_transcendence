@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import SectionHead from './SectionHead';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { FAMILY_DESC_KEY, FAMILY_NAME_KEY, tierClasses } from '../lib/achievements';
@@ -77,10 +78,8 @@ export default function AchievementsSection({ userId }: { userId: number }) {
 
   return (
     <section className="mb-10">
-      <div className="mb-3 flex items-baseline justify-between gap-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('achievements.sectionTitle')}
-        </h2>
+      <div className="mb-4 flex items-end justify-between gap-2">
+        <SectionHead className="mb-0" eyebrow={t('profile.eyeAchievements')} title={t('achievements.sectionTitle')} />
         <span className="text-xs tabular-nums text-zinc-400 dark:text-zinc-500">
           {totalUnlocked} / {items.length}
         </span>

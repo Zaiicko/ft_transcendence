@@ -478,7 +478,21 @@
     "calDoneLabel": "сделано",
     "calPerfectLabel": "на 100%",
     "calDoneLegend": "Сделано",
-    "calPerfectLegend": "100%"
+    "calPerfectLegend": "100%",
+    "tabReviews": "Обзоры",
+    "tabGames": "Игры",
+    "tabLists": "Списки",
+    "tabAchievements": "Достижения",
+    "tabOverview": "Обзор",
+    "recentReviewsTitle": "Последние обзоры",
+    "seeAllReviews": "Все обзоры",
+    "bioAdd": "Добавить био",
+    "bioPlaceholder": "Расскажите о себе…",
+    "eyeTopRated": "Любимое",
+    "eyeActivity": "Активность",
+    "eyeReviews": "Его мнение",
+    "eyeLists": "Коллекции",
+    "eyeAchievements": "Достижения"
   },
   "lists": {
     "heading": "Списки",
