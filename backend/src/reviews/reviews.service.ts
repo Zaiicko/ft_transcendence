@@ -478,12 +478,16 @@ export class ReviewsService {
   // Community score for a game or studio page — plain mean + count. The
   // count gives the reader the confidence context; the catalog-wide ranking
   // uses the games module's bayesian blend instead.
-  getAverageRating(target: { gameId?: number; companyId?: number }) {
-    return this.prisma.review.aggregate({
-      where: target.gameId ? { gameId: target.gameId } : { companyId: target.companyId },
-      _avg: { rating: true },
-      _count: true,
-    });
+  async getAverageRating(target: { gameId?: number; companyId?: number }) {
+    const where = target.gameId ? { gameId: target.gameId } : { companyId: target.companyId };
+    const [agg, grouped] = await Promise.all([
+      this.prisma.review.aggregate({ where, _avg: { rating: true }, _count: true }),
+      // Répartition des notes 0–10 (histogramme de la fiche).
+      this.prisma.review.groupBy({ by: ['rating'], where, _count: true }),
+    ]);
+    const distribution = Array<number>(11).fill(0);
+    for (const g of grouped) distribution[g.rating] = g._count;
+    return { _avg: agg._avg, _count: agg._count, distribution };
   }
 
   private async assertOwner(reviewId: number, userId: number) {
