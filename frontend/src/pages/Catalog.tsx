@@ -188,83 +188,146 @@ export default function Catalog() {
 
   const hasMore = games.length < total;
 
+  // Filtres actifs (pastilles retirables) — libellé + action de retrait.
+  const activePills: { key: string; label: string; clear: () => void }[] = [];
+  if (genre) activePills.push({ key: 'genre', label: translateGenre(genre, t), clear: () => setGenre(null) });
+  if (platform) activePills.push({ key: 'platform', label: platform, clear: () => setPlatform(null) });
+  if (company) activePills.push({ key: 'company', label: company, clear: () => setCompany(null) });
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="font-display text-2xl font-bold tracking-tight">{t('catalog.title')}</h1>
-        {!loading && (
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">
-            {t(total === 1 ? 'lists.gameOne' : 'lists.gameMany', {
-              count: total.toLocaleString(i18n.language),
-            })}
-          </span>
-        )}
-      </div>
-
-      {/* Barre d'outils : recherche + tri + plateforme + studio */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative min-w-52 flex-1">
-          <SearchIcon />
-          <input
-            type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t('catalog.searchPlaceholder')}
-            className="field w-full pl-9"
-            aria-label={t('catalog.searchAria')}
-          />
+      {/* ---- En-tête immersif : eyebrow brandé + titre + recherche + tri + filtres ---- */}
+      <header className="relative rounded-3xl border border-zinc-900/10 bg-white p-6 shadow-sm dark:border-zinc-100/10 dark:bg-zinc-900 sm:p-8">
+        {/* Halo clippé à la carte via un conteneur dédié : la carte elle-même n'a
+            pas d'overflow-hidden, sinon les menus déroulants (plateforme/studio)
+            seraient rognés par ses bords. */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
+          <div className="absolute -left-12 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
         </div>
-        <Select
-          label={t('catalog.sortLabel')}
-          value={sort}
-          onChange={(v) => setSort(v as SortValue)}
-          options={SORTS.map((s) => ({ value: s.value, label: t(s.labelKey) }))}
-        />
-        <Select
-          label={t('catalog.platformLabel')}
-          value={platform ?? ''}
-          onChange={(v) => setPlatform(v || null)}
-          options={[
-            { value: '', label: t('catalog.allPlatforms') },
-            ...(facets?.platforms.map((p) => ({ value: p.name, label: p.name })) ?? []),
-          ]}
-        />
-        <Select
-          label={t('catalog.studioLabel')}
-          value={company ?? ''}
-          onChange={(v) => setCompany(v || null)}
-          options={[
-            { value: '', label: t('catalog.allStudios') },
-            ...(facets?.companies.map((c) => ({ value: c.name, label: c.name })) ?? []),
-          ]}
-        />
-      </div>
+        <div className="relative">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+                <span className="text-accent">●</span> {t('catalog.eyebrow')}
+              </div>
+              <h1 className="font-display mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
+                {t('catalog.title')}
+              </h1>
+              <p className="mt-2 max-w-lg text-sm text-zinc-500 dark:text-zinc-400">
+                {t('catalog.subtitle')}
+              </p>
+            </div>
+            {!loading && (
+              <div className="shrink-0 text-right">
+                <div className="font-display text-3xl font-extrabold tabular-nums leading-none text-accent">
+                  {total.toLocaleString(i18n.language)}
+                </div>
+                <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+                  {t('catalog.unit')}
+                </div>
+              </div>
+            )}
+          </div>
 
-      {/* Puces de genres */}
-      {facets && facets.genres.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {facets.genres.map((g) => (
-            <Chip
-              key={g.id}
-              active={genre === g.name}
-              onClick={() => setGenre((cur) => (cur === g.name ? null : g.name))}
+          {/* Barre d'outils : recherche + tri (segmenté) + plateforme + studio */}
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="relative min-w-52 flex-1">
+              <SearchIcon />
+              <input
+                type="search"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder={t('catalog.searchPlaceholder')}
+                className="field w-full pl-9"
+                aria-label={t('catalog.searchAria')}
+              />
+            </div>
+            <SortTabs value={sort} onChange={setSort} />
+            <Select
+              label={t('catalog.platformLabel')}
+              value={platform ?? ''}
+              onChange={(v) => setPlatform(v || null)}
+              options={[
+                { value: '', label: t('catalog.allPlatforms') },
+                ...(facets?.platforms.map((p) => ({ value: p.name, label: p.name })) ?? []),
+              ]}
+            />
+            <Select
+              label={t('catalog.studioLabel')}
+              value={company ?? ''}
+              onChange={(v) => setCompany(v || null)}
+              options={[
+                { value: '', label: t('catalog.allStudios') },
+                ...(facets?.companies.map((c) => ({ value: c.name, label: c.name })) ?? []),
+              ]}
+            />
+          </div>
+
+          {/* Puces de genres */}
+          {facets && facets.genres.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {facets.genres.map((g) => (
+                <Chip
+                  key={g.id}
+                  active={genre === g.name}
+                  onClick={() => setGenre((cur) => (cur === g.name ? null : g.name))}
+                >
+                  {translateGenre(g.name, t)}
+                </Chip>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Filtres actifs : pastilles retirables + tout effacer */}
+      {activePills.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+            {t('catalog.activeFilters')}
+          </span>
+          {activePills.map((p) => (
+            <span
+              key={p.key}
+              className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-200"
             >
-              {translateGenre(g.name, t)}
-            </Chip>
+              {p.label}
+              <button
+                type="button"
+                onClick={p.clear}
+                aria-label={t('catalog.removeFilter', { name: p.label })}
+                className="flex h-4 w-4 items-center justify-center rounded-full text-zinc-500 transition hover:bg-accent/25 hover:text-zinc-900 dark:hover:text-zinc-50"
+              >
+                <svg viewBox="0 0 24 24" className="h-3 w-3 fill-none stroke-current" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </span>
           ))}
+          <button
+            type="button"
+            onClick={() => {
+              setGenre(null);
+              setPlatform(null);
+              setCompany(null);
+            }}
+            className="text-xs text-zinc-500 underline underline-offset-2 transition hover:text-accent dark:text-zinc-400"
+          >
+            {t('catalog.clearAll')}
+          </button>
         </div>
       )}
 
       {/* Grille */}
       {loading ? (
-        <CoverGridSkeleton count={12} />
+        <CoverGridSkeleton count={16} cols="sm:grid-cols-5 lg:grid-cols-8" />
       ) : games.length === 0 ? (
         <p className="py-16 text-center text-sm text-zinc-500 dark:text-zinc-400">
           {t('catalog.noResults')}
         </p>
       ) : (
         <>
-          <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-8">
             {games.map((g) => (
               <GameCard key={g.id} game={g} />
             ))}
@@ -288,30 +351,70 @@ export default function Catalog() {
   );
 }
 
+// Tri en segmenté (pastilles) — remplace le select, plus lisible et brandé.
+function SortTabs({ value, onChange }: { value: SortValue; onChange: (v: SortValue) => void }) {
+  const { t } = useTranslation();
+  return (
+    <div className="inline-flex flex-wrap gap-1 rounded-xl border border-zinc-300 bg-zinc-100/70 p-1 dark:border-zinc-700 dark:bg-zinc-800/60">
+      {SORTS.map((s) => (
+        <button
+          key={s.value}
+          type="button"
+          onClick={() => onChange(s.value)}
+          className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+            value === s.value
+              ? 'bg-accent text-zinc-950 shadow-sm'
+              : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
+          }`}
+        >
+          {t(s.labelKey)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function GameCard({ game }: { game: GameSummary }) {
+  const { t } = useTranslation();
+  const genre = game.genres?.[0];
+  const platform = game.platforms?.[0];
   return (
     <Link to={`/game/${game.id}`} className="group">
-      {game.coverUrl ? (
-        <img
-          src={game.coverUrl}
-          alt={game.title}
-          className="aspect-[3/4] w-full rounded-lg object-cover transition group-hover:scale-105 group-hover:shadow-xl"
-        />
-      ) : (
-        <div className="flex aspect-[3/4] items-center justify-center rounded-lg bg-zinc-200 p-2 text-center text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-          {game.title}
-        </div>
-      )}
-      <div className="mt-1 flex items-center justify-between gap-1">
-        <span className="truncate text-xs text-zinc-600 dark:text-zinc-400" title={game.title}>
-          {game.title}
-        </span>
+      <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-zinc-200 shadow-sm transition duration-200 group-hover:-translate-y-1 group-hover:shadow-xl dark:bg-zinc-800">
+        {game.coverUrl ? (
+          <img src={game.coverUrl} alt={game.title} className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full items-center justify-center p-2 text-center text-xs text-zinc-600 dark:text-zinc-400">
+            {game.title}
+          </div>
+        )}
+        {/* Badge score posé sur la jaquette */}
         {game.score !== undefined && (
-          <span className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-amber-500">
-            <StarIcon className="h-3 w-3" />
+          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-zinc-950/70 px-2 py-0.5 text-xs font-bold text-white backdrop-blur">
+            <StarIcon className="h-3 w-3 text-accent" />
             {game.score.toFixed(1)}
           </span>
         )}
+        {/* Overlay au survol : genre/plateforme + appel à l'action */}
+        <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-zinc-950/90 via-zinc-950/25 to-transparent p-3 opacity-0 transition duration-200 group-hover:opacity-100">
+          {(genre || platform) && (
+            <div className="mb-1.5 flex flex-wrap gap-1.5 text-[10px] text-zinc-100">
+              {genre && <span className="rounded bg-white/15 px-1.5 py-0.5">{translateGenre(genre.name, t)}</span>}
+              {platform && <span className="rounded bg-white/15 px-1.5 py-0.5">{platform.name}</span>}
+            </div>
+          )}
+          <span className="flex items-center gap-1 text-xs font-semibold text-white">
+            {t('catalog.viewGame')}
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div className="mt-1.5">
+        <span className="block truncate text-xs text-zinc-600 dark:text-zinc-400" title={game.title}>
+          {game.title}
+        </span>
       </div>
     </Link>
   );

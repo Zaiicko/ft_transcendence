@@ -563,7 +563,14 @@
     "noneInCatalog": "No game \"{{query}}\" in the catalog.",
     "importIgdb": "Add from IGDB",
     "importing": "Importing from IGDB…",
-    "studios": "Studios"
+    "studios": "Studios",
+    "eyebrow": "Library",
+    "subtitle": "Browse the full game library — filter by genre, platform or studio, and sort by the community.",
+    "unit": "games",
+    "activeFilters": "Active filters",
+    "clearAll": "Clear all",
+    "removeFilter": "Remove {{name}}",
+    "viewGame": "View game"
   },
   "game": {
     "markedTitle": "Done — click to remove",

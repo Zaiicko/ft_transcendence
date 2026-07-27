@@ -563,7 +563,14 @@
     "noneInCatalog": "目录中没有\"{{query}}\"这款游戏。",
     "importIgdb": "从 IGDB 添加",
     "importing": "正在从 IGDB 导入…",
-    "studios": "工作室"
+    "studios": "工作室",
+    "eyebrow": "游戏库",
+    "subtitle": "浏览完整游戏库，按类型、平台或工作室筛选，并按社区评价排序。",
+    "unit": "款游戏",
+    "activeFilters": "已启用筛选",
+    "clearAll": "全部清除",
+    "removeFilter": "移除 {{name}}",
+    "viewGame": "查看详情"
   },
   "game": {
     "markedTitle": "已通关 — 点击取消",

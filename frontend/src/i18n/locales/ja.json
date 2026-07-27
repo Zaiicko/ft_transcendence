@@ -563,7 +563,14 @@
     "noneInCatalog": "カタログに「{{query}}」というゲームはありません。",
     "importIgdb": "IGDB から追加",
     "importing": "IGDB からインポート中…",
-    "studios": "スタジオ"
+    "studios": "スタジオ",
+    "eyebrow": "ライブラリ",
+    "subtitle": "ゲームライブラリ全体を閲覧し、ジャンル・プラットフォーム・スタジオで絞り込み、コミュニティ順に並べ替え。",
+    "unit": "タイトル",
+    "activeFilters": "適用中のフィルター",
+    "clearAll": "すべて解除",
+    "removeFilter": "{{name}} を外す",
+    "viewGame": "詳細を見る"
   },
   "game": {
     "markedTitle": "クリア済み — クリックで解除",

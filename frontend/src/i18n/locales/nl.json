@@ -563,7 +563,14 @@
     "noneInCatalog": "Geen game \"{{query}}\" in de catalogus.",
     "importIgdb": "Toevoegen vanaf IGDB",
     "importing": "Importeren vanaf IGDB…",
-    "studios": "Studio's"
+    "studios": "Studio's",
+    "eyebrow": "Bibliotheek",
+    "subtitle": "Blader door de volledige spellenbibliotheek — filter op genre, platform of studio en sorteer op community.",
+    "unit": "games",
+    "activeFilters": "Actieve filters",
+    "clearAll": "Alles wissen",
+    "removeFilter": "{{name}} verwijderen",
+    "viewGame": "Bekijken"
   },
   "game": {
     "markedTitle": "Klaar — klik om te verwijderen",

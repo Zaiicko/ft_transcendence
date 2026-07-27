@@ -563,7 +563,14 @@
     "noneInCatalog": "Nenhum jogo «{{query}}» no catálogo.",
     "importIgdb": "Adicionar do IGDB",
     "importing": "A importar do IGDB…",
-    "studios": "Estúdios"
+    "studios": "Estúdios",
+    "eyebrow": "Biblioteca",
+    "subtitle": "Percorre toda a biblioteca de jogos — filtra por género, plataforma ou estúdio e ordena pela comunidade.",
+    "unit": "jogos",
+    "activeFilters": "Filtros ativos",
+    "clearAll": "Limpar tudo",
+    "removeFilter": "Remover {{name}}",
+    "viewGame": "Ver ficha"
   },
   "game": {
     "markedTitle": "Concluído — clica para remover",

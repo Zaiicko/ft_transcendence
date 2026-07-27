@@ -563,7 +563,14 @@
     "noneInCatalog": "카탈로그에 \"{{query}}\" 게임이 없습니다.",
     "importIgdb": "IGDB에서 추가",
     "importing": "IGDB에서 가져오는 중…",
-    "studios": "스튜디오"
+    "studios": "스튜디오",
+    "eyebrow": "라이브러리",
+    "subtitle": "전체 게임 라이브러리를 둘러보고 장르·플랫폼·스튜디오로 필터링하며 커뮤니티 기준으로 정렬하세요.",
+    "unit": "게임",
+    "activeFilters": "적용된 필터",
+    "clearAll": "모두 지우기",
+    "removeFilter": "{{name}} 제거",
+    "viewGame": "자세히 보기"
   },
   "game": {
     "markedTitle": "완료 — 클릭하여 해제",

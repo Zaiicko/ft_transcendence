@@ -563,7 +563,14 @@
     "noneInCatalog": "Katalogda \"{{query}}\" adlı oyun yok.",
     "importIgdb": "IGDB'den ekle",
     "importing": "IGDB'den içe aktarılıyor…",
-    "studios": "Stüdyolar"
+    "studios": "Stüdyolar",
+    "eyebrow": "Kütüphane",
+    "subtitle": "Tüm oyun kütüphanesine göz at — türe, platforma veya stüdyoya göre filtrele ve topluluğa göre sırala.",
+    "unit": "oyun",
+    "activeFilters": "Etkin filtreler",
+    "clearAll": "Tümünü temizle",
+    "removeFilter": "{{name}} kaldır",
+    "viewGame": "Görüntüle"
   },
   "game": {
     "markedTitle": "Bitti — kaldırmak için tıkla",
