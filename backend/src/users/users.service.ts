@@ -70,6 +70,8 @@ export class UsersService {
       completedRaw,
       friendState,
       publicLists,
+      rank,
+      totalListCount,
     ] = await Promise.all([
         this.prisma.review.count({ where: { userId: user.id, gameId: { not: null } } }),
         this.prisma.playedGame.count({ where: { userId: user.id } }),
@@ -112,7 +114,17 @@ export class UsersService {
         this.friendState(user.id, viewerId),
         // Listes publiques : les privées ne sont jamais exposées ici
         this.lists.publicListsOf(user.id),
+        // Rang mondial (complétions) — même métrique que la bande de stats de
+        // l'accueil et que la page Classement. null si non classé.
+        this.completionsRank(user.id),
+        // Total de listes (publiques + privées) — pour le compteur d'onglet du
+        // propriétaire (les visiteurs ne comptent que les publiques, plus bas).
+        this.prisma.gameList.count({ where: { userId: user.id } }),
       ]);
+
+    // Le propriétaire voit le total (privées incluses) ; un visiteur, seulement
+    // le nombre de listes publiques qu'on lui expose.
+    const listCount = viewerId === user.id ? totalListCount : publicLists.length;
 
     return {
       id: user.id,
@@ -128,6 +140,7 @@ export class UsersService {
       createdAt: user.createdAt,
       reviewCount,
       playedCount,
+      rank, // { rank } global (complétions) ou null si non classé
       topGames: topReviews
         .filter((r) => r.game)
         .map((r) => ({ rating: r.rating, game: r.game! })),
@@ -146,6 +159,7 @@ export class UsersService {
       ),
       friendState,
       publicLists,
+      listCount,
     };
   }
 
