@@ -391,7 +391,9 @@
     "emptyTitle": "아직 순위가 없습니다",
     "emptyFriends": "친구를 추가하고 게임을 완료하고 플레이를 기록하고 리뷰를 작성하여 함께 순위를 올려보세요.",
     "emptyGlobal": "순위표의 첫 번째 주인공이 되어보세요 — 게임을 완료하고 플레이를 기록하고 리뷰를 작성하세요.",
-    "findFriends": "친구 찾기"
+    "findFriends": "친구 찾기",
+    "eyebrow": "최고의 플레이어",
+    "you": "나"
   },
   "reviews": {
     "sortPopular": "인기",

@@ -391,7 +391,9 @@
     "emptyTitle": "Nothing to rank yet",
     "emptyFriends": "Add friends and start completing games, logging plays and writing reviews to climb the ranks together.",
     "emptyGlobal": "Be the first on the board — complete games, log plays and write reviews.",
-    "findFriends": "Find friends"
+    "findFriends": "Find friends",
+    "eyebrow": "The best players",
+    "you": "you"
   },
   "reviews": {
     "sortPopular": "Popular",

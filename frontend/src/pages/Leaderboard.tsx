@@ -8,6 +8,7 @@ import { apiFetch } from '../lib/api';
 import type {
   LeaderboardMetric,
   LeaderboardResult,
+  LeaderboardRow,
   LeaderboardScope,
   LeaderboardWindow,
 } from '../lib/types';
@@ -26,13 +27,12 @@ const WINDOWS: { key: LeaderboardWindow; labelKey: string }[] = [
   { key: 'month', labelKey: 'leaderboard.windowMonth' },
 ];
 
-// Teinte de la médaille pour le podium (or / argent / bronze). Au-delà du top 3,
-// on affiche le rang en clair. Couleurs sobres, cohérentes avec le thème.
-const MEDAL_COLOR: Record<number, string> = {
-  1: 'text-amber-400',
-  2: 'text-zinc-400',
-  3: 'text-amber-700',
-};
+// Teinte or / argent / bronze pour le podium (anneau d'avatar + score).
+const PLACE = {
+  1: { ring: 'ring-amber-400', text: 'text-amber-400', bar: 'from-amber-300 to-amber-500' },
+  2: { ring: 'ring-zinc-400', text: 'text-zinc-400', bar: 'from-zinc-300 to-zinc-400' },
+  3: { ring: 'ring-amber-700', text: 'text-amber-600', bar: 'from-amber-600 to-amber-800' },
+} as const;
 
 export default function Leaderboard() {
   const { t } = useTranslation();
@@ -42,21 +42,26 @@ export default function Leaderboard() {
   const [window, setWindow] = useState<LeaderboardWindow>('all');
   const [data, setData] = useState<LeaderboardResult | null>(null);
   const [loading, setLoading] = useState(true);
+  // Nb de lignes chargées. Le backend plafonne à 100 (LeaderboardService).
+  const [limit, setLimit] = useState(20);
+  const MAX = 100;
+  const STEP = 20;
 
-  // Tout changement de filtre réaffiche le chargement. Ajustement d'état AU
-  // RENDU (pattern React officiel) plutôt qu'un setLoading synchrone dans
-  // l'effet → évite la règle react-hooks/set-state-in-effect.
+  // Tout changement de FILTRE réaffiche le chargement et repart au top 20.
+  // Ajustement d'état AU RENDU (pattern React officiel) plutôt qu'un setLoading
+  // synchrone dans l'effet → évite la règle react-hooks/set-state-in-effect.
   const queryKey = `${metric}-${scope}-${window}`;
   const [prevQueryKey, setPrevQueryKey] = useState(queryKey);
   if (queryKey !== prevQueryKey) {
     setPrevQueryKey(queryKey);
     setLoading(true);
+    setLimit(20);
   }
 
   useEffect(() => {
     let cancelled = false;
     apiFetch<LeaderboardResult>(
-      `/leaderboard?metric=${metric}&scope=${scope}&window=${window}`,
+      `/leaderboard?metric=${metric}&scope=${scope}&window=${window}&limit=${limit}`,
     )
       .then((res) => !cancelled && setData(res))
       .catch(() => !cancelled && setData(null))
@@ -64,27 +69,39 @@ export default function Leaderboard() {
     return () => {
       cancelled = true;
     };
-  }, [metric, scope, window]);
+    // `limit` augmente sans repasser par le skeleton (loading reste false) : la
+    // liste s'allonge simplement au clic sur « Voir plus ».
+  }, [metric, scope, window, limit]);
 
-  // Le viewer figure-t-il déjà dans les lignes affichées ? Sinon on ajoute une
-  // ligne « moi » récapitulative en bas.
-  const meInRows = data?.rows.some((r) => r.user.id === user?.id) ?? false;
+  const rows = data?.rows ?? [];
+  const podium = rows.slice(0, 3);
+  const rest = rows.slice(3);
+  // Barres de progression relatives au 1ᵉʳ (score max).
+  const topScore = rows[0]?.score ?? 1;
+  const meInRows = rows.some((r) => r.user.id === user?.id);
+  const metricLabel = t(METRICS.find((m) => m.key === metric)!.labelKey);
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">{t('leaderboard.title')}</h1>
-      <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">{t('leaderboard.subtitle')}</p>
+    <div className="mx-auto max-w-3xl">
+      {/* En-tête brandé, centré */}
+      <div className="mb-7 text-center">
+        <div className="flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+          <span className="text-accent">●</span> {t('leaderboard.eyebrow')}
+        </div>
+        <h1 className="font-display mt-1.5 text-3xl font-extrabold tracking-tight">
+          {t('leaderboard.title')}
+        </h1>
+      </div>
 
-      <div className="flex flex-col gap-3">
-        {/* Métrique : le classement affiché */}
+      {/* Filtres en pilules, centrés */}
+      <div className="flex flex-col items-center gap-3">
         <SegmentedTabs
           options={METRICS.map((m) => ({ key: m.key, label: t(m.labelKey) }))}
           value={metric}
           onChange={(k) => setMetric(k as LeaderboardMetric)}
           variant="primary"
         />
-        {/* Portée + fenêtre : filtres secondaires */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-center gap-2">
           <SegmentedTabs
             options={SCOPES.map((s) => ({ key: s.key, label: t(s.labelKey) }))}
             value={scope}
@@ -100,22 +117,23 @@ export default function Leaderboard() {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-7">
         {loading ? (
           <div className="flex flex-col gap-2">
-            {[0, 1, 2, 3, 4].map((i) => (
+            <div className="mb-2 grid grid-cols-3 items-end gap-3">
+              {[36, 44, 30].map((h, i) => (
+                <div key={i} className={`animate-pulse rounded-2xl bg-zinc-200 dark:bg-zinc-900`} style={{ height: `${h * 3}px` }} />
+              ))}
+            </div>
+            {[0, 1, 2, 3].map((i) => (
               <div key={i} className="h-14 animate-pulse rounded-xl bg-zinc-200 dark:bg-zinc-900" />
             ))}
           </div>
-        ) : !data || data.rows.length === 0 ? (
+        ) : rows.length === 0 ? (
           <EmptyState
             icon={<TrophyIcon />}
             title={t('leaderboard.emptyTitle')}
-            description={
-              scope === 'friends'
-                ? t('leaderboard.emptyFriends')
-                : t('leaderboard.emptyGlobal')
-            }
+            description={scope === 'friends' ? t('leaderboard.emptyFriends') : t('leaderboard.emptyGlobal')}
           >
             {scope === 'friends' && (
               <Link
@@ -127,81 +145,139 @@ export default function Leaderboard() {
             )}
           </EmptyState>
         ) : (
-          <div className="flex flex-col gap-2">
-            {data.rows.map((row) => (
-              <Row
-                key={row.user.id}
-                rank={row.rank}
-                username={row.user.username}
-                avatarUrl={row.user.avatarUrl}
-                score={row.score}
-                isMe={row.user.id === user?.id}
-              />
-            ))}
+          <>
+            {/* Podium top 3 : 2ᵉ à gauche, 1ᵉʳ au centre (surélevé), 3ᵉ à droite */}
+            <div className="mb-4 grid grid-cols-3 items-end gap-3 sm:gap-4">
+              <div>{podium[1] && <Pod row={podium[1]} place={2} me={podium[1].user.id === user?.id} />}</div>
+              <div>{podium[0] && <Pod row={podium[0]} place={1} me={podium[0].user.id === user?.id} />}</div>
+              <div>{podium[2] && <Pod row={podium[2]} place={3} me={podium[2].user.id === user?.id} />}</div>
+            </div>
 
-            {/* Ma position si je suis hors du top affiché */}
-            {!meInRows && data.me && user && (
-              <>
-                <div className="my-1 flex items-center gap-2 text-xs text-zinc-400">
-                  <span className="h-px flex-1 bg-zinc-300 dark:bg-zinc-700" />
-                  {t('leaderboard.yourRank')}
-                  <span className="h-px flex-1 bg-zinc-300 dark:bg-zinc-700" />
-                </div>
-                <Row
-                  rank={data.me.rank}
-                  username={user.username}
-                  avatarUrl={user.avatarUrl}
-                  score={data.me.score}
-                  isMe
-                />
-              </>
+            {/* Reste du classement (rang 4→N) */}
+            {rest.length > 0 && (
+              <div className="card divide-y divide-zinc-900/[0.06] overflow-hidden !rounded-2xl dark:divide-zinc-100/[0.06]">
+                {rest.map((row) => (
+                  <ListRow
+                    key={row.user.id}
+                    row={row}
+                    topScore={topScore}
+                    me={row.user.id === user?.id}
+                  />
+                ))}
+              </div>
             )}
-          </div>
+
+            {/* Voir plus : recharge un palier plus large (jusqu'au plafond 100).
+                Visible tant que le backend a renvoyé une page pleine. */}
+            {rows.length >= limit && limit < MAX && (
+              <button
+                type="button"
+                onClick={() => setLimit((l) => Math.min(MAX, l + STEP))}
+                className="mx-auto mt-4 block rounded-lg border border-zinc-400 px-6 py-2 text-sm transition hover:opacity-70 dark:border-zinc-700"
+              >
+                {t('feed.loadMore')}
+              </button>
+            )}
+
+            {/* Ma position, épinglée en bas — TOUJOURS visible si je ne suis pas
+                déjà dans le top affiché, même non classé (score 0 → rang « — »). */}
+            {!meInRows && user && (
+              <div className="sticky bottom-4 mt-4">
+                <div className="card !rounded-2xl border-accent/40 bg-accent/10 shadow-lg shadow-accent/20 backdrop-blur">
+                  <ListRow
+                    row={{ rank: data?.me?.rank ?? 0, score: data?.me?.score ?? 0, user: { id: user.id, username: user.username, avatarUrl: user.avatarUrl } }}
+                    topScore={topScore}
+                    me
+                    displayRank={data?.me ? String(data.me.rank) : '—'}
+                    pinnedLabel={t('leaderboard.you')}
+                  />
+                </div>
+              </div>
+            )}
+
+            <p className="mt-3 text-center text-xs text-zinc-400 dark:text-zinc-500">{metricLabel}</p>
+          </>
         )}
       </div>
     </div>
   );
 }
 
-// Une ligne de classement. La ligne du viewer est surlignée (accent).
-function Row({
-  rank,
-  username,
-  avatarUrl,
-  score,
-  isMe,
-}: {
-  rank: number;
-  username: string;
-  avatarUrl: string | null;
-  score: number;
-  isMe: boolean;
-}) {
+// Marche du podium : avatar cerclé de la couleur du rang, médaille, pseudo, score.
+// « toi » est signalé par un label sous le pseudo (pas un contour de carte : il
+// entrerait en conflit avec la couronne ambre du 1ᵉʳ).
+function Pod({ row, place, me }: { row: LeaderboardRow; place: 1 | 2 | 3; me: boolean }) {
   const { t } = useTranslation();
+  const c = PLACE[place];
+  const first = place === 1;
   return (
     <Link
-      to={`/u/${username}`}
-      className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 transition ${
-        isMe
-          ? 'border-accent bg-accent/10'
-          : 'border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600'
+      to={`/u/${row.user.username}`}
+      className={`card relative flex flex-col items-center gap-1.5 !rounded-2xl px-2 text-center transition hover:-translate-y-0.5 ${
+        first ? 'pb-4 pt-6 shadow-lg shadow-amber-400/25' : 'pb-3 pt-4'
       }`}
     >
-      <span className="flex w-8 shrink-0 items-center justify-center">
-        {rank <= 3 ? (
-          <>
-            <MedalIcon className={MEDAL_COLOR[rank]} />
-            {/* La médaille est purement visuelle (aria-hidden) : ce texte, caché
-                à l'écran mais lu par les lecteurs d'écran, annonce le rang. */}
-            <span className="sr-only">{t('leaderboard.rankLabel', { rank })}</span>
-          </>
-        ) : (
-          <span className="text-sm font-semibold tabular-nums text-zinc-500">{rank}</span>
-        )}
+      {first && <CrownIcon className="absolute -top-3 z-10 h-6 w-6 text-amber-400" />}
+      <span className={`rounded-full ring-2 ${me ? 'ring-accent' : c.ring}`}>
+        <Avatar username={row.user.username} avatarUrl={row.user.avatarUrl} size={first ? 60 : 48} />
       </span>
-      <Avatar username={username} avatarUrl={avatarUrl} size={32} />
-      <span className="min-w-0 flex-1 truncate font-medium">{username}</span>
-      <span className="shrink-0 text-lg font-bold tabular-nums text-accent">{score}</span>
+      <span className="flex items-center gap-1">
+        <MedalIcon className={`h-4 w-4 ${c.text}`} />
+        <span className={`font-display text-sm font-extrabold ${c.text}`}>{place}</span>
+      </span>
+      <span className="w-full truncate text-sm font-semibold">{row.user.username}</span>
+      {me && (
+        <span className="-mt-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+          {t('leaderboard.you')}
+        </span>
+      )}
+      <span className={`font-display text-xl font-extrabold tabular-nums tracking-tight ${first ? c.text : ''}`}>
+        {row.score}
+      </span>
+    </Link>
+  );
+}
+
+// Ligne du classement (rang 4+) : rang, avatar, pseudo + barre de progression
+// relative au 1ᵉʳ, score. Réutilisée pour la ligne « toi » épinglée.
+function ListRow({
+  row,
+  topScore,
+  me,
+  pinnedLabel,
+  displayRank,
+}: {
+  row: LeaderboardRow;
+  topScore: number;
+  me: boolean;
+  pinnedLabel?: string;
+  // Rang affiché (override) — « — » pour un joueur non classé (score 0).
+  displayRank?: string;
+}) {
+  const pct = row.score > 0 ? Math.max(4, Math.round((row.score / topScore) * 100)) : 0;
+  return (
+    <Link
+      to={`/u/${row.user.username}`}
+      className="flex items-center gap-3 px-4 py-3 transition hover:bg-zinc-900/[0.03] dark:hover:bg-zinc-100/[0.03]"
+    >
+      <span className={`w-7 shrink-0 text-center font-display text-base font-extrabold tabular-nums ${me ? 'text-accent' : 'text-zinc-400 dark:text-zinc-500'}`}>
+        {displayRank ?? row.rank}
+      </span>
+      <Avatar username={row.user.username} avatarUrl={row.user.avatarUrl} size={34} />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="truncate text-sm font-semibold">{row.user.username}</span>
+          {pinnedLabel && (
+            <span className="shrink-0 text-[10px] font-bold uppercase tracking-wide text-accent">· {pinnedLabel}</span>
+          )}
+        </div>
+        <div className="mt-1.5 h-1.5 max-w-[16rem] overflow-hidden rounded-full bg-zinc-900/10 dark:bg-zinc-100/10">
+          <div className="h-full rounded-full bg-gradient-to-r from-amber-300 to-accent" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+      <span className={`shrink-0 font-display text-lg font-extrabold tabular-nums ${me ? 'text-accent' : ''}`}>
+        {row.score}
+      </span>
     </Link>
   );
 }
@@ -221,7 +297,7 @@ function SegmentedTabs({
 }) {
   if (variant === 'primary') {
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap justify-center gap-2">
         {options.map((o) => (
           <button
             key={o.key}
@@ -259,13 +335,22 @@ function SegmentedTabs({
   );
 }
 
-// Médaille façon trait (mêmes réglages que TrophyIcon) — la couleur vient de
-// `currentColor`, pilotée par la classe text-* selon le rang.
+// Couronne pleine (or) posée sur le 1ᵉʳ du podium.
+function CrownIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={`fill-current ${className}`} aria-hidden="true">
+      <path d="M3 18h18l-1.2-8.5-4.3 3.2L12 6l-3.5 6.7L4.2 9.5 3 18z" />
+    </svg>
+  );
+}
+
+// Médaille façon trait — la couleur vient de `currentColor`, pilotée par la
+// classe text-* selon le rang.
 function MedalIcon({ className = '' }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className={`h-5 w-5 fill-none stroke-current ${className}`}
+      className={`fill-none stroke-current ${className}`}
       strokeWidth="1.7"
       strokeLinecap="round"
       strokeLinejoin="round"

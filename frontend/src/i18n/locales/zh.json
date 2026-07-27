@@ -391,7 +391,9 @@
     "emptyTitle": "暂无排名",
     "emptyFriends": "添加好友，开始完成游戏、记录游玩并撰写评测，一起冲上排行榜。",
     "emptyGlobal": "成为排行榜第一人——完成游戏、记录游玩并撰写评测。",
-    "findFriends": "查找好友"
+    "findFriends": "查找好友",
+    "eyebrow": "最强玩家",
+    "you": "你"
   },
   "reviews": {
     "sortPopular": "热门",

@@ -391,7 +391,9 @@
     "emptyTitle": "Aún no hay nada que clasificar",
     "emptyFriends": "Añade amigos y empieza a completar juegos, registrar partidas y escribir reseñas para subir juntos en la clasificación.",
     "emptyGlobal": "Sé el primero en la clasificación: completa juegos, registra partidas y escribe reseñas.",
-    "findFriends": "Buscar amigos"
+    "findFriends": "Buscar amigos",
+    "eyebrow": "Los mejores jugadores",
+    "you": "tú"
   },
   "reviews": {
     "sortPopular": "Populares",

@@ -391,7 +391,9 @@
     "emptyTitle": "Henüz sıralanacak bir şey yok",
     "emptyFriends": "Arkadaş ekle; birlikte yükselmek için oyunları tamamlamaya, oynadıklarını kaydetmeye ve inceleme yazmaya başla.",
     "emptyGlobal": "Sıralamada ilk sen ol — oyunları tamamla, oynadıklarını kaydet ve inceleme yaz.",
-    "findFriends": "Arkadaş bul"
+    "findFriends": "Arkadaş bul",
+    "eyebrow": "En iyi oyuncular",
+    "you": "sen"
   },
   "reviews": {
     "sortPopular": "Popüler",

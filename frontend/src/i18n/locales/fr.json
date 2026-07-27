@@ -391,7 +391,9 @@
     "emptyTitle": "Rien à classer pour l'instant",
     "emptyFriends": "Ajoute des amis, complète des jeux, marque tes parties et écris des avis pour grimper au classement ensemble.",
     "emptyGlobal": "Sois le premier au classement — complète des jeux, marque tes parties et écris des avis.",
-    "findFriends": "Trouver des amis"
+    "findFriends": "Trouver des amis",
+    "eyebrow": "Les meilleurs joueurs",
+    "you": "toi"
   },
   "reviews": {
     "sortPopular": "Populaires",

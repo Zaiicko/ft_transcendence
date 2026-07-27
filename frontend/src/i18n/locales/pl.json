@@ -391,7 +391,9 @@
     "emptyTitle": "Nie ma jeszcze nic do sklasyfikowania",
     "emptyFriends": "Dodaj znajomych i zacznij ukańczać gry, zapisywać rozgrywki i pisać recenzje, aby wspólnie piąć się w rankingu.",
     "emptyGlobal": "Bądź pierwszy w rankingu — ukańczaj gry, zapisuj rozgrywki i pisz recenzje.",
-    "findFriends": "Znajdź znajomych"
+    "findFriends": "Znajdź znajomych",
+    "eyebrow": "Najlepsi gracze",
+    "you": "ty"
   },
   "reviews": {
     "sortPopular": "Popularne",
