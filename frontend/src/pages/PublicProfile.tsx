@@ -9,6 +9,7 @@ import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
+import AchievementsSection from '../components/AchievementsSection';
 import LeaderboardRankBadge from '../components/LeaderboardRankBadge';
 import Modal from '../components/Modal';
 import PsnBadge from '../components/PsnBadge';
@@ -542,6 +543,9 @@ export default function PublicProfile() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('profile.completionCalendar')}</h2>
         <CompletionCalendar done={profile.completions} perfect={profile.perfectGames} />
       </section>
+
+      {/* Succès « maison » */}
+      <AchievementsSection userId={profile.id} />
 
       {/* Recent reviews — limitées à 10, triables, "Charger plus" */}
       <ProfileReviews username={profile.username} seed={profile.recentReviews} />

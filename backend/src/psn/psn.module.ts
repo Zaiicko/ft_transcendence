@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
+import { AchievementsModule } from '../achievements/achievements.module';
 import { AuthModule } from '../auth/auth.module';
 import { FeedModule } from '../feed/feed.module';
 import { UsersModule } from '../users/users.module';
@@ -10,7 +11,7 @@ import { PsnController } from './psn.controller';
 // PSN Online ID public, le backend le résout et lira leurs jeux/trophées/amis
 // publics. Aucun jeton par utilisateur.
 @Module({
-  imports: [AuthModule, UsersModule, FeedModule],
+  imports: [AuthModule, UsersModule, FeedModule, forwardRef(() => AchievementsModule)],
   controllers: [PsnController],
   providers: [PsnApiService],
   exports: [PsnApiService],

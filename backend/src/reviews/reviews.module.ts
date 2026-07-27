@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AchievementsModule } from '../achievements/achievements.module';
 import { FeedModule } from '../feed/feed.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { TranslationModule } from '../translation/translation.module';
@@ -12,7 +13,7 @@ import { ReviewsGateway } from './reviews.gateway';
 import { ReviewsService } from './reviews.service';
 
 @Module({
-  imports: [NotificationsModule, FeedModule, TranslationModule], // notifs + feed + traduction
+  imports: [NotificationsModule, FeedModule, TranslationModule, AchievementsModule], // notifs + feed + traduction + succès
   controllers: [
     GameReviewsController,
     CompanyReviewsController,

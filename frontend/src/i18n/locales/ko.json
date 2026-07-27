@@ -296,7 +296,10 @@
     "prefCommentReply": "내 댓글의 답글",
     "prefCommentReplyHint": "누군가 내 댓글에 답글을 달 때",
     "prefFriendJoined": "지인이 가입",
-    "prefFriendJoinedHint": "Steam/42 지인이 가입할 때"
+    "prefFriendJoinedHint": "Steam/42 지인이 가입할 때",
+    "achievement": "업적 달성: <b>{{name}}</b>",
+    "prefAchievement": "업적",
+    "prefAchievementHint": "업적을 달성했을 때"
   },
   "home": {
     "featuredBadge": "추천 게임",
@@ -345,7 +348,8 @@
     "completedBadge": "100% 완료",
     "rankLine": "<a>{{user}}</a>님이 <s>top {{rank}}</s>에 진입 — {{category}}",
     "rankScopeGlobal": "글로벌 순위",
-    "rankScopeFriends": "친구들 중에서"
+    "rankScopeFriends": "친구들 중에서",
+    "achievementLine": "<a>{{user}}</a>님이 <s>{{name}}</s>을(를) 달성했습니다"
   },
   "leaderboard": {
     "title": "순위표",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "본문으로 건너뛰기"
+  },
+  "achievements": {
+    "sectionTitle": "업적",
+    "done": "달성",
+    "unlockedOn": "{{date}}에 달성",
+    "fam": {
+      "completions": "완료한 게임",
+      "played": "플레이한 게임",
+      "perfect": "100%",
+      "reviews": "리뷰",
+      "lists": "목록",
+      "friends": "친구",
+      "genres": "탐험가",
+      "studio": "스튜디오 팬",
+      "linked": "연결된 계정",
+      "popular": "인기",
+      "supporter": "서포터",
+      "favorite": "열혈팬",
+      "harsh": "냉정한 평론가",
+      "veteran": "베테랑"
+    },
+    "desc": {
+      "completions": "게임 {{count}}개 완료",
+      "played": "게임 {{count}}개 기록",
+      "perfect": "게임 {{count}}개 100% 완료",
+      "reviews": "리뷰 {{count}}개 작성",
+      "lists": "목록 {{count}}개 생성",
+      "friends": "친구 {{count}}명 달성",
+      "genres": "{{count}}개 장르의 게임 완료",
+      "studio": "같은 스튜디오 게임 {{count}}개 평가",
+      "linked": "게임 계정 {{count}}개 연결",
+      "popular": "리뷰에서 좋아요 {{count}}개 받기",
+      "supporter": "리뷰에 좋아요 {{count}}개 주기",
+      "favorite": "게임 {{count}}개에 10점 주기",
+      "harsh": "게임 {{count}}개에 0점 주기",
+      "veteran": "가입 {{count}}개월"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} 단계",
+    "concernedGames": "해당 게임"
   }
 }

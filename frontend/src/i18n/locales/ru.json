@@ -296,7 +296,10 @@
     "prefCommentReply": "Ответы на мои комментарии",
     "prefCommentReplyHint": "Когда кто-то отвечает на ваш комментарий",
     "prefFriendJoined": "Контакт присоединяется",
-    "prefFriendJoinedHint": "Когда контакт из Steam/42 регистрируется"
+    "prefFriendJoinedHint": "Когда контакт из Steam/42 регистрируется",
+    "achievement": "Достижение открыто: <b>{{name}}</b>",
+    "prefAchievement": "Достижения",
+    "prefAchievementHint": "Когда вы открываете достижение"
   },
   "home": {
     "featuredBadge": "Рекомендуемая игра",
@@ -345,7 +348,8 @@
     "completedBadge": "Выполнено на 100 %",
     "rankLine": "<a>{{user}}</a> вошёл в <s>топ-{{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Мировой рейтинг",
-    "rankScopeFriends": "Среди твоих друзей"
+    "rankScopeFriends": "Среди твоих друзей",
+    "achievementLine": "<a>{{user}}</a> получил(а) <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Рейтинг",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Перейти к основному содержанию"
+  },
+  "achievements": {
+    "sectionTitle": "Достижения",
+    "done": "Открыто",
+    "unlockedOn": "Открыто {{date}}",
+    "fam": {
+      "completions": "Пройденные игры",
+      "played": "Сыгранные игры",
+      "perfect": "100%",
+      "reviews": "Обзоры",
+      "lists": "Списки",
+      "friends": "Друзья",
+      "genres": "Исследователь",
+      "studio": "Фанат студии",
+      "linked": "Связанные аккаунты",
+      "popular": "Популярный",
+      "supporter": "Поддержка",
+      "favorite": "Энтузиаст",
+      "harsh": "Суровый критик",
+      "veteran": "Ветеран"
+    },
+    "desc": {
+      "completions": "Пройти {{count}} игр",
+      "played": "Отметить {{count}} игр",
+      "perfect": "Пройти {{count}} игр на 100%",
+      "reviews": "Написать {{count}} обзоров",
+      "lists": "Создать {{count}} списков",
+      "friends": "Набрать {{count}} друзей",
+      "genres": "Пройти игры в {{count}} жанрах",
+      "studio": "Оценить {{count}} игр одной студии",
+      "linked": "Связать {{count}} игровых аккаунтов",
+      "popular": "Получить {{count}} лайков на своих обзорах",
+      "supporter": "Поставить {{count}} лайков обзорам",
+      "favorite": "Оценить {{count}} игр на 10/10",
+      "harsh": "Оценить {{count}} игр на 0",
+      "veteran": "В сообществе {{count}} месяцев"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} уровней",
+    "concernedGames": "Игры"
   }
 }

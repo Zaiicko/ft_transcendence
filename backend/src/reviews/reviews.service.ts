@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PlayStatus, Prisma } from '@prisma/client';
+import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -51,6 +52,7 @@ export class ReviewsService {
     private readonly notifications: NotificationsService,
     private readonly feed: FeedService,
     private readonly translation: TranslationService,
+    private readonly achievements: AchievementsService,
   ) {}
 
   // Traduction "à la demande" (bouton Traduire) du titre + texte d'un avis vers
@@ -129,6 +131,9 @@ export class ReviewsService {
       // keep the original date if already marked, so the completion calendar
       // doesn't drift). Studio reviews have no "played" notion.
       if (target.gameId) await this.ensurePlayed(userId, target.gameId);
+      // Succès : avis écrit (+ fan de studio, + coup de cœur / critique sévère
+      // selon la note).
+      void this.achievements.evaluate(userId, ['reviews', 'studio', 'favorite', 'harsh']);
       return review;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -384,6 +389,8 @@ export class ReviewsService {
     // (elles seront régénérées à la demande au prochain clic "Traduire").
     await this.prisma.reviewTranslation.deleteMany({ where: { reviewId: id } });
     this.gateway.emitToTarget(target, 'review:updated', { reviewId: id });
+    // La note a pu changer → réévalue coup de cœur / critique sévère.
+    void this.achievements.evaluate(userId, ['favorite', 'harsh']);
     return review;
   }
 
@@ -403,6 +410,14 @@ export class ReviewsService {
       await this.emitReaction(reviewId);
       await this.notifications.reviewLiked(userId, reviewId);
       void this.feed.onReviewLiked(userId, reviewId);
+      // Succès « populaire » : c'est l'AUTEUR de la critique qui gagne le like.
+      const author = await this.prisma.review.findUnique({
+        where: { id: reviewId },
+        select: { userId: true },
+      });
+      if (author?.userId) void this.achievements.evaluate(author.userId, ['popular']);
+      // ...et le SOUTIEN va à celui qui a liké.
+      void this.achievements.evaluate(userId, ['supporter']);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Already liked — idempotent, not an error

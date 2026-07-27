@@ -1,6 +1,8 @@
 import {
   ConflictException,
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,6 +10,7 @@ import { Prisma } from '@prisma/client';
 import { existsSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { basename, join } from 'path';
+import { AchievementsService } from '../achievements/achievements.service';
 import { LIST_COVERS_DIR } from '../common/uploads';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddItemDto } from './dto/add-item.dto';
@@ -23,7 +26,11 @@ const MAX_GAMES_PER_LIST = 30;
 
 @Injectable()
 export class ListsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => AchievementsService))
+    private readonly achievements: AchievementsService,
+  ) {}
 
   // Toutes les listes de l'utilisateur (privées comprises) — pour son profil.
   // gameId optionnel : marque les listes contenant déjà ce jeu (menu "Ajouter").
@@ -112,6 +119,8 @@ export class ListsService {
         data: { userId, name: dto.name.trim(), isPublic: dto.isPublic ?? false },
         include: this.summaryInclude(),
       });
+      // Succès « listes » : nouvelle liste créée
+      void this.achievements.evaluate(userId, ['lists']);
       return this.toSummary(list);
     } catch (e) {
       throw this.rethrowDuplicateName(e);

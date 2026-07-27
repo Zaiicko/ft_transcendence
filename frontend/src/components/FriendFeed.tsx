@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import i18n from '../i18n';
 import { useFeedSocket } from '../feed/useFeedSocket';
 import { apiFetch } from '../lib/api';
+import { FAMILY_NAME_KEY, tierClasses } from '../lib/achievements';
 import type { FeedItem, FeedPage } from '../lib/types';
+import AchievementIcon from './AchievementIcon';
 import Avatar from './Avatar';
 import EmptyState from './EmptyState';
 import PsnBadge from './PsnBadge';
@@ -183,6 +185,8 @@ export default function FriendFeed() {
                 return <CommentLikeItem key={item.id} item={item} />;
               case 'rank':
                 return <RankItem key={item.id} item={item} />;
+              case 'achievement':
+                return <AchievementItem key={item.id} item={item} />;
             }
           })}
           {cursor && (
@@ -521,6 +525,41 @@ function RankItem({ item }: { item: Extract<FeedItem, { kind: 'rank' }> }) {
         </div>
         <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
           {t(item.scope === 'global' ? 'feed.rankScopeGlobal' : 'feed.rankScopeFriends')}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// « X a débloqué un succès » → renvoie vers le profil de l'acteur (section
+// Succès). L'emoji du succès (pastille teintée par palier) fait l'icône.
+function AchievementItem({ item }: { item: Extract<FeedItem, { kind: 'achievement' }> }) {
+  const { t } = useTranslation();
+  const name = t(FAMILY_NAME_KEY[item.family]);
+  const label = `${name} · ${item.threshold}`;
+  return (
+    <Link
+      to={`/u/${item.actor.username}`}
+      className="card flex items-center gap-3 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600"
+    >
+      <span
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 ${tierClasses(
+          item.tier,
+        )}`}
+      >
+        <AchievementIcon family={item.family} className="h-4 w-4" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <Avatar username={item.actor.username} avatarUrl={item.actor.avatarUrl} size={20} />
+          <span className="min-w-0 truncate">
+            <Trans
+              i18nKey="feed.achievementLine"
+              values={{ user: item.actor.username, name: label }}
+              components={{ a: <span className={strongClass} />, s: <span className={strongClass} /> }}
+            />
+          </span>
+          <span className="ml-auto shrink-0 text-xs text-zinc-400">{relativeTime(item.at)}</span>
         </div>
       </div>
     </Link>

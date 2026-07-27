@@ -3,8 +3,10 @@ import {
   Body,
   Controller,
   Delete,
+  forwardRef,
   Get,
   HttpCode,
+  Inject,
   NotFoundException,
   Post,
   Query,
@@ -16,6 +18,7 @@ import type { TrophyTitle } from 'psn-api';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { toPublicUser } from '../users/public-user';
@@ -42,6 +45,8 @@ export class PsnController {
     private readonly users: UsersService,
     private readonly api: PsnApiService,
     private readonly feed: FeedService,
+    @Inject(forwardRef(() => AchievementsService))
+    private readonly achievements: AchievementsService,
   ) {}
 
   private async requireAccountId(userId: number): Promise<string> {
@@ -74,6 +79,8 @@ export class PsnController {
       data: { psnAccountId: account.accountId, psnOnlineId: account.onlineId, psnLibrary: Prisma.DbNull },
     });
 
+    // Succès « comptes liés »
+    void this.achievements.evaluate(current.sub, ['linked']);
     return { onlineId: account.onlineId, avatarUrl: account.avatarUrl };
   }
 
@@ -141,6 +148,7 @@ export class PsnController {
         return { gameId: m.id, completedAt: d && !isNaN(d.getTime()) ? d : undefined };
       });
     await this.feed.syncCompletions(current.sub, 'psn', completed);
+    void this.achievements.evaluate(current.sub, ['completions', 'perfect', 'genres']);
 
     return {
       private: false,

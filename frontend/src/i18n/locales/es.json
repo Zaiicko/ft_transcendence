@@ -296,7 +296,10 @@
     "prefCommentReply": "Respuestas a mis comentarios",
     "prefCommentReplyHint": "Cuando responden a tu comentario",
     "prefFriendJoined": "Un contacto se une",
-    "prefFriendJoinedHint": "Cuando un contacto de Steam/42 se registra"
+    "prefFriendJoinedHint": "Cuando un contacto de Steam/42 se registra",
+    "achievement": "Logro desbloqueado: <b>{{name}}</b>",
+    "prefAchievement": "Logros",
+    "prefAchievementHint": "Cuando desbloqueas un logro"
   },
   "home": {
     "featuredBadge": "Juego destacado",
@@ -345,7 +348,8 @@
     "completedBadge": "Completado al 100 %",
     "rankLine": "<a>{{user}}</a> entra en el <s>top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Clasificación global",
-    "rankScopeFriends": "Entre tus amigos"
+    "rankScopeFriends": "Entre tus amigos",
+    "achievementLine": "<a>{{user}}</a> desbloqueó <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Clasificación",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Saltar al contenido principal"
+  },
+  "achievements": {
+    "sectionTitle": "Logros",
+    "done": "Desbloqueado",
+    "unlockedOn": "Desbloqueado el {{date}}",
+    "fam": {
+      "completions": "Juegos terminados",
+      "played": "Juegos jugados",
+      "perfect": "100%",
+      "reviews": "Reseñas",
+      "lists": "Listas",
+      "friends": "Amigos",
+      "genres": "Explorador",
+      "studio": "Fan de estudio",
+      "linked": "Cuentas vinculadas",
+      "popular": "Popular",
+      "supporter": "Apoyo",
+      "favorite": "Entusiasta",
+      "harsh": "Crítico severo",
+      "veteran": "Veterano"
+    },
+    "desc": {
+      "completions": "Terminar {{count}} juegos",
+      "played": "Registrar {{count}} juegos",
+      "perfect": "Completar {{count}} juegos al 100%",
+      "reviews": "Escribir {{count}} reseñas",
+      "lists": "Crear {{count}} listas",
+      "friends": "Llegar a {{count}} amigos",
+      "genres": "Terminar juegos en {{count}} géneros",
+      "studio": "Reseñar {{count}} juegos de un mismo estudio",
+      "linked": "Vincular {{count}} cuentas de juego",
+      "popular": "Recibir {{count}} me gusta en tus reseñas",
+      "supporter": "Dar {{count}} me gusta a reseñas",
+      "favorite": "Puntuar {{count}} juegos con 10/10",
+      "harsh": "Puntuar {{count}} juegos con 0",
+      "veteran": "Miembro desde hace {{count}} meses"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} niveles",
+    "concernedGames": "Juegos relacionados"
   }
 }

@@ -15,6 +15,7 @@ import { Prisma } from '@prisma/client';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
@@ -40,6 +41,7 @@ export class XboxController {
     private readonly users: UsersService,
     private readonly api: XboxApiService,
     private readonly feed: FeedService,
+    private readonly achievements: AchievementsService,
   ) {}
 
   // Rattache un compte Xbox : on résout le gamertag déclaré en XUID via la clé
@@ -63,6 +65,8 @@ export class XboxController {
       data: { xboxXuid: account.xuid, xboxGamertag: account.gamertag, xboxLibrary: Prisma.DbNull },
     });
 
+    // Succès « comptes liés »
+    void this.achievements.evaluate(current.sub, ['linked']);
     return { gamertag: account.gamertag, avatarUrl: account.avatarUrl };
   }
 
@@ -140,6 +144,7 @@ export class XboxController {
         return { gameId: m.id, completedAt: d && !isNaN(d.getTime()) ? d : undefined };
       });
     await this.feed.syncCompletions(current.sub, 'xbox', completed);
+    void this.achievements.evaluate(current.sub, ['completions', 'perfect', 'genres']);
 
     return {
       private: false,

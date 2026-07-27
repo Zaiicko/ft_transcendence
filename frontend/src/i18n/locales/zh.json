@@ -296,7 +296,10 @@
     "prefCommentReply": "我评论的回复",
     "prefCommentReplyHint": "当有人回复你的评论时",
     "prefFriendJoined": "联系人加入",
-    "prefFriendJoinedHint": "当 Steam/42 联系人注册时"
+    "prefFriendJoinedHint": "当 Steam/42 联系人注册时",
+    "achievement": "解锁成就：<b>{{name}}</b>",
+    "prefAchievement": "成就",
+    "prefAchievementHint": "当你解锁成就时"
   },
   "home": {
     "featuredBadge": "精选游戏",
@@ -345,7 +348,8 @@
     "completedBadge": "已完成 100%",
     "rankLine": "<a>{{user}}</a> 进入<s>前 {{rank}} 名</s> — {{category}}",
     "rankScopeGlobal": "全球排行榜",
-    "rankScopeFriends": "在你的好友中"
+    "rankScopeFriends": "在你的好友中",
+    "achievementLine": "<a>{{user}}</a> 解锁了 <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "排行榜",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "跳到主要内容"
+  },
+  "achievements": {
+    "sectionTitle": "成就",
+    "done": "已解锁",
+    "unlockedOn": "解锁于 {{date}}",
+    "fam": {
+      "completions": "已通关游戏",
+      "played": "已游玩游戏",
+      "perfect": "100%",
+      "reviews": "评测",
+      "lists": "列表",
+      "friends": "好友",
+      "genres": "探索者",
+      "studio": "工作室粉丝",
+      "linked": "已关联账号",
+      "popular": "受欢迎",
+      "supporter": "支持者",
+      "favorite": "狂热者",
+      "harsh": "严苛评论家",
+      "veteran": "老玩家"
+    },
+    "desc": {
+      "completions": "通关 {{count}} 款游戏",
+      "played": "记录 {{count}} 款游戏",
+      "perfect": "将 {{count}} 款游戏完成至100%",
+      "reviews": "撰写 {{count}} 篇评测",
+      "lists": "创建 {{count}} 个列表",
+      "friends": "达到 {{count}} 位好友",
+      "genres": "在 {{count}} 种类型中通关游戏",
+      "studio": "评测同一工作室的 {{count}} 款游戏",
+      "linked": "关联 {{count}} 个游戏账号",
+      "popular": "你的评测获得 {{count}} 个赞",
+      "supporter": "给评测点赞 {{count}} 次",
+      "favorite": "给 {{count}} 款游戏打 10 分",
+      "harsh": "给 {{count}} 款游戏打 0 分",
+      "veteran": "注册满 {{count}} 个月"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} 级",
+    "concernedGames": "相关游戏"
   }
 }

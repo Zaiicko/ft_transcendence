@@ -16,6 +16,7 @@ import { ModuleRef } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AuthProvider, Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
+import { AchievementsService } from '../achievements/achievements.service';
 import { FriendsService } from '../friends/friends.service';
 import { setAuthCookies } from '../auth/auth-cookies.util';
 import { AuthService, JwtPayload } from '../auth/auth.service';
@@ -92,6 +93,10 @@ export class SteamAuthController {
         where: { id: current.sub },
         data: { steamId, steamAchievements: Prisma.DbNull },
       });
+      // Succès « comptes liés » (résolu en lazy pour éviter un cycle de modules)
+      void this.moduleRef
+        .get(AchievementsService, { strict: false })
+        .evaluate(current.sub, ['linked']);
       return res.redirect(`${front}/profile?steam=linked`);
     }
 

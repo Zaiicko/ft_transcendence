@@ -6,6 +6,10 @@ import {
   RecordedMilestone,
 } from '../leaderboard/leaderboard.service';
 import { PrismaService } from '../prisma/prisma.service';
+import {
+  AchievementFamily,
+  buildAchievementFeedItem,
+} from '../achievements/achievements.catalog';
 import { FeedGateway } from './feed.gateway';
 
 const actorSelect = { id: true, username: true, avatarUrl: true } as const;
@@ -65,6 +69,17 @@ export type FeedItem =
       metric: LeaderboardMetric;
       scope: 'global' | 'friends';
       rank: number;
+    }
+  | {
+      id: string;
+      kind: 'achievement';
+      at: string;
+      actor: FeedActor;
+      key: string;
+      family: AchievementFamily;
+      tier: number;
+      threshold: number;
+      icon: string;
     };
 
 const DEFAULT_LIMIT = 20;
@@ -112,11 +127,12 @@ export class FeedService {
     const wantPlayed = !filter || filter === 'played';
     const wantCompleted = !filter || filter === 'completed';
     const wantLikes = !filter || filter === 'likes';
-    // Les jalons de classement n'apparaissent que dans l'onglet « tout ».
+    // Jalons de classement et succès n'apparaissent que dans l'onglet « tout ».
     const wantRank = !filter;
+    const wantAchievement = !filter;
 
     // On sur-échantillonne chaque source demandée, on fusionne, on trie, on tronque.
-    const [reviews, playedRaw, completions, reviewLikes, commentLikes, milestones] =
+    const [reviews, playedRaw, completions, reviewLikes, commentLikes, milestones, achievements] =
       await Promise.all([
       wantReviews
         ? this.prisma.review.findMany({
@@ -207,6 +223,22 @@ export class FeedService {
             },
           })
         : [],
+      wantAchievement
+        ? this.prisma.userAchievement.findMany({
+            where: {
+              userId: { in: friends },
+              ...(before ? { unlockedAt: { lt: before } } : {}),
+            },
+            orderBy: { unlockedAt: 'desc' },
+            take,
+            select: {
+              id: true,
+              key: true,
+              unlockedAt: true,
+              user: { select: actorSelect },
+            },
+          })
+        : [],
     ]);
 
     // Déduplication : un « jeu fait » dont l'user a aussi écrit un avis est
@@ -220,6 +252,9 @@ export class FeedService {
       ...reviewLikes.map((l) => this.reviewLikeItem(l)),
       ...commentLikes.map((l) => this.commentLikeItem(l)),
       ...milestones.map((m) => this.rankItem(m)),
+      ...achievements
+        .map((a) => buildAchievementFeedItem(a))
+        .filter((x): x is NonNullable<typeof x> => x !== null),
     ];
 
     items.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));

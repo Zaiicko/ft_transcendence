@@ -296,7 +296,10 @@
     "prefCommentReply": "Antwoorden op mijn reacties",
     "prefCommentReplyHint": "Wanneer iemand op je reactie antwoordt",
     "prefFriendJoined": "Een contact wordt lid",
-    "prefFriendJoinedHint": "Wanneer een Steam/42-contact zich aanmeldt"
+    "prefFriendJoinedHint": "Wanneer een Steam/42-contact zich aanmeldt",
+    "achievement": "Prestatie ontgrendeld: <b>{{name}}</b>",
+    "prefAchievement": "Prestaties",
+    "prefAchievementHint": "Wanneer je een prestatie ontgrendelt"
   },
   "home": {
     "featuredBadge": "Uitgelichte game",
@@ -345,7 +348,8 @@
     "completedBadge": "100% voltooid",
     "rankLine": "<a>{{user}}</a> staat in de <s>top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Wereldwijde ranglijst",
-    "rankScopeFriends": "Onder je vrienden"
+    "rankScopeFriends": "Onder je vrienden",
+    "achievementLine": "<a>{{user}}</a> ontgrendelde <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Ranglijst",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Ga naar hoofdinhoud"
+  },
+  "achievements": {
+    "sectionTitle": "Prestaties",
+    "done": "Ontgrendeld",
+    "unlockedOn": "Ontgrendeld op {{date}}",
+    "fam": {
+      "completions": "Voltooide games",
+      "played": "Gespeelde games",
+      "perfect": "100%",
+      "reviews": "Reviews",
+      "lists": "Lijsten",
+      "friends": "Vrienden",
+      "genres": "Ontdekker",
+      "studio": "Studiofan",
+      "linked": "Gekoppelde accounts",
+      "popular": "Populair",
+      "supporter": "Supporter",
+      "favorite": "Liefhebber",
+      "harsh": "Strenge criticus",
+      "veteran": "Veteraan"
+    },
+    "desc": {
+      "completions": "Voltooi {{count}} games",
+      "played": "Registreer {{count}} games",
+      "perfect": "Voltooi {{count}} games op 100%",
+      "reviews": "Schrijf {{count}} reviews",
+      "lists": "Maak {{count}} lijsten",
+      "friends": "Bereik {{count}} vrienden",
+      "genres": "Voltooi games in {{count}} genres",
+      "studio": "Beoordeel {{count}} games van één studio",
+      "linked": "Koppel {{count}} game-accounts",
+      "popular": "Ontvang {{count}} likes op je reviews",
+      "supporter": "Geef {{count}} likes aan reviews",
+      "favorite": "Beoordeel {{count}} games met 10/10",
+      "harsh": "Beoordeel {{count}} games met 0",
+      "veteran": "Lid sinds {{count}} maanden"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} niveaus",
+    "concernedGames": "Betrokken games"
   }
 }

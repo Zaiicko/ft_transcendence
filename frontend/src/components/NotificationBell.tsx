@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import i18n from '../i18n';
 import { apiFetch } from '../lib/api';
+import { FAMILY_NAME_KEY, parseAchievementKey } from '../lib/achievements';
 import type { AppNotification } from '../lib/types';
+import AchievementIcon from './AchievementIcon';
 import { useNotificationSocket } from '../notifications/useNotificationSocket';
 import Avatar from './Avatar';
 
@@ -122,11 +124,20 @@ export default function NotificationBell() {
                         n.readAt ? '' : 'bg-accent/5'
                       }`}
                     >
-                      <Avatar
-                        username={n.payload.actorUsername ?? '?'}
-                        avatarUrl={n.payload.actorAvatarUrl ?? null}
-                        size={32}
-                      />
+                      {n.type === 'ACHIEVEMENT' ? (
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+                          <AchievementIcon
+                            family={parseAchievementKey(n.payload.achievementKey ?? '').family}
+                            className="h-4 w-4"
+                          />
+                        </span>
+                      ) : (
+                        <Avatar
+                          username={n.payload.actorUsername ?? '?'}
+                          avatarUrl={n.payload.actorAvatarUrl ?? null}
+                          size={32}
+                        />
+                      )}
                       <span className="min-w-0 flex-1">
                         <span className="block text-sm leading-snug">{messageFor(n)}</span>
                         <span className="mt-0.5 block text-xs text-zinc-400">
@@ -208,6 +219,11 @@ function messageFor(n: AppNotification): ReactNode {
           components={components}
         />
       );
+    case 'ACHIEVEMENT': {
+      const { family, threshold } = parseAchievementKey(n.payload.achievementKey ?? '');
+      const name = FAMILY_NAME_KEY[family] ? `${i18n.t(FAMILY_NAME_KEY[family])} (${threshold})` : '';
+      return <Trans i18nKey="notifications.achievement" values={{ name }} components={components} />;
+    }
     default:
       return <strong className="font-semibold">{who}</strong>;
   }

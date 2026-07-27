@@ -189,6 +189,15 @@ export class NotificationsService {
     }
   }
 
+  // Succès « maison » débloqué par l'utilisateur lui-même (auto-notification).
+  async achievementUnlocked(userId: number, key: string): Promise<void> {
+    try {
+      await this.deliver(userId, NotificationType.ACHIEVEMENT, { achievementKey: key });
+    } catch (err) {
+      this.logger.warn(`achievementUnlocked notification failed: ${(err as Error).message}`);
+    }
+  }
+
   private async actorPayload(actorId: number) {
     const actor = await this.prisma.user.findUnique({
       where: { id: actorId },
@@ -211,6 +220,7 @@ export class NotificationsService {
     NotificationType.REVIEW_COMMENT,
     NotificationType.COMMENT_REPLY,
     NotificationType.FRIEND_JOINED,
+    NotificationType.ACHIEVEMENT,
   ];
 
   private async wants(userId: number, type: NotificationType): Promise<boolean> {

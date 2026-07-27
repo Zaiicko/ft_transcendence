@@ -296,7 +296,10 @@
     "prefCommentReply": "自分のコメントへの返信",
     "prefCommentReplyHint": "自分のコメントに返信があったとき",
     "prefFriendJoined": "知り合いが参加",
-    "prefFriendJoinedHint": "Steam/42 の知り合いが登録したとき"
+    "prefFriendJoinedHint": "Steam/42 の知り合いが登録したとき",
+    "achievement": "実績を解除：<b>{{name}}</b>",
+    "prefAchievement": "実績",
+    "prefAchievementHint": "実績を解除したとき"
   },
   "home": {
     "featuredBadge": "注目のゲーム",
@@ -345,7 +348,8 @@
     "completedBadge": "100%完了",
     "rankLine": "<a>{{user}}</a> が<s>トップ{{rank}}</s>入り — {{category}}",
     "rankScopeGlobal": "グローバルランキング",
-    "rankScopeFriends": "友達の中で"
+    "rankScopeFriends": "友達の中で",
+    "achievementLine": "<a>{{user}}</a> が <s>{{name}}</s> を解除しました"
   },
   "leaderboard": {
     "title": "ランキング",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "メインコンテンツにスキップ"
+  },
+  "achievements": {
+    "sectionTitle": "実績",
+    "done": "解除済み",
+    "unlockedOn": "{{date}}に解除",
+    "fam": {
+      "completions": "クリアしたゲーム",
+      "played": "プレイしたゲーム",
+      "perfect": "100%",
+      "reviews": "レビュー",
+      "lists": "リスト",
+      "friends": "フレンド",
+      "genres": "エクスプローラー",
+      "studio": "スタジオファン",
+      "linked": "連携アカウント",
+      "popular": "人気",
+      "supporter": "サポーター",
+      "favorite": "熱狂ファン",
+      "harsh": "辛口批評家",
+      "veteran": "ベテラン"
+    },
+    "desc": {
+      "completions": "{{count}}本のゲームをクリア",
+      "played": "{{count}}本のゲームを記録",
+      "perfect": "{{count}}本のゲームを100%達成",
+      "reviews": "{{count}}件のレビューを書く",
+      "lists": "{{count}}個のリストを作成",
+      "friends": "フレンドを{{count}}人にする",
+      "genres": "{{count}}ジャンルのゲームをクリア",
+      "studio": "同じスタジオのゲームを{{count}}本評価",
+      "linked": "ゲームアカウントを{{count}}件連携",
+      "popular": "レビューで{{count}}件のいいねを獲得",
+      "supporter": "レビューに{{count}}件いいねする",
+      "favorite": "{{count}}本のゲームを10点評価",
+      "harsh": "{{count}}本のゲームを0点評価",
+      "veteran": "登録から{{count}}か月"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} 段階",
+    "concernedGames": "対象のゲーム"
   }
 }

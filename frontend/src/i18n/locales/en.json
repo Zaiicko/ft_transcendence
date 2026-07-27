@@ -296,7 +296,10 @@
     "prefCommentReply": "Replies to my comments",
     "prefCommentReplyHint": "When someone replies to your comment",
     "prefFriendJoined": "A contact joins",
-    "prefFriendJoinedHint": "When a Steam/42 contact signs up"
+    "prefFriendJoinedHint": "When a Steam/42 contact signs up",
+    "achievement": "Achievement unlocked: <b>{{name}}</b>",
+    "prefAchievement": "Achievements",
+    "prefAchievementHint": "When you unlock an achievement"
   },
   "home": {
     "featuredBadge": "Featured game",
@@ -345,7 +348,8 @@
     "timeMinutes": "{{count}} min ago",
     "timeHours": "{{count}} h ago",
     "timeYesterday": "yesterday",
-    "timeDays": "{{count}} d ago"
+    "timeDays": "{{count}} d ago",
+    "achievementLine": "<a>{{user}}</a> unlocked <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Leaderboard",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Skip to main content"
+  },
+  "achievements": {
+    "sectionTitle": "Achievements",
+    "done": "Unlocked",
+    "unlockedOn": "Unlocked on {{date}}",
+    "fam": {
+      "completions": "Games finished",
+      "played": "Games played",
+      "perfect": "100%",
+      "reviews": "Reviews",
+      "lists": "Lists",
+      "friends": "Friends",
+      "genres": "Explorer",
+      "studio": "Studio fan",
+      "linked": "Linked accounts",
+      "popular": "Popular",
+      "supporter": "Supporter",
+      "favorite": "Enthusiast",
+      "harsh": "Tough critic",
+      "veteran": "Veteran"
+    },
+    "desc": {
+      "completions": "Finish {{count}} games",
+      "played": "Log {{count}} games",
+      "perfect": "Complete {{count}} games at 100%",
+      "reviews": "Write {{count}} reviews",
+      "lists": "Create {{count}} lists",
+      "friends": "Reach {{count}} friends",
+      "genres": "Finish games in {{count}} genres",
+      "studio": "Review {{count}} games from one studio",
+      "linked": "Link {{count}} game accounts",
+      "popular": "Get {{count}} likes on your reviews",
+      "supporter": "Give {{count}} likes to reviews",
+      "favorite": "Rate {{count}} games 10/10",
+      "harsh": "Rate {{count}} games 0",
+      "veteran": "Member for {{count}} months"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} tiers",
+    "concernedGames": "Games concerned"
   }
 }

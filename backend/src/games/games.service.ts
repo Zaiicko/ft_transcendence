@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { GameType, PlayStatus, Prisma } from '@prisma/client';
+import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { TranslationService } from '../translation/translation.service';
@@ -62,6 +63,7 @@ export class GamesService {
     private readonly sync: GamesSyncService,
     private readonly feed: FeedService,
     private readonly translation: TranslationService,
+    private readonly achievements: AchievementsService,
   ) {}
 
   // Combinable filters (Prisma), then computed sorts (SQL aggregates: weighted
@@ -358,6 +360,8 @@ export class GamesService {
       if (current?.status !== PlayStatus.PLAYED) void this.feed.onGamePlayed(userId, gameId);
       void this.feed.onGameCompleted(userId, gameId);
     }
+    // Succès : « fait » manuel alimente les familles terminés / genres.
+    void this.achievements.evaluate(userId, ['completions', 'genres']);
     return { completedByMe: true };
   }
 

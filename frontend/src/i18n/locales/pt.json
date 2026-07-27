@@ -296,7 +296,10 @@
     "prefCommentReply": "Respostas aos meus comentários",
     "prefCommentReplyHint": "Quando alguém responde ao teu comentário",
     "prefFriendJoined": "Um contacto junta-se",
-    "prefFriendJoinedHint": "Quando um contacto Steam/42 se regista"
+    "prefFriendJoinedHint": "Quando um contacto Steam/42 se regista",
+    "achievement": "Conquista desbloqueada: <b>{{name}}</b>",
+    "prefAchievement": "Conquistas",
+    "prefAchievementHint": "Quando você desbloqueia uma conquista"
   },
   "home": {
     "featuredBadge": "Jogo em destaque",
@@ -345,7 +348,8 @@
     "completedBadge": "Concluído a 100%",
     "rankLine": "<a>{{user}}</a> entrou no <s>top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Classificação global",
-    "rankScopeFriends": "Entre os teus amigos"
+    "rankScopeFriends": "Entre os teus amigos",
+    "achievementLine": "<a>{{user}}</a> desbloqueou <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Classificação",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Ir para o conteúdo principal"
+  },
+  "achievements": {
+    "sectionTitle": "Conquistas",
+    "done": "Desbloqueado",
+    "unlockedOn": "Desbloqueado em {{date}}",
+    "fam": {
+      "completions": "Jogos terminados",
+      "played": "Jogos jogados",
+      "perfect": "100%",
+      "reviews": "Análises",
+      "lists": "Listas",
+      "friends": "Amigos",
+      "genres": "Explorador",
+      "studio": "Fã de estúdio",
+      "linked": "Contas vinculadas",
+      "popular": "Popular",
+      "supporter": "Apoiador",
+      "favorite": "Entusiasta",
+      "harsh": "Crítico severo",
+      "veteran": "Veterano"
+    },
+    "desc": {
+      "completions": "Terminar {{count}} jogos",
+      "played": "Registrar {{count}} jogos",
+      "perfect": "Completar {{count}} jogos a 100%",
+      "reviews": "Escrever {{count}} análises",
+      "lists": "Criar {{count}} listas",
+      "friends": "Alcançar {{count}} amigos",
+      "genres": "Terminar jogos em {{count}} gêneros",
+      "studio": "Avaliar {{count}} jogos de um mesmo estúdio",
+      "linked": "Vincular {{count}} contas de jogo",
+      "popular": "Receber {{count}} curtidas nas suas análises",
+      "supporter": "Dar {{count}} curtidas em análises",
+      "favorite": "Avaliar {{count}} jogos com 10/10",
+      "harsh": "Avaliar {{count}} jogos com 0",
+      "veteran": "Membro há {{count}} meses"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} níveis",
+    "concernedGames": "Jogos relacionados"
   }
 }

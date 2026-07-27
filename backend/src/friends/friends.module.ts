@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
+import { AchievementsModule } from '../achievements/achievements.module';
 import { ChatModule } from '../chat/chat.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { PresenceModule } from '../presence/presence.module';
@@ -9,7 +10,7 @@ import { FriendsController } from './friends.controller';
 import { FriendsService } from './friends.service';
 
 @Module({
-  imports: [PresenceModule, SteamModule, PsnModule, UsersModule, ChatModule, NotificationsModule],
+  imports: [PresenceModule, SteamModule, PsnModule, UsersModule, ChatModule, NotificationsModule, forwardRef(() => AchievementsModule)],
   controllers: [FriendsController],
   providers: [FriendsService],
   exports: [FriendsService],

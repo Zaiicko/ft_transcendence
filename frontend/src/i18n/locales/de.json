@@ -296,7 +296,10 @@
     "prefCommentReply": "Antworten auf meine Kommentare",
     "prefCommentReplyHint": "Wenn jemand auf deinen Kommentar antwortet",
     "prefFriendJoined": "Ein Kontakt tritt bei",
-    "prefFriendJoinedHint": "Wenn sich ein Steam/42-Kontakt registriert"
+    "prefFriendJoinedHint": "Wenn sich ein Steam/42-Kontakt registriert",
+    "achievement": "Erfolg freigeschaltet: <b>{{name}}</b>",
+    "prefAchievement": "Erfolge",
+    "prefAchievementHint": "Wenn du einen Erfolg freischaltest"
   },
   "home": {
     "featuredBadge": "Vorgestelltes Spiel",
@@ -345,7 +348,8 @@
     "completedBadge": "Zu 100 % abgeschlossen",
     "rankLine": "<a>{{user}}</a> ist in den <s>Top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Globale Rangliste",
-    "rankScopeFriends": "Unter deinen Freunden"
+    "rankScopeFriends": "Unter deinen Freunden",
+    "achievementLine": "<a>{{user}}</a> hat <s>{{name}}</s> freigeschaltet"
   },
   "leaderboard": {
     "title": "Rangliste",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Zum Hauptinhalt springen"
+  },
+  "achievements": {
+    "sectionTitle": "Erfolge",
+    "done": "Freigeschaltet",
+    "unlockedOn": "Freigeschaltet am {{date}}",
+    "fam": {
+      "completions": "Beendete Spiele",
+      "played": "Gespielte Spiele",
+      "perfect": "100%",
+      "reviews": "Rezensionen",
+      "lists": "Listen",
+      "friends": "Freunde",
+      "genres": "Entdecker",
+      "studio": "Studio-Fan",
+      "linked": "Verknüpfte Konten",
+      "popular": "Beliebt",
+      "supporter": "Unterstützer",
+      "favorite": "Enthusiast",
+      "harsh": "Strenger Kritiker",
+      "veteran": "Veteran"
+    },
+    "desc": {
+      "completions": "{{count}} Spiele beenden",
+      "played": "{{count}} Spiele erfassen",
+      "perfect": "{{count}} Spiele zu 100% abschließen",
+      "reviews": "{{count}} Rezensionen schreiben",
+      "lists": "{{count}} Listen erstellen",
+      "friends": "{{count}} Freunde erreichen",
+      "genres": "Spiele in {{count}} Genres beenden",
+      "studio": "{{count}} Spiele eines Studios bewerten",
+      "linked": "{{count}} Spielkonten verknüpfen",
+      "popular": "{{count}} Likes auf deine Rezensionen erhalten",
+      "supporter": "{{count}} Rezensionen liken",
+      "favorite": "{{count}} Spiele mit 10/10 bewerten",
+      "harsh": "{{count}} Spiele mit 0 bewerten",
+      "veteran": "Seit {{count}} Monaten dabei"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} Stufen",
+    "concernedGames": "Betroffene Spiele"
   }
 }

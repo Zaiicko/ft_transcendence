@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AchievementsModule } from '../achievements/achievements.module';
 import { FeedModule } from '../feed/feed.module';
 import { PsnModule } from '../psn/psn.module';
 import { SteamModule } from '../steam/steam.module';
@@ -10,7 +11,7 @@ import { CompletionsService } from './completions.service';
 // exactement la même détection que la synchro interactive de bibliothèque.
 // Aucun contrôleur : purement planifié (cf. ScheduleModule dans AppModule).
 @Module({
-  imports: [FeedModule, SteamModule, XboxModule, PsnModule],
+  imports: [FeedModule, SteamModule, XboxModule, PsnModule, AchievementsModule],
   providers: [CompletionsService],
 })
 export class CompletionsModule {}

@@ -296,7 +296,10 @@
     "prefCommentReply": "Yorumlarıma yanıtlar",
     "prefCommentReplyHint": "Biri yorumuna yanıt verdiğinde",
     "prefFriendJoined": "Bir kişi katılıyor",
-    "prefFriendJoinedHint": "Bir Steam/42 kişisi kaydolduğunda"
+    "prefFriendJoinedHint": "Bir Steam/42 kişisi kaydolduğunda",
+    "achievement": "Başarım açıldı: <b>{{name}}</b>",
+    "prefAchievement": "Başarımlar",
+    "prefAchievementHint": "Bir başarım açtığında"
   },
   "home": {
     "featuredBadge": "Öne çıkan oyun",
@@ -345,7 +348,8 @@
     "completedBadge": "%100 tamamlandı",
     "rankLine": "<a>{{user}}</a> <s>ilk {{rank}}</s> arasına girdi — {{category}}",
     "rankScopeGlobal": "Küresel sıralama",
-    "rankScopeFriends": "Arkadaşların arasında"
+    "rankScopeFriends": "Arkadaşların arasında",
+    "achievementLine": "<a>{{user}}</a>, <s>{{name}}</s> başarımını açtı"
   },
   "leaderboard": {
     "title": "Sıralama",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Ana içeriğe geç"
+  },
+  "achievements": {
+    "sectionTitle": "Başarımlar",
+    "done": "Açıldı",
+    "unlockedOn": "{{date}} tarihinde açıldı",
+    "fam": {
+      "completions": "Bitirilen oyunlar",
+      "played": "Oynanan oyunlar",
+      "perfect": "100%",
+      "reviews": "İncelemeler",
+      "lists": "Listeler",
+      "friends": "Arkadaşlar",
+      "genres": "Kâşif",
+      "studio": "Stüdyo hayranı",
+      "linked": "Bağlı hesaplar",
+      "popular": "Popüler",
+      "supporter": "Destekçi",
+      "favorite": "Meraklı",
+      "harsh": "Sert eleştirmen",
+      "veteran": "Emektar"
+    },
+    "desc": {
+      "completions": "{{count}} oyun bitir",
+      "played": "{{count}} oyun kaydet",
+      "perfect": "{{count}} oyunu %100 tamamla",
+      "reviews": "{{count}} inceleme yaz",
+      "lists": "{{count}} liste oluştur",
+      "friends": "{{count}} arkadaşa ulaş",
+      "genres": "{{count}} türde oyun bitir",
+      "studio": "Aynı stüdyodan {{count}} oyun değerlendir",
+      "linked": "{{count}} oyun hesabı bağla",
+      "popular": "İncelemelerine {{count}} beğeni al",
+      "supporter": "İncelemelere {{count}} beğeni ver",
+      "favorite": "{{count}} oyunu 10/10 puanla",
+      "harsh": "{{count}} oyunu 0 puanla",
+      "veteran": "{{count}} aydır üye"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} kademe",
+    "concernedGames": "İlgili oyunlar"
   }
 }

@@ -44,6 +44,7 @@ enum NotificationType {
   COMMENT_REPLY
   NEW_MESSAGE
   FRIEND_JOINED
+  ACHIEVEMENT
 }
 
 // ---------- Users & social ----------
@@ -138,6 +139,7 @@ model User {
   verificationTokens VerificationToken[]
   milestonesAsSubject LeaderboardMilestone[] @relation("MilestoneSubject")
   milestonesAsViewer  LeaderboardMilestone[] @relation("MilestoneViewer")
+  achievements        UserAchievement[]
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -464,6 +466,21 @@ model GameCompletion {
   @@unique([userId, gameId, platform])
   @@index([userId, createdAt])
   @@index([userId, completedAt])
+}
+
+// Succès « maison » débloqués par un utilisateur. La définition (famille, palier,
+// seuil, icône) vit dans le catalogue côté code (achievements.catalog.ts) ; ici
+// on ne stocke que la clé débloquée + la date. Alimente la section « Succès » du
+// profil, une notification et une carte de feed au déblocage.
+model UserAchievement {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  key        String // clé du catalogue, ex. 'completions_50'
+  unlockedAt DateTime @default(now())
+
+  @@unique([userId, key])
+  @@index([userId, unlockedAt])
 }
 
 // ---------- Custom lists ("ranked games", "horror games", ...) ----------

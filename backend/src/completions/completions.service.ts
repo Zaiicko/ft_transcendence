@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FriendshipStatus, Prisma } from '@prisma/client';
+import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PsnApiService } from '../psn/psn-api.service';
@@ -51,6 +52,7 @@ export class CompletionsService {
     private readonly xbox: XboxApiService,
     private readonly psn: PsnApiService,
     private readonly config: ConfigService,
+    private readonly achievements: AchievementsService,
   ) {}
 
   @Cron(CronExpression.EVERY_HOUR)
@@ -163,6 +165,7 @@ export class CompletionsService {
         };
       });
     await this.feed.syncCompletions(userId, 'steam', completed);
+    void this.achievements.evaluate(userId, ['completions', 'perfect', 'genres']);
   }
 
   // Copie assumée de SteamController.syncAchievements (Steam n'a pas d'appel
@@ -216,6 +219,7 @@ export class CompletionsService {
       (t) => (t.lastPlayed ? new Date(t.lastPlayed) : undefined),
     );
     await this.feed.syncCompletions(userId, 'xbox', completed);
+    void this.achievements.evaluate(userId, ['completions', 'perfect', 'genres']);
   }
 
   // ---- PSN : 100 % des trophées OU platine (décision produit) ----
@@ -242,6 +246,7 @@ export class CompletionsService {
       (t) => (t.lastUpdatedDateTime ? new Date(t.lastUpdatedDateTime) : undefined),
     );
     await this.feed.syncCompletions(userId, 'psn', completed);
+    void this.achievements.evaluate(userId, ['completions', 'perfect', 'genres']);
   }
 
   // Titres complétés → { gameId, completedAt } du catalogue, par nom normalisé

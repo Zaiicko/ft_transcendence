@@ -296,7 +296,10 @@
     "prefCommentReply": "Odpowiedzi na moje komentarze",
     "prefCommentReplyHint": "Gdy ktoś odpowie na Twój komentarz",
     "prefFriendJoined": "Kontakt dołącza",
-    "prefFriendJoinedHint": "Gdy kontakt ze Steam/42 się rejestruje"
+    "prefFriendJoinedHint": "Gdy kontakt ze Steam/42 się rejestruje",
+    "achievement": "Odblokowano osiągnięcie: <b>{{name}}</b>",
+    "prefAchievement": "Osiągnięcia",
+    "prefAchievementHint": "Gdy odblokujesz osiągnięcie"
   },
   "home": {
     "featuredBadge": "Polecana gra",
@@ -345,7 +348,8 @@
     "completedBadge": "Zrealizowano w 100%",
     "rankLine": "<a>{{user}}</a> wszedł do <s>top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Ranking globalny",
-    "rankScopeFriends": "Wśród Twoich znajomych"
+    "rankScopeFriends": "Wśród Twoich znajomych",
+    "achievementLine": "<a>{{user}}</a> odblokował(a) <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Ranking",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Przejdź do treści głównej"
+  },
+  "achievements": {
+    "sectionTitle": "Osiągnięcia",
+    "done": "Odblokowano",
+    "unlockedOn": "Odblokowano {{date}}",
+    "fam": {
+      "completions": "Ukończone gry",
+      "played": "Zagrane gry",
+      "perfect": "100%",
+      "reviews": "Recenzje",
+      "lists": "Listy",
+      "friends": "Znajomi",
+      "genres": "Odkrywca",
+      "studio": "Fan studia",
+      "linked": "Połączone konta",
+      "popular": "Popularny",
+      "supporter": "Wsparcie",
+      "favorite": "Entuzjasta",
+      "harsh": "Surowy krytyk",
+      "veteran": "Weteran"
+    },
+    "desc": {
+      "completions": "Ukończ {{count}} gier",
+      "played": "Zarejestruj {{count}} gier",
+      "perfect": "Ukończ {{count}} gier w 100%",
+      "reviews": "Napisz {{count}} recenzji",
+      "lists": "Utwórz {{count}} list",
+      "friends": "Zdobądź {{count}} znajomych",
+      "genres": "Ukończ gry w {{count}} gatunkach",
+      "studio": "Oceń {{count}} gier jednego studia",
+      "linked": "Połącz {{count}} kont do gier",
+      "popular": "Zdobądź {{count}} polubień swoich recenzji",
+      "supporter": "Polub {{count}} recenzji",
+      "favorite": "Oceń {{count}} gier na 10/10",
+      "harsh": "Oceń {{count}} gier na 0",
+      "veteran": "Członek od {{count}} miesięcy"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} poziomów",
+    "concernedGames": "Powiązane gry"
   }
 }

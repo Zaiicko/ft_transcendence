@@ -95,7 +95,8 @@ export type NotificationType =
   | 'REVIEW_COMMENT'
   | 'COMMENT_REPLY'
   | 'NEW_MESSAGE'
-  | 'FRIEND_JOINED';
+  | 'FRIEND_JOINED'
+  | 'ACHIEVEMENT';
 
 // payload dépend du type ; tous les champs sont donc optionnels côté front
 export interface AppNotification {
@@ -112,6 +113,8 @@ export interface AppNotification {
     commentId?: number;
     // FRIEND_JOINED : via quel réseau ce contact a rejoint
     via?: 'steam' | '42';
+    // ACHIEVEMENT : clé du succès débloqué
+    achievementKey?: string;
   };
   readAt: string | null;
   createdAt: string;
@@ -198,6 +201,17 @@ export type FeedItem =
       metric: LeaderboardMetric;
       scope: 'global' | 'friends';
       rank: number;
+    }
+  | {
+      id: string;
+      kind: 'achievement';
+      at: string;
+      actor: FeedActor;
+      key: string;
+      family: AchievementFamily;
+      tier: number;
+      threshold: number;
+      icon: string;
     };
 
 export interface FeedPage {
@@ -230,6 +244,40 @@ export interface LeaderboardResult {
 export interface LeaderboardBadge {
   metric: LeaderboardMetric;
   rank: number;
+}
+
+// ---- Succès « maison » (GET /achievements/user/:id) ----
+export type AchievementFamily =
+  | 'completions'
+  | 'perfect'
+  | 'reviews'
+  | 'lists'
+  | 'friends'
+  | 'genres'
+  | 'studio'
+  | 'linked'
+  | 'popular'
+  | 'supporter'
+  | 'favorite'
+  | 'harsh'
+  | 'veteran';
+
+export interface Achievement {
+  key: string;
+  family: AchievementFamily;
+  tier: number; // 1 = bronze … 5 = diamant
+  threshold: number;
+  icon: string; // emoji
+  unlocked: boolean;
+  unlockedAt: string | null;
+  progress: number; // valeur courante bornée au seuil
+}
+
+// GET /achievements/user/:id — succès + jeux illustrant certaines familles
+// (notés 10 = coups de cœur, notés 0 = critiques sévères).
+export interface AchievementsPayload {
+  items: Achievement[];
+  ratedGames: { favorite: GameRef[]; harsh: GameRef[] };
 }
 
 // Viewer's relationship with the profile owner (drives the friend button)

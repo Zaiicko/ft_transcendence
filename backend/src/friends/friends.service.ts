@@ -1,5 +1,13 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AuthProvider, FriendshipStatus, User } from '@prisma/client';
+import { AchievementsService } from '../achievements/achievements.service';
 import { ChatGateway } from '../chat/chat.gateway';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -23,6 +31,8 @@ export class FriendsService {
     private readonly psnApi: PsnApiService,
     private readonly chatGateway: ChatGateway,
     private readonly notifications: NotificationsService,
+    @Inject(forwardRef(() => AchievementsService))
+    private readonly achievements: AchievementsService,
   ) {}
 
   async sendRequestByUsername(requesterId: number, username: string) {
@@ -75,6 +85,9 @@ export class FriendsService {
     this.notifyFriendUpdate(request.requesterId, request.addresseeId);
     // Le demandeur est notifié que sa demande a été acceptée
     await this.notifications.friendAccepted(request.addresseeId, request.requesterId);
+    // Succès « amis » : les deux gagnent un ami
+    void this.achievements.evaluate(request.requesterId, ['friends']);
+    void this.achievements.evaluate(request.addresseeId, ['friends']);
     return updated;
   }
 

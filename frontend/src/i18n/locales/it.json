@@ -296,7 +296,10 @@
     "prefCommentReply": "Risposte ai miei commenti",
     "prefCommentReplyHint": "Quando qualcuno risponde al tuo commento",
     "prefFriendJoined": "Un contatto si unisce",
-    "prefFriendJoinedHint": "Quando un contatto Steam/42 si registra"
+    "prefFriendJoinedHint": "Quando un contatto Steam/42 si registra",
+    "achievement": "Obiettivo sbloccato: <b>{{name}}</b>",
+    "prefAchievement": "Obiettivi",
+    "prefAchievementHint": "Quando sblocchi un obiettivo"
   },
   "home": {
     "featuredBadge": "Gioco in evidenza",
@@ -345,7 +348,8 @@
     "completedBadge": "Completato al 100%",
     "rankLine": "<a>{{user}}</a> entra nella <s>top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Classifica globale",
-    "rankScopeFriends": "Tra i tuoi amici"
+    "rankScopeFriends": "Tra i tuoi amici",
+    "achievementLine": "<a>{{user}}</a> ha sbloccato <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Classifica",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Vai al contenuto principale"
+  },
+  "achievements": {
+    "sectionTitle": "Obiettivi",
+    "done": "Sbloccato",
+    "unlockedOn": "Sbloccato il {{date}}",
+    "fam": {
+      "completions": "Giochi finiti",
+      "played": "Giochi giocati",
+      "perfect": "100%",
+      "reviews": "Recensioni",
+      "lists": "Liste",
+      "friends": "Amici",
+      "genres": "Esploratore",
+      "studio": "Fan dello studio",
+      "linked": "Account collegati",
+      "popular": "Popolare",
+      "supporter": "Sostenitore",
+      "favorite": "Entusiasta",
+      "harsh": "Critico severo",
+      "veteran": "Veterano"
+    },
+    "desc": {
+      "completions": "Finire {{count}} giochi",
+      "played": "Registrare {{count}} giochi",
+      "perfect": "Completare {{count}} giochi al 100%",
+      "reviews": "Scrivere {{count}} recensioni",
+      "lists": "Creare {{count}} liste",
+      "friends": "Raggiungere {{count}} amici",
+      "genres": "Finire giochi in {{count}} generi",
+      "studio": "Recensire {{count}} giochi di uno stesso studio",
+      "linked": "Collegare {{count}} account di gioco",
+      "popular": "Ricevere {{count}} mi piace sulle tue recensioni",
+      "supporter": "Mettere {{count}} mi piace a recensioni",
+      "favorite": "Votare {{count}} giochi 10/10",
+      "harsh": "Votare {{count}} giochi con 0",
+      "veteran": "Membro da {{count}} mesi"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} livelli",
+    "concernedGames": "Giochi interessati"
   }
 }

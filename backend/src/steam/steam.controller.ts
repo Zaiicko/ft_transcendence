@@ -1,7 +1,9 @@
 import {
   BadRequestException,
   Controller,
+  forwardRef,
   Get,
+  Inject,
   Query,
   UnauthorizedException,
   UseGuards,
@@ -9,6 +11,7 @@ import {
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { toPublicUser } from '../users/public-user';
@@ -23,6 +26,8 @@ export class SteamController {
     private readonly users: UsersService,
     private readonly webApi: SteamWebApiService,
     private readonly feed: FeedService,
+    @Inject(forwardRef(() => AchievementsService))
+    private readonly achievements: AchievementsService,
   ) {}
 
   private async requireSteamId(userId: number): Promise<string> {
@@ -139,6 +144,7 @@ export class SteamController {
         };
       });
     await this.feed.syncCompletions(current.sub, 'steam', completed);
+    void this.achievements.evaluate(current.sub, ['completions', 'perfect', 'genres']);
 
     return {
       private: false,

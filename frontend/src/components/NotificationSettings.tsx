@@ -11,6 +11,7 @@ const TYPES: { key: string; labelKey: string; hintKey: string }[] = [
   { key: 'REVIEW_COMMENT', labelKey: 'notifications.prefReviewComment', hintKey: 'notifications.prefReviewCommentHint' },
   { key: 'COMMENT_REPLY', labelKey: 'notifications.prefCommentReply', hintKey: 'notifications.prefCommentReplyHint' },
   { key: 'FRIEND_JOINED', labelKey: 'notifications.prefFriendJoined', hintKey: 'notifications.prefFriendJoinedHint' },
+  { key: 'ACHIEVEMENT', labelKey: 'notifications.prefAchievement', hintKey: 'notifications.prefAchievementHint' },
 ];
 
 // Cloche filaire (trait 1.6, style TiMN) — partagée par la section et le titre

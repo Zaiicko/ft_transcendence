@@ -296,7 +296,10 @@
     "prefCommentReply": "Réponses à mes commentaires",
     "prefCommentReplyHint": "Quand on répond à ton commentaire",
     "prefFriendJoined": "Un contact rejoint",
-    "prefFriendJoinedHint": "Quand un contact Steam/42 s’inscrit"
+    "prefFriendJoinedHint": "Quand un contact Steam/42 s’inscrit",
+    "achievement": "Succès débloqué : <b>{{name}}</b>",
+    "prefAchievement": "Succès",
+    "prefAchievementHint": "Quand tu débloques un succès"
   },
   "home": {
     "featuredBadge": "Jeu à la une",
@@ -345,7 +348,8 @@
     "timeMinutes": "il y a {{count}} min",
     "timeHours": "il y a {{count}} h",
     "timeYesterday": "hier",
-    "timeDays": "il y a {{count}} j"
+    "timeDays": "il y a {{count}} j",
+    "achievementLine": "<a>{{user}}</a> a débloqué <s>{{name}}</s>"
   },
   "leaderboard": {
     "title": "Classement",
@@ -987,5 +991,44 @@
   },
   "a11y": {
     "skipToContent": "Aller au contenu principal"
+  },
+  "achievements": {
+    "sectionTitle": "Succès",
+    "done": "Débloqué",
+    "unlockedOn": "Débloqué le {{date}}",
+    "fam": {
+      "completions": "Jeux terminés",
+      "played": "Jeux joués",
+      "perfect": "100%",
+      "reviews": "Critiques",
+      "lists": "Listes",
+      "friends": "Amis",
+      "genres": "Explorateur",
+      "studio": "Fan de studio",
+      "linked": "Comptes liés",
+      "popular": "Populaire",
+      "supporter": "Soutien",
+      "favorite": "Coup de cœur",
+      "harsh": "Critique sévère",
+      "veteran": "Vétéran"
+    },
+    "desc": {
+      "completions": "Terminer {{count}} jeux",
+      "played": "Jouer à {{count}} jeux",
+      "perfect": "Compléter {{count}} jeux à 100%",
+      "reviews": "Écrire {{count}} critiques",
+      "lists": "Créer {{count}} listes",
+      "friends": "Avoir {{count}} amis",
+      "genres": "Terminer des jeux dans {{count}} genres",
+      "studio": "Noter {{count}} jeux d'un même studio",
+      "linked": "Lier {{count}} comptes de jeu",
+      "popular": "Recevoir {{count}} j’aime sur tes critiques",
+      "supporter": "Donner {{count}} j’aime à des critiques",
+      "favorite": "Mettre 10/10 à {{count}} jeux",
+      "harsh": "Mettre 0 à {{count}} jeux",
+      "veteran": "Membre depuis {{count}} mois"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} paliers",
+    "concernedGames": "Jeux concernés"
   }
 }
