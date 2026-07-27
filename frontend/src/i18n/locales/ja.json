@@ -349,7 +349,8 @@
     "rankLine": "<a>{{user}}</a> が<s>トップ{{rank}}</s>入り — {{category}}",
     "rankScopeGlobal": "グローバルランキング",
     "rankScopeFriends": "友達の中で",
-    "achievementLine": "<a>{{user}}</a> が <s>{{name}}</s> を解除しました"
+    "achievementLine": "<a>{{user}}</a> が <s>{{name}}</s> を解除しました",
+    "tabAchievements": "実績"
   },
   "leaderboard": {
     "title": "ランキング",

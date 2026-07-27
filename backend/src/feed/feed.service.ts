@@ -50,7 +50,7 @@ const reviewTargetSelect = {
 export type FeedActor = { id: number; username: string; avatarUrl: string | null };
 
 // Filtre optionnel du feed (onglets en haut de la page). Absent = tout.
-export type FeedFilter = 'reviews' | 'played' | 'completed' | 'likes';
+export type FeedFilter = 'reviews' | 'played' | 'completed' | 'likes' | 'achievements';
 
 // Un événement du feed. `at` sert au tri chronologique et de curseur « charger
 // plus ». `id` est unique tous types confondus (préfixé) pour dédupliquer côté
@@ -127,9 +127,10 @@ export class FeedService {
     const wantPlayed = !filter || filter === 'played';
     const wantCompleted = !filter || filter === 'completed';
     const wantLikes = !filter || filter === 'likes';
-    // Jalons de classement et succès n'apparaissent que dans l'onglet « tout ».
+    // Jalons de classement : uniquement dans l'onglet « tout ».
     const wantRank = !filter;
-    const wantAchievement = !filter;
+    // Succès : onglet « tout » ou onglet dédié « Succès ».
+    const wantAchievement = !filter || filter === 'achievements';
 
     // On sur-échantillonne chaque source demandée, on fusionne, on trie, on tronque.
     const [reviews, playedRaw, completions, reviewLikes, commentLikes, milestones, achievements] =
@@ -227,6 +228,7 @@ export class FeedService {
         ? this.prisma.userAchievement.findMany({
             where: {
               userId: { in: friends },
+              announced: true,
               ...(before ? { unlockedAt: { lt: before } } : {}),
             },
             orderBy: { unlockedAt: 'desc' },

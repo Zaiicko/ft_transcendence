@@ -349,7 +349,8 @@
     "rankLine": "<a>{{user}}</a> staat in de <s>top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Wereldwijde ranglijst",
     "rankScopeFriends": "Onder je vrienden",
-    "achievementLine": "<a>{{user}}</a> ontgrendelde <s>{{name}}</s>"
+    "achievementLine": "<a>{{user}}</a> ontgrendelde <s>{{name}}</s>",
+    "tabAchievements": "Prestaties"
   },
   "leaderboard": {
     "title": "Ranglijst",

@@ -349,7 +349,8 @@
     "timeHours": "{{count}} h ago",
     "timeYesterday": "yesterday",
     "timeDays": "{{count}} d ago",
-    "achievementLine": "<a>{{user}}</a> unlocked <s>{{name}}</s>"
+    "achievementLine": "<a>{{user}}</a> unlocked <s>{{name}}</s>",
+    "tabAchievements": "Achievements"
   },
   "leaderboard": {
     "title": "Leaderboard",

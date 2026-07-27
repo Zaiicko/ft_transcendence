@@ -349,7 +349,8 @@
     "rankLine": "<a>{{user}}</a> 进入<s>前 {{rank}} 名</s> — {{category}}",
     "rankScopeGlobal": "全球排行榜",
     "rankScopeFriends": "在你的好友中",
-    "achievementLine": "<a>{{user}}</a> 解锁了 <s>{{name}}</s>"
+    "achievementLine": "<a>{{user}}</a> 解锁了 <s>{{name}}</s>",
+    "tabAchievements": "成就"
   },
   "leaderboard": {
     "title": "排行榜",

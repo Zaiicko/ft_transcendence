@@ -47,7 +47,7 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString(i18n.language);
 }
 
-type Filter = 'all' | 'reviews' | 'played' | 'completed' | 'likes';
+type Filter = 'all' | 'reviews' | 'played' | 'completed' | 'likes' | 'achievements';
 
 const TAB_KEYS: { key: Filter; labelKey: string }[] = [
   { key: 'all', labelKey: 'feed.tabAll' },
@@ -55,6 +55,7 @@ const TAB_KEYS: { key: Filter; labelKey: string }[] = [
   { key: 'played', labelKey: 'feed.tabPlayed' },
   { key: 'completed', labelKey: 'feed.tabCompleted' },
   { key: 'likes', labelKey: 'feed.tabLikes' },
+  { key: 'achievements', labelKey: 'feed.tabAchievements' },
 ];
 
 // Un item pushé en temps réel correspond-il à l'onglet courant ?
@@ -63,6 +64,7 @@ function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
   if (filter === 'reviews') return kind === 'review';
   if (filter === 'played') return kind === 'played';
   if (filter === 'completed') return kind === 'completed';
+  if (filter === 'achievements') return kind === 'achievement';
   return kind === 'review-like' || kind === 'comment-like';
 }
 

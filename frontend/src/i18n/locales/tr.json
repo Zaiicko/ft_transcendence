@@ -349,7 +349,8 @@
     "rankLine": "<a>{{user}}</a> <s>ilk {{rank}}</s> arasına girdi — {{category}}",
     "rankScopeGlobal": "Küresel sıralama",
     "rankScopeFriends": "Arkadaşların arasında",
-    "achievementLine": "<a>{{user}}</a>, <s>{{name}}</s> başarımını açtı"
+    "achievementLine": "<a>{{user}}</a>, <s>{{name}}</s> başarımını açtı",
+    "tabAchievements": "Başarımlar"
   },
   "leaderboard": {
     "title": "Sıralama",

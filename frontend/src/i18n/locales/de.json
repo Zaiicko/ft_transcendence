@@ -349,7 +349,8 @@
     "rankLine": "<a>{{user}}</a> ist in den <s>Top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Globale Rangliste",
     "rankScopeFriends": "Unter deinen Freunden",
-    "achievementLine": "<a>{{user}}</a> hat <s>{{name}}</s> freigeschaltet"
+    "achievementLine": "<a>{{user}}</a> hat <s>{{name}}</s> freigeschaltet",
+    "tabAchievements": "Erfolge"
   },
   "leaderboard": {
     "title": "Rangliste",

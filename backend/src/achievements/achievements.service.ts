@@ -174,7 +174,9 @@ export class AchievementsService implements OnModuleInit {
       if (toUnlock.length === 0) return;
 
       await this.prisma.userAchievement.createMany({
-        data: toUnlock.map((d) => ({ userId, key: d.key })),
+        // `announced` = true seulement pour une vraie action → apparaît dans le
+        // feed. Backfill/amorçage (notify=false) reste invisible du feed.
+        data: toUnlock.map((d) => ({ userId, key: d.key, announced: notify })),
         skipDuplicates: true,
       });
 

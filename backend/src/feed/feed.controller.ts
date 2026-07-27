@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtPayload } from '../auth/auth.service';
 import { FeedFilter, FeedService } from './feed.service';
 
-const FILTERS: FeedFilter[] = ['reviews', 'played', 'completed', 'likes'];
+const FILTERS: FeedFilter[] = ['reviews', 'played', 'completed', 'likes', 'achievements'];
 
 @UseGuards(JwtAuthGuard)
 @Controller('feed')

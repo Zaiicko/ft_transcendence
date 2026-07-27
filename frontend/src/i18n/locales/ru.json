@@ -349,7 +349,8 @@
     "rankLine": "<a>{{user}}</a> вошёл в <s>топ-{{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Мировой рейтинг",
     "rankScopeFriends": "Среди твоих друзей",
-    "achievementLine": "<a>{{user}}</a> получил(а) <s>{{name}}</s>"
+    "achievementLine": "<a>{{user}}</a> получил(а) <s>{{name}}</s>",
+    "tabAchievements": "Достижения"
   },
   "leaderboard": {
     "title": "Рейтинг",

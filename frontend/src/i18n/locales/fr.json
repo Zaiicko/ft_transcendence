@@ -349,7 +349,8 @@
     "timeHours": "il y a {{count}} h",
     "timeYesterday": "hier",
     "timeDays": "il y a {{count}} j",
-    "achievementLine": "<a>{{user}}</a> a débloqué <s>{{name}}</s>"
+    "achievementLine": "<a>{{user}}</a> a débloqué <s>{{name}}</s>",
+    "tabAchievements": "Succès"
   },
   "leaderboard": {
     "title": "Classement",

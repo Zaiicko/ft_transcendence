@@ -349,7 +349,8 @@
     "rankLine": "<a>{{user}}</a> entrou no <s>top {{rank}}</s> — {{category}}",
     "rankScopeGlobal": "Classificação global",
     "rankScopeFriends": "Entre os teus amigos",
-    "achievementLine": "<a>{{user}}</a> desbloqueou <s>{{name}}</s>"
+    "achievementLine": "<a>{{user}}</a> desbloqueou <s>{{name}}</s>",
+    "tabAchievements": "Conquistas"
   },
   "leaderboard": {
     "title": "Classificação",

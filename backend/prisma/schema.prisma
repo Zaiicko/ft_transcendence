@@ -478,6 +478,9 @@ model UserAchievement {
   userId     Int
   key        String // clé du catalogue, ex. 'completions_50'
   unlockedAt DateTime @default(now())
+  // Débloqué par une vraie action (→ notif + carte de feed) vs amorçage silencieux
+  // (backfill / auto-réparation). Seuls les `announced` apparaissent dans le feed.
+  announced  Boolean  @default(false)
 
   @@unique([userId, key])
   @@index([userId, unlockedAt])
