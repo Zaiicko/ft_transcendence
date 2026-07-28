@@ -268,7 +268,19 @@
     "accept": "Accepteren",
     "decline": "Weigeren",
     "cancelRequest": "Verzoek annuleren",
-    "removeFriend": "Vriend verwijderen"
+    "removeFriend": "Vriend verwijderen",
+    "eyebrow": "Jouw kring",
+    "statFriends": "vrienden",
+    "statOnline": "online",
+    "statPending": "in behandeling",
+    "eyeRequests": "Te bevestigen",
+    "eyeSent": "Verzonden",
+    "eyeSuggested": "Ontdekken",
+    "eyeFriends": "Actief & offline",
+    "sentYouRequest": "stuurde je een verzoek",
+    "viaSteam": "via Steam",
+    "via42": "via 42",
+    "viaPsn": "via PSN"
   },
   "notifications": {
     "title": "Meldingen",

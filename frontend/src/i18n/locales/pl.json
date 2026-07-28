@@ -268,7 +268,19 @@
     "accept": "Akceptuj",
     "decline": "Odrzuć",
     "cancelRequest": "Anuluj zaproszenie",
-    "removeFriend": "Usuń znajomego"
+    "removeFriend": "Usuń znajomego",
+    "eyebrow": "Twój krąg",
+    "statFriends": "znajomi",
+    "statOnline": "online",
+    "statPending": "oczekujące",
+    "eyeRequests": "Do zatwierdzenia",
+    "eyeSent": "Wysłane",
+    "eyeSuggested": "Odkryj",
+    "eyeFriends": "Aktywni i offline",
+    "sentYouRequest": "wysłał(a) Ci zaproszenie",
+    "viaSteam": "przez Steam",
+    "via42": "przez 42",
+    "viaPsn": "przez PSN"
   },
   "notifications": {
     "title": "Powiadomienia",

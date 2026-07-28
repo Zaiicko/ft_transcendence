@@ -268,7 +268,19 @@
     "accept": "Accepter",
     "decline": "Refuser",
     "cancelRequest": "Annuler la demande",
-    "removeFriend": "Retirer des amis"
+    "removeFriend": "Retirer des amis",
+    "eyebrow": "Ton cercle",
+    "statFriends": "amis",
+    "statOnline": "en ligne",
+    "statPending": "en attente",
+    "eyeRequests": "À valider",
+    "eyeSent": "Envoyées",
+    "eyeSuggested": "À découvrir",
+    "eyeFriends": "Actifs & hors-ligne",
+    "sentYouRequest": "vous a envoyé une demande",
+    "viaSteam": "via Steam",
+    "via42": "via 42",
+    "viaPsn": "via PSN"
   },
   "notifications": {
     "title": "Notifications",

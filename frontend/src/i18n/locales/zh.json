@@ -268,7 +268,19 @@
     "accept": "接受",
     "decline": "拒绝",
     "cancelRequest": "取消请求",
-    "removeFriend": "删除好友"
+    "removeFriend": "删除好友",
+    "eyebrow": "你的圈子",
+    "statFriends": "好友",
+    "statOnline": "在线",
+    "statPending": "待处理",
+    "eyeRequests": "待确认",
+    "eyeSent": "已发送",
+    "eyeSuggested": "发现",
+    "eyeFriends": "在线与离线",
+    "sentYouRequest": "向你发送了请求",
+    "viaSteam": "来自 Steam",
+    "via42": "来自 42",
+    "viaPsn": "来自 PSN"
   },
   "notifications": {
     "title": "通知",

@@ -268,7 +268,19 @@
     "accept": "수락",
     "decline": "거절",
     "cancelRequest": "요청 취소",
-    "removeFriend": "친구 삭제"
+    "removeFriend": "친구 삭제",
+    "eyebrow": "내 서클",
+    "statFriends": "친구",
+    "statOnline": "온라인",
+    "statPending": "대기 중",
+    "eyeRequests": "확인 필요",
+    "eyeSent": "보낸 요청",
+    "eyeSuggested": "둘러보기",
+    "eyeFriends": "접속 및 오프라인",
+    "sentYouRequest": "님이 요청을 보냈습니다",
+    "viaSteam": "Steam 통해",
+    "via42": "42 통해",
+    "viaPsn": "PSN 통해"
   },
   "notifications": {
     "title": "알림",

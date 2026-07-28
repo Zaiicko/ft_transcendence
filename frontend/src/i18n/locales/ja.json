@@ -268,7 +268,19 @@
     "accept": "承認",
     "decline": "拒否",
     "cancelRequest": "リクエストを取り消す",
-    "removeFriend": "フレンドを削除"
+    "removeFriend": "フレンドを削除",
+    "eyebrow": "あなたのサークル",
+    "statFriends": "フレンド",
+    "statOnline": "オンライン",
+    "statPending": "保留中",
+    "eyeRequests": "承認待ち",
+    "eyeSent": "送信済み",
+    "eyeSuggested": "見つける",
+    "eyeFriends": "オンラインとオフライン",
+    "sentYouRequest": "あなたにリクエストを送りました",
+    "viaSteam": "Steam経由",
+    "via42": "42経由",
+    "viaPsn": "PSN経由"
   },
   "notifications": {
     "title": "通知",

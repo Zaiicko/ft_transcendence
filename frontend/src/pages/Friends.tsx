@@ -6,6 +6,7 @@ import EmptyState, { UsersIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import PsnBadge from '../components/PsnBadge';
+import SectionHead from '../components/SectionHead';
 import Skeleton from '../components/Skeleton';
 import SteamBadge from '../components/SteamBadge';
 import XboxBadge from '../components/XboxBadge';
@@ -139,77 +140,98 @@ export default function Friends() {
 
   if (loading)
     return (
-      <div className="mx-auto max-w-2xl">
-        <Skeleton className="mb-6 h-8 w-32" />
-        <Skeleton className="mb-6 h-9 w-full rounded-full" />
-        <div className="flex flex-col gap-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-14 w-full rounded-xl" />
+      <div className="flex flex-col gap-8">
+        <Skeleton className="h-44 w-full rounded-3xl" />
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-[68px] w-full rounded-2xl" />
           ))}
         </div>
       </div>
     );
 
+  const onlineCount = friends.filter((f) => f.isOnline).length;
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('friends.title')}</h1>
-      {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
+    <div className="flex flex-col gap-8">
+      {/* ---- En-tête immersif : eyebrow brandé + stats + barre d'ajout ---- */}
+      <header className="relative rounded-3xl border border-zinc-900/10 bg-white p-6 shadow-sm dark:border-zinc-100/10 dark:bg-zinc-900 sm:p-8">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
+          <div className="absolute -left-12 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
+        </div>
+        <div className="relative">
+          <div className="flex flex-wrap items-end justify-between gap-5">
+            <div>
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+                <span className="text-accent">●</span> {t('friends.eyebrow')}
+              </div>
+              <h1 className="font-display mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
+                {t('friends.title')}
+              </h1>
+            </div>
+            <div className="flex gap-6">
+              <Stat value={friends.length} label={t('friends.statFriends')} />
+              <Stat value={onlineCount} label={t('friends.statOnline')} tone="green" />
+              <Stat value={incoming.length} label={t('friends.statPending')} />
+            </div>
+          </div>
 
-      <form onSubmit={handleSendRequest} className="mb-2 flex gap-2">
-        <input
-          type="text"
-          placeholder={t('friends.addPlaceholder')}
-          value={targetUsername}
-          onChange={(e) => setTargetUsername(e.target.value)}
-          className="field flex-1 px-4 py-1.5"
-        />
-        <button
-          type="submit"
-          disabled={sending}
-          className="rounded-full bg-accent px-5 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
-        >
-          {t('friends.add')}
-        </button>
-      </form>
-      {sendError && <p className="mb-6 text-sm text-red-400">{sendError}</p>}
+          <form onSubmit={handleSendRequest} className="mt-6 flex gap-2 sm:gap-3">
+            <input
+              type="text"
+              placeholder={t('friends.addPlaceholder')}
+              value={targetUsername}
+              onChange={(e) => setTargetUsername(e.target.value)}
+              className="field flex-1 px-4 py-2.5"
+            />
+            <button
+              type="submit"
+              disabled={sending}
+              className="flex shrink-0 items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              {t('friends.add')}
+            </button>
+          </form>
+          {sendError && <p className="mt-2 text-sm text-red-400">{sendError}</p>}
+        </div>
+      </header>
 
+      {error && <p className="text-sm text-red-400">{error}</p>}
+
+      {/* Demandes reçues — cartes ambrées, mises en avant */}
       {incoming.length > 0 && (
-        <section className="mb-8 mt-6">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('friends.pendingRequests')}</h2>
-          <ul className="flex flex-col gap-2">
+        <section>
+          <SectionHead eyebrow={t('friends.eyeRequests')} title={t('friends.pendingRequests')} />
+          <div className="grid gap-3 sm:grid-cols-2">
             {incoming.map((r) => (
-              <li key={r.id} className="card flex items-center gap-3 px-3 py-2">
-                <Link
-                  to={`/u/${r.user.username}`}
-                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
-                >
-                  <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
-                  <span className="flex min-w-0 items-center gap-2">
-                    <span className="truncate">{r.user.username}</span>
-                    {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                    {r.user.provider === 'DISCORD' && <DiscordBadge />}
-                    {r.user.steamId && <SteamBadge />}
-                    {r.user.psnLinked && <PsnBadge />}
-                    {r.user.xboxLinked && <XboxBadge />}
+              <div
+                key={r.id}
+                className="flex items-center gap-3 rounded-2xl border border-accent/30 bg-accent/[0.06] p-3.5 shadow-sm"
+              >
+                <Link to={`/u/${r.user.username}`} className="flex min-w-0 flex-1 items-center gap-3 hover:opacity-80">
+                  <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={44} />
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-2">
+                      <span className="truncate font-medium">{r.user.username}</span>
+                      <ProviderBadges u={r.user} />
+                    </span>
+                    <span className="mt-0.5 block truncate text-xs text-zinc-500 dark:text-zinc-400">
+                      {t('friends.sentYouRequest')}
+                    </span>
                   </span>
                 </Link>
-                <div className="ml-auto flex gap-2">
+                <div className="flex shrink-0 gap-2">
                   <button
                     type="button"
                     onClick={() => respond(r.id, 'accept')}
                     title={t('friends.accept')}
                     aria-label={`${t('friends.accept')} ${r.user.username}`}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-zinc-950 transition hover:brightness-110"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-zinc-950 transition hover:brightness-110"
                   >
-                    {/* Coche "v" filaire */}
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-4 w-4 fill-none stroke-current"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M5 12l5 5 9-11" />
                     </svg>
                   </button>
@@ -218,106 +240,88 @@ export default function Friends() {
                     onClick={() => respond(r.id, 'decline')}
                     title={t('friends.decline')}
                     aria-label={`${t('friends.decline')} ${r.user.username}`}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
                   >
-                    {/* Croix filaire */}
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-3.5 w-3.5 fill-none stroke-current"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                       <path d="M6 6l12 12M18 6L6 18" />
                     </svg>
                   </button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
+      {/* Demandes envoyées */}
       {outgoing.length > 0 && (
-        <section className="mb-8">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('friends.sentRequests')}</h2>
-          <ul className="flex flex-col gap-2">
+        <section>
+          <SectionHead eyebrow={t('friends.eyeSent')} title={t('friends.sentRequests')} />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {outgoing.map((r) => (
-              <li key={r.id} className="card flex items-center gap-3 px-3 py-2">
-                <Link
-                  to={`/u/${r.user.username}`}
-                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
-                >
-                  <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={28} />
-                  <span className="flex min-w-0 items-center gap-2">
-                    <span className="truncate">{r.user.username}</span>
-                    {r.user.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                    {r.user.provider === 'DISCORD' && <DiscordBadge />}
-                    {r.user.steamId && <SteamBadge />}
-                    {r.user.psnLinked && <PsnBadge />}
-                    {r.user.xboxLinked && <XboxBadge />}
+              <div key={r.id} className="card flex items-center gap-3 p-3.5">
+                <Link to={`/u/${r.user.username}`} className="flex min-w-0 flex-1 items-center gap-3 hover:opacity-80">
+                  <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={40} />
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-2">
+                      <span className="truncate font-medium">{r.user.username}</span>
+                      <ProviderBadges u={r.user} />
+                    </span>
+                    <span className="mt-0.5 block text-xs text-zinc-500">{t('friends.pending')}</span>
                   </span>
                 </Link>
-                <span className="ml-auto text-sm text-zinc-500">{t('friends.pending')}</span>
                 <button
                   type="button"
                   onClick={() => respond(r.id, 'decline')}
                   title={t('friends.cancelRequest')}
                   aria-label={`${t('friends.cancelRequest')} ${r.user.username}`}
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
                 >
-                  {/* Croix filaire (trait 2) : annuler */}
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-3.5 w-3.5 fill-none stroke-current"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                  >
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                     <path d="M6 6l12 12M18 6L6 18" />
                   </svg>
                 </button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
-      <section className="mb-8">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('friends.suggestedFriends')}</h2>
-        {suggestions.length > 0 && (
-          <ul className="flex flex-col gap-2">
+      {/* Suggestions — cartes pointillées avec la provenance */}
+      {suggestions.length > 0 && (
+        <section>
+          <SectionHead eyebrow={t('friends.eyeSuggested')} title={t('friends.suggestedFriends')} />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {suggestions.map((s) => (
-              <li key={s.id} className="card flex items-center gap-3 px-3 py-2">
-                <Link
-                  to={`/u/${s.username}`}
-                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
-                >
-                  <Avatar username={s.username} avatarUrl={s.avatarUrl} size={28} />
-                  <span className="flex min-w-0 items-center gap-2">
-                    <span className="truncate">{s.username}</span>
-                    {s.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                    {s.provider === 'DISCORD' && <DiscordBadge />}
-                    {s.steamId && <SteamBadge />}
-                    {s.psnLinked && <PsnBadge />}
-                    {s.xboxLinked && <XboxBadge />}
+              <div key={s.id} className="flex items-center gap-3 rounded-2xl border border-dashed border-zinc-300 bg-zinc-100/50 p-3.5 dark:border-zinc-700 dark:bg-zinc-800/40">
+                <Link to={`/u/${s.username}`} className="flex min-w-0 flex-1 items-center gap-3 hover:opacity-80">
+                  <Avatar username={s.username} avatarUrl={s.avatarUrl} size={40} />
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-2">
+                      <span className="truncate font-medium">{s.username}</span>
+                      <ProviderBadges u={s} />
+                    </span>
+                    <span className="mt-0.5 block truncate text-xs text-zinc-500 dark:text-zinc-400">
+                      {suggestionVia(s.via, t)}
+                    </span>
                   </span>
                 </Link>
                 <button
                   type="button"
                   onClick={() => sendRequest(s.username)}
-                  className="ml-auto rounded-full bg-accent px-3 py-1 text-sm font-medium text-zinc-950 transition hover:brightness-110"
+                  className="shrink-0 rounded-full border border-accent bg-transparent px-3.5 py-1.5 text-sm font-semibold text-accent transition hover:bg-accent hover:text-zinc-950"
                 >
                   {t('friends.add')}
                 </button>
-              </li>
+              </div>
             ))}
-          </ul>
-        )}
-      </section>
+          </div>
+        </section>
+      )}
 
-      <section className="mt-6">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{t('friends.yourFriends')}</h2>
+      {/* Tes amis — grille de cartes, présence en direct, retrait au survol */}
+      <section>
+        <SectionHead eyebrow={t('friends.eyeFriends')} title={t('friends.yourFriends')} />
         {friends.length === 0 ? (
           <EmptyState
             icon={<UsersIcon />}
@@ -325,31 +329,31 @@ export default function Friends() {
             description={t('friends.noFriendsDescription')}
           />
         ) : (
-          <ul className="flex flex-col gap-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {friends.map((f) => (
-              <li key={f.id} className="card flex items-center gap-3 px-3 py-2">
-                {/* Avatar + pseudo cliquables → profil public de l'ami */}
+              <div key={f.id} className="group relative">
                 <Link
                   to={`/u/${f.username}`}
-                  className="flex min-w-0 items-center gap-3 hover:opacity-80"
+                  className="card flex items-center gap-3 p-3.5 transition hover:-translate-y-0.5 hover:border-accent/50"
                 >
-                  {/* Avatar + pastille de présence posée sur son coin bas-droit */}
+                  {/* Avatar + pastille de présence sur le coin bas-droit */}
                   <span className="relative shrink-0">
-                    <Avatar username={f.username} avatarUrl={f.avatarUrl} size={32} />
+                    <Avatar username={f.username} avatarUrl={f.avatarUrl} size={44} />
                     <span
-                      className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-zinc-50 dark:border-zinc-900 ${
+                      className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white dark:border-zinc-900 ${
                         f.isOnline ? 'bg-green-500' : 'bg-zinc-400 dark:bg-zinc-600'
                       }`}
                       title={f.isOnline ? t('friends.online') : t('friends.offline')}
                     />
                   </span>
-                  <span className="flex min-w-0 items-center gap-2">
-                    <span className="truncate">{f.username}</span>
-                    {f.provider === 'FORTYTWO' && <FortyTwoBadge />}
-                    {f.provider === 'DISCORD' && <DiscordBadge />}
-                    {f.steamId && <SteamBadge />}
-                    {f.psnLinked && <PsnBadge />}
-                    {f.xboxLinked && <XboxBadge />}
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-2">
+                      <span className="truncate font-medium">{f.username}</span>
+                      <ProviderBadges u={f} />
+                    </span>
+                    <span className={`mt-0.5 block text-xs ${f.isOnline ? 'text-green-600 dark:text-green-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                      {f.isOnline ? t('friends.online') : t('friends.offline')}
+                    </span>
                   </span>
                 </Link>
                 <button
@@ -357,28 +361,59 @@ export default function Friends() {
                   onClick={() => unfriend(f.id)}
                   title={t('friends.removeFriend')}
                   aria-label={`${t('friends.removeFriend')} ${f.username}`}
-                  className="ml-auto flex h-8 w-8 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400"
+                  className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-zinc-400 opacity-0 transition hover:border-red-400 hover:text-red-400 group-hover:opacity-100"
                 >
-                  {/* Poubelle filaire */}
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4 fill-none stroke-current"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M3 6h18" />
                     <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
                     <path d="M10 11v6M14 11v6" />
                     <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
                   </svg>
                 </button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </div>
   );
+}
+
+// Tuile de stat dans l'en-tête (valeur en gros + libellé). `tone="green"`
+// pour « en ligne ».
+function Stat({ value, label, tone }: { value: number; label: string; tone?: 'green' }) {
+  return (
+    <div className="text-center">
+      <div className={`font-display text-2xl font-extrabold tabular-nums leading-none sm:text-[26px] ${tone === 'green' ? 'text-green-600 dark:text-green-500' : 'text-accent'}`}>
+        {value}
+      </div>
+      <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+// Badges des comptes liés (identiques partout : 42 / Discord / Steam / PSN / Xbox)
+function ProviderBadges({
+  u,
+}: {
+  u: Pick<PublicUser, 'provider' | 'steamId' | 'psnLinked' | 'xboxLinked'>;
+}) {
+  return (
+    <>
+      {u.provider === 'FORTYTWO' && <FortyTwoBadge />}
+      {u.provider === 'DISCORD' && <DiscordBadge />}
+      {u.steamId && <SteamBadge />}
+      {u.psnLinked && <PsnBadge />}
+      {u.xboxLinked && <XboxBadge />}
+    </>
+  );
+}
+
+// Libellé de provenance d'une suggestion (via quel réseau elle a été trouvée)
+function suggestionVia(via: Suggestion['via'], t: ReturnType<typeof useTranslation>['t']): string {
+  if (via === 'steam') return t('friends.viaSteam');
+  if (via === 'psn') return t('friends.viaPsn');
+  return t('friends.via42');
 }

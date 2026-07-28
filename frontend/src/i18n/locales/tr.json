@@ -268,7 +268,19 @@
     "accept": "Kabul et",
     "decline": "Reddet",
     "cancelRequest": "İsteği iptal et",
-    "removeFriend": "Arkadaşlıktan çıkar"
+    "removeFriend": "Arkadaşlıktan çıkar",
+    "eyebrow": "Çevren",
+    "statFriends": "arkadaş",
+    "statOnline": "çevrimiçi",
+    "statPending": "beklemede",
+    "eyeRequests": "Onay bekliyor",
+    "eyeSent": "Gönderilen",
+    "eyeSuggested": "Keşfet",
+    "eyeFriends": "Aktif ve çevrimdışı",
+    "sentYouRequest": "sana istek gönderdi",
+    "viaSteam": "Steam üzerinden",
+    "via42": "42 üzerinden",
+    "viaPsn": "PSN üzerinden"
   },
   "notifications": {
     "title": "Bildirimler",

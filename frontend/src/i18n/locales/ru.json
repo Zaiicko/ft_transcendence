@@ -268,7 +268,19 @@
     "accept": "Принять",
     "decline": "Отклонить",
     "cancelRequest": "Отменить запрос",
-    "removeFriend": "Удалить из друзей"
+    "removeFriend": "Удалить из друзей",
+    "eyebrow": "Твой круг",
+    "statFriends": "друзей",
+    "statOnline": "в сети",
+    "statPending": "в ожидании",
+    "eyeRequests": "На рассмотрении",
+    "eyeSent": "Отправленные",
+    "eyeSuggested": "Рекомендации",
+    "eyeFriends": "В сети и офлайн",
+    "sentYouRequest": "отправил(а) вам запрос",
+    "viaSteam": "через Steam",
+    "via42": "через 42",
+    "viaPsn": "через PSN"
   },
   "notifications": {
     "title": "Уведомления",
