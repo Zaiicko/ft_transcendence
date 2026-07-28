@@ -247,7 +247,13 @@
       "notConfigured": "Import z Xboxa nie został jeszcze skonfigurowany na serwerze. Spróbuj ponownie później.",
       "genericError": "Połączenie nie powiodło się. Spróbuj ponownie.",
       "viewLibrary": "Wyświetl moją bibliotekę Xbox"
-    }
+    },
+    "eyebrow": "Twoje konto",
+    "navProfile": "Profil",
+    "navNotifications": "Powiadomienia",
+    "navSecurity": "Bezpieczeństwo",
+    "navConnections": "Połączenia",
+    "navDanger": "Strefa zagrożenia"
   },
   "friends": {
     "title": "Znajomi",

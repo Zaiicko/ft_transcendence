@@ -247,7 +247,13 @@
     "avatarReset": "Réinitialiser",
     "avatarFrameHint": "Glissez pour déplacer, curseur pour zoomer",
     "avatarZoom": "Zoom",
-    "chooseImage": "Choisir une image"
+    "chooseImage": "Choisir une image",
+    "eyebrow": "Ton compte",
+    "navProfile": "Profil",
+    "navNotifications": "Notifications",
+    "navSecurity": "Sécurité",
+    "navConnections": "Connexions",
+    "navDanger": "Zone de danger"
   },
   "friends": {
     "title": "Amis",

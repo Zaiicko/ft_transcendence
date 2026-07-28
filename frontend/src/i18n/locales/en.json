@@ -247,7 +247,13 @@
     "avatarReset": "Reset",
     "avatarFrameHint": "Drag to reposition, slider to zoom",
     "avatarZoom": "Zoom",
-    "chooseImage": "Choose an image"
+    "chooseImage": "Choose an image",
+    "eyebrow": "Your account",
+    "navProfile": "Profile",
+    "navNotifications": "Notifications",
+    "navSecurity": "Security",
+    "navConnections": "Connections",
+    "navDanger": "Danger zone"
   },
   "friends": {
     "title": "Friends",

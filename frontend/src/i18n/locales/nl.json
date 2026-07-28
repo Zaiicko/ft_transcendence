@@ -247,7 +247,13 @@
       "notConfigured": "De Xbox-import is nog niet ingesteld op de server. Probeer het later nog eens.",
       "genericError": "De verbinding is mislukt. Probeer het nog eens.",
       "viewLibrary": "Mijn Xbox-bibliotheek bekijken"
-    }
+    },
+    "eyebrow": "Je account",
+    "navProfile": "Profiel",
+    "navNotifications": "Meldingen",
+    "navSecurity": "Beveiliging",
+    "navConnections": "Koppelingen",
+    "navDanger": "Gevarenzone"
   },
   "friends": {
     "title": "Vrienden",

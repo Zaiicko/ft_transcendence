@@ -247,7 +247,13 @@
       "notConfigured": "서버에서 Xbox 가져오기 기능이 아직 설정되지 않았습니다. 잠시 후 다시 시도해 주세요.",
       "genericError": "연결에 실패했습니다. 다시 시도해 주세요.",
       "viewLibrary": "내 Xbox 라이브러리 보기"
-    }
+    },
+    "eyebrow": "내 계정",
+    "navProfile": "프로필",
+    "navNotifications": "알림",
+    "navSecurity": "보안",
+    "navConnections": "연결",
+    "navDanger": "위험 구역"
   },
   "friends": {
     "title": "친구",

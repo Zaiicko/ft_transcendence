@@ -247,7 +247,13 @@
       "notConfigured": "L'importazione da Xbox non è ancora configurata sul server. Riprova più tardi.",
       "genericError": "Connessione non riuscita. Riprovare.",
       "viewLibrary": "Visualizza la mia libreria Xbox"
-    }
+    },
+    "eyebrow": "Il tuo account",
+    "navProfile": "Profilo",
+    "navNotifications": "Notifiche",
+    "navSecurity": "Sicurezza",
+    "navConnections": "Connessioni",
+    "navDanger": "Zona pericolosa"
   },
   "friends": {
     "title": "Amici",

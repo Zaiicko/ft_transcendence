@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch, ApiError } from '../lib/api';
 import DiscordBadge from './DiscordBadge';
+import SectionHead from './SectionHead';
 import PsnConnectModal from './PsnConnectModal';
 import XboxConnectModal from './XboxConnectModal';
 import SteamBadge from './SteamBadge';
@@ -153,22 +154,8 @@ export default function LinkedAccounts() {
   }
 
   return (
-    <div ref={cardRef} className="card mb-10 p-4">
-      <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        {/* Maillons filaires (trait 1.6, style TiMN) : comptes liés */}
-        <svg
-          viewBox="0 0 24 24"
-          className="h-4 w-4 shrink-0 fill-none stroke-current"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" />
-          <path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
-        </svg>
-        {t('settings.connections.title')}
-      </h2>
+    <div ref={cardRef} className="card p-5">
+      <SectionHead className="mb-2" title={t('settings.connections.title')} />
       <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
         {t('settings.connections.description')}
       </p>

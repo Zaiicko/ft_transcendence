@@ -247,7 +247,13 @@
       "notConfigured": "Xbox içe aktarma özelliği sunucuda henüz kurulmamıştır. Lütfen daha sonra tekrar deneyin.",
       "genericError": "Bağlantı kurulamadı. Lütfen tekrar deneyin.",
       "viewLibrary": "Xbox kütüphanemi görüntüle"
-    }
+    },
+    "eyebrow": "Hesabın",
+    "navProfile": "Profil",
+    "navNotifications": "Bildirimler",
+    "navSecurity": "Güvenlik",
+    "navConnections": "Bağlantılar",
+    "navDanger": "Tehlike bölgesi"
   },
   "friends": {
     "title": "Arkadaşlar",

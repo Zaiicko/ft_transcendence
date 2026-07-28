@@ -9,6 +9,7 @@ import DiscordBadge from '../components/DiscordBadge';
 import FortyTwoBadge from '../components/FortyTwoBadge';
 import LinkedAccounts from '../components/LinkedAccounts';
 import NotificationSettings from '../components/NotificationSettings';
+import SectionHead from '../components/SectionHead';
 import SteamBadge from '../components/SteamBadge';
 import { apiFetch, ApiError } from '../lib/api';
 import type { AuthProvider } from '../lib/types';
@@ -60,6 +61,8 @@ export default function Settings() {
   const [resendError, setResendError] = useState<string | null>(null);
 
   const [twoFactorSetup, setTwoFactorSetup] = useState<TwoFactorSetup | null>(null);
+  // Révèle le champ de code pour désactiver la 2FA (déclenché par l'interrupteur)
+  const [showDisableForm, setShowDisableForm] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [twoFactorBusy, setTwoFactorBusy] = useState(false);
   const [twoFactorError, setTwoFactorError] = useState<string | null>(null);
@@ -213,207 +216,255 @@ export default function Settings() {
     }
   }
 
+  const navItems = [
+    { id: 'profil', label: t('settings.navProfile') },
+    { id: 'notifications', label: t('settings.navNotifications') },
+    { id: 'securite', label: t('settings.navSecurity') },
+    { id: 'connexions', label: t('settings.navConnections') },
+    { id: 'danger', label: t('settings.navDanger'), danger: true },
+  ];
+
   return (
-    <div className="mx-auto max-w-lg">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('settings.title')}</h1>
+    <div className="mx-auto max-w-4xl">
+      {/* En-tête immersif brandé */}
+      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        <span className="text-accent">●</span> {t('settings.eyebrow')}
+      </div>
+      <h1 className="font-display mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
+        {t('settings.title')}
+      </h1>
 
       {isWelcome && (
-        <div className="card mb-6 p-4">
+        <div className="card mt-5 p-4">
           <p className="font-medium">{t('settings.welcomeTitle')}</p>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             {t('settings.welcomeBody', { username: user.username })}
           </p>
         </div>
       )}
 
-      <div className="mb-4 flex items-center gap-4">
-        <Avatar username={user.username} avatarUrl={user.avatarUrl} size={80} />
-        <div>
-          <p className="flex items-center gap-2 font-medium">
-            {user.username}
-            {user.provider === 'FORTYTWO' && <FortyTwoBadge />}
-            {user.provider === 'DISCORD' && <DiscordBadge />}
-            {user.steamId && <SteamBadge />}
+      <div className="mt-6 lg:grid lg:grid-cols-[190px_1fr] lg:items-start lg:gap-8">
+        {/* Nav de sections collante (desktop) */}
+        <nav className="mb-6 hidden lg:sticky lg:top-20 lg:mb-0 lg:flex lg:flex-col lg:gap-1">
+          {navItems.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className={`rounded-xl px-3 py-2 text-sm transition ${
+                item.danger
+                  ? 'text-red-500/80 hover:bg-red-500/10 hover:text-red-500'
+                  : 'text-zinc-500 hover:bg-accent/10 hover:text-accent dark:text-zinc-400'
+              }`}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex min-w-0 flex-col gap-6">
+          {/* ---- Profil : avatar + identité + bio ---- */}
+          <section id="profil" className="card scroll-mt-24 p-5">
+            <SectionHead className="mb-4" title={t('settings.navProfile')} />
+            <div className="mb-4 flex items-center gap-4">
+              <Avatar username={user.username} avatarUrl={user.avatarUrl} size={72} />
+              <div className="min-w-0">
+                <p className="flex items-center gap-2 font-medium">
+                  {user.username}
+                  {user.provider === 'FORTYTWO' && <FortyTwoBadge />}
+                  {user.provider === 'DISCORD' && <DiscordBadge />}
+                  {user.steamId && <SteamBadge />}
+                </p>
+                <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">{user.email}</p>
+                <button
+                  type="button"
+                  onClick={() => setFramerOpen(true)}
+                  className="mt-2 inline-block text-sm text-zinc-500 underline transition hover:text-accent dark:text-zinc-400"
+                >
+                  {t('settings.changeAvatar')}
+                </button>
+              </div>
+            </div>
+            {framerOpen && (
+              <AvatarFramer avatarUrl={user.avatarUrl} onClose={() => setFramerOpen(false)} />
+            )}
+
+            <div className="mb-5 text-sm">
+              {user.emailVerifiedAt ? (
+                <span className="text-green-500">✓ {t('settings.emailVerified')}</span>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="text-zinc-500 dark:text-zinc-400">{t('settings.emailNotVerified')}</span>
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={resendingVerification}
+                    className="text-zinc-500 underline transition hover:text-accent disabled:opacity-50 dark:text-zinc-400"
+                  >
+                    {resendingVerification ? t('settings.resendSending') : t('settings.resendVerification')}
+                  </button>
+                </div>
+              )}
+              {resendMessage && <p className="mt-1 text-green-500">{resendMessage}</p>}
+              {resendError && <p className="mt-1 text-red-400">{resendError}</p>}
+            </div>
+
+            <form onSubmit={handleProfileSubmit} className="flex flex-col gap-3">
+              <label className="text-sm text-zinc-500 dark:text-zinc-400" htmlFor="username">
+                {t('settings.usernameLabel')}
+              </label>
+              <input
+                id="username"
+                type="text"
+                required
+                minLength={3}
+                maxLength={24}
+                pattern="[a-zA-Z0-9_]+"
+                title={t('auth.signup.usernameHint')}
+                autoFocus={isWelcome}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="field px-4 py-1.5"
+              />
+
+              <label className="mt-2 text-sm text-zinc-500 dark:text-zinc-400" htmlFor="bio">
+                {t('settings.bioLabel')}
+              </label>
+              <textarea
+                id="bio"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                maxLength={280}
+                rows={3}
+                className="field rounded-xl px-4 py-2"
+              />
+              {profileError && <p className="text-sm text-red-400">{profileError}</p>}
+              <div className="flex items-center gap-4">
+                <button
+                  type="submit"
+                  disabled={savingProfile}
+                  className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+                >
+                  {savingProfile ? t('settings.saving') : t('settings.saveProfile')}
+                </button>
+                {isWelcome && (
+                  <button
+                    type="button"
+                    onClick={() => navigate('/settings', { replace: true })}
+                    className="text-sm text-zinc-500 underline dark:text-zinc-400"
+                  >
+                    {t('settings.skipForNow')}
+                  </button>
+                )}
+              </div>
+            </form>
+          </section>
+
+          {/* ---- Notifications ---- */}
+          <div id="notifications" className="scroll-mt-24">
+            <NotificationSettings />
+          </div>
+
+          {/* ---- Sécurité : 2FA + mot de passe ---- */}
+          <section id="securite" className="card scroll-mt-24 p-5">
+      <SectionHead className="mb-4" title={t('settings.navSecurity')} />
+
+      {/* Double authentification — ligne avec interrupteur (comme la maquette) */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="font-medium">{t('settings.twoFactor.title')}</p>
+          <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
+            {user.twoFactorEnabled
+              ? t('settings.twoFactor.enabledDescription')
+              : t('settings.twoFactor.notEnabledDescription')}
           </p>
-          <p className="text-sm text-zinc-400">{user.email}</p>
-          <button
-            type="button"
-            onClick={() => setFramerOpen(true)}
-            className="mt-2 inline-block text-sm text-zinc-300 underline"
-          >
-            {t('settings.changeAvatar')}
-          </button>
         </div>
-      </div>
-      {framerOpen && (
-        <AvatarFramer avatarUrl={user.avatarUrl} onClose={() => setFramerOpen(false)} />
-      )}
-
-      <div className="mb-8 text-sm">
-        {user.emailVerifiedAt ? (
-          <span className="text-green-400">✓ {t('settings.emailVerified')}</span>
-        ) : (
-          <div className="flex items-center gap-3">
-            <span className="text-zinc-400">{t('settings.emailNotVerified')}</span>
-            <button
-              type="button"
-              onClick={handleResendVerification}
-              disabled={resendingVerification}
-              className="text-zinc-300 underline disabled:opacity-50"
-            >
-              {resendingVerification ? t('settings.resendSending') : t('settings.resendVerification')}
-            </button>
-          </div>
-        )}
-        {resendMessage && <p className="mt-1 text-green-400">{resendMessage}</p>}
-        {resendError && <p className="mt-1 text-red-400">{resendError}</p>}
+        <button
+          type="button"
+          role="switch"
+          aria-checked={user.twoFactorEnabled}
+          aria-label={t('settings.twoFactor.title')}
+          disabled={twoFactorBusy}
+          onClick={() => {
+            if (user.twoFactorEnabled) setShowDisableForm((v) => !v);
+            else if (!twoFactorSetup) handleStartTwoFactorSetup();
+          }}
+          className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-50 ${
+            user.twoFactorEnabled ? 'bg-accent' : 'bg-zinc-300 dark:bg-zinc-700'
+          }`}
+        >
+          <span
+            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
+              user.twoFactorEnabled ? 'left-[1.375rem]' : 'left-0.5'
+            }`}
+          />
+        </button>
       </div>
 
-      <form onSubmit={handleProfileSubmit} className="mb-10 flex flex-col gap-3">
-        <label className="text-sm text-zinc-400" htmlFor="username">
-          {t('settings.usernameLabel')}
-        </label>
-        <input
-          id="username"
-          type="text"
-          required
-          minLength={3}
-          maxLength={24}
-          pattern="[a-zA-Z0-9_]+"
-          title={t('auth.signup.usernameHint')}
-          autoFocus={isWelcome}
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="field px-4 py-1.5"
-        />
-
-        <label className="mt-2 text-sm text-zinc-400" htmlFor="bio">
-          {t('settings.bioLabel')}
-        </label>
-        <textarea
-          id="bio"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          maxLength={280}
-          rows={3}
-          className="field rounded-xl px-4 py-2"
-        />
-        {profileError && <p className="text-sm text-red-400">{profileError}</p>}
-        <div className="flex items-center gap-4">
-          <button
-            type="submit"
-            disabled={savingProfile}
-            className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
-          >
-            {savingProfile ? t('settings.saving') : t('settings.saveProfile')}
-          </button>
-          {isWelcome && (
+      {/* Activation : QR + saisie du code */}
+      {!user.twoFactorEnabled && twoFactorSetup && (
+        <div className="mt-4 flex flex-col gap-3">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('settings.twoFactor.scanQr')}</p>
+          <img src={twoFactorSetup.qrCodeDataUrl} alt="2FA QR code" className="h-40 w-40 self-start" />
+          <p className="text-xs text-zinc-500">
+            {t('settings.twoFactor.manualKeyPrefix')} <code>{secretFromOtpauthUrl(twoFactorSetup.otpauthUrl)}</code>
+          </p>
+          <form onSubmit={handleConfirmTwoFactor} className="flex gap-2">
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="\d{6}"
+              maxLength={6}
+              required
+              autoFocus
+              placeholder="123456"
+              value={twoFactorCode}
+              onChange={(e) => setTwoFactorCode(e.target.value)}
+              className="field px-4 py-1.5"
+            />
             <button
-              type="button"
-              onClick={() => navigate('/settings', { replace: true })}
-              className="text-sm text-zinc-400 underline"
-            >
-              {t('settings.skipForNow')}
-            </button>
-          )}
-        </div>
-      </form>
-
-      <NotificationSettings />
-
-      <div className="card mb-10 p-4">
-        <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {/* Bouclier + coche filaire (trait 1.6, style TiMN) : sécurité 2FA */}
-          <svg
-            viewBox="0 0 24 24"
-            className="h-4 w-4 shrink-0 fill-none stroke-current"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            <path d="m9 12 2 2 4-4" />
-          </svg>
-          {t('settings.twoFactor.title')}
-        </h2>
-        {user.twoFactorEnabled ? (
-          <>
-            <p className="mb-3 text-sm text-zinc-400">{t('settings.twoFactor.enabledDescription')}</p>
-            <form onSubmit={handleDisableTwoFactor} className="flex gap-2">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="\d{6}"
-                maxLength={6}
-                required
-                placeholder="123456"
-                value={twoFactorCode}
-                onChange={(e) => setTwoFactorCode(e.target.value)}
-                className="field px-4 py-1.5"
-              />
-              <button
-                type="submit"
-                disabled={twoFactorBusy}
-                className="rounded border border-red-800 px-3 py-1.5 text-sm text-red-400 hover:bg-red-950 disabled:opacity-50"
-              >
-                {twoFactorBusy ? t('settings.twoFactor.disabling') : t('settings.twoFactor.disable')}
-              </button>
-            </form>
-          </>
-        ) : twoFactorSetup ? (
-          <div className="flex flex-col gap-3">
-            <p className="text-sm text-zinc-400">{t('settings.twoFactor.scanQr')}</p>
-            <img src={twoFactorSetup.qrCodeDataUrl} alt="2FA QR code" className="h-40 w-40 self-start" />
-            <p className="text-xs text-zinc-500">
-              {t('settings.twoFactor.manualKeyPrefix')} <code>{secretFromOtpauthUrl(twoFactorSetup.otpauthUrl)}</code>
-            </p>
-            <form onSubmit={handleConfirmTwoFactor} className="flex gap-2">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="\d{6}"
-                maxLength={6}
-                required
-                autoFocus
-                placeholder="123456"
-                value={twoFactorCode}
-                onChange={(e) => setTwoFactorCode(e.target.value)}
-                className="field px-4 py-1.5"
-              />
-              <button
-                type="submit"
-                disabled={twoFactorBusy}
-                className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
-              >
-                {twoFactorBusy ? t('settings.twoFactor.confirming') : t('settings.twoFactor.confirm')}
-              </button>
-            </form>
-          </div>
-        ) : (
-          <>
-            <p className="mb-3 text-sm text-zinc-400">
-              {t('settings.twoFactor.notEnabledDescription')}
-            </p>
-            <button
-              type="button"
-              onClick={handleStartTwoFactorSetup}
+              type="submit"
               disabled={twoFactorBusy}
               className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
             >
-              {twoFactorBusy ? t('settings.twoFactor.starting') : t('settings.twoFactor.enable')}
+              {twoFactorBusy ? t('settings.twoFactor.confirming') : t('settings.twoFactor.confirm')}
             </button>
-          </>
-        )}
-        {twoFactorError && <p className="mt-2 text-sm text-red-400">{twoFactorError}</p>}
-      </div>
+          </form>
+        </div>
+      )}
 
-      <LinkedAccounts />
+      {/* Désactivation : code requis (révélé par l'interrupteur) */}
+      {user.twoFactorEnabled && showDisableForm && (
+        <form onSubmit={handleDisableTwoFactor} className="mt-4 flex gap-2">
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="\d{6}"
+            maxLength={6}
+            required
+            autoFocus
+            placeholder="123456"
+            value={twoFactorCode}
+            onChange={(e) => setTwoFactorCode(e.target.value)}
+            className="field px-4 py-1.5"
+          />
+          <button
+            type="submit"
+            disabled={twoFactorBusy}
+            className="rounded border border-red-800 px-3 py-1.5 text-sm text-red-400 hover:bg-red-950 disabled:opacity-50"
+          >
+            {twoFactorBusy ? t('settings.twoFactor.disabling') : t('settings.twoFactor.disable')}
+          </button>
+        </form>
+      )}
+      {twoFactorError && <p className="mt-2 text-sm text-red-400">{twoFactorError}</p>}
 
-      <form onSubmit={handlePasswordSubmit} className="card mb-10 p-4">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+      <div className="my-5 border-t border-zinc-900/10 dark:border-zinc-100/10" />
+
+      {/* Mot de passe */}
+      <form onSubmit={handlePasswordSubmit}>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           {user.hasPassword ? t('settings.password.changeTitle') : t('settings.password.addTitle')}
-        </h2>
+        </p>
         {!user.hasPassword && (
           <p className="mb-3 text-sm text-zinc-400">
             {t('settings.signInVia', { provider: providerLabel(user.provider, t) })}
@@ -476,12 +527,27 @@ export default function Settings() {
           </button>
         </div>
       </form>
+          </section>
 
-      <div className="rounded border border-red-900/50 p-4">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-red-400">{t('settings.delete.title')}</h2>
-        <p className="mb-3 text-sm text-zinc-400">
-          {t('settings.delete.warning')}
-        </p>
+          {/* ---- Connexions (comptes liés) ---- */}
+          <div id="connexions" className="scroll-mt-24">
+            <LinkedAccounts />
+          </div>
+
+          {/* ---- Zone de danger ---- */}
+          <section
+            id="danger"
+            className="scroll-mt-24 rounded-2xl border border-red-500/30 bg-red-500/[0.04] p-5"
+          >
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-red-500">
+              <span>●</span> {t('settings.navDanger')}
+            </div>
+            <h2 className="font-display mt-1.5 text-xl font-bold tracking-tight text-red-500">
+              {t('settings.delete.title')}
+            </h2>
+            <p className="mb-4 mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+              {t('settings.delete.warning')}
+            </p>
         {!confirmingDelete ? (
           <button
             type="button"
@@ -521,6 +587,8 @@ export default function Settings() {
             </div>
           </div>
         )}
+          </section>
+        </div>
       </div>
     </div>
   );

@@ -247,7 +247,13 @@
       "notConfigured": "服务器上尚未配置 Xbox 导入功能。请稍后再试。",
       "genericError": "连接失败。请重试。",
       "viewLibrary": "查看我的 Xbox 游戏库"
-    }
+    },
+    "eyebrow": "你的账户",
+    "navProfile": "个人资料",
+    "navNotifications": "通知",
+    "navSecurity": "安全",
+    "navConnections": "关联账户",
+    "navDanger": "危险区域"
   },
   "friends": {
     "title": "好友",

@@ -247,7 +247,13 @@
       "notConfigured": "Импорт данных с Xbox пока не настроен на сервере. Попробуйте позже.",
       "genericError": "Сбой подключения. Попробуйте ещё раз.",
       "viewLibrary": "Просмотреть мою библиотеку Xbox"
-    }
+    },
+    "eyebrow": "Твой аккаунт",
+    "navProfile": "Профиль",
+    "navNotifications": "Уведомления",
+    "navSecurity": "Безопасность",
+    "navConnections": "Подключения",
+    "navDanger": "Опасная зона"
   },
   "friends": {
     "title": "Друзья",

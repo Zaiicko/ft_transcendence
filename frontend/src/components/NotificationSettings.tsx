@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../lib/api';
+import SectionHead from './SectionHead';
 
 // Types personnalisables (doivent matcher NotificationsService.CUSTOMIZABLE).
 // Les libellés/hints viennent de i18n (notifications.pref*).
@@ -94,11 +95,8 @@ export function NotificationPrefsList() {
 export default function NotificationSettings() {
   const { t } = useTranslation();
   return (
-    <div className="card mb-10 p-4">
-      <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        <BellIcon />
-        {t('notifications.title')}
-      </h2>
+    <div className="card p-5">
+      <SectionHead className="mb-2" title={t('notifications.title')} />
       <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">{t('notifications.prefsDescription')}</p>
       <NotificationPrefsList />
     </div>

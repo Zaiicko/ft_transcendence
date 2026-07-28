@@ -247,7 +247,13 @@
       "notConfigured": "Der Xbox-Import ist auf dem Server noch nicht eingerichtet. Bitte versuche es später erneut.",
       "genericError": "Die Verbindung ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
       "viewLibrary": "Meine Xbox-Bibliothek anzeigen"
-    }
+    },
+    "eyebrow": "Dein Konto",
+    "navProfile": "Profil",
+    "navNotifications": "Benachrichtigungen",
+    "navSecurity": "Sicherheit",
+    "navConnections": "Verbindungen",
+    "navDanger": "Gefahrenzone"
   },
   "friends": {
     "title": "Freunde",

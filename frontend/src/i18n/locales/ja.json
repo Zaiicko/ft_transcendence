@@ -247,7 +247,13 @@
       "notConfigured": "Xboxのインポート機能は、サーバー上でまだ設定されていません。後ほどもう一度お試しください。",
       "genericError": "接続に失敗しました。もう一度お試しください。",
       "viewLibrary": "Xboxライブラリを表示する"
-    }
+    },
+    "eyebrow": "アカウント",
+    "navProfile": "プロフィール",
+    "navNotifications": "通知",
+    "navSecurity": "セキュリティ",
+    "navConnections": "連携",
+    "navDanger": "危険ゾーン"
   },
   "friends": {
     "title": "フレンド",
