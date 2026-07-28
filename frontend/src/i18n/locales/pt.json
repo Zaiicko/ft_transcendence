@@ -66,7 +66,8 @@
       "genericError": "Falha ao iniciar sessão",
       "errorEmailInUse": "Já existe uma conta com este email. Inicia sessão com a tua palavra-passe, ou usa um email diferente para esse fornecedor.",
       "errorGeneric": "Ocorreu um erro ao iniciar sessão — tenta novamente.",
-      "steamFailed": "Falha no início de sessão com a Steam — tenta novamente"
+      "steamFailed": "Falha no início de sessão com a Steam — tenta novamente",
+      "subtitle": "Retoma o teu diário de jogo onde o deixaste."
     },
     "twoFactor": {
       "title": "Código de dois fatores",
@@ -91,7 +92,8 @@
       "sessionExpired": "Sessão expirada — inicia sessão com a Steam novamente",
       "genericError": "Falha no registo",
       "alreadyHaveAccount": "Já tens conta?",
-      "loginLink": "Iniciar sessão"
+      "loginLink": "Iniciar sessão",
+      "subtitle": "Cria a tua conta e começa o teu diário de jogo."
     },
     "forgotPassword": {
       "title": "Esqueceste-te da palavra-passe?",

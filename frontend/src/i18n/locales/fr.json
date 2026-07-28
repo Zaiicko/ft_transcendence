@@ -66,7 +66,8 @@
       "genericError": "Échec de la connexion",
       "errorEmailInUse": "Un compte existe déjà avec cet email. Connecte-toi avec ton mot de passe, ou utilise un email différent pour ce fournisseur.",
       "errorGeneric": "Une erreur est survenue pendant la connexion — réessaie.",
-      "steamFailed": "La connexion Steam a échoué — réessaie"
+      "steamFailed": "La connexion Steam a échoué — réessaie",
+      "subtitle": "Reprends ton journal de jeu là où tu l'as laissé."
     },
     "twoFactor": {
       "title": "Code à deux facteurs",
@@ -91,7 +92,8 @@
       "sessionExpired": "Session expirée — reconnecte-toi via Steam",
       "genericError": "Échec de l'inscription",
       "alreadyHaveAccount": "Déjà un compte ?",
-      "loginLink": "Se connecter"
+      "loginLink": "Se connecter",
+      "subtitle": "Crée ton compte et commence ton journal de jeu."
     },
     "forgotPassword": {
       "title": "Mot de passe oublié ?",

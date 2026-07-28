@@ -66,7 +66,8 @@
       "genericError": "Giriş başarısız oldu",
       "errorEmailInUse": "Bu e-posta ile zaten bir hesap var. Şifrenle giriş yap ya da bu sağlayıcı için farklı bir e-posta kullan.",
       "errorGeneric": "Giriş yapılırken bir şeyler ters gitti — lütfen tekrar dene.",
-      "steamFailed": "Steam ile giriş başarısız oldu — lütfen tekrar dene"
+      "steamFailed": "Steam ile giriş başarısız oldu — lütfen tekrar dene",
+      "subtitle": "Oyun günlüğüne kaldığın yerden devam et."
     },
     "twoFactor": {
       "title": "İki faktörlü kod",
@@ -91,7 +92,8 @@
       "sessionExpired": "Oturum süresi doldu — Steam ile tekrar giriş yap",
       "genericError": "Kayıt başarısız oldu",
       "alreadyHaveAccount": "Zaten hesabın var mı?",
-      "loginLink": "Giriş yap"
+      "loginLink": "Giriş yap",
+      "subtitle": "Hesabını oluştur ve oyun günlüğüne başla."
     },
     "forgotPassword": {
       "title": "Şifreni mi unuttun?",

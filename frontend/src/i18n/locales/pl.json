@@ -66,7 +66,8 @@
       "genericError": "Logowanie nie powiodło się",
       "errorEmailInUse": "Konto z tym adresem e-mail już istnieje. Zaloguj się hasłem albo użyj innego adresu e-mail dla tego dostawcy.",
       "errorGeneric": "Coś poszło nie tak podczas logowania — spróbuj ponownie.",
-      "steamFailed": "Logowanie przez Steam nie powiodło się — spróbuj ponownie"
+      "steamFailed": "Logowanie przez Steam nie powiodło się — spróbuj ponownie",
+      "subtitle": "Wróć do swojego dziennika gier tam, gdzie skończyłeś."
     },
     "twoFactor": {
       "title": "Kod dwuskładnikowy",
@@ -91,7 +92,8 @@
       "sessionExpired": "Sesja wygasła — zaloguj się ponownie przez Steam",
       "genericError": "Rejestracja nie powiodła się",
       "alreadyHaveAccount": "Masz już konto?",
-      "loginLink": "Zaloguj się"
+      "loginLink": "Zaloguj się",
+      "subtitle": "Załóż konto i rozpocznij swój dziennik gier."
     },
     "forgotPassword": {
       "title": "Nie pamiętasz hasła?",

@@ -66,7 +66,8 @@
       "genericError": "Login failed",
       "errorEmailInUse": "An account already exists with this email. Log in with your password instead, or use a different email for that provider.",
       "errorGeneric": "Something went wrong signing in — please try again.",
-      "steamFailed": "Steam sign-in failed — please try again"
+      "steamFailed": "Steam sign-in failed — please try again",
+      "subtitle": "Pick up your game journal right where you left off."
     },
     "twoFactor": {
       "title": "Two-factor code",
@@ -91,7 +92,8 @@
       "sessionExpired": "Session expired — sign in through Steam again",
       "genericError": "Signup failed",
       "alreadyHaveAccount": "Already have an account?",
-      "loginLink": "Log in"
+      "loginLink": "Log in",
+      "subtitle": "Create your account and start your game journal."
     },
     "forgotPassword": {
       "title": "Forgot your password?",

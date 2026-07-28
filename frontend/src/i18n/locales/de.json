@@ -66,7 +66,8 @@
       "genericError": "Anmeldung fehlgeschlagen",
       "errorEmailInUse": "Es existiert bereits ein Konto mit dieser E-Mail-Adresse. Melde dich stattdessen mit deinem Passwort an oder nutze für diesen Anbieter eine andere E-Mail-Adresse.",
       "errorGeneric": "Bei der Anmeldung ist etwas schiefgelaufen — versuch es bitte erneut.",
-      "steamFailed": "Anmeldung mit Steam fehlgeschlagen — bitte versuch es erneut"
+      "steamFailed": "Anmeldung mit Steam fehlgeschlagen — bitte versuch es erneut",
+      "subtitle": "Setze dein Spieltagebuch dort fort, wo du aufgehört hast."
     },
     "twoFactor": {
       "title": "Zwei-Faktor-Code",
@@ -91,7 +92,8 @@
       "sessionExpired": "Sitzung abgelaufen — melde dich erneut über Steam an",
       "genericError": "Registrierung fehlgeschlagen",
       "alreadyHaveAccount": "Du hast bereits ein Konto?",
-      "loginLink": "Anmelden"
+      "loginLink": "Anmelden",
+      "subtitle": "Erstelle dein Konto und beginne dein Spieltagebuch."
     },
     "forgotPassword": {
       "title": "Passwort vergessen?",

@@ -66,7 +66,8 @@
       "genericError": "Error al iniciar sesión",
       "errorEmailInUse": "Ya existe una cuenta con este correo. Inicia sesión con tu contraseña, o usa un correo distinto para ese proveedor.",
       "errorGeneric": "Algo salió mal al iniciar sesión — inténtalo de nuevo.",
-      "steamFailed": "Error al iniciar sesión con Steam — inténtalo de nuevo"
+      "steamFailed": "Error al iniciar sesión con Steam — inténtalo de nuevo",
+      "subtitle": "Retoma tu diario de juego donde lo dejaste."
     },
     "twoFactor": {
       "title": "Código de dos factores",
@@ -91,7 +92,8 @@
       "sessionExpired": "Sesión caducada — inicia sesión de nuevo con Steam",
       "genericError": "Error en el registro",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
-      "loginLink": "Iniciar sesión"
+      "loginLink": "Iniciar sesión",
+      "subtitle": "Crea tu cuenta y empieza tu diario de juego."
     },
     "forgotPassword": {
       "title": "¿Olvidaste tu contraseña?",

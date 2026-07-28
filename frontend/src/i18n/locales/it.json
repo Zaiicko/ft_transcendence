@@ -66,7 +66,8 @@
       "genericError": "Accesso non riuscito",
       "errorEmailInUse": "Esiste già un account con questa email. Accedi con la tua password oppure usa un'email diversa per quel provider.",
       "errorGeneric": "Qualcosa è andato storto durante l'accesso — riprova.",
-      "steamFailed": "Accesso con Steam non riuscito — riprova"
+      "steamFailed": "Accesso con Steam non riuscito — riprova",
+      "subtitle": "Riprendi il tuo diario di gioco da dove l'hai lasciato."
     },
     "twoFactor": {
       "title": "Codice a due fattori",
@@ -91,7 +92,8 @@
       "sessionExpired": "Sessione scaduta — accedi di nuovo con Steam",
       "genericError": "Registrazione non riuscita",
       "alreadyHaveAccount": "Hai già un account?",
-      "loginLink": "Accedi"
+      "loginLink": "Accedi",
+      "subtitle": "Crea il tuo account e inizia il tuo diario di gioco."
     },
     "forgotPassword": {
       "title": "Hai dimenticato la password?",

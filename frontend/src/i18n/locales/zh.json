@@ -66,7 +66,8 @@
       "genericError": "登录失败",
       "errorEmailInUse": "该邮箱已被注册。请改用密码登录，或为该登录方式使用其他邮箱。",
       "errorGeneric": "登录时出现问题，请重试。",
-      "steamFailed": "Steam 登录失败，请重试"
+      "steamFailed": "Steam 登录失败，请重试",
+      "subtitle": "从上次离开的地方继续你的游戏日志。"
     },
     "twoFactor": {
       "title": "双重验证码",
@@ -91,7 +92,8 @@
       "sessionExpired": "会话已过期，请重新通过 Steam 登录",
       "genericError": "注册失败",
       "alreadyHaveAccount": "已有账号？",
-      "loginLink": "登录"
+      "loginLink": "登录",
+      "subtitle": "创建账户，开启你的游戏日志。"
     },
     "forgotPassword": {
       "title": "忘记密码？",
