@@ -973,7 +973,11 @@
     "noneLinkedTitle": "Geen account gekoppeld",
     "noneLinkedDesc": "Koppel een Steam- of PlayStation-account in je instellingen om hier je games en trofeeën te zien.",
     "goSettings": "Naar instellingen",
-    "notLinked": "Niet gekoppeld"
+    "notLinked": "Niet gekoppeld",
+    "eyebrow": "Jouw games",
+    "subtitle": "Je titels geïmporteerd uit je gekoppelde accounts.",
+    "linked": "Gekoppeld",
+    "link": "Koppelen"
   },
   "errors": {
     "notFound": {

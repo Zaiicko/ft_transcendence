@@ -1045,7 +1045,11 @@
     "noneLinkedTitle": "Aucun compte lié",
     "noneLinkedDesc": "Lie un compte Steam ou PlayStation dans tes réglages pour voir tes jeux et trophées ici.",
     "goSettings": "Aller aux réglages",
-    "notLinked": "Non lié"
+    "notLinked": "Non lié",
+    "eyebrow": "Tes jeux",
+    "subtitle": "Tes titres importés depuis tes comptes liés.",
+    "linked": "Lié",
+    "link": "Lier"
   },
   "errors": {
     "notFound": {

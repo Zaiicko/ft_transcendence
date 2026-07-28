@@ -1045,7 +1045,11 @@
     "noneLinkedTitle": "No account linked",
     "noneLinkedDesc": "Link a Steam or PlayStation account in your settings to see your games and trophies here.",
     "goSettings": "Go to settings",
-    "notLinked": "Not linked"
+    "notLinked": "Not linked",
+    "eyebrow": "Your games",
+    "subtitle": "Your titles imported from your linked accounts.",
+    "linked": "Linked",
+    "link": "Link"
   },
   "errors": {
     "notFound": {

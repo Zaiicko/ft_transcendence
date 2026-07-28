@@ -973,7 +973,11 @@
     "noneLinkedTitle": "連携済みのアカウントがありません",
     "noneLinkedDesc": "設定で Steam または PlayStation アカウントを連携すると、ここにゲームとトロフィーが表示されます。",
     "goSettings": "設定へ",
-    "notLinked": "未連携"
+    "notLinked": "未連携",
+    "eyebrow": "あなたのゲーム",
+    "subtitle": "連携アカウントから取り込んだタイトル。",
+    "linked": "連携済み",
+    "link": "連携"
   },
   "errors": {
     "notFound": {

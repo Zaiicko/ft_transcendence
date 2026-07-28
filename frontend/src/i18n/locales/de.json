@@ -973,7 +973,11 @@
     "noneLinkedTitle": "Kein Konto verknüpft",
     "noneLinkedDesc": "Verknüpfe ein Steam- oder PlayStation-Konto in deinen Einstellungen, um hier deine Spiele und Trophäen zu sehen.",
     "goSettings": "Zu den Einstellungen",
-    "notLinked": "Nicht verknüpft"
+    "notLinked": "Nicht verknüpft",
+    "eyebrow": "Deine Spiele",
+    "subtitle": "Deine aus deinen verknüpften Konten importierten Titel.",
+    "linked": "Verknüpft",
+    "link": "Verknüpfen"
   },
   "errors": {
     "notFound": {

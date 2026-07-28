@@ -973,7 +973,11 @@
     "noneLinkedTitle": "Brak połączonego konta",
     "noneLinkedDesc": "Połącz konto Steam lub PlayStation w ustawieniach, aby zobaczyć tu swoje gry i trofea.",
     "goSettings": "Przejdź do ustawień",
-    "notLinked": "Niepołączone"
+    "notLinked": "Niepołączone",
+    "eyebrow": "Twoje gry",
+    "subtitle": "Twoje tytuły zaimportowane z połączonych kont.",
+    "linked": "Połączone",
+    "link": "Połącz"
   },
   "errors": {
     "notFound": {

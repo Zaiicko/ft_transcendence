@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import EmptyState, { GamepadIcon } from '../components/EmptyState';
+import SectionHead from '../components/SectionHead';
 import Skeleton from '../components/Skeleton';
 import { apiFetch, ApiError } from '../lib/api';
 
@@ -130,8 +131,8 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
       <div>
         <Skeleton className="mb-3 h-8 w-52" />
         <Skeleton className="mb-6 h-4 w-72" />
-        <ul className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-          {Array.from({ length: 10 }).map((_, i) => (
+        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
+          {Array.from({ length: 12 }).map((_, i) => (
             <li key={i} className="card overflow-hidden">
               <Skeleton className="aspect-[3/4] w-full rounded-none" />
               <div className="flex flex-col gap-2 p-2">
@@ -201,9 +202,7 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
         </div>
       )}
 
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        {t('xbox.yourGames')}
-      </h2>
+      <SectionHead className="mb-3" title={t('xbox.yourGames')} />
       {library?.private ? (
         <p className="mb-8 text-zinc-400">{t('xbox.gamesPrivate')}</p>
       ) : (
@@ -217,7 +216,7 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
           </p>
 
           {library && library.matched.length > 0 ? (
-            <ul className="mb-10 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
+            <ul className="mb-10 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
               {library.matched.map((game) => (
                 <li key={game.id} className="card flex flex-col overflow-hidden">
                   <Link to={`/game/${game.id}`} className="group flex flex-1 flex-col">

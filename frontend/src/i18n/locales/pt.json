@@ -973,7 +973,11 @@
     "noneLinkedTitle": "Nenhuma conta associada",
     "noneLinkedDesc": "Associe uma conta Steam ou PlayStation nas definições para ver aqui os seus jogos e troféus.",
     "goSettings": "Ir para as definições",
-    "notLinked": "Não associada"
+    "notLinked": "Não associada",
+    "eyebrow": "Os teus jogos",
+    "subtitle": "Os teus títulos importados das contas associadas.",
+    "linked": "Associado",
+    "link": "Associar"
   },
   "errors": {
     "notFound": {

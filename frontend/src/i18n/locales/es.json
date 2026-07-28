@@ -973,7 +973,11 @@
     "noneLinkedTitle": "Ninguna cuenta vinculada",
     "noneLinkedDesc": "Vincula una cuenta de Steam o PlayStation en tus ajustes para ver aquí tus juegos y trofeos.",
     "goSettings": "Ir a ajustes",
-    "notLinked": "No vinculada"
+    "notLinked": "No vinculada",
+    "eyebrow": "Tus juegos",
+    "subtitle": "Tus títulos importados desde tus cuentas vinculadas.",
+    "linked": "Vinculado",
+    "link": "Vincular"
   },
   "errors": {
     "notFound": {

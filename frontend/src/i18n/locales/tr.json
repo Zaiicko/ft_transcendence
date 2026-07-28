@@ -973,7 +973,11 @@
     "noneLinkedTitle": "Bağlı hesap yok",
     "noneLinkedDesc": "Oyunlarını ve kupalarını burada görmek için ayarlardan bir Steam veya PlayStation hesabı bağla.",
     "goSettings": "Ayarlara git",
-    "notLinked": "Bağlı değil"
+    "notLinked": "Bağlı değil",
+    "eyebrow": "Oyunların",
+    "subtitle": "Bağlı hesaplarından içe aktarılan oyunların.",
+    "linked": "Bağlı",
+    "link": "Bağla"
   },
   "errors": {
     "notFound": {

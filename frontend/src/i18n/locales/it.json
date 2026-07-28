@@ -973,7 +973,11 @@
     "noneLinkedTitle": "Nessun account collegato",
     "noneLinkedDesc": "Collega un account Steam o PlayStation nelle impostazioni per vedere qui i tuoi giochi e trofei.",
     "goSettings": "Vai alle impostazioni",
-    "notLinked": "Non collegato"
+    "notLinked": "Non collegato",
+    "eyebrow": "I tuoi giochi",
+    "subtitle": "I tuoi titoli importati dagli account collegati.",
+    "linked": "Collegato",
+    "link": "Collega"
   },
   "errors": {
     "notFound": {

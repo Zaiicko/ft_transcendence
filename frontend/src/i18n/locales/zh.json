@@ -973,7 +973,11 @@
     "noneLinkedTitle": "未关联账户",
     "noneLinkedDesc": "在设置中关联 Steam 或 PlayStation 账户，即可在此查看你的游戏和奖杯。",
     "goSettings": "前往设置",
-    "notLinked": "未关联"
+    "notLinked": "未关联",
+    "eyebrow": "你的游戏",
+    "subtitle": "从已关联账号导入的游戏。",
+    "linked": "已关联",
+    "link": "关联"
   },
   "errors": {
     "notFound": {

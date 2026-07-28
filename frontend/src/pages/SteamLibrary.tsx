@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import Avatar from '../components/Avatar';
-import EmptyState, { GamepadIcon, UsersIcon } from '../components/EmptyState';
+import EmptyState, { GamepadIcon } from '../components/EmptyState';
+import SectionHead from '../components/SectionHead';
 import Skeleton from '../components/Skeleton';
 import i18n from '../i18n';
 import { apiFetch, ApiError } from '../lib/api';
-import type { PublicUser } from '../lib/types';
 
 interface SteamLibraryGame {
   id: number;
@@ -49,11 +48,6 @@ function StarIcon({ className = '' }: { className?: string }) {
   );
 }
 
-interface SuggestionsResponse {
-  private: boolean;
-  suggestions: PublicUser[];
-}
-
 function formatPlaytime(minutes: number): string {
   const t = i18n.t.bind(i18n);
   if (minutes === 0) return t('steam.neverPlayed');
@@ -70,12 +64,9 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
   const steamLinked = Boolean(user?.steamId);
 
   const [library, setLibrary] = useState<LibraryResponse | null>(null);
-  const [suggestions, setSuggestions] = useState<SuggestionsResponse | null>(null);
   // Nothing to load when no Steam account is linked
   const [loading, setLoading] = useState(steamLinked);
   const [error, setError] = useState<string | null>(null);
-  const [requested, setRequested] = useState<Set<number>>(new Set());
-  const [requestError, setRequestError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
 
   // Resynchronise les succès (force ?refresh=true) — utile après avoir joué de
@@ -97,13 +88,9 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
     if (!steamLinked) return;
     // setState only happens in the promise callbacks (async), never in the
     // effect's synchronous body — see react-hooks/set-state-in-effect
-    Promise.all([
-      apiFetch<LibraryResponse>('/steam/library'),
-      apiFetch<SuggestionsResponse>('/steam/friends/suggestions'),
-    ])
-      .then(([lib, sug]) => {
+    apiFetch<LibraryResponse>('/steam/library')
+      .then((lib) => {
         setLibrary(lib);
-        setSuggestions(sug);
       })
       .catch((err: unknown) => {
         setError(err instanceof ApiError ? err.message : t('steam.loadError'));
@@ -132,16 +119,6 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
     );
   }
 
-  async function handleAddFriend(userId: number) {
-    setRequestError(null);
-    try {
-      await apiFetch(`/friends/requests/${userId}`, { method: 'POST' });
-      setRequested((prev) => new Set(prev).add(userId));
-    } catch (err) {
-      setRequestError(err instanceof ApiError ? err.message : t('steam.friendRequestError'));
-    }
-  }
-
   if (!steamLinked) {
     return (
       <div className="mx-auto max-w-lg text-center">
@@ -162,8 +139,8 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
       <div>
         <Skeleton className="mb-3 h-8 w-52" />
         <Skeleton className="mb-6 h-4 w-72" />
-        <ul className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-          {Array.from({ length: 10 }).map((_, i) => (
+        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
+          {Array.from({ length: 12 }).map((_, i) => (
             <li key={i} className="card overflow-hidden">
               <Skeleton className="aspect-[3/4] w-full rounded-none" />
               <div className="flex flex-col gap-2 p-2">
@@ -225,49 +202,7 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
         </div>
       )}
 
-      {/* Amis d'abord : la biblio de jeux peut être immense, les amis se
-          retrouveraient sinon enterrés tout en bas */}
-      <section className="mb-10">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          {t('steam.friendsHeading')}
-        </h2>
-        {suggestions?.private && <p className="text-zinc-400">{t('steam.friendsPrivate')}</p>}
-        {suggestions && !suggestions.private && suggestions.suggestions.length === 0 && (
-          <EmptyState
-            icon={<UsersIcon />}
-            title={t('steam.noFriendsTitle')}
-            description={t('steam.noFriendsDesc')}
-          />
-        )}
-        {requestError && <p className="mb-3 text-sm text-red-400">{requestError}</p>}
-        {suggestions && suggestions.suggestions.length > 0 && (
-          <ul className="flex flex-col gap-3">
-            {suggestions.suggestions.map((s) => (
-              <li key={s.id} className="card flex items-center gap-3 p-3">
-                <Avatar username={s.username} avatarUrl={s.avatarUrl} size={40} />
-                <span className="font-medium">{s.username}</span>
-                <div className="ml-auto">
-                  {requested.has(s.id) ? (
-                    <span className="text-sm text-zinc-400">{t('steam.requestSent')}</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleAddFriend(s.id)}
-                      className="rounded-full border border-zinc-700 px-4 py-1.5 text-sm transition hover:border-accent hover:text-accent"
-                    >
-                      {t('steam.addFriend')}
-                    </button>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        {t('steam.yourGames')}
-      </h2>
+      <SectionHead className="mb-3" title={t('steam.yourGames')} />
       {library?.private ? (
         <p className="mb-8 text-zinc-400">
           <Trans
@@ -289,7 +224,7 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
           </p>
 
           {library && library.matched.length > 0 ? (
-            <ul className="mb-10 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
+            <ul className="mb-10 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
               {library.matched.map((game) => (
                 <li key={game.id} className="card flex flex-col overflow-hidden">
                   {/* Jaquette + titre cliquables → fiche du jeu (consultation) */}
