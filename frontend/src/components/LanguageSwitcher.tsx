@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
-import { LanguageCode, SUPPORTED_LANGUAGES } from '../i18n';
+import { LanguageCode, loadLanguage, SUPPORTED_LANGUAGES } from '../i18n';
 import { apiFetch } from '../lib/api';
 
 // Grille de langues (drapeau + nom natif, jamais traduit) — dans la fenêtre
@@ -30,7 +30,8 @@ export default function LanguageSwitcher() {
       // Lecture volontaire du dernier choix au cleanup (démontage = fermeture).
       const code = pendingRef.current;
       if (code === initial) return;
-      void i18n.changeLanguage(code);
+      // Charge la locale (lazy) avant de basculer, sinon flash de clés brutes.
+      void loadLanguage(code).then(() => i18n.changeLanguage(code));
       if (user) {
         apiFetch('/users/me', { method: 'PATCH', body: JSON.stringify({ language: code }) })
           .then(() => refreshUser())

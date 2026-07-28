@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -373,7 +373,17 @@ export default function Layout() {
       </header>
 
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-6xl flex-1 px-6 py-8 focus:outline-none">
-        <Outlet />
+        {/* Fallback pendant le téléchargement d'une page lazy (voir App.tsx) :
+            la nav reste affichée, seul le contenu montre le spinner. */}
+        <Suspense
+          fallback={
+            <div className="flex min-h-[40vh] items-center justify-center" aria-busy="true">
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-accent dark:border-zinc-700" />
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
 
       {/* Privacy Policy and ToS must be reachable from the footer (subject requirement) */}

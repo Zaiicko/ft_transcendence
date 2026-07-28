@@ -1,28 +1,33 @@
-import { useEffect, useState } from 'react';
+import { lazy, useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './auth/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
-import Catalog from './pages/Catalog';
-import Company from './pages/Company';
-import Feed from './pages/Feed';
-import ForgotPassword from './pages/ForgotPassword';
-import Friends from './pages/Friends';
-import Game from './pages/Game';
-import Home from './pages/Home';
-import Leaderboard from './pages/Leaderboard';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
-import Onboarding from './pages/Onboarding';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import PublicProfile from './pages/PublicProfile';
-import ResetPassword from './pages/ResetPassword';
-import Settings from './pages/Settings';
-import Signup from './pages/Signup';
-import Library from './pages/Library';
-import TermsOfService from './pages/TermsOfService';
-import VerifyEmail from './pages/VerifyEmail';
+
+// Pages chargées à la demande (code-splitting par route) : chacune devient un
+// chunk séparé, téléchargé seulement quand on visite la route → premier
+// chargement bien plus léger. Le fallback de chargement est porté par le
+// <Suspense> autour de l'<Outlet> dans Layout (la nav reste affichée).
+const Catalog = lazy(() => import('./pages/Catalog'));
+const Company = lazy(() => import('./pages/Company'));
+const Feed = lazy(() => import('./pages/Feed'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const Friends = lazy(() => import('./pages/Friends'));
+const Game = lazy(() => import('./pages/Game'));
+const Home = lazy(() => import('./pages/Home'));
+const Leaderboard = lazy(() => import('./pages/Leaderboard'));
+const Login = lazy(() => import('./pages/Login'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Onboarding = lazy(() => import('./pages/Onboarding'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const PublicProfile = lazy(() => import('./pages/PublicProfile'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Signup = lazy(() => import('./pages/Signup'));
+const Library = lazy(() => import('./pages/Library'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
 
 // The account page moved from /profile to /settings; backend OAuth/Steam
 // callbacks still redirect to /profile?welcome=1 or ?steam=…, so keep the old

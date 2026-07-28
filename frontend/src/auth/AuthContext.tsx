@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import i18n, { LanguageCode, SUPPORTED_LANGUAGES } from '../i18n';
+import i18n, { LanguageCode, loadLanguage, SUPPORTED_LANGUAGES } from '../i18n';
 import { apiFetch } from '../lib/api';
 import type { PublicUser } from '../lib/types';
 
@@ -17,7 +17,8 @@ function applyUserLanguage(user: PublicUser): void {
     SUPPORTED_LANGUAGES.some((l) => l.code === code) &&
     i18n.resolvedLanguage !== code
   ) {
-    void i18n.changeLanguage(code);
+    // Charge la locale (lazy) avant de basculer, sinon flash de clés brutes.
+    void loadLanguage(code).then(() => i18n.changeLanguage(code));
   }
 }
 

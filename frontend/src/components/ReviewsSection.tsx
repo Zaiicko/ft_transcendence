@@ -302,10 +302,14 @@ export default function ReviewsSection({
   const alreadyReviewed = user != null && reviews.some((r) => r.user?.id === user.id);
 
   // « Critiquer » (hero / barre d'actions) mène à #review → on déplie directement
-  // le formulaire pour l'utilisateur qui n'a pas encore d'avis.
-  useEffect(() => {
-    if (hash === '#review' && user && !alreadyReviewed) setShowForm(true);
-  }, [hash, user, alreadyReviewed]);
+  // le formulaire pour l'utilisateur qui n'a pas encore d'avis. Ajustement AU
+  // RENDU (pas un effet : évite le setState-in-effect) déclenché une seule fois
+  // via un drapeau — l'utilisateur peut ensuite refermer sans que ça se rouvre.
+  const autoOpenedForm = useRef(false);
+  if (!autoOpenedForm.current && hash === '#review' && user && !alreadyReviewed) {
+    autoOpenedForm.current = true;
+    setShowForm(true);
+  }
 
   return (
     <section ref={reviewRef} id="review" className="scroll-mt-24">
