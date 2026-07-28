@@ -15,7 +15,12 @@ export class MailerService {
   private readonly from: string;
 
   constructor(config: ConfigService) {
-    this.from = config.get<string>('MAIL_FROM') ?? 'Saveboxd <no-reply@saveboxd.local>';
+    // ?? alone isn't enough: docker-compose passes `MAIL_FROM: ${MAIL_FROM}`,
+    // which injects an *empty string* when the var is missing from .env — that
+    // slips past ?? and makes nodemailer send a blank From, which SMTP relays
+    // silently rewrite to the account's own login address and then reject.
+    this.from = config.get<string>('MAIL_FROM')?.trim() || 'Saveboxd <no-reply@saveboxd.local>';
+    this.logger.log(`Sending mail as ${this.from}`);
     const port = config.get<number>('SMTP_PORT') ?? 587;
     // Generic SMTP — works unmodified with SendGrid/Resend/Mailgun/Brevo/etc.
     // once the team fills in real credentials. Building the transporter never
