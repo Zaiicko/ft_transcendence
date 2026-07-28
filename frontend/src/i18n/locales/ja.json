@@ -384,7 +384,10 @@
     "rankScopeGlobal": "グローバルランキング",
     "rankScopeFriends": "友達の中で",
     "achievementLine": "<a>{{user}}</a> が <s>{{name}}</s> を解除しました",
-    "tabAchievements": "実績"
+    "tabAchievements": "実績",
+    "eyebrow": "サークルの動き",
+    "live": "リアルタイム",
+    "done": "<a>{{user}}</a> が <s>{{game}}</s> をクリアしました"
   },
   "leaderboard": {
     "title": "ランキング",

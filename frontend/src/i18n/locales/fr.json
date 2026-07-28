@@ -384,7 +384,10 @@
     "timeYesterday": "hier",
     "timeDays": "il y a {{count}} j",
     "achievementLine": "<a>{{user}}</a> a débloqué <s>{{name}}</s>",
-    "tabAchievements": "Succès"
+    "tabAchievements": "Succès",
+    "eyebrow": "Le cercle en direct",
+    "live": "Temps réel",
+    "done": "<a>{{user}}</a> a terminé <s>{{game}}</s>"
   },
   "leaderboard": {
     "title": "Classement",

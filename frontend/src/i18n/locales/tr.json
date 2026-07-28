@@ -384,7 +384,10 @@
     "rankScopeGlobal": "Küresel sıralama",
     "rankScopeFriends": "Arkadaşların arasında",
     "achievementLine": "<a>{{user}}</a>, <s>{{name}}</s> başarımını açtı",
-    "tabAchievements": "Başarımlar"
+    "tabAchievements": "Başarımlar",
+    "eyebrow": "Çevren, canlı",
+    "live": "Canlı",
+    "done": "<a>{{user}}</a> <s>{{game}}</s> oyununu bitirdi"
   },
   "leaderboard": {
     "title": "Sıralama",

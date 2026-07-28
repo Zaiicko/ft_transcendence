@@ -384,7 +384,10 @@
     "timeYesterday": "yesterday",
     "timeDays": "{{count}} d ago",
     "achievementLine": "<a>{{user}}</a> unlocked <s>{{name}}</s>",
-    "tabAchievements": "Achievements"
+    "tabAchievements": "Achievements",
+    "eyebrow": "Your circle, live",
+    "live": "Live",
+    "done": "<a>{{user}}</a> finished <s>{{game}}</s>"
   },
   "leaderboard": {
     "title": "Leaderboard",

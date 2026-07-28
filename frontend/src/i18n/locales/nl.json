@@ -384,7 +384,10 @@
     "rankScopeGlobal": "Wereldwijde ranglijst",
     "rankScopeFriends": "Onder je vrienden",
     "achievementLine": "<a>{{user}}</a> ontgrendelde <s>{{name}}</s>",
-    "tabAchievements": "Prestaties"
+    "tabAchievements": "Prestaties",
+    "eyebrow": "Jouw kring, live",
+    "live": "Live",
+    "done": "<a>{{user}}</a> heeft <s>{{game}}</s> uitgespeeld"
   },
   "leaderboard": {
     "title": "Ranglijst",

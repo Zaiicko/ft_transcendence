@@ -384,7 +384,10 @@
     "rankScopeGlobal": "Classifica globale",
     "rankScopeFriends": "Tra i tuoi amici",
     "achievementLine": "<a>{{user}}</a> ha sbloccato <s>{{name}}</s>",
-    "tabAchievements": "Obiettivi"
+    "tabAchievements": "Obiettivi",
+    "eyebrow": "La tua cerchia, in diretta",
+    "live": "In diretta",
+    "done": "<a>{{user}}</a> ha finito <s>{{game}}</s>"
   },
   "leaderboard": {
     "title": "Classifica",

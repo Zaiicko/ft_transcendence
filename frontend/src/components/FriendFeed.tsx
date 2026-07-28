@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import i18n from '../i18n';
@@ -172,25 +172,19 @@ export default function FriendFeed() {
           </Link>
         </EmptyState>
       ) : (
-        <div className="flex flex-col gap-3">
-          {items.map((item) => {
-            switch (item.kind) {
-              case 'review':
-                return <ReviewItem key={item.id} item={item} />;
-              case 'played':
-                return <PlayedItem key={item.id} item={item} />;
-              case 'completed':
-                return <CompletedItem key={item.id} item={item} />;
-              case 'review-like':
-                return <ReviewLikeItem key={item.id} item={item} />;
-              case 'comment-like':
-                return <CommentLikeItem key={item.id} item={item} />;
-              case 'rank':
-                return <RankItem key={item.id} item={item} />;
-              case 'achievement':
-                return <AchievementItem key={item.id} item={item} />;
-            }
-          })}
+        <div className="flex flex-col gap-4">
+          {/* Timeline : fil vertical + nœud typé à gauche de chaque événement */}
+          <div className="relative flex flex-col gap-4">
+            <span
+              className="pointer-events-none absolute bottom-3 left-[15px] top-3 w-0.5 bg-zinc-200 dark:bg-zinc-800"
+              aria-hidden="true"
+            />
+            {items.map((item) => (
+              <TimelineRow key={item.id} item={item}>
+                {renderItem(item)}
+              </TimelineRow>
+            ))}
+          </div>
           {cursor && (
             <button
               type="button"
@@ -204,6 +198,112 @@ export default function FriendFeed() {
         </div>
       )}
     </div>
+  );
+}
+
+// Rendu d'un événement selon son type (sans key : posée par TimelineRow)
+function renderItem(item: FeedItem): ReactNode {
+  switch (item.kind) {
+    case 'review':
+      return <ReviewItem item={item} />;
+    case 'played':
+      return <PlayedItem item={item} />;
+    case 'completed':
+      return <CompletedItem item={item} />;
+    case 'review-like':
+      return <ReviewLikeItem item={item} />;
+    case 'comment-like':
+      return <CommentLikeItem item={item} />;
+    case 'rank':
+      return <RankItem item={item} />;
+    case 'achievement':
+      return <AchievementItem item={item} />;
+  }
+}
+
+// Nœud de timeline par type d'événement : cercle bordé (couleur = sens de
+// l'action) posé sur le fil, avec une petite icône filaire au centre.
+const NODE: Record<FeedItem['kind'], { ring: string; icon: ReactNode }> = {
+  review: { ring: 'border-accent text-accent', icon: <NodePencil /> },
+  played: { ring: 'border-zinc-300 text-zinc-400 dark:border-zinc-700', icon: <NodePlay /> },
+  // `completed` est résolu par nodeFor (manuel vs plateforme) ; valeur ici = repli.
+  completed: { ring: 'border-accent text-accent', icon: <NodeCheck /> },
+  'review-like': { ring: 'border-accent text-accent', icon: <NodeHeart /> },
+  'comment-like': { ring: 'border-accent text-accent', icon: <NodeHeart /> },
+  rank: { ring: 'border-accent text-accent', icon: <NodeBars /> },
+  achievement: { ring: 'border-accent text-accent', icon: <NodeTrophy /> },
+};
+
+// Nœud réel d'un item : le « fait » manuel (coche ambre) et le vrai 100 %
+// plateforme (trophée vert) partagent le type `completed` mais se distinguent ici.
+function nodeFor(item: FeedItem): { ring: string; icon: ReactNode } {
+  if (item.kind === 'completed') {
+    return item.platform === 'manual'
+      ? { ring: 'border-accent text-accent', icon: <NodeCheck /> }
+      : { ring: 'border-green-500/60 text-green-600 dark:text-green-500', icon: <NodeTrophy /> };
+  }
+  return NODE[item.kind];
+}
+
+// Enrobe une carte d'événement d'un nœud sur le fil vertical (fond opaque pour
+// « couper » le fil derrière le cercle).
+function TimelineRow({ item, children }: { item: FeedItem; children: ReactNode }) {
+  const n = nodeFor(item);
+  return (
+    <div className="relative pl-11">
+      <span
+        className={`absolute left-0 top-3.5 z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-zinc-50 dark:bg-zinc-950 ${n.ring}`}
+        aria-hidden="true"
+      >
+        {n.icon}
+      </span>
+      {children}
+    </div>
+  );
+}
+
+const nodeSvg = 'h-3.5 w-3.5 fill-none stroke-current';
+function NodePencil() {
+  return (
+    <svg viewBox="0 0 24 24" className={nodeSvg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </svg>
+  );
+}
+function NodePlay() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden="true">
+      <path d="M6 4l14 8-14 8z" />
+    </svg>
+  );
+}
+function NodeCheck() {
+  return (
+    <svg viewBox="0 0 24 24" className={nodeSvg} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12l5 5 9-11" />
+    </svg>
+  );
+}
+function NodeHeart() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden="true">
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+    </svg>
+  );
+}
+function NodeBars() {
+  return (
+    <svg viewBox="0 0 24 24" className={nodeSvg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 20h16M7 20v-6M12 20V6M17 20v-9" />
+    </svg>
+  );
+}
+function NodeTrophy() {
+  return (
+    <svg viewBox="0 0 24 24" className={nodeSvg} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z" />
+      <path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3" />
+    </svg>
   );
 }
 
@@ -386,10 +486,11 @@ function HeartIcon() {
 
 // Libellé « X a noté / a joué à / a complété <cible> ». L'action et l'ordre des
 // mots sont portés par la clé (feed.rated / feed.played / feed.completed).
-const ACTION_KEY: Record<'rated' | 'played' | 'completed', string> = {
+const ACTION_KEY: Record<'rated' | 'played' | 'completed' | 'done', string> = {
   rated: 'feed.rated',
   played: 'feed.played',
   completed: 'feed.completed',
+  done: 'feed.done',
 };
 
 function ActorLine({
@@ -400,7 +501,7 @@ function ActorLine({
 }: {
   actor: { username: string; avatarUrl: string | null } | null;
   at: string;
-  action: 'rated' | 'played' | 'completed';
+  action: 'rated' | 'played' | 'completed' | 'done';
   strong: string;
 }) {
   const { t } = useTranslation();
@@ -445,8 +546,12 @@ function PlatformMark({ platform }: { platform: string }) {
   return null;
 }
 
-// « X a complété <jeu> à 100 % » — trophée + badge de la plateforme
+// Deux cas distincts sous le même type `completed` :
+//   • manuel (platform 'manual') = jeu marqué « fait » à la main → « a terminé »,
+//     simple coche (PAS de « 100 % », qui ne concerne que les plateformes).
+//   • plateforme (steam/xbox/psn) = vrai 100 % → « a complété à 100 % » + trophée.
 function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }> }) {
+  const manual = item.platform === 'manual';
   return (
     <Link
       to={gameHref(item.game.id)}
@@ -456,18 +561,29 @@ function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }
         <img src={item.game.coverUrl} alt="" className="h-16 w-11 shrink-0 rounded object-cover" />
       )}
       <div className="min-w-0 flex-1">
-        <ActorLine actor={item.actor} at={item.at} action="completed" strong={item.game.title} />
-        {/* Complétion manuelle : pas de plateforme à afficher */}
-        {item.platform !== 'manual' && (
+        <ActorLine
+          actor={item.actor}
+          at={item.at}
+          action={manual ? 'done' : 'completed'}
+          strong={item.game.title}
+        />
+        {/* Plateforme affichée uniquement pour un vrai 100 % plateforme */}
+        {!manual && (
           <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             <PlatformMark platform={item.platform} />
             <span>{PLATFORM_LABEL[item.platform] ?? item.platform}</span>
           </div>
         )}
       </div>
-      <span className="shrink-0 text-amber-500" title={i18n.t('feed.completedBadge')}>
-        <TrophyIcon />
-      </span>
+      {manual ? (
+        <span className="shrink-0 text-zinc-400" title={i18n.t('feed.gameCompleted')}>
+          <CheckIcon />
+        </span>
+      ) : (
+        <span className="shrink-0 text-amber-500" title={i18n.t('feed.completedBadge')}>
+          <TrophyIcon />
+        </span>
+      )}
     </Link>
   );
 }

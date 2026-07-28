@@ -384,7 +384,10 @@
     "rankScopeGlobal": "Ranking globalny",
     "rankScopeFriends": "Wśród Twoich znajomych",
     "achievementLine": "<a>{{user}}</a> odblokował(a) <s>{{name}}</s>",
-    "tabAchievements": "Osiągnięcia"
+    "tabAchievements": "Osiągnięcia",
+    "eyebrow": "Twój krąg na żywo",
+    "live": "Na żywo",
+    "done": "<a>{{user}}</a> ukończył(a) <s>{{game}}</s>"
   },
   "leaderboard": {
     "title": "Ranking",

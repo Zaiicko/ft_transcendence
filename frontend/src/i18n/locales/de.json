@@ -384,7 +384,10 @@
     "rankScopeGlobal": "Globale Rangliste",
     "rankScopeFriends": "Unter deinen Freunden",
     "achievementLine": "<a>{{user}}</a> hat <s>{{name}}</s> freigeschaltet",
-    "tabAchievements": "Erfolge"
+    "tabAchievements": "Erfolge",
+    "eyebrow": "Dein Kreis, live",
+    "live": "Live",
+    "done": "<a>{{user}}</a> hat <s>{{game}}</s> durchgespielt"
   },
   "leaderboard": {
     "title": "Rangliste",

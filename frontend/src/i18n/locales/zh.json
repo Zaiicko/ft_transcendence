@@ -384,7 +384,10 @@
     "rankScopeGlobal": "全球排行榜",
     "rankScopeFriends": "在你的好友中",
     "achievementLine": "<a>{{user}}</a> 解锁了 <s>{{name}}</s>",
-    "tabAchievements": "成就"
+    "tabAchievements": "成就",
+    "eyebrow": "你的圈子·实时",
+    "live": "实时",
+    "done": "<a>{{user}}</a> 通关了 <s>{{game}}</s>"
   },
   "leaderboard": {
     "title": "排行榜",

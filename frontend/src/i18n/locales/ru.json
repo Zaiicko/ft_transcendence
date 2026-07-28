@@ -384,7 +384,10 @@
     "rankScopeGlobal": "Мировой рейтинг",
     "rankScopeFriends": "Среди твоих друзей",
     "achievementLine": "<a>{{user}}</a> получил(а) <s>{{name}}</s>",
-    "tabAchievements": "Достижения"
+    "tabAchievements": "Достижения",
+    "eyebrow": "Твой круг в реальном времени",
+    "live": "В реальном времени",
+    "done": "<a>{{user}}</a> прошёл(ла) <s>{{game}}</s>"
   },
   "leaderboard": {
     "title": "Рейтинг",
