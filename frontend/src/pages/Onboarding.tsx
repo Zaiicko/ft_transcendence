@@ -5,6 +5,7 @@ import { useAuth } from '../auth/AuthContext';
 import AvatarFramer from '../components/AvatarFramer';
 import PsnConnectModal from '../components/PsnConnectModal';
 import XboxConnectModal from '../components/XboxConnectModal';
+import { LanguageCode, loadLanguage, SUPPORTED_LANGUAGES } from '../i18n';
 import { apiFetch, ApiError } from '../lib/api';
 
 // Wizard de bienvenue affiché juste après l'inscription (voir ProtectedRoute :
@@ -39,6 +40,81 @@ function ServiceIcon({ color, path }: { color: string; path: string }) {
 
 const pill =
   'rounded-full border border-zinc-400/60 px-4 py-1.5 text-sm font-medium transition hover:border-accent hover:text-accent disabled:opacity-50 dark:border-zinc-600';
+
+// Sélecteur de langue du welcome : applique le choix IMMÉDIATEMENT (contrairement
+// au sélecteur du menu qui n'applique qu'à la fermeture), pour que le reste du
+// wizard ET le tour guidé lancé juste après soient dans la langue choisie.
+// Persistance : localStorage (i18next) + profil (best-effort).
+function OnboardingLanguagePicker() {
+  const { t, i18n } = useTranslation();
+  const { user, refreshUser } = useAuth();
+  const [open, setOpen] = useState(false);
+  const code = (i18n.resolvedLanguage ?? i18n.language ?? 'en') as LanguageCode;
+  const current = SUPPORTED_LANGUAGES.find((l) => l.code === code) ?? SUPPORTED_LANGUAGES[0];
+
+  const choose = async (next: LanguageCode) => {
+    setOpen(false);
+    if (next === current.code) return;
+    await loadLanguage(next); // charge la locale (lazy) avant de basculer
+    await i18n.changeLanguage(next);
+    if (user) {
+      apiFetch('/users/me', { method: 'PATCH', body: JSON.stringify({ language: next }) })
+        .then(() => refreshUser())
+        .catch(() => {});
+    }
+  };
+
+  return (
+    <div className="relative shrink-0">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className="flex items-center gap-2 rounded-full border border-zinc-400/60 px-3 py-1.5 text-sm transition hover:border-accent hover:text-accent dark:border-zinc-600"
+      >
+        <span aria-hidden="true">{current.flag}</span>
+        <span className="hidden sm:inline">{current.name}</span>
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-none stroke-current stroke-2" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      {open && (
+        <>
+          <button
+            type="button"
+            aria-label={t('common.close')}
+            tabIndex={-1}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-10 cursor-default"
+          />
+          <ul
+            role="menu"
+            className="absolute right-0 z-20 mt-2 grid w-60 grid-cols-2 gap-1 rounded-lg border border-zinc-900/10 bg-white p-1 shadow-lg dark:border-zinc-100/10 dark:bg-zinc-900"
+          >
+            {SUPPORTED_LANGUAGES.map((lang) => (
+              <li key={lang.code}>
+                <button
+                  type="button"
+                  onClick={() => choose(lang.code)}
+                  aria-pressed={lang.code === current.code}
+                  className={`flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm transition ${
+                    lang.code === current.code
+                      ? 'bg-accent font-medium text-zinc-950'
+                      : 'hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10'
+                  }`}
+                >
+                  <span aria-hidden="true">{lang.flag}</span>
+                  {lang.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}
 
 export default function Onboarding() {
   const { t } = useTranslation();
@@ -142,12 +218,16 @@ export default function Onboarding() {
 
   return (
     <div className="mx-auto max-w-lg py-6">
-      {/* En-tête : titre de bienvenue */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">
-          {t('onboarding.welcome')}
-        </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{t('onboarding.subtitle')}</p>
+      {/* En-tête : titre de bienvenue + choix de la langue (pour que la suite,
+          y compris le tour guidé qui démarre après, soit dans ta langue). */}
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t('onboarding.welcome')}
+          </h1>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{t('onboarding.subtitle')}</p>
+        </div>
+        <OnboardingLanguagePicker />
       </div>
 
       {/* Barre de progression */}
