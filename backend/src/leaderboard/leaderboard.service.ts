@@ -135,6 +135,38 @@ export class LeaderboardService {
     return { metric, scope, window, rows, me };
   }
 
+  // Top N GLOBAL all-time d'une métrique, SANS viewer (pas de « ma place ») :
+  // sert la home publique (visiteur anonyme). Même tri/départage que le
+  // classement connecté, mais lecture seule et sans rang personnel.
+  async getPublicTop(metric: LeaderboardMetric, limit = 3): Promise<LeaderboardRow[]> {
+    limit = Math.min(Math.max(limit, 1), MAX_LIMIT);
+    const table = Prisma.raw(`"${TABLE[metric]}"`);
+    const where = this.whereSql(metric, undefined, undefined);
+
+    const raw = await this.prisma.$queryRaw<{ userId: number; score: number }[]>(Prisma.sql`
+      SELECT "userId", COUNT(*)::int AS "score"
+      FROM ${table}
+      WHERE ${where}
+      GROUP BY "userId"
+      ORDER BY "score" DESC, MAX("createdAt") ASC
+      LIMIT ${limit}
+    `);
+
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: raw.map((r) => r.userId) } },
+      select: actorSelect,
+    });
+    const byId = new Map(users.map((u) => [u.id, u]));
+
+    const rows: LeaderboardRow[] = [];
+    for (let i = 0; i < raw.length; i += 1) {
+      const u = byId.get(raw[i].userId);
+      if (!u) continue;
+      rows.push({ rank: i + 1, user: u, score: raw[i].score });
+    }
+    return rows;
+  }
+
   // Récompenses de classement d'un utilisateur : pour chaque métrique, son rang
   // GLOBAL all-time, ne gardant que les podiums (rang ≤ 3). Sert à afficher un
   // badge à côté du pseudo. Même départage que le classement (score DESC puis

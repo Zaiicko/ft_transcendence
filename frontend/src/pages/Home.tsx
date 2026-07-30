@@ -1,9 +1,10 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { TFunction } from 'i18next';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
+import AchievementIcon from '../components/AchievementIcon';
 import Avatar from '../components/Avatar';
 import EmptyState, { PencilIcon } from '../components/EmptyState';
 import HomeActivity from '../components/HomeActivity';
@@ -11,10 +12,18 @@ import PlayedButton from '../components/PlayedButton';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from '../components/ReactionIcons';
 import { CoverGridSkeleton } from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
+import { FAMILY_NAME_KEY } from '../lib/achievements';
 import { apiFetch } from '../lib/api';
 import { translateGenre } from '../lib/genres';
 import { imageSize } from '../lib/theme';
-import { GameSummary, HomeStats, ReviewHighlight } from '../lib/types';
+import {
+  AchievementFamily,
+  GameSummary,
+  HomeLanding,
+  HomeStats,
+  LandingTopPlayer,
+  ReviewHighlight,
+} from '../lib/types';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,6 +59,7 @@ export default function Home() {
   const [highlights, setHighlights] = useState<ReviewHighlight[]>([]);
   const [recommended, setRecommended] = useState<GameSummary[]>([]);
   const [stats, setStats] = useState<HomeStats | null>(null);
+  const [landing, setLanding] = useState<HomeLanding | null>(null);
   const [shown, setShown] = useState(HIGHLIGHTS_STEP);
   const [shownPopular, setShownPopular] = useState(POPULAR_STEP);
   const [shownReco, setShownReco] = useState(RECO_STEP);
@@ -96,6 +106,21 @@ export default function Home() {
       cancelled = true;
     };
   }, []);
+
+  // Visiteur anonyme : chiffres réels du site + podium global (un seul appel
+  // public /home/landing) pour les modules d'accroche.
+  useEffect(() => {
+    if (user) return;
+    let cancelled = false;
+    apiFetch<HomeLanding>('/home/landing')
+      .then((d) => {
+        if (!cancelled) setLanding(d);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   // Personnalisé : recommandations + bande de stats « ton année en jeux ».
   // Rien à charger pour un visiteur anonyme. Les sections sont de toute façon
@@ -183,14 +208,44 @@ export default function Home() {
 
   return (
     <div ref={rootRef} className="flex flex-col gap-12">
-      {featured ? (
-        <Hero game={featured} />
+      {/* Visiteur anonyme : bloc d'accueil brandé (proposition de valeur + CTA)
+          au-dessus du contenu, qui devient alors un aperçu vivant du site. */}
+      {!user && <Landing />}
+
+      {/* Chiffres réels du site (preuve que ça vit) */}
+      {!user && landing && <LandingStats data={landing} />}
+
+      {!user ? (
+        // Anonyme : « Trending » réduit à la moitié gauche de l'écran, et à
+        // droite un module listant toutes les fonctionnalités du site.
+        <div className="grid gap-6 lg:grid-cols-2 lg:items-stretch">
+          <div className="flex flex-col">
+            <SectionHead
+              eyebrow={t('home.landing.previewEyebrow')}
+              title={t('home.landing.previewTitle')}
+            />
+            <div className="flex-1">
+              {featured ? (
+                <Hero game={featured} compact />
+              ) : (
+                <div className="h-full min-h-[36vh] animate-pulse rounded-3xl bg-zinc-200 dark:bg-zinc-900" />
+              )}
+            </div>
+          </div>
+          <FeaturesModule />
+        </div>
       ) : (
-        // Réserve l'emplacement de la carte hero pendant la recherche du
-        // screenshot 1080p : sans ça, les sections du dessous se câblent en
-        // haut de page (→ animations déclenchées à tort au chargement) puis
-        // sont poussées vers le bas quand la carte s'insère (double saut)
-        <div className="h-[46vh] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
+        <div>
+          {featured ? (
+            <Hero game={featured} />
+          ) : (
+            // Réserve l'emplacement de la carte hero pendant la recherche du
+            // screenshot 1080p : sans ça, les sections du dessous se câblent en
+            // haut de page (→ animations déclenchées à tort au chargement) puis
+            // sont poussées vers le bas quand la carte s'insère (double saut)
+            <div className="h-[46vh] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
+          )}
+        </div>
       )}
 
       {user && stats && <StatsBand stats={stats} />}
@@ -220,22 +275,39 @@ export default function Home() {
           <div>
             <SectionHead eyebrow={t('home.popularEyebrow')} title={t('home.popularNow')} />
             {popular.length > 0 ? (
-              <div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
-                {visiblePopular.map((g) => (
-                  <GameCard key={g.id} game={g} />
-                ))}
-              </div>
+              user ? (
+                // Connecté : 4 colonnes dans la colonne rétrécie par l'activité
+                // des amis, avec le bouton « voir plus » qui déroule la suite.
+                <div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
+                  {visiblePopular.map((g) => (
+                    <GameCard key={g.id} game={g} />
+                  ))}
+                </div>
+              ) : (
+                // Anonyme : une seule ligne, adaptée à l'écran (3 jaquettes sur
+                // mobile, 6 sur desktop). Les jaquettes au-delà de la 3ᵉ sont
+                // masquées tant qu'on est en 3 colonnes → jamais de 2ᵉ rangée.
+                <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
+                  {popular.slice(0, 6).map((g, i) => (
+                    <div key={g.id} className={i >= 3 ? 'hidden sm:block' : undefined}>
+                      <GameCard game={g} />
+                    </div>
+                  ))}
+                </div>
+              )
             ) : (
-              <CoverGridSkeleton count={8} />
+              <CoverGridSkeleton count={user ? 8 : 6} />
             )}
-            <GridExpander
-              shown={shownPopular}
-              step={POPULAR_STEP}
-              total={popular.length}
-              onChange={setShownPopular}
-              moreLabel={t('home.showMorePopular')}
-              lessLabel={t('home.showLessPopular')}
-            />
+            {user && (
+              <GridExpander
+                shown={shownPopular}
+                step={POPULAR_STEP}
+                total={popular.length}
+                onChange={setShownPopular}
+                moreLabel={t('home.showMorePopular')}
+                lessLabel={t('home.showLessPopular')}
+              />
+            )}
           </div>
           {user && (
             <aside>
@@ -245,6 +317,12 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Modules d'accroche visiteur : podium global, vitrine des succès,
+          plateformes supportées. */}
+      {!user && landing && <TopPlayers rows={landing.topPlayers} />}
+      {!user && <AchievementsShowcase />}
+      {!user && <Platforms />}
 
       <section>
         <SectionHead eyebrow={t('home.reviewsEyebrow')} title={t('home.popularReviews')} />
@@ -263,19 +341,282 @@ export default function Home() {
                 <ReviewCard key={r.id} review={r} />
               ))}
             </div>
-            {shown < highlights.length && (
-              <button
-                type="button"
-                onClick={() => setShown(shown + HIGHLIGHTS_STEP)}
-                className="mx-auto mt-6 block rounded-lg border border-zinc-400 px-6 py-2 text-sm hover:opacity-70 dark:border-zinc-700"
-              >
-                {t('home.showMoreReviews')}
-              </button>
-            )}
+            <GridExpander
+              shown={shown}
+              step={HIGHLIGHTS_STEP}
+              total={highlights.length}
+              onChange={setShown}
+              moreLabel={t('home.showMoreReviews')}
+              lessLabel={t('home.showLessReviews')}
+            />
           </>
         )}
       </section>
     </div>
+  );
+}
+
+// Accueil du visiteur anonyme : proposition de valeur brandée + CTA (créer un
+// compte / se connecter) + trois cartes de fonctionnalités. Objectif : donner
+// tout de suite envie de tester le site, avant l'aperçu du catalogue.
+function Landing() {
+  const { t } = useTranslation();
+  return (
+    <section className="relative overflow-hidden rounded-3xl border border-zinc-900/10 bg-zinc-900/[0.02] px-5 py-8 text-center sm:px-8 sm:py-10 dark:border-zinc-100/10 dark:bg-zinc-100/[0.02]">
+      {/* Halos ambiants ambre signature */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/2 -top-24 h-72 w-[36rem] max-w-full -translate-x-1/2 rounded-full bg-accent/20 blur-[90px]" />
+        <div className="absolute -bottom-24 -right-20 h-64 w-64 rounded-full bg-accent/10 blur-[90px]" />
+      </div>
+
+      {/* Marque Saveboxd (même signe que l'écran de connexion) */}
+      <div className="mb-4 inline-flex items-center gap-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-300 to-accent text-zinc-950 shadow-lg shadow-accent/40">
+          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 7h16M4 7v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7M4 7l2-3h12l2 3M9 12h6" />
+          </svg>
+        </span>
+        <span className="font-display text-lg font-bold tracking-tight">
+          <span className="text-accent">Save</span>boxd
+        </span>
+      </div>
+
+      <div className="mb-3 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        <span className="text-accent">✦</span> {t('home.landing.eyebrow')}
+      </div>
+
+      <h1 className="font-display mx-auto max-w-xl text-balance text-2xl font-extrabold leading-[1.05] tracking-tight sm:text-4xl">
+        {t('home.landing.title')}
+      </h1>
+
+      <p className="mx-auto mt-3 max-w-lg text-pretty text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+        {t('home.landing.subtitle')}
+      </p>
+
+      <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a
+          href="/signup"
+          className="w-full rounded-full bg-accent px-6 py-2.5 text-center text-sm font-semibold text-zinc-950 shadow-lg shadow-accent/30 transition hover:brightness-110 sm:w-auto"
+        >
+          {t('home.landing.ctaPrimary')}
+        </a>
+        <a
+          href="/login"
+          className="w-full rounded-full border border-zinc-400/60 px-6 py-2.5 text-center text-sm font-semibold text-zinc-700 transition hover:border-accent hover:text-accent sm:w-auto dark:border-zinc-600 dark:text-zinc-200"
+        >
+          {t('home.landing.ctaSecondary')}
+        </a>
+      </div>
+
+      {/* Trois piliers du produit */}
+      <div className="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
+        <LandingFeature
+          title={t('home.landing.feature1Title')}
+          desc={t('home.landing.feature1Desc')}
+          icon={
+            <>
+              <path d="M4 7v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7" />
+              <path d="M12 3v12M12 15l-3-3M12 15l3-3" />
+            </>
+          }
+        />
+        <LandingFeature
+          title={t('home.landing.feature2Title')}
+          desc={t('home.landing.feature2Desc')}
+          icon={<path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9 6.7 19.7l1-5.8L3.5 9.8l5.9-.9L12 3z" />}
+        />
+        <LandingFeature
+          title={t('home.landing.feature3Title')}
+          desc={t('home.landing.feature3Desc')}
+          icon={
+            <>
+              <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z" />
+              <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
+            </>
+          }
+        />
+      </div>
+    </section>
+  );
+}
+
+function LandingFeature({ title, desc, icon }: { title: string; desc: string; icon: ReactNode }) {
+  return (
+    <div className="card !rounded-2xl p-4 text-left">
+      <span className="mb-2.5 flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10 text-accent">
+        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          {icon}
+        </svg>
+      </span>
+      <div className="font-display text-sm font-bold tracking-tight">{title}</div>
+      <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{desc}</p>
+    </div>
+  );
+}
+
+// Module « tout ce que le site permet » : carte occupant la moitié droite de
+// l'accueil anonyme, avec la liste cochée de toutes les fonctionnalités.
+function FeaturesModule() {
+  const { t } = useTranslation();
+  const feats = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => t(`home.landing.feat${n}`));
+  return (
+    <div className="card flex h-full flex-col justify-center rounded-3xl p-6 sm:p-8">
+      <div className="mb-5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        <span className="text-accent">●</span> {t('home.landing.allTitle')}
+      </div>
+      <ul className="flex flex-col gap-3.5">
+        {feats.map((f, i) => (
+          <li key={i} className="flex items-start gap-3 text-sm leading-snug text-zinc-700 dark:text-zinc-200">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+              <svg viewBox="0 0 24 24" className="h-3 w-3 fill-none stroke-current" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
+            {f}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// #1 — Bande de chiffres réels du site (catalogue, critiques, joueurs). Preuve
+// sociale immédiate pour le visiteur : le site a déjà du contenu et une commu.
+function LandingStats({ data }: { data: HomeLanding }) {
+  const { t } = useTranslation();
+  const fmt = (n: number) => n.toLocaleString();
+  const items = [
+    { value: data.games, label: t('home.landing.statsGamesLabel') },
+    { value: data.reviews, label: t('home.landing.statsReviewsLabel') },
+    { value: data.players, label: t('home.landing.statsPlayersLabel') },
+  ];
+  return (
+    <div className="grid grid-cols-3 gap-3 sm:gap-4">
+      {items.map((it) => (
+        <div key={it.label} className="card !rounded-2xl p-4 text-center sm:p-5">
+          <div className="font-display text-3xl font-extrabold tabular-nums tracking-tight text-accent sm:text-4xl">
+            {fmt(it.value)}
+          </div>
+          <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
+            {it.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// #2 — Le n°1 de CHAQUE catégorie de classement (complétions / jeux faits /
+// avis), all-time global. Chaque carte renvoie au profil public. Masqué s'il n'y
+// a encore personne de classé dans aucune catégorie.
+const METRIC_LABEL: Record<LandingTopPlayer['metric'], string> = {
+  completions: 'leaderboard.metricCompletions',
+  played: 'leaderboard.metricPlayed',
+  reviews: 'leaderboard.metricReviews',
+};
+function TopPlayers({ rows }: { rows: LandingTopPlayer[] }) {
+  const { t } = useTranslation();
+  if (rows.length === 0) return null;
+  return (
+    <section>
+      <SectionHead eyebrow={t('home.landing.topEyebrow')} title={t('home.landing.topTitle')} />
+      <div className="grid gap-4 sm:grid-cols-3">
+        {rows.map((r) => (
+          <a
+            key={r.metric}
+            href={`/u/${r.user.username}`}
+            className="card flex flex-col gap-3 !rounded-2xl p-4 transition hover:border-accent/60"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent">
+                {t(METRIC_LABEL[r.metric])}
+              </span>
+              <span className="font-display text-xl font-extrabold tabular-nums text-accent">
+                {r.score}
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Avatar username={r.user.username} avatarUrl={r.user.avatarUrl} size={40} />
+              <div className="min-w-0">
+                <div className="truncate font-semibold">{r.user.username}</div>
+                <div className="text-xs font-bold text-zinc-400 dark:text-zinc-500">#1</div>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// #6 — Vitrine des succès « maison » : huit familles de badges avec leurs icônes
+// thématiques (mêmes SVG que le profil), pour montrer la gamification.
+function AchievementsShowcase() {
+  const { t } = useTranslation();
+  const families: AchievementFamily[] = [
+    'completions',
+    'perfect',
+    'reviews',
+    'lists',
+    'friends',
+    'genres',
+    'popular',
+    'veteran',
+  ];
+  return (
+    <section>
+      <SectionHead eyebrow={t('home.landing.achEyebrow')} title={t('home.landing.achTitle')} />
+      <p className="-mt-2 mb-4 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
+        {t('home.landing.achSubtitle')}
+      </p>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {families.map((f) => (
+          <div key={f} className="card flex items-center gap-3 !rounded-2xl p-3.5">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+              <AchievementIcon family={f} className="h-5 w-5" />
+            </span>
+            <span className="min-w-0 truncate text-sm font-semibold">{t(FAMILY_NAME_KEY[f])}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// #5 — Plateformes supportées : Steam / PlayStation / Xbox. Renforce la promesse
+// de synchronisation (jeux + trophées) avec des repères connus.
+function Platforms() {
+  const { t } = useTranslation();
+  const names = ['Steam', 'PlayStation', 'Xbox'];
+  return (
+    <section className="card relative overflow-hidden !rounded-3xl p-6 text-center sm:p-8">
+      <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-accent/10 blur-3xl" />
+      <div className="flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        <span className="text-accent">●</span> {t('home.landing.platformsEyebrow')}
+      </div>
+      <h2 className="font-display mt-1.5 text-2xl font-bold tracking-tight">
+        {t('home.landing.platformsTitle')}
+      </h2>
+      <p className="mx-auto mt-2 max-w-lg text-sm text-zinc-500 dark:text-zinc-400">
+        {t('home.landing.platformsSubtitle')}
+      </p>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        {names.map((name) => (
+          <div
+            key={name}
+            className="flex items-center gap-2.5 rounded-full border border-zinc-900/10 bg-zinc-900/[0.03] px-5 py-2.5 dark:border-zinc-100/10 dark:bg-zinc-100/[0.05]"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-none stroke-accent" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="2" y="6" width="20" height="12" rx="6" />
+              <path d="M7 12h3M8.5 10.5v3" />
+              <circle cx="15.5" cy="11" r="0.6" fill="currentColor" stroke="none" />
+              <circle cx="17.5" cy="13" r="0.6" fill="currentColor" stroke="none" />
+            </svg>
+            <span className="font-display text-sm font-bold">{name}</span>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -302,30 +643,40 @@ function heroMeta(game: GameSummary, t: TFunction): string {
   return [year, genres].filter(Boolean).join(' · ');
 }
 
-function Hero({ game }: { game: GameSummary }) {
+function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean }) {
   // Hero "cinéma" : grande carte arrondie, halo ambre, dégradé profond et
   // jaquette officielle posée dessus. Toute la carte renvoie à la fiche.
+  // `compact` (colonne moitié d'écran de l'accueil anonyme) : la carte remplit
+  // la hauteur de sa colonne au lieu d'imposer 46/56vh, et le titre est réduit.
   const { t } = useTranslation();
   const { user } = useAuth();
   const banner = screenshot1080(game);
   return (
-    <div data-anim="hero" className="relative">
+    <div data-anim="hero" className={`relative ${compact ? 'h-full' : ''}`}>
       <a
         href={gameHref(game.id)}
         aria-label={t('home.viewGame', { title: game.title })}
-        className="group relative block overflow-hidden rounded-3xl border border-zinc-900/10 shadow-2xl shadow-black/30 dark:border-zinc-100/10"
+        className={`group relative block overflow-hidden rounded-3xl border border-zinc-900/10 shadow-2xl shadow-black/30 dark:border-zinc-100/10 ${compact ? 'h-full' : ''}`}
       >
         {banner ? (
           <img
             data-anim="hero-bg"
             src={banner}
             alt=""
-            className="h-[46vh] w-full scale-110 object-cover md:h-[56vh]"
+            className={
+              compact
+                ? 'h-full min-h-[36vh] w-full scale-110 object-cover'
+                : 'h-[46vh] w-full scale-110 object-cover md:h-[56vh]'
+            }
           />
         ) : (
           <div
             data-anim="hero-bg"
-            className="h-[46vh] scale-125 bg-cover bg-center opacity-60 blur-2xl md:h-[56vh]"
+            className={
+              compact
+                ? 'h-full min-h-[36vh] scale-125 bg-cover bg-center opacity-60 blur-2xl'
+                : 'h-[46vh] scale-125 bg-cover bg-center opacity-60 blur-2xl md:h-[56vh]'
+            }
             style={game.coverUrl ? { backgroundImage: `url(${game.coverUrl})` } : undefined}
           />
         )}
@@ -335,16 +686,16 @@ function Hero({ game }: { game: GameSummary }) {
         <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-zinc-100/20 bg-zinc-950/40 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-100 backdrop-blur">
           <span className="text-accent">✦</span> {t('home.featuredBadge')}
         </span>
-        <div className="absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent p-6 md:p-10">
+        <div className={`absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent ${compact ? 'p-5 md:p-6' : 'p-6 md:p-10'}`}>
           {game.coverUrl && (
             <img
               src={game.coverUrl}
               alt=""
-              className="hidden h-40 w-auto shrink-0 rounded-xl border border-zinc-100/15 shadow-2xl sm:block md:h-56"
+              className={`hidden w-auto shrink-0 rounded-xl border border-zinc-100/15 shadow-2xl sm:block ${compact ? 'h-28 md:h-32' : 'h-40 md:h-56'}`}
             />
           )}
           <div className="min-w-0 pb-1">
-            <h1 className="font-display max-w-2xl text-balance text-3xl font-extrabold leading-[0.98] tracking-tight text-zinc-50 md:text-5xl">
+            <h1 className={`font-display max-w-2xl text-balance font-extrabold leading-[0.98] tracking-tight text-zinc-50 ${compact ? 'text-2xl md:text-3xl' : 'text-3xl md:text-5xl'}`}>
               {game.title}
             </h1>
             <div className="mt-3 flex items-center gap-3 text-sm text-zinc-300">

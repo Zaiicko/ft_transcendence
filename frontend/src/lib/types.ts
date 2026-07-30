@@ -32,6 +32,20 @@ export interface HomeStats {
   rank: { rank: number } | null; // rang mondial (complétions), null si non classé
 }
 
+// GET /home/landing — données publiques de la home (visiteur anonyme) : chiffres
+// réels du site + podium global (complétions all-time).
+export interface LandingTopPlayer {
+  metric: LeaderboardMetric; // n°1 de cette catégorie
+  user: { id: number; username: string; avatarUrl: string | null };
+  score: number;
+}
+export interface HomeLanding {
+  games: number;
+  reviews: number;
+  players: number;
+  topPlayers: LandingTopPlayer[];
+}
+
 // GET /companies/:id — fiche studio + ses jeux principaux
 export interface CompanyDetail {
   id: number;
