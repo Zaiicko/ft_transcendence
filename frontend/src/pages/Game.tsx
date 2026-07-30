@@ -264,9 +264,11 @@ export default function Game() {
       {displaySummary && (
         <section>
           <SectionHead eyebrow={t('game.eyeAbout')} title={t('game.aboutTitle')} />
-          <p ref={summaryRef} className="max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-            {displaySummary}
-          </p>
+          <div className="card max-w-3xl !rounded-2xl p-5">
+            <p ref={summaryRef} className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+              {displaySummary}
+            </p>
+          </div>
         </section>
       )}
 
