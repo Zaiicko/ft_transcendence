@@ -36,7 +36,8 @@
     "logout": "Déconnexion",
     "closeMenu": "Fermer le menu",
     "notificationPrefs": "Préférences de notifications",
-    "navigation": "Menu de navigation"
+    "navigation": "Menu de navigation",
+    "replayTutorial": "Revoir le tuto"
   },
   "footer": {
     "tagline": "Le Letterboxd des jeux vidéo · projet 42",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} paliers",
     "concernedGames": "Jeux concernés"
+  },
+  "tutorial": {
+    "eyebrow": "Guide",
+    "skip": "Passer",
+    "back": "Précédent",
+    "next": "Suivant",
+    "done": "J'ai compris",
+    "steps": {
+      "home": {
+        "title": "Accueil",
+        "body": "Clique sur le logo Saveboxd pour revenir à l'accueil à tout moment."
+      },
+      "search": {
+        "title": "Recherche",
+        "body": "Trouve n'importe quel jeu, studio ou joueur depuis la barre de recherche."
+      },
+      "catalog": {
+        "title": "Catalogue",
+        "body": "Parcours tout le catalogue de jeux et découvres-en de nouveaux."
+      },
+      "feed": {
+        "title": "Fil d'actualité",
+        "body": "Vois ce que tes amis jouent, finissent et critiquent."
+      },
+      "leaderboard": {
+        "title": "Classement",
+        "body": "Découvre les meilleurs joueurs et suis ta propre place."
+      },
+      "friends": {
+        "title": "Amis",
+        "body": "Ajoute des amis, accepte les demandes et vois qui est en ligne."
+      },
+      "library": {
+        "title": "Bibliothèque",
+        "body": "Synchronise tes jeux et trophées Steam, PlayStation et Xbox."
+      },
+      "notifications": {
+        "title": "Notifications",
+        "body": "Les j'aime, commentaires, demandes d'ami et succès apparaissent ici."
+      },
+      "profile": {
+        "title": "Ton profil",
+        "body": "Tes jeux, critiques, stats et badges sont réunis ici."
+      },
+      "chat": {
+        "title": "Messagerie",
+        "body": "Discute avec tes amis en temps réel depuis la bulle en bas à droite."
+      },
+      "menu": {
+        "title": "Réglages",
+        "body": "Ouvre tes réglages ici : profil, notifications, thème et langue."
+      }
+    }
   }
 }

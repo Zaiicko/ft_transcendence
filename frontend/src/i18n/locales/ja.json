@@ -36,7 +36,8 @@
     "logout": "ログアウト",
     "closeMenu": "メニューを閉じる",
     "notificationPrefs": "通知設定",
-    "navigation": "ナビゲーションメニュー"
+    "navigation": "ナビゲーションメニュー",
+    "replayTutorial": "チュートリアルをもう一度"
   },
   "footer": {
     "tagline": "ビデオゲーム版 Letterboxd ・ 42 プロジェクト",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} 段階",
     "concernedGames": "対象のゲーム"
+  },
+  "tutorial": {
+    "eyebrow": "ガイド",
+    "skip": "スキップ",
+    "back": "戻る",
+    "next": "次へ",
+    "done": "OK",
+    "steps": {
+      "home": {
+        "title": "ホーム",
+        "body": "Saveboxdのロゴをクリックすると、いつでもホームに戻れます。"
+      },
+      "search": {
+        "title": "検索",
+        "body": "検索バーから、あらゆるゲーム・スタジオ・プレイヤーを探せます。"
+      },
+      "catalog": {
+        "title": "カタログ",
+        "body": "ゲームカタログ全体を見て、新しい作品を見つけましょう。"
+      },
+      "feed": {
+        "title": "フィード",
+        "body": "友達が今プレイ・クリア・レビューしている内容が見られます。"
+      },
+      "leaderboard": {
+        "title": "ランキング",
+        "body": "トッププレイヤーを見て、自分の順位も確認できます。"
+      },
+      "friends": {
+        "title": "フレンド",
+        "body": "フレンドを追加し、申請を承認し、オンラインの人を確認できます。"
+      },
+      "library": {
+        "title": "ライブラリ",
+        "body": "Steam・PlayStation・Xboxのゲームとトロフィーを同期します。"
+      },
+      "notifications": {
+        "title": "通知",
+        "body": "いいね、コメント、フレンド申請、実績がここに表示されます。"
+      },
+      "profile": {
+        "title": "プロフィール",
+        "body": "あなたのゲーム、レビュー、統計、バッジがここに集まります。"
+      },
+      "chat": {
+        "title": "チャット",
+        "body": "右下のバブルから、友達とリアルタイムでメッセージのやり取りができます。"
+      },
+      "menu": {
+        "title": "設定",
+        "body": "ここから設定を開けます：プロフィール、通知、テーマ、言語。"
+      }
+    }
   }
 }

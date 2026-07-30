@@ -36,7 +36,8 @@
     "logout": "Abmelden",
     "closeMenu": "Menü schließen",
     "notificationPrefs": "Benachrichtigungseinstellungen",
-    "navigation": "Navigationsmenü"
+    "navigation": "Navigationsmenü",
+    "replayTutorial": "Tour erneut ansehen"
   },
   "footer": {
     "tagline": "Das Letterboxd der Videospiele · 42-Projekt",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} Stufen",
     "concernedGames": "Betroffene Spiele"
+  },
+  "tutorial": {
+    "eyebrow": "Anleitung",
+    "skip": "Überspringen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "done": "Verstanden",
+    "steps": {
+      "home": {
+        "title": "Startseite",
+        "body": "Klicke auf das Saveboxd-Logo, um jederzeit zur Startseite zurückzukehren."
+      },
+      "search": {
+        "title": "Suche",
+        "body": "Finde jedes Spiel, Studio oder jeden Spieler über die Suchleiste."
+      },
+      "catalog": {
+        "title": "Katalog",
+        "body": "Durchstöbere den gesamten Spielekatalog und entdecke Neues."
+      },
+      "feed": {
+        "title": "Feed",
+        "body": "Sieh, was deine Freunde spielen, abschließen und rezensieren."
+      },
+      "leaderboard": {
+        "title": "Rangliste",
+        "body": "Sieh die besten Spieler und verfolge deine eigene Platzierung."
+      },
+      "friends": {
+        "title": "Freunde",
+        "body": "Füge Freunde hinzu, nimm Anfragen an und sieh, wer online ist."
+      },
+      "library": {
+        "title": "Bibliothek",
+        "body": "Synchronisiere deine Steam-, PlayStation- und Xbox-Spiele und -Trophäen."
+      },
+      "notifications": {
+        "title": "Benachrichtigungen",
+        "body": "Likes, Kommentare, Freundschaftsanfragen und Erfolge erscheinen hier."
+      },
+      "profile": {
+        "title": "Dein Profil",
+        "body": "Deine Spiele, Rezensionen, Statistiken und Abzeichen findest du hier."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Chatte in Echtzeit mit deinen Freunden über die Blase unten rechts."
+      },
+      "menu": {
+        "title": "Einstellungen",
+        "body": "Öffne hier deine Einstellungen: Profil, Benachrichtigungen, Design und Sprache."
+      }
+    }
   }
 }

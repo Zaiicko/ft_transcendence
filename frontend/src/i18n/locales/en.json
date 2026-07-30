@@ -36,7 +36,8 @@
     "logout": "Log out",
     "closeMenu": "Close menu",
     "notificationPrefs": "Notification preferences",
-    "navigation": "Navigation menu"
+    "navigation": "Navigation menu",
+    "replayTutorial": "Replay the tour"
   },
   "footer": {
     "tagline": "The Letterboxd of video games · 42 project",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} tiers",
     "concernedGames": "Games concerned"
+  },
+  "tutorial": {
+    "eyebrow": "Guide",
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "done": "Got it",
+    "steps": {
+      "home": {
+        "title": "Home",
+        "body": "Click the Saveboxd logo to come back to the home page anytime."
+      },
+      "search": {
+        "title": "Search",
+        "body": "Find any game, studio or player from the search bar."
+      },
+      "catalog": {
+        "title": "Catalog",
+        "body": "Browse the full catalog of games and discover new ones."
+      },
+      "feed": {
+        "title": "Feed",
+        "body": "See what your friends are playing, finishing and reviewing."
+      },
+      "leaderboard": {
+        "title": "Leaderboard",
+        "body": "See the top players and track your own ranking."
+      },
+      "friends": {
+        "title": "Friends",
+        "body": "Add friends, accept requests and see who's online."
+      },
+      "library": {
+        "title": "Library",
+        "body": "Sync your Steam, PlayStation and Xbox games and trophies."
+      },
+      "notifications": {
+        "title": "Notifications",
+        "body": "Likes, comments, friend requests and achievements show up here."
+      },
+      "profile": {
+        "title": "Your profile",
+        "body": "Your games, reviews, stats and badges all live here."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Message your friends in real time from the bubble in the bottom-right corner."
+      },
+      "menu": {
+        "title": "Settings",
+        "body": "Open your settings here: profile, notifications, theme and language."
+      }
+    }
   }
 }

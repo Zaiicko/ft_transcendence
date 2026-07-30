@@ -1,4 +1,4 @@
-import { ReactNode, Suspense, useEffect, useState } from 'react';
+import { ReactNode, Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -8,7 +8,9 @@ import LanguageSwitcher from './LanguageSwitcher';
 import NotificationBell from './NotificationBell';
 import { BellIcon, NotificationPrefsList } from './NotificationSettings';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
+import { apiFetch } from '../lib/api';
 import SearchBar from './SearchBar';
+import Tutorial from './Tutorial';
 
 // Icônes filaires fines (trait 1.6, style TiMN) — remplacent les emojis
 function Icon({ children, className = 'h-4 w-4' }: { children: ReactNode; className?: string }) {
@@ -49,6 +51,14 @@ const sunIcon = (
 
 const moonIcon = <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />;
 
+const helpIcon = (
+  <>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.5-2 2-2 3" />
+    <path d="M12 17h.01" />
+  </>
+);
+
 const menuIcon = (
   <>
     <line x1="3" y1="6" x2="21" y2="6" />
@@ -84,7 +94,7 @@ const navLink = ({ isActive }: { isActive: boolean }) =>
 
 export default function Layout() {
   const { t } = useTranslation();
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mode, setMode] = useState<ThemeMode>(storedMode);
@@ -92,6 +102,10 @@ export default function Layout() {
   const [navOpen, setNavOpen] = useState(false);
   const [notifPrefsOpen, setNotifPrefsOpen] = useState(false);
   const [languagePickerOpen, setLanguagePickerOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
+  // Empêche le tuto de se relancer tout seul dans la même session après qu'on
+  // l'a fermé (le champ tutorialSeen ne passe true qu'après le POST).
+  const tourAutoStarted = useRef(false);
 
   // Referme le menu burger à chaque changement de page — comparé pendant le
   // rendu plutôt que dans un effet (setState synchrone dans un effet
@@ -133,6 +147,28 @@ export default function Layout() {
   async function handleLogout() {
     await logout();
     navigate('/');
+  }
+
+  // Lancement automatique du tour guidé : une fois l'onboarding terminé et tant
+  // que le tuto n'a pas été vu. Une seule fois par session (garde tourAutoStarted),
+  // pas sur le wizard lui-même.
+  useEffect(() => {
+    if (loading || !user) return;
+    if (user.onboarded && !user.tutorialSeen && !tourAutoStarted.current) {
+      tourAutoStarted.current = true;
+      setTourOpen(true);
+    }
+  }, [loading, user]);
+
+  // Fin/passage du tour : pose tutorialSeen côté back (idempotent) puis referme.
+  async function handleTutorialClose() {
+    setTourOpen(false);
+    try {
+      await apiFetch('/users/me/tutorial-seen', { method: 'POST' });
+      await refreshUser();
+    } catch {
+      // Silencieux : au pire le tuto se reproposera plus tard.
+    }
   }
 
   return (
@@ -221,7 +257,7 @@ export default function Layout() {
               </>
             )}
           </div>
-          <Link to="/" className="font-display flex shrink-0 items-baseline gap-2 text-xl font-bold tracking-tight">
+          <Link data-tour="home" to="/" className="font-display flex shrink-0 items-baseline gap-2 text-xl font-bold tracking-tight">
             <span>
               <span className="text-accent">Save</span>boxd
             </span>
@@ -232,34 +268,37 @@ export default function Layout() {
           {/* Le nom du site (à gauche) renvoie déjà à l'accueil — pas de lien
               "Home" redondant */}
           <div className="hidden items-center gap-7 text-sm lg:flex">
-            <NavLink to="/games" className={navLink}>
+            <NavLink data-tour="catalog" to="/games" className={navLink}>
               {t('nav.catalog')}
             </NavLink>
             {user && (
               <>
-                <NavLink to="/feed" className={navLink}>
+                <NavLink data-tour="feed" to="/feed" className={navLink}>
                   {t('nav.feed')}
                 </NavLink>
-                <NavLink to="/leaderboard" className={navLink}>
+                <NavLink data-tour="leaderboard" to="/leaderboard" className={navLink}>
                   {t('nav.leaderboard')}
                 </NavLink>
-                <NavLink to="/friends" className={navLink}>
+                <NavLink data-tour="friends" to="/friends" className={navLink}>
                   {t('nav.friends')}
                 </NavLink>
-                <NavLink to="/steam" className={navLink}>
+                <NavLink data-tour="library" to="/steam" className={navLink}>
                   {t('nav.library')}
                 </NavLink>
               </>
             )}
           </div>
-          <div className="ml-auto w-32 min-w-0 sm:w-44 lg:w-56">
+          <div data-tour="search" className="ml-auto w-32 min-w-0 sm:w-44 lg:w-56">
             <SearchBar />
           </div>
           <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
             {user ? (
               <>
-                <NotificationBell />
+                <span data-tour="notifications" className="flex items-center">
+                  <NotificationBell />
+                </span>
                 <Link
+                  data-tour="profile"
                   to={`/u/${user.username}`}
                   className="flex min-w-0 items-center gap-2 hover:opacity-70"
                 >
@@ -288,6 +327,7 @@ export default function Layout() {
             {/* Gear dropdown: day/night toggle for everyone; settings + logout when signed in */}
             <div className="relative">
               <button
+                data-tour="menu"
                 type="button"
                 onClick={() => setMenuOpen((o) => !o)}
                 aria-haspopup="menu"
@@ -355,14 +395,27 @@ export default function Layout() {
                       {mode === 'dark' ? t('menu.lightMode') : t('menu.darkMode')}
                     </button>
                     {user && (
-                      <button
-                        type="button"
-                        role="menuitem"
-                        onClick={handleLogout}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
-                      >
-                        <Icon>{logoutIcon}</Icon> {t('menu.logout')}
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setMenuOpen(false);
+                            setTourOpen(true);
+                          }}
+                          className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                        >
+                          <Icon>{helpIcon}</Icon> {t('menu.replayTutorial')}
+                        </button>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={handleLogout}
+                          className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                        >
+                          <Icon>{logoutIcon}</Icon> {t('menu.logout')}
+                        </button>
+                      </>
                     )}
                   </div>
                 </>
@@ -479,6 +532,10 @@ export default function Layout() {
       {/* Messagerie flottante (bas-droite) — montée uniquement si connecté :
           sinon l'effet de ChatWidget appelle /chat/conversations → 401. */}
       {user && <ChatWidget />}
+
+      {/* Tour guidé « à quoi sert chaque bouton » (auto après onboarding, ou
+          relancé depuis le menu réglages). */}
+      {user && <Tutorial open={tourOpen} onClose={handleTutorialClose} />}
     </div>
   );
 }

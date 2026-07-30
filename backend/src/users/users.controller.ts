@@ -105,6 +105,20 @@ export class UsersController {
     return toPublicUser(updated);
   }
 
+  // Marque le tour guidé comme vu (ou passé) : pose tutorialSeenAt une seule
+  // fois. Tant que c'est nul, le front le lance automatiquement après
+  // l'onboarding ; une fois posé, il ne se déclenche plus qu'à la demande.
+  @UseGuards(JwtAuthGuard)
+  @Post('me/tutorial-seen')
+  async markTutorialSeen(@CurrentUser() current: JwtPayload) {
+    const user = await this.usersService.findById(current.sub);
+    if (!user) throw new NotFoundException();
+    const updated = user.tutorialSeenAt
+      ? user
+      : await this.usersService.update(current.sub, { tutorialSeenAt: new Date() });
+    return toPublicUser(updated);
+  }
+
   // Provider accounts (Steam/42/Google) have no password: they may set one
   // here to also enable email+password login. Accounts that already have one
   // must prove it before changing it.

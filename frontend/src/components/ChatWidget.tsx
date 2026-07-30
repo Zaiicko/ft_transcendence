@@ -143,7 +143,7 @@ export default function ChatWidget() {
   if (!user) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end">
+    <div data-tour="chat" className="fixed bottom-4 right-4 z-40 flex flex-col items-end">
       {open && (
         <div className="mb-3 flex h-[70vh] max-h-[560px] w-[92vw] max-w-sm flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-900">
           {activeId === null ? (

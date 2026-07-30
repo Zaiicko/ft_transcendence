@@ -36,7 +36,8 @@
     "logout": "Cerrar sesión",
     "closeMenu": "Cerrar menú",
     "notificationPrefs": "Preferencias de notificaciones",
-    "navigation": "Menú de navegación"
+    "navigation": "Menú de navegación",
+    "replayTutorial": "Volver a ver el tutorial"
   },
   "footer": {
     "tagline": "El Letterboxd de los videojuegos · proyecto 42",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} niveles",
     "concernedGames": "Juegos relacionados"
+  },
+  "tutorial": {
+    "eyebrow": "Guía",
+    "skip": "Omitir",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Entendido",
+    "steps": {
+      "home": {
+        "title": "Inicio",
+        "body": "Haz clic en el logo de Saveboxd para volver al inicio cuando quieras."
+      },
+      "search": {
+        "title": "Búsqueda",
+        "body": "Encuentra cualquier juego, estudio o jugador desde la barra de búsqueda."
+      },
+      "catalog": {
+        "title": "Catálogo",
+        "body": "Explora todo el catálogo de juegos y descubre nuevos."
+      },
+      "feed": {
+        "title": "Novedades",
+        "body": "Mira a qué juegan, qué terminan y qué reseñan tus amigos."
+      },
+      "leaderboard": {
+        "title": "Clasificación",
+        "body": "Descubre a los mejores jugadores y sigue tu propia posición."
+      },
+      "friends": {
+        "title": "Amigos",
+        "body": "Añade amigos, acepta solicitudes y mira quién está en línea."
+      },
+      "library": {
+        "title": "Biblioteca",
+        "body": "Sincroniza tus juegos y trofeos de Steam, PlayStation y Xbox."
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "body": "Los me gusta, comentarios, solicitudes y logros aparecen aquí."
+      },
+      "profile": {
+        "title": "Tu perfil",
+        "body": "Tus juegos, reseñas, estadísticas e insignias están aquí."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Habla con tus amigos en tiempo real desde la burbuja de abajo a la derecha."
+      },
+      "menu": {
+        "title": "Ajustes",
+        "body": "Abre aquí tus ajustes: perfil, notificaciones, tema e idioma."
+      }
+    }
   }
 }

@@ -36,7 +36,8 @@
     "logout": "Wyloguj się",
     "closeMenu": "Zamknij menu",
     "notificationPrefs": "Preferencje powiadomień",
-    "navigation": "Menu nawigacji"
+    "navigation": "Menu nawigacji",
+    "replayTutorial": "Powtórz samouczek"
   },
   "footer": {
     "tagline": "Letterboxd dla gier wideo · projekt 42",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} poziomów",
     "concernedGames": "Powiązane gry"
+  },
+  "tutorial": {
+    "eyebrow": "Przewodnik",
+    "skip": "Pomiń",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "done": "Rozumiem",
+    "steps": {
+      "home": {
+        "title": "Strona główna",
+        "body": "Kliknij logo Saveboxd, aby w każdej chwili wrócić na stronę główną."
+      },
+      "search": {
+        "title": "Wyszukiwanie",
+        "body": "Znajdź dowolną grę, studio lub gracza z paska wyszukiwania."
+      },
+      "catalog": {
+        "title": "Katalog",
+        "body": "Przeglądaj cały katalog gier i odkrywaj nowe."
+      },
+      "feed": {
+        "title": "Aktualności",
+        "body": "Zobacz, w co grają, co kończą i co recenzują twoi znajomi."
+      },
+      "leaderboard": {
+        "title": "Ranking",
+        "body": "Poznaj najlepszych graczy i śledź własną pozycję."
+      },
+      "friends": {
+        "title": "Znajomi",
+        "body": "Dodawaj znajomych, akceptuj zaproszenia i sprawdzaj, kto jest online."
+      },
+      "library": {
+        "title": "Biblioteka",
+        "body": "Zsynchronizuj swoje gry i trofea ze Steam, PlayStation i Xbox."
+      },
+      "notifications": {
+        "title": "Powiadomienia",
+        "body": "Polubienia, komentarze, zaproszenia i osiągnięcia pojawiają się tutaj."
+      },
+      "profile": {
+        "title": "Twój profil",
+        "body": "Twoje gry, recenzje, statystyki i odznaki są tutaj."
+      },
+      "chat": {
+        "title": "Czat",
+        "body": "Rozmawiaj ze znajomymi na żywo z dymka w prawym dolnym rogu."
+      },
+      "menu": {
+        "title": "Ustawienia",
+        "body": "Otwórz tutaj ustawienia: profil, powiadomienia, motyw i język."
+      }
+    }
   }
 }

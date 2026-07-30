@@ -378,6 +378,9 @@ export interface PublicUser {
   // Onboarding wizard terminé ou explicitement passé. Tant que false, on
   // redirige vers /welcome (voir ProtectedRoute).
   onboarded: boolean;
+  // Tour guidé « à quoi sert chaque bouton » déjà vu ou passé. Tant que false
+  // (et onboarded true), il se lance une fois automatiquement.
+  tutorialSeen: boolean;
   twoFactorEnabled: boolean;
   emailVerifiedAt: string | null;
   language: string;

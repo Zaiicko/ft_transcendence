@@ -36,7 +36,8 @@
     "logout": "Terminar sessão",
     "closeMenu": "Fechar menu",
     "notificationPrefs": "Preferências de notificações",
-    "navigation": "Menu de navegação"
+    "navigation": "Menu de navegação",
+    "replayTutorial": "Rever o tutorial"
   },
   "footer": {
     "tagline": "O Letterboxd dos videojogos · projeto 42",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} níveis",
     "concernedGames": "Jogos relacionados"
+  },
+  "tutorial": {
+    "eyebrow": "Guia",
+    "skip": "Ignorar",
+    "back": "Voltar",
+    "next": "Seguinte",
+    "done": "Percebi",
+    "steps": {
+      "home": {
+        "title": "Início",
+        "body": "Clica no logótipo Saveboxd para voltares ao início a qualquer momento."
+      },
+      "search": {
+        "title": "Pesquisa",
+        "body": "Encontra qualquer jogo, estúdio ou jogador na barra de pesquisa."
+      },
+      "catalog": {
+        "title": "Catálogo",
+        "body": "Explora todo o catálogo de jogos e descobre novos."
+      },
+      "feed": {
+        "title": "Novidades",
+        "body": "Vê o que os teus amigos jogam, terminam e criticam."
+      },
+      "leaderboard": {
+        "title": "Classificação",
+        "body": "Descobre os melhores jogadores e acompanha a tua posição."
+      },
+      "friends": {
+        "title": "Amigos",
+        "body": "Adiciona amigos, aceita pedidos e vê quem está online."
+      },
+      "library": {
+        "title": "Biblioteca",
+        "body": "Sincroniza os teus jogos e troféus Steam, PlayStation e Xbox."
+      },
+      "notifications": {
+        "title": "Notificações",
+        "body": "Gostos, comentários, pedidos de amizade e conquistas aparecem aqui."
+      },
+      "profile": {
+        "title": "O teu perfil",
+        "body": "Os teus jogos, críticas, estatísticas e emblemas estão aqui."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Fala com os teus amigos em tempo real a partir da bolha no canto inferior direito."
+      },
+      "menu": {
+        "title": "Definições",
+        "body": "Abre aqui as tuas definições: perfil, notificações, tema e idioma."
+      }
+    }
   }
 }

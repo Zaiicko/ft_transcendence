@@ -36,7 +36,8 @@
     "logout": "Esci",
     "closeMenu": "Chiudi menu",
     "notificationPrefs": "Preferenze di notifica",
-    "navigation": "Menu di navigazione"
+    "navigation": "Menu di navigazione",
+    "replayTutorial": "Rivedi il tutorial"
   },
   "footer": {
     "tagline": "Il Letterboxd dei videogiochi · progetto 42",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} livelli",
     "concernedGames": "Giochi interessati"
+  },
+  "tutorial": {
+    "eyebrow": "Guida",
+    "skip": "Salta",
+    "back": "Indietro",
+    "next": "Avanti",
+    "done": "Ho capito",
+    "steps": {
+      "home": {
+        "title": "Home",
+        "body": "Clicca sul logo Saveboxd per tornare alla home in qualsiasi momento."
+      },
+      "search": {
+        "title": "Ricerca",
+        "body": "Trova qualsiasi gioco, studio o giocatore dalla barra di ricerca."
+      },
+      "catalog": {
+        "title": "Catalogo",
+        "body": "Sfoglia l'intero catalogo di giochi e scoprine di nuovi."
+      },
+      "feed": {
+        "title": "Novità",
+        "body": "Guarda cosa giocano, finiscono e recensiscono i tuoi amici."
+      },
+      "leaderboard": {
+        "title": "Classifica",
+        "body": "Scopri i migliori giocatori e segui la tua posizione."
+      },
+      "friends": {
+        "title": "Amici",
+        "body": "Aggiungi amici, accetta richieste e vedi chi è online."
+      },
+      "library": {
+        "title": "Libreria",
+        "body": "Sincronizza i tuoi giochi e trofei Steam, PlayStation e Xbox."
+      },
+      "notifications": {
+        "title": "Notifiche",
+        "body": "Mi piace, commenti, richieste di amicizia e obiettivi appaiono qui."
+      },
+      "profile": {
+        "title": "Il tuo profilo",
+        "body": "I tuoi giochi, recensioni, statistiche e badge sono qui."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Scrivi ai tuoi amici in tempo reale dalla bolla in basso a destra."
+      },
+      "menu": {
+        "title": "Impostazioni",
+        "body": "Apri qui le tue impostazioni: profilo, notifiche, tema e lingua."
+      }
+    }
   }
 }

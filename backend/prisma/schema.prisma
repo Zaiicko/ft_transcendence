@@ -108,6 +108,10 @@ model User {
   // Onboarding wizard completion : null tant que le wizard n'a pas été terminé
   // ou explicitement passé → le front redirige vers /welcome tant que c'est nul.
   onboardedAt      DateTime?
+  // Tour guidé « à quoi sert chaque bouton » : null tant qu'il n'a pas été vu ni
+  // passé. Se déclenche une fois, juste après l'onboarding. Rejouable à la
+  // demande (menu réglages) sans remettre ce champ à nul.
+  tutorialSeenAt   DateTime?
   // Amorçage des complétions 100 % par plateforme : { steam?: true, xbox?: true,
   // psn?: true }. La 1ʳᵉ synchro d'une plateforme enregistre l'existant SANS rien
   // pousser au feed (sinon tous les vieux 100 % s'annonceraient d'un coup), puis

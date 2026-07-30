@@ -36,7 +36,8 @@
     "logout": "Çıkış yap",
     "closeMenu": "Menüyü kapat",
     "notificationPrefs": "Bildirim tercihleri",
-    "navigation": "Gezinme menüsü"
+    "navigation": "Gezinme menüsü",
+    "replayTutorial": "Turu tekrar izle"
   },
   "footer": {
     "tagline": "Video oyunlarının Letterboxd'u · 42 projesi",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} kademe",
     "concernedGames": "İlgili oyunlar"
+  },
+  "tutorial": {
+    "eyebrow": "Rehber",
+    "skip": "Atla",
+    "back": "Geri",
+    "next": "İleri",
+    "done": "Anladım",
+    "steps": {
+      "home": {
+        "title": "Ana sayfa",
+        "body": "İstediğin an ana sayfaya dönmek için Saveboxd logosuna tıkla."
+      },
+      "search": {
+        "title": "Arama",
+        "body": "Arama çubuğundan herhangi bir oyunu, stüdyoyu veya oyuncuyu bul."
+      },
+      "catalog": {
+        "title": "Katalog",
+        "body": "Tüm oyun kataloğuna göz at ve yenilerini keşfet."
+      },
+      "feed": {
+        "title": "Akış",
+        "body": "Arkadaşlarının ne oynadığını, bitirdiğini ve incelediğini gör."
+      },
+      "leaderboard": {
+        "title": "Sıralama",
+        "body": "En iyi oyuncuları gör ve kendi sıranı takip et."
+      },
+      "friends": {
+        "title": "Arkadaşlar",
+        "body": "Arkadaş ekle, istekleri kabul et ve kimin çevrimiçi olduğunu gör."
+      },
+      "library": {
+        "title": "Kütüphane",
+        "body": "Steam, PlayStation ve Xbox oyunlarını ve kupalarını senkronize et."
+      },
+      "notifications": {
+        "title": "Bildirimler",
+        "body": "Beğeniler, yorumlar, arkadaşlık istekleri ve başarımlar burada görünür."
+      },
+      "profile": {
+        "title": "Profilin",
+        "body": "Oyunların, incelemelerin, istatistiklerin ve rozetlerin burada."
+      },
+      "chat": {
+        "title": "Sohbet",
+        "body": "Sağ alttaki baloncuktan arkadaşlarınla gerçek zamanlı sohbet et."
+      },
+      "menu": {
+        "title": "Ayarlar",
+        "body": "Ayarlarını buradan aç: profil, bildirimler, tema ve dil."
+      }
+    }
   }
 }

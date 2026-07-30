@@ -36,7 +36,8 @@
     "logout": "Uitloggen",
     "closeMenu": "Menu sluiten",
     "notificationPrefs": "Meldingsvoorkeuren",
-    "navigation": "Navigatiemenu"
+    "navigation": "Navigatiemenu",
+    "replayTutorial": "Rondleiding opnieuw"
   },
   "footer": {
     "tagline": "De Letterboxd van videogames · 42-project",
@@ -1149,5 +1150,58 @@
     },
     "tiersUnlocked": "{{count}} / {{total}} niveaus",
     "concernedGames": "Betrokken games"
+  },
+  "tutorial": {
+    "eyebrow": "Gids",
+    "skip": "Overslaan",
+    "back": "Terug",
+    "next": "Volgende",
+    "done": "Begrepen",
+    "steps": {
+      "home": {
+        "title": "Home",
+        "body": "Klik op het Saveboxd-logo om altijd terug te keren naar de startpagina."
+      },
+      "search": {
+        "title": "Zoeken",
+        "body": "Vind elke game, studio of speler via de zoekbalk."
+      },
+      "catalog": {
+        "title": "Catalogus",
+        "body": "Blader door de volledige gamecatalogus en ontdek nieuwe games."
+      },
+      "feed": {
+        "title": "Feed",
+        "body": "Zie wat je vrienden spelen, uitspelen en recenseren."
+      },
+      "leaderboard": {
+        "title": "Ranglijst",
+        "body": "Bekijk de topspelers en volg je eigen positie."
+      },
+      "friends": {
+        "title": "Vrienden",
+        "body": "Voeg vrienden toe, accepteer verzoeken en zie wie online is."
+      },
+      "library": {
+        "title": "Bibliotheek",
+        "body": "Synchroniseer je Steam-, PlayStation- en Xbox-games en -trofeeën."
+      },
+      "notifications": {
+        "title": "Meldingen",
+        "body": "Likes, reacties, vriendschapsverzoeken en prestaties verschijnen hier."
+      },
+      "profile": {
+        "title": "Jouw profiel",
+        "body": "Je games, recensies, statistieken en badges staan hier."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Chat in realtime met je vrienden via de bel rechtsonder."
+      },
+      "menu": {
+        "title": "Instellingen",
+        "body": "Open hier je instellingen: profiel, meldingen, thema en taal."
+      }
+    }
   }
 }
