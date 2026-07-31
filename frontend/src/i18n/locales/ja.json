@@ -556,7 +556,9 @@
     "eyeActivity": "アクティビティ",
     "eyeReviews": "彼の評価",
     "eyeLists": "コレクション",
-    "eyeAchievements": "実績"
+    "eyeAchievements": "実績",
+    "calNewerYears": "より新しい年",
+    "calOlderYears": "より古い年"
   },
   "lists": {
     "heading": "リスト",

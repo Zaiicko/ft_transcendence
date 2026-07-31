@@ -556,7 +556,9 @@
     "eyeActivity": "Активность",
     "eyeReviews": "Его мнение",
     "eyeLists": "Коллекции",
-    "eyeAchievements": "Достижения"
+    "eyeAchievements": "Достижения",
+    "calNewerYears": "Более новые годы",
+    "calOlderYears": "Более старые годы"
   },
   "lists": {
     "heading": "Списки",

@@ -556,7 +556,9 @@
     "eyeActivity": "Etkinlik",
     "eyeReviews": "Görüşleri",
     "eyeLists": "Koleksiyonlar",
-    "eyeAchievements": "Başarımlar"
+    "eyeAchievements": "Başarımlar",
+    "calNewerYears": "Daha yeni yıllar",
+    "calOlderYears": "Daha eski yıllar"
   },
   "lists": {
     "heading": "Listeler",

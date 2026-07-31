@@ -556,7 +556,9 @@
     "eyeActivity": "动态",
     "eyeReviews": "他的点评",
     "eyeLists": "合集",
-    "eyeAchievements": "成就"
+    "eyeAchievements": "成就",
+    "calNewerYears": "更近的年份",
+    "calOlderYears": "更早的年份"
   },
   "lists": {
     "heading": "列表",

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -220,6 +220,105 @@ const weekdayShort = (dow: number) =>
     timeZone: 'UTC',
   });
 
+// Sélecteur d'années à fenêtre glissante : au-delà de WINDOW années, on n'en
+// montre qu'un sous-ensemble encadré de flèches ‹ › pour défiler (sinon la liste
+// déborde du cadre, ex. 2026 → 2005). Clic sur une année visible = sélection.
+// `years` est trié du plus récent au plus ancien.
+function YearPager({
+  years,
+  year,
+  onPick,
+}: {
+  years: string[];
+  year: string;
+  onPick: (yr: string) => void;
+}) {
+  const { t } = useTranslation();
+  // Le pager occupe toute la largeur restante (jusqu'aux stats à gauche) et
+  // affiche autant d'années qu'il y rentre — mesuré via ResizeObserver. Les
+  // flèches n'apparaissent que si toutes les années ne tiennent pas.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [capacity, setCapacity] = useState(years.length);
+  useLayoutEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const YEAR_W = 46; // largeur approx d'une puce année (px-2 text-xs + gap)
+    const ARROWS_W = 58; // réserve pour les deux flèches quand ça défile
+    const measure = () => {
+      const w = el.clientWidth;
+      // Combien d'années tiennent sans flèches ; si ça ne suffit pas pour tout
+      // afficher, on réserve la place des flèches et on recompte.
+      const fitAll = Math.floor((w + 4) / YEAR_W);
+      const fit =
+        fitAll >= years.length ? years.length : Math.floor((w - ARROWS_W + 4) / YEAR_W);
+      setCapacity(Math.max(1, fit));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [years.length]);
+
+  const WINDOW = Math.min(Math.max(1, capacity), years.length);
+  const paged = years.length > WINDOW;
+  const maxStart = Math.max(0, years.length - WINDOW);
+  // Fenêtre initiale centrée sur l'année sélectionnée (bornée aux extrémités).
+  const selIdx = Math.max(0, years.indexOf(year));
+  const [start, setStart] = useState(() =>
+    Math.min(Math.max(0, selIdx - Math.floor(WINDOW / 2)), maxStart),
+  );
+  const clampedStart = Math.min(start, maxStart);
+  const visible = paged ? years.slice(clampedStart, clampedStart + WINDOW) : years;
+
+  const arrow =
+    'flex h-6 w-6 shrink-0 items-center justify-center rounded text-zinc-500 transition hover:bg-zinc-100 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent dark:text-zinc-400 dark:hover:bg-zinc-800';
+
+  return (
+    <div ref={wrapRef} className="flex min-w-0 flex-1 items-center justify-end gap-1">
+      {paged && (
+        <button
+          type="button"
+          onClick={() => setStart((s) => Math.max(0, s - 1))}
+          disabled={clampedStart === 0}
+          aria-label={t('profile.calNewerYears')}
+          className={arrow}
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2">
+            <path d="m15 18-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
+      {visible.map((yr) => (
+        <button
+          key={yr}
+          type="button"
+          onClick={() => onPick(yr)}
+          className={`rounded px-2 py-0.5 text-xs tabular-nums ${
+            yr === year
+              ? 'bg-zinc-200 dark:bg-zinc-700'
+              : 'text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+          }`}
+        >
+          {yr}
+        </button>
+      ))}
+      {paged && (
+        <button
+          type="button"
+          onClick={() => setStart((s) => Math.min(maxStart, s + 1))}
+          disabled={clampedStart >= maxStart}
+          aria-label={t('profile.calOlderYears')}
+          className={arrow}
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2">
+            <path d="m9 18 6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
+    </div>
+  );
+}
+
 function CompletionCalendar({
   done,
   perfect,
@@ -309,34 +408,24 @@ function CompletionCalendar({
 
   return (
     <div>
-      {/* En-tête : totaux faits / 100 % (gauche) ; sélecteur d'année (droite) */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      {/* En-tête : totaux faits / 100 % (gauche) ; sélecteur d'année qui occupe
+          toute la largeur restante jusqu'aux stats (droite). */}
+      <div className="mb-3 flex flex-wrap items-center gap-3">
+        <p className="shrink-0 text-sm text-zinc-600 dark:text-zinc-400">
           <span className="font-semibold text-zinc-900 dark:text-zinc-100">{doneTotal}</span>{' '}
           {t('profile.calDoneLabel')} <span className="text-zinc-400 dark:text-zinc-600">·</span>{' '}
           <span className="font-semibold text-emerald-600 dark:text-emerald-400">{perfectTotal}</span>{' '}
           {t('profile.calPerfectLabel')}
         </p>
         {years.length > 1 && (
-          <div className="flex gap-1">
-            {years.map((yr) => (
-              <button
-                key={yr}
-                type="button"
-                onClick={() => {
-                  setYearSel(yr);
-                  setPinnedKey(null);
-                }}
-                className={`rounded px-2 py-0.5 text-xs ${
-                  yr === year
-                    ? 'bg-zinc-200 dark:bg-zinc-700'
-                    : 'text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
-                }`}
-              >
-                {yr}
-              </button>
-            ))}
-          </div>
+          <YearPager
+            years={years}
+            year={year}
+            onPick={(yr) => {
+              setYearSel(yr);
+              setPinnedKey(null);
+            }}
+          />
         )}
       </div>
 

@@ -556,7 +556,9 @@
     "eyeActivity": "Activiteit",
     "eyeReviews": "Hun mening",
     "eyeLists": "Collecties",
-    "eyeAchievements": "Prestaties"
+    "eyeAchievements": "Prestaties",
+    "calNewerYears": "Recentere jaren",
+    "calOlderYears": "Oudere jaren"
   },
   "lists": {
     "heading": "Lijsten",

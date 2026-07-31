@@ -556,7 +556,9 @@
     "eyeActivity": "활동",
     "eyeReviews": "그의 평가",
     "eyeLists": "컬렉션",
-    "eyeAchievements": "도전과제"
+    "eyeAchievements": "도전과제",
+    "calNewerYears": "더 최근 연도",
+    "calOlderYears": "더 이전 연도"
   },
   "lists": {
     "heading": "목록",

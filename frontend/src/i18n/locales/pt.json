@@ -556,7 +556,9 @@
     "eyeActivity": "Atividade",
     "eyeReviews": "As suas opiniões",
     "eyeLists": "Coleções",
-    "eyeAchievements": "Conquistas"
+    "eyeAchievements": "Conquistas",
+    "calNewerYears": "Anos mais recentes",
+    "calOlderYears": "Anos mais antigos"
   },
   "lists": {
     "heading": "Listas",
