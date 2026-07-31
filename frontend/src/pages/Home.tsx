@@ -990,17 +990,17 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
     <a
       href={target.href}
       data-anim="card"
-      className="card flex flex-col gap-3 p-5 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600"
+      className="card flex flex-col gap-2.5 p-4 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         {target.cover && (
           <img
             src={target.cover}
             alt=""
             className={
               target.isCompany
-                ? 'h-16 w-11 shrink-0 rounded-lg bg-white object-contain p-0.5'
-                : 'h-16 w-11 shrink-0 rounded-lg object-cover'
+                ? 'h-14 w-10 shrink-0 rounded-lg bg-white object-contain p-0.5'
+                : 'h-14 w-10 shrink-0 rounded-lg object-cover'
             }
           />
         )}
@@ -1011,14 +1011,14 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
           </div>
         </div>
         {/* Note en gros chiffre ambre — l'accent du bloc (sur 10) */}
-        <div className="font-display shrink-0 text-3xl font-extrabold tabular-nums leading-none text-accent">
+        <div className="font-display shrink-0 text-2xl font-extrabold tabular-nums leading-none text-accent">
           {review.rating}
-          <span className="text-base font-bold text-zinc-400">/10</span>
+          <span className="text-sm font-bold text-zinc-400">/10</span>
         </div>
       </div>
       <div className="text-sm font-semibold">« {review.title} »</div>
-      <p className="line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">{review.text}</p>
-      <div className="mt-auto flex items-center gap-3 border-t border-zinc-900/5 pt-3 text-xs text-zinc-500 dark:border-zinc-100/5">
+      <p className="line-clamp-3 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400">{review.text}</p>
+      <div className="mt-auto flex items-center gap-3 border-t border-zinc-900/5 pt-2.5 text-xs text-zinc-500 dark:border-zinc-100/5">
         {review.user ? (
           <span className="flex items-center gap-1.5 font-medium text-zinc-600 dark:text-zinc-300">
             <Avatar username={review.user.username} avatarUrl={review.user.avatarUrl} size={18} />
