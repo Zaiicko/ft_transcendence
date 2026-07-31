@@ -107,10 +107,10 @@ export default function Home() {
     };
   }, []);
 
-  // Visiteur anonyme : chiffres réels du site + podium global (un seul appel
-  // public /home/landing) pour les modules d'accroche.
+  // Données publiques de la home (chiffres du site + n°1 par catégorie), via un
+  // seul appel public /home/landing. Chargées pour TOUS : elles alimentent les
+  // modules d'accroche anonymes ET le podium « top joueurs » du hub connecté.
   useEffect(() => {
-    if (user) return;
     let cancelled = false;
     apiFetch<HomeLanding>('/home/landing')
       .then((d) => {
@@ -249,6 +249,10 @@ export default function Home() {
       )}
 
       {user && stats && <StatsBand stats={stats} />}
+
+      {/* Hub connecté : le n°1 de chaque catégorie de classement (comme sur la
+          home anonyme). */}
+      {user && landing && <TopPlayers rows={landing.topPlayers} />}
 
       {user && recommended.length > 0 && (
         <section>
