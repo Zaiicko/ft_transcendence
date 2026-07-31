@@ -395,7 +395,11 @@
       "achEyebrow": "Home-made achievements",
       "achTitle": "Dozens of badges to unlock",
       "achSubtitle": "Earn badges as you complete games, write reviews, build lists and connect friends."
-    }
+    },
+    "recoBecauseGame": "Because you liked {{title}}",
+    "recoBecauseGenre": "Because you like {{genre}}",
+    "recoBecausePlayed": "Because you played {{title}}",
+    "recoBecauseStudio": "Because you like games from {{studio}}"
   },
   "feed": {
     "title": "Your friends' activity",

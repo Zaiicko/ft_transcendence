@@ -395,7 +395,11 @@
       "achEyebrow": "Własne osiągnięcia",
       "achTitle": "Dziesiątki odznak do zdobycia",
       "achSubtitle": "Zdobywaj odznaki, kończąc gry, pisząc recenzje, tworząc listy i dodając znajomych."
-    }
+    },
+    "recoBecauseGame": "Bo spodobało ci się {{title}}",
+    "recoBecauseGenre": "Bo lubisz {{genre}}",
+    "recoBecausePlayed": "Bo grałeś w {{title}}",
+    "recoBecauseStudio": "Bo lubisz gry od {{studio}}"
   },
   "feed": {
     "title": "Aktywność znajomych",

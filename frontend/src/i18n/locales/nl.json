@@ -395,7 +395,11 @@
       "achEyebrow": "Eigen prestaties",
       "achTitle": "Tientallen badges om te ontgrendelen",
       "achSubtitle": "Verdien badges door games te voltooien, recensies te schrijven, lijsten te maken en vrienden toe te voegen."
-    }
+    },
+    "recoBecauseGame": "Omdat je {{title}} leuk vond",
+    "recoBecauseGenre": "Omdat je van {{genre}} houdt",
+    "recoBecausePlayed": "Omdat je {{title}} hebt gespeeld",
+    "recoBecauseStudio": "Omdat je van games van {{studio}} houdt"
   },
   "feed": {
     "title": "Activiteit van je vrienden",

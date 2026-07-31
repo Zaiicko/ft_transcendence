@@ -395,7 +395,11 @@
       "achEyebrow": "原创成就",
       "achTitle": "数十种徽章等你解锁",
       "achSubtitle": "通过通关游戏、撰写点评、创建列表和添加好友来赢得徽章。"
-    }
+    },
+    "recoBecauseGame": "因为你喜欢《{{title}}》",
+    "recoBecauseGenre": "因为你喜欢{{genre}}",
+    "recoBecausePlayed": "因为你玩过《{{title}}》",
+    "recoBecauseStudio": "因为你喜欢 {{studio}} 的游戏"
   },
   "feed": {
     "title": "好友动态",

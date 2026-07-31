@@ -395,7 +395,11 @@
       "achEyebrow": "Hauseigene Erfolge",
       "achTitle": "Dutzende Abzeichen zum Freischalten",
       "achSubtitle": "Verdiene Abzeichen, indem du Spiele abschließt, Rezensionen schreibst, Listen erstellst und Freunde hinzufügst."
-    }
+    },
+    "recoBecauseGame": "Weil dir {{title}} gefallen hat",
+    "recoBecauseGenre": "Weil du {{genre}} magst",
+    "recoBecausePlayed": "Weil du {{title}} gespielt hast",
+    "recoBecauseStudio": "Weil du Spiele von {{studio}} magst"
   },
   "feed": {
     "title": "Aktivität deiner Freunde",

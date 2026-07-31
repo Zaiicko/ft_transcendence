@@ -20,7 +20,20 @@ export interface GameSummary {
   // est un DLC/extension, et la liste de ses propres DLC/extensions.
   parent?: { id: number; title: string; coverUrl: string | null } | null;
   dlcs?: GameDlc[];
+  // Présent uniquement sur GET /games/recommendations : pourquoi ce jeu est
+  // recommandé (genre déterminant + éventuel jeu ancre bien noté).
+  reason?: RecommendationReason | null;
 }
+
+// Raison variée d'une reco (le back alterne les types entre les cartes). Union
+// discriminée par `kind` :
+//  - 'game'   : un jeu ancre (aimé ou joué) → « parce que tu as aimé/joué à X »
+//  - 'studio' : un studio apprécié → « parce que tu aimes les jeux de X »
+//  - 'genre'  : un genre apprécié → « parce que tu aimes X »
+export type RecommendationReason =
+  | { kind: 'game'; game: { id: number; title: string; kind: 'liked' | 'played' } }
+  | { kind: 'studio'; studio: { id: number; name: string } }
+  | { kind: 'genre'; genre: { id: number; name: string } };
 
 // GET /users/me/home-stats — bande de stats « ton année en jeux » de l'accueil
 export interface HomeStats {

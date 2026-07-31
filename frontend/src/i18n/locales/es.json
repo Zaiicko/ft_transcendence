@@ -395,7 +395,11 @@
       "achEyebrow": "Logros propios",
       "achTitle": "Docenas de insignias por desbloquear",
       "achSubtitle": "Consigue insignias al completar juegos, escribir reseñas, crear listas y añadir amigos."
-    }
+    },
+    "recoBecauseGame": "Porque te gustó {{title}}",
+    "recoBecauseGenre": "Porque te gusta {{genre}}",
+    "recoBecausePlayed": "Porque jugaste a {{title}}",
+    "recoBecauseStudio": "Porque te gustan los juegos de {{studio}}"
   },
   "feed": {
     "title": "Actividad de tus amigos",

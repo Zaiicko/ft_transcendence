@@ -395,7 +395,11 @@
       "achEyebrow": "オリジナル実績",
       "achTitle": "解除できるバッジは数十種類",
       "achSubtitle": "ゲームのクリア、レビュー投稿、リスト作成、フレンド追加でバッジを獲得。"
-    }
+    },
+    "recoBecauseGame": "「{{title}}」が気に入ったから",
+    "recoBecauseGenre": "{{genre}}が好きだから",
+    "recoBecausePlayed": "「{{title}}」をプレイしたから",
+    "recoBecauseStudio": "{{studio}}のゲームが好きだから"
   },
   "feed": {
     "title": "フレンドのアクティビティ",

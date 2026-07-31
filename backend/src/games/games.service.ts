@@ -416,7 +416,14 @@ export class GamesService {
           rating: true,
           createdAt: true,
           gameId: true,
-          game: { select: { genres: { select: { id: true } } } },
+          game: {
+            select: {
+              id: true,
+              title: true,
+              genres: { select: { id: true } },
+              companies: { select: { id: true, name: true } },
+            },
+          },
         },
       }),
       this.prisma.playedGame.findMany({
@@ -426,7 +433,14 @@ export class GamesService {
           playedAt: true,
           createdAt: true,
           gameId: true,
-          game: { select: { genres: { select: { id: true } } } },
+          game: {
+            select: {
+              id: true,
+              title: true,
+              genres: { select: { id: true } },
+              companies: { select: { id: true, name: true } },
+            },
+          },
         },
       }),
     ]);
@@ -447,12 +461,52 @@ export class GamesService {
       if (weight === 0) return;
       for (const g of genres) genreWeight.set(g.id, (genreWeight.get(g.id) ?? 0) + weight);
     };
+    // Profil de goûts par STUDIO (même logique que par genre) : sert la raison
+    // « parce que tu aimes les jeux de <studio> ». On garde aussi le nom.
+    const studioWeight = new Map<number, number>();
+    const studioName = new Map<number, string>();
+    const addStudios = (companies: { id: number; name: string }[], weight: number) => {
+      if (weight === 0) return;
+      for (const c of companies) {
+        studioWeight.set(c.id, (studioWeight.get(c.id) ?? 0) + weight);
+        studioName.set(c.id, c.name);
+      }
+    };
+    // Pool de « jeux ancres » pour justifier une reco par un jeu concret plutôt
+    // qu'un simple nom de genre. Deux niveaux : un jeu BIEN noté (rating > neutre,
+    // tier 2 → « parce que tu as aimé X ») prime sur un jeu simplement joué
+    // (tier 1 → « parce que tu as joué à X »). Le choix final se fait PAR reco,
+    // selon le recouvrement de genres — pour varier l'ancre d'une carte à l'autre.
+    type Anchor = { id: number; title: string; genres: Set<number>; tier: number; rating: number; at: number };
+    const anchors: Anchor[] = [];
     for (const r of reviews) {
-      addGenres(r.game?.genres ?? [], (r.rating - RECOMMENDATION_NEUTRAL_RATING) * recency(r.createdAt));
+      const w = (r.rating - RECOMMENDATION_NEUTRAL_RATING) * recency(r.createdAt);
+      addGenres(r.game?.genres ?? [], w);
+      addStudios(r.game?.companies ?? [], w);
+      if (!r.game || r.rating <= RECOMMENDATION_NEUTRAL_RATING) continue;
+      anchors.push({
+        id: r.game.id,
+        title: r.game.title,
+        genres: new Set(r.game.genres.map((g) => g.id)),
+        tier: 2,
+        rating: r.rating,
+        at: r.createdAt.getTime(),
+      });
     }
     for (const p of played) {
       if (p.status !== PlayStatus.PLAYED) continue;
-      addGenres(p.game?.genres ?? [], RECOMMENDATION_PLAYED_WEIGHT * recency(p.playedAt ?? p.createdAt));
+      const w = RECOMMENDATION_PLAYED_WEIGHT * recency(p.playedAt ?? p.createdAt);
+      addGenres(p.game?.genres ?? [], w);
+      addStudios(p.game?.companies ?? [], w);
+      if (!p.game) continue;
+      anchors.push({
+        id: p.game.id,
+        title: p.game.title,
+        genres: new Set(p.game.genres.map((g) => g.id)),
+        tier: 1,
+        rating: 0,
+        at: (p.playedAt ?? p.createdAt).getTime(),
+      });
     }
 
     // Only genres the user actually leans toward drive the candidate search;
@@ -501,7 +555,105 @@ export class GamesService {
     // Attache le même score bayésien que la liste du catalogue, pour afficher la
     // pastille de note sur les cartes « Recommandés » (comme « Populaires »).
     const scores = await this.scoresByIds(data.map((g) => g.id));
-    return { data: data.map((g) => ({ ...g, score: scores.get(g.id) })) };
+
+    // Raison de la reco : on VARIE le type d'une carte à l'autre (jeu / studio /
+    // genre) pour ne pas tout justifier de la même façon. Pour chaque jeu on
+    // calcule les options possibles, puis on répartit en privilégiant à chaque
+    // fois le type le MOINS utilisé jusque-là → un mix équilibré sur la liste.
+
+    // Meilleure ancre-jeu partageant le plus de genres avec ce jeu (tier d'abord :
+    // un jeu aimé prime sur un jeu simplement joué).
+    const anchorFor = (genreIds: number[], selfId: number): Anchor | null => {
+      let best: Anchor | null = null;
+      let bestOv = 0;
+      for (const a of anchors) {
+        if (a.id === selfId) continue;
+        let ov = 0;
+        for (const gid of genreIds) if (a.genres.has(gid)) ov += 1;
+        if (ov === 0) continue;
+        const better =
+          !best ||
+          a.tier > best.tier ||
+          (a.tier === best.tier &&
+            (ov > bestOv ||
+              (ov === bestOv &&
+                (a.rating > best.rating || (a.rating === best.rating && a.at > best.at)))));
+        if (better) {
+          best = a;
+          bestOv = ov;
+        }
+      }
+      return best;
+    };
+    // Studio du jeu au poids le plus fort dans le profil (ou null).
+    const studioFor = (companies: { id: number; name: string }[]) => {
+      let best: { id: number; name: string } | null = null;
+      let bestW = 0;
+      for (const c of companies) {
+        const w = studioWeight.get(c.id) ?? 0;
+        if (w > bestW) {
+          bestW = w;
+          best = { id: c.id, name: studioName.get(c.id) ?? c.name };
+        }
+      }
+      return best;
+    };
+    // Genre du jeu au poids le plus fort (les candidats en ont toujours ≥ 1 > 0).
+    const genreFor = (genres: { id: number; name: string }[]) => {
+      let best: { id: number; name: string } | null = null;
+      let bestW = -1;
+      for (const g of genres) {
+        const w = genreWeight.get(g.id) ?? 0;
+        if (w > bestW) {
+          bestW = w;
+          best = { id: g.id, name: g.name };
+        }
+      }
+      return best;
+    };
+
+    type Reason =
+      | { kind: 'game'; game: { id: number; title: string; kind: 'liked' | 'played' } }
+      | { kind: 'studio'; studio: { id: number; name: string } }
+      | { kind: 'genre'; genre: { id: number; name: string } };
+    type ReasonKind = Reason['kind'];
+
+    const options = data.map((g) => ({
+      anchor: anchorFor(g.genres.map((x) => x.id), g.id),
+      studio: studioFor(g.companies),
+      genre: genreFor(g.genres),
+    }));
+
+    // Répartition : à chaque carte, le type disponible le MOINS servi jusque-là
+    // (départage par richesse : jeu > studio > genre).
+    const RICHNESS: ReasonKind[] = ['game', 'studio', 'genre'];
+    const usedCount: Record<ReasonKind, number> = { game: 0, studio: 0, genre: 0 };
+    const reasons: (Reason | null)[] = options.map((o) => {
+      const avail: ReasonKind[] = [];
+      if (o.anchor) avail.push('game');
+      if (o.studio) avail.push('studio');
+      if (o.genre) avail.push('genre');
+      if (avail.length === 0) return null;
+      avail.sort((a, b) => usedCount[a] - usedCount[b] || RICHNESS.indexOf(a) - RICHNESS.indexOf(b));
+      const kind = avail[0];
+      usedCount[kind] += 1;
+      if (kind === 'game' && o.anchor) {
+        return {
+          kind: 'game',
+          game: {
+            id: o.anchor.id,
+            title: o.anchor.title,
+            kind: o.anchor.tier === 2 ? ('liked' as const) : ('played' as const),
+          },
+        };
+      }
+      if (kind === 'studio' && o.studio) return { kind: 'studio', studio: o.studio };
+      return { kind: 'genre', genre: o.genre! };
+    });
+
+    return {
+      data: data.map((g, i) => ({ ...g, score: scores.get(g.id), reason: reasons[i] })),
+    };
   }
 
   // Score bayésien (même formule que la liste du catalogue) pour un ensemble

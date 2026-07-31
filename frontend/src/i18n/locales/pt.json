@@ -395,7 +395,11 @@
       "achEyebrow": "Conquistas próprias",
       "achTitle": "Dezenas de emblemas para desbloquear",
       "achSubtitle": "Ganha emblemas ao concluir jogos, escrever críticas, criar listas e adicionar amigos."
-    }
+    },
+    "recoBecauseGame": "Porque gostaste de {{title}}",
+    "recoBecauseGenre": "Porque gostas de {{genre}}",
+    "recoBecausePlayed": "Porque jogaste {{title}}",
+    "recoBecauseStudio": "Porque gostas dos jogos da {{studio}}"
   },
   "feed": {
     "title": "Atividade dos teus amigos",

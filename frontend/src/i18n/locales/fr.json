@@ -395,7 +395,11 @@
       "achEyebrow": "Succès maison",
       "achTitle": "Des dizaines de badges à débloquer",
       "achSubtitle": "Gagne des badges en finissant des jeux, en écrivant des critiques, en créant des listes et en ajoutant des amis."
-    }
+    },
+    "recoBecauseGame": "Parce que tu as aimé {{title}}",
+    "recoBecauseGenre": "Parce que tu aimes {{genre}}",
+    "recoBecausePlayed": "Parce que tu as joué à {{title}}",
+    "recoBecauseStudio": "Parce que tu aimes les jeux de {{studio}}"
   },
   "feed": {
     "title": "Activité de tes amis",

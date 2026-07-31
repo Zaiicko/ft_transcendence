@@ -395,7 +395,11 @@
       "achEyebrow": "자체 업적",
       "achTitle": "해제할 수 있는 수십 개의 배지",
       "achSubtitle": "게임 완료, 리뷰 작성, 목록 생성, 친구 추가로 배지를 획득하세요."
-    }
+    },
+    "recoBecauseGame": "「{{title}}」을(를) 좋아해서",
+    "recoBecauseGenre": "{{genre}}을(를) 좋아해서",
+    "recoBecausePlayed": "「{{title}}」을(를) 플레이해서",
+    "recoBecauseStudio": "{{studio}}의 게임을 좋아해서"
   },
   "feed": {
     "title": "친구 활동",

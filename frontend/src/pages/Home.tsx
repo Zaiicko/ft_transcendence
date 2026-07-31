@@ -959,6 +959,25 @@ function GameCard({ game }: { game: GameSummary }) {
       <div className="mt-1.5 truncate text-xs text-zinc-600 dark:text-zinc-400" title={game.title}>
         {game.title}
       </div>
+      {/* Raison de la reco (« parce que tu as aimé X ») — présent uniquement sur
+          les cartes de la rangée « Recommandés ». */}
+      {game.reason && (
+        <div className="mt-0.5 line-clamp-2 text-[11px] leading-tight text-zinc-400 dark:text-zinc-500">
+          <span className="text-accent">✦</span>{' '}
+          {game.reason.kind === 'game'
+            ? t(
+                game.reason.game.kind === 'played'
+                  ? 'home.recoBecausePlayed'
+                  : 'home.recoBecauseGame',
+                { title: game.reason.game.title },
+              )
+            : game.reason.kind === 'studio'
+              ? t('home.recoBecauseStudio', { studio: game.reason.studio.name })
+              : t('home.recoBecauseGenre', {
+                  genre: translateGenre(game.reason.genre.name, t),
+                })}
+        </div>
+      )}
     </a>
   );
 }

@@ -395,7 +395,11 @@
       "achEyebrow": "Obiettivi originali",
       "achTitle": "Decine di badge da sbloccare",
       "achSubtitle": "Guadagna badge completando giochi, scrivendo recensioni, creando liste e aggiungendo amici."
-    }
+    },
+    "recoBecauseGame": "Perché ti è piaciuto {{title}}",
+    "recoBecauseGenre": "Perché ti piace {{genre}}",
+    "recoBecausePlayed": "Perché hai giocato a {{title}}",
+    "recoBecauseStudio": "Perché ti piacciono i giochi di {{studio}}"
   },
   "feed": {
     "title": "Attività dei tuoi amici",

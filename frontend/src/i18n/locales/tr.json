@@ -395,7 +395,11 @@
       "achEyebrow": "Özgün başarımlar",
       "achTitle": "Açılacak onlarca rozet",
       "achSubtitle": "Oyunları tamamlayarak, inceleme yazarak, listeler oluşturarak ve arkadaş ekleyerek rozetler kazan."
-    }
+    },
+    "recoBecauseGame": "{{title}} hoşuna gittiği için",
+    "recoBecauseGenre": "{{genre}} sevdiğin için",
+    "recoBecausePlayed": "{{title}} oynadığın için",
+    "recoBecauseStudio": "{{studio}} oyunlarını sevdiğin için"
   },
   "feed": {
     "title": "Arkadaşlarının etkinliği",
