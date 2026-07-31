@@ -55,6 +55,156 @@ export class UsersService {
     return this.prisma.user.delete({ where: { id } });
   }
 
+  // RGPD — droit d'accès (Art. 15) & portabilité (Art. 20) : rassemble TOUTES
+  // les données personnelles de l'utilisateur dans un JSON structuré et lisible,
+  // téléchargeable en self-service depuis les réglages. On exclut délibérément
+  // les secrets/identifiants d'authentification (passwordHash, twoFactorSecret,
+  // hashes des refresh/verification tokens) : ce sont des données de sécurité,
+  // pas des informations personnelles à restituer. Les gros caches de librairies
+  // tierces (steamAchievements / psnLibrary / xboxLibrary) sont omis — ce sont
+  // des copies de profils publics Steam/PSN/Xbox, réexportées telles quelles chez
+  // la source ; on garde en revanche les identifiants de comptes liés.
+  async exportData(userId: number) {
+    const u = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        reviews: {
+          include: { game: { select: { title: true } }, company: { select: { name: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+        reviewComments: {
+          include: { review: { select: { title: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+        reviewLikes: { include: { review: { select: { title: true } } } },
+        reviewDislikes: { include: { review: { select: { title: true } } } },
+        playedGames: {
+          include: { game: { select: { title: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+        gameCompletions: {
+          include: { game: { select: { title: true } } },
+          orderBy: { completedAt: 'asc' },
+        },
+        achievements: { orderBy: { unlockedAt: 'asc' } },
+        gameLists: {
+          include: { items: { include: { game: { select: { title: true } } }, orderBy: { position: 'asc' } } },
+          orderBy: { createdAt: 'asc' },
+        },
+        sentFriendships: { include: { addressee: { select: { username: true } } } },
+        receivedFriendships: { include: { requester: { select: { username: true } } } },
+        sentMessages: {
+          include: { recipient: { select: { username: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+        receivedMessages: {
+          include: { sender: { select: { username: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+        notifications: { orderBy: { createdAt: 'asc' } },
+      },
+    });
+    if (!u) return null;
+
+    return {
+      exportedAt: new Date().toISOString(),
+      account: {
+        id: u.id,
+        email: u.email,
+        username: u.username,
+        bio: u.bio,
+        avatarUrl: u.avatarUrl,
+        language: u.language,
+        provider: u.provider,
+        providerId: u.providerId,
+        linkedAccounts: {
+          steamId: u.steamId,
+          discordId: u.discordId,
+          psnOnlineId: u.psnOnlineId,
+          xboxGamertag: u.xboxGamertag,
+        },
+        twoFactorEnabled: u.twoFactorEnabled,
+        notificationPrefs: u.notificationPrefs,
+        emailVerifiedAt: u.emailVerifiedAt,
+        onboardedAt: u.onboardedAt,
+        lastSeenAt: u.lastSeenAt,
+        createdAt: u.createdAt,
+        updatedAt: u.updatedAt,
+      },
+      reviews: u.reviews.map((r) => ({
+        target: r.game?.title ?? r.company?.name ?? null,
+        title: r.title,
+        rating: r.rating,
+        text: r.text,
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt,
+      })),
+      comments: u.reviewComments.map((c) => ({
+        onReview: c.review?.title ?? null,
+        text: c.deletedAt ? '[deleted]' : c.text,
+        createdAt: c.createdAt,
+      })),
+      likedReviews: u.reviewLikes.map((l) => l.review?.title ?? null),
+      dislikedReviews: u.reviewDislikes.map((l) => l.review?.title ?? null),
+      playedGames: u.playedGames.map((p) => ({
+        game: p.game.title,
+        status: p.status,
+        playedAt: p.playedAt,
+        markedAt: p.createdAt,
+      })),
+      completions: u.gameCompletions.map((c) => ({
+        game: c.game.title,
+        platform: c.platform,
+        completedAt: c.completedAt,
+      })),
+      achievements: u.achievements.map((a) => ({ key: a.key, unlockedAt: a.unlockedAt })),
+      lists: u.gameLists.map((l) => ({
+        name: l.name,
+        isPublic: l.isPublic,
+        games: l.items.map((i) => i.game.title),
+        createdAt: l.createdAt,
+      })),
+      friends: [
+        ...u.sentFriendships.map((f) => ({
+          username: f.addressee.username,
+          status: f.status,
+          direction: 'sent' as const,
+          since: f.createdAt,
+        })),
+        ...u.receivedFriendships.map((f) => ({
+          username: f.requester.username,
+          status: f.status,
+          direction: 'received' as const,
+          since: f.createdAt,
+        })),
+      ],
+      messages: [
+        ...u.sentMessages.map((m) => ({
+          direction: 'sent' as const,
+          with: m.recipient.username,
+          type: m.type,
+          content: m.content,
+          sentAt: m.createdAt,
+          readAt: m.readAt,
+        })),
+        ...u.receivedMessages.map((m) => ({
+          direction: 'received' as const,
+          with: m.sender.username,
+          type: m.type,
+          content: m.content,
+          sentAt: m.createdAt,
+          readAt: m.readAt,
+        })),
+      ].sort((a, b) => a.sentAt.getTime() - b.sentAt.getTime()),
+      notifications: u.notifications.map((n) => ({
+        type: n.type,
+        payload: n.payload,
+        createdAt: n.createdAt,
+        readAt: n.readAt,
+      })),
+    };
+  }
+
   // Privacy-safe public profile keyed by username: identity + badges + stats +
   // recent activity. Never exposes email / 2FA / provider ids. `viewerId` (the
   // optionally-authenticated caller) only drives the friend-action state.

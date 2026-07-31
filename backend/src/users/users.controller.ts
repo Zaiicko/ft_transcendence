@@ -10,12 +10,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Res,
   UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 import { randomUUID } from 'crypto';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -139,6 +141,21 @@ export class UsersController {
     await this.usersService.update(current.sub, {
       passwordHash: await hashPassword(dto.newPassword),
     });
+  }
+
+  // RGPD — export self-service de toutes ses données personnelles (droit d'accès
+  // Art. 15 + portabilité Art. 20), en JSON structuré téléchargeable. Deux
+  // segments ⇒ pas de conflit avec @Get(':id').
+  @UseGuards(JwtAuthGuard)
+  @Get('me/export')
+  async exportMyData(@CurrentUser() current: JwtPayload, @Res({ passthrough: true }) res: Response) {
+    const data = await this.usersService.exportData(current.sub);
+    if (!data) throw new NotFoundException();
+    const date = new Date().toISOString().slice(0, 10);
+    const safeName = data.account.username.replace(/[^a-zA-Z0-9_-]/g, '_');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="saveboxd-data-${safeName}-${date}.json"`);
+    return data;
   }
 
   @UseGuards(JwtAuthGuard)

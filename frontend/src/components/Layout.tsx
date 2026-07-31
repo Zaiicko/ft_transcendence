@@ -182,7 +182,7 @@ export default function Layout() {
         {t('a11y.skipToContent')}
       </a>
       <header className="sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/80 px-4 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/80">
-        <nav className="mx-auto flex max-w-6xl items-center gap-3 sm:gap-6">
+        <nav className="mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-3 sm:gap-6">
           {/* Burger : liens de nav sur petit/moyen écran (la barre inline est
               masquée < lg — trop chargée en dessous : 5 liens + recherche + icônes) */}
           <div className="relative shrink-0 lg:hidden">
@@ -425,7 +425,7 @@ export default function Layout() {
         </nav>
       </header>
 
-      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-6xl flex-1 px-6 py-8 focus:outline-none">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] flex-1 px-6 py-8 focus:outline-none">
         {/* Fallback pendant le téléchargement d'une page lazy (voir App.tsx) :
             la nav reste affichée, seul le contenu montre le spinner. */}
         <Suspense
@@ -441,7 +441,7 @@ export default function Layout() {
 
       {/* Privacy Policy and ToS must be reachable from the footer (subject requirement) */}
       <footer className="mt-10 border-t border-zinc-900/10 px-6 py-8 dark:border-zinc-100/10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
+        <div className="mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] flex-col items-center gap-4 sm:flex-row sm:justify-between">
           <div className="flex flex-col items-center gap-1 sm:items-start">
             <Link to="/" className="font-display text-lg font-bold tracking-tight">
               <span className="text-accent">Save</span>boxd

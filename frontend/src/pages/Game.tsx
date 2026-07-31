@@ -18,6 +18,53 @@ import { GameDlc, GameSummary } from '../lib/types';
 const screenshot1080 = (g: GameSummary) =>
   g.screenshots?.[0]?.replace(/t_[a-z0-9_]+/, 't_1080p') ?? null;
 
+// Poids bayésien : les notes externes (IGDB+Steam) comptent ensemble comme ce
+// nombre de votes joueurs virtuels — une poignée d'avis ne peut donc pas faire
+// chuter (ni exploser) la note, mais une vraie foule d'utilisateurs finit par
+// prendre le dessus. Même valeur/esprit que le score du catalogue (côté back).
+const RATING_EXTERNAL_WEIGHT = 10;
+
+type RatingSource = { value: number; count: number | null }; // value sur 0–10
+type BlendedRating = {
+  score: number; // 0–10, moyenne pondérée affichée dans l'anneau
+  players?: RatingSource;
+  igdb?: RatingSource;
+  steam?: RatingSource;
+};
+
+// Note globale d'un jeu = moyenne pondérée des sources disponibles, jamais une
+// seule source qui écrase les autres. Les externes (IGDB, Steam) forment une
+// « note externe » (leur moyenne) qui pèse RATING_EXTERNAL_WEIGHT votes ; les
+// avis joueurs pèsent 1 chacun et prennent le dessus quand ils sont nombreux.
+function blendRating(game: GameSummary, stats: ReviewStats | null): BlendedRating | null {
+  const players =
+    stats && stats._count > 0 && stats._avg.rating != null
+      ? { value: stats._avg.rating, count: stats._count }
+      : undefined;
+  const igdb =
+    game.igdbRating != null
+      ? { value: game.igdbRating / 10, count: game.igdbRatingCount ?? null }
+      : undefined;
+  const steam =
+    game.steamScore != null
+      ? { value: game.steamScore / 10, count: game.steamRatingCount ?? null }
+      : undefined;
+
+  const ext = [igdb, steam].filter((s): s is RatingSource => !!s).map((s) => s.value);
+  const external = ext.length ? ext.reduce((a, b) => a + b, 0) / ext.length : undefined;
+
+  let score: number | null;
+  if (external === undefined) score = players ? players.value : null;
+  else if (!players) score = external;
+  else
+    score =
+      (players.count * players.value + RATING_EXTERNAL_WEIGHT * external) /
+      (players.count + RATING_EXTERNAL_WEIGHT);
+
+  if (score === null) return null;
+  return { score, players, igdb, steam };
+}
+
 export default function Game() {
   const { id } = useParams();
   const gameId = Number(id);
@@ -130,13 +177,9 @@ export default function Game() {
 
   const banner = screenshot1080(game);
   const year = game.releaseDate ? new Date(game.releaseDate).getFullYear() : null;
-  // Note affichée dans l'anneau : moyenne joueurs si dispo, sinon note IGDB /10.
-  const scoreVal =
-    stats && stats._count > 0 && stats._avg.rating != null
-      ? stats._avg.rating
-      : game.igdbRating != null
-        ? game.igdbRating / 10
-        : null;
+  // Note affichée dans l'anneau : moyenne pondérée de toutes les sources
+  // (joueurs + IGDB + Steam), réactive en live aux nouveaux avis via `stats`.
+  const rating = blendRating(game, stats);
   // Distribution dispo (au moins un avis) → sidebar sticky à droite des critiques.
   const hasDist = !!(stats && stats._count > 0 && stats.distribution);
 
@@ -190,7 +233,7 @@ export default function Game() {
   // Barre d'actions (réutilisée dans le hero et la barre collante).
   const actions = (
     <>
-      <PlayedButton gameId={gameId} showCount refreshKey={playedRefresh} />
+      <PlayedButton gameId={gameId} releaseDate={game.releaseDate} showCount refreshKey={playedRefresh} />
       <a
         href="#review"
         className="flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-zinc-950 shadow-sm shadow-accent/30 transition hover:brightness-110"
@@ -222,14 +265,14 @@ export default function Game() {
                 <img src={game.coverUrl} alt="" className="hidden h-40 w-auto shrink-0 rounded-xl border border-zinc-100/15 shadow-2xl sm:block md:h-52" />
               )}
               <div className="min-w-0 flex-1 pb-1">{identity(true)}</div>
-              {scoreVal != null && <ScoreRing score={scoreVal} onDark />}
+              {rating && <ScoreRing rating={rating} onDark />}
             </div>
           </div>
         ) : (
           <div className="card flex flex-col gap-6 p-6 sm:flex-row">
             {game.coverUrl && <img src={game.coverUrl} alt="" className="h-72 self-start rounded-xl shadow-xl" />}
             <div className="min-w-0 flex-1">{identity(false)}</div>
-            {scoreVal != null && <ScoreRing score={scoreVal} />}
+            {rating && <ScoreRing rating={rating} />}
           </div>
         )}
       </div>
@@ -301,21 +344,82 @@ export default function Game() {
   );
 }
 
-// Anneau de note (0–10) — moyenne joueurs (ou IGDB en repli). L'accent ambre
-// remplit proportionnellement.
-function ScoreRing({ score, onDark = false }: { score: number; onDark?: boolean }) {
+// Anneau de note (0–10) affichant la moyenne pondérée. Au survol (ou focus
+// clavier), un tooltip détaille chaque source : joueurs Saveboxd, IGDB, Steam,
+// avec leur note et leur nombre de votes/avis. L'accent ambre remplit l'anneau
+// proportionnellement.
+function ScoreRing({ rating, onDark = false }: { rating: BlendedRating; onDark?: boolean }) {
+  const { t } = useTranslation();
   const r = 26;
   const c = 2 * Math.PI * r;
-  const pct = Math.min(Math.max(score / 10, 0), 1);
+  const pct = Math.min(Math.max(rating.score / 10, 0), 1);
+
+  const rows: { label: string; value: string; count: string | null }[] = [];
+  if (rating.players)
+    rows.push({
+      label: t('game.rating.players'),
+      value: `${rating.players.value.toFixed(1)}/10`,
+      count: t(rating.players.count === 1 ? 'game.reviewCountOne' : 'game.reviewCountMany', {
+        count: rating.players.count,
+      }),
+    });
+  if (rating.igdb)
+    rows.push({
+      label: 'IGDB',
+      value: `${rating.igdb.value.toFixed(1)}/10`,
+      count:
+        rating.igdb.count != null
+          ? t(rating.igdb.count === 1 ? 'game.rating.votesOne' : 'game.rating.votesMany', {
+              count: rating.igdb.count,
+            })
+          : null,
+    });
+  if (rating.steam)
+    rows.push({
+      label: 'Steam',
+      value: `${Math.round(rating.steam.value * 10)}%`,
+      count:
+        rating.steam.count != null
+          ? t(rating.steam.count === 1 ? 'game.rating.votesOne' : 'game.rating.votesMany', {
+              count: rating.steam.count,
+            })
+          : null,
+    });
+
   return (
-    <div className="relative hidden h-24 w-24 shrink-0 sm:block">
+    <div className="group relative hidden h-24 w-24 shrink-0 cursor-help sm:block" tabIndex={0}>
       <svg viewBox="0 0 64 64" className="h-24 w-24 -rotate-90">
         <circle cx="32" cy="32" r={r} fill="none" strokeWidth="5" className={onDark ? 'stroke-zinc-100/20' : 'stroke-zinc-900/10 dark:stroke-zinc-100/15'} />
         <circle cx="32" cy="32" r={r} fill="none" strokeWidth="5" strokeLinecap="round" className="stroke-accent" strokeDasharray={c} strokeDashoffset={c * (1 - pct)} />
       </svg>
       <div className={`absolute inset-0 flex flex-col items-center justify-center ${onDark ? 'text-zinc-50' : ''}`}>
-        <span className="font-display text-2xl font-extrabold tabular-nums leading-none text-accent">{score.toFixed(1)}</span>
+        <span className="font-display text-2xl font-extrabold tabular-nums leading-none text-accent">{rating.score.toFixed(1)}</span>
         <span className={`text-[10px] font-semibold ${onDark ? 'text-zinc-300' : 'text-zinc-400'}`}>/10</span>
+      </div>
+
+      {/* Tooltip : détail des sources (survol + focus). Fond opaque → lisible sur
+          le hero sombre comme sur la carte claire. */}
+      <div className="pointer-events-none absolute bottom-full right-0 z-40 mb-2 w-60 rounded-xl bg-zinc-900 p-3 text-left opacity-0 shadow-xl ring-1 ring-white/10 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
+        <div className="mb-2 flex items-baseline justify-between gap-2 border-b border-white/10 pb-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
+            {t('game.rating.globalTitle')}
+          </span>
+          <span className="font-display text-lg font-extrabold tabular-nums text-accent">
+            {rating.score.toFixed(1)}
+            <span className="ml-0.5 text-[10px] font-semibold text-zinc-500">/10</span>
+          </span>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          {rows.map((row) => (
+            <div key={row.label} className="flex items-center justify-between gap-3 text-xs">
+              <span className="text-zinc-300">{row.label}</span>
+              <span className="tabular-nums">
+                <span className="font-semibold text-zinc-100">{row.value}</span>
+                {row.count && <span className="ml-1.5 text-[10px] text-zinc-500">{row.count}</span>}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -440,7 +544,7 @@ function DlcSelector({ dlcs }: { dlcs: GameDlc[] }) {
               {dlcYear(selected) ? ` · ${dlcYear(selected)}` : ''}
             </div>
             <div className="mt-3 flex items-center gap-3">
-              <PlayedButton gameId={selected.id} />
+              <PlayedButton gameId={selected.id} releaseDate={selected.releaseDate} />
               <RateLink id={selected.id} />
             </div>
           </div>

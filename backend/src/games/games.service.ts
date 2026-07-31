@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { GameType, PlayStatus, Prisma } from '@prisma/client';
 import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
@@ -331,8 +331,21 @@ export class GamesService {
   // pipeline que les 100 % plateformes (calendrier vert + feed « terminé »).
   // Terminer implique avoir joué → on garantit aussi un PlayedGame PLAYED.
   async markCompleted(userId: number, gameId: number, completedAt?: Date) {
-    const exists = await this.prisma.game.findUnique({ where: { id: gameId }, select: { id: true } });
-    if (!exists) throw new NotFoundException(`Game ${gameId} not found`);
+    const game = await this.prisma.game.findUnique({
+      where: { id: gameId },
+      select: { id: true, releaseDate: true },
+    });
+    if (!game) throw new NotFoundException(`Game ${gameId} not found`);
+    // Garde-fous sur la date choisie par l'user : pas dans le futur, et pas
+    // avant la sortie du jeu (on ne peut pas l'avoir fini avant qu'il existe).
+    if (completedAt) {
+      if (completedAt.getTime() > Date.now() + 24 * 3600 * 1000) {
+        throw new BadRequestException('Completion date cannot be in the future');
+      }
+      if (game.releaseDate && completedAt < game.releaseDate) {
+        throw new BadRequestException('Completion date cannot be before the game was released');
+      }
+    }
     const current = await this.prisma.playedGame.findUnique({
       where: { userId_gameId: { userId, gameId } },
       select: { status: true },

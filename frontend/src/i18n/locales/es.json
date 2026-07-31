@@ -15,7 +15,9 @@
     "error": "Algo salió mal",
     "yes": "Sí",
     "no": "No",
-    "unknown": "Desconocido"
+    "unknown": "Desconocido",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "nav": {
     "catalog": "Catálogo",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Eliminar cuenta",
-      "warning": "Esto elimina permanentemente tu cuenta, reseñas, amistades y mensajes. No se puede deshacer.",
+      "warning": "Esto elimina permanentemente tu cuenta, amistades y mensajes. Tus reseñas y comentarios se conservan pero se anonimizan (mostrados como de un usuario eliminado). No se puede deshacer.",
       "button": "Eliminar cuenta",
       "confirmPasswordPlaceholder": "Confirma tu contraseña",
       "confirmButton": "Eliminar permanentemente",
@@ -256,7 +258,14 @@
     "navNotifications": "Notificaciones",
     "navSecurity": "Seguridad",
     "navConnections": "Conexiones",
-    "navDanger": "Zona de peligro"
+    "navDanger": "Zona de peligro",
+    "navData": "Tus datos",
+    "export": {
+      "description": "Descarga una copia de todos tus datos personales (perfil, reseñas, comentarios, juegos, listas, amigos, mensajes y notificaciones) en un archivo JSON estructurado.",
+      "button": "Descargar mis datos",
+      "downloading": "Preparando…",
+      "error": "No se pudieron exportar tus datos"
+    }
   },
   "friends": {
     "title": "Amigos",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Nota de la comunidad",
     "eyeDlc": "Contenido adicional",
     "eyeAbout": "Acerca de",
-    "aboutTitle": "El juego"
+    "aboutTitle": "El juego",
+    "rating": {
+      "globalTitle": "Puntuación global",
+      "players": "Jugadores",
+      "votesOne": "{{count}} voto",
+      "votesMany": "{{count}} votos"
+    },
+    "dateTypeLabel": "O escribe una fecha",
+    "datePartYear": "AAAA",
+    "datePartMonth": "MM",
+    "datePartDay": "DD"
   },
   "share": {
     "defaultTitle": "Compartir con un amigo",
@@ -820,12 +839,12 @@
           "title": "Tus derechos",
           "body": [
             "De conformidad con el Reglamento General de Protección de Datos (RGPD), dispones de los siguientes derechos:",
-            "• derecho de acceso a tus datos personales;",
+            "• derecho de acceso a tus datos personales: puedes descargar una copia completa en cualquier momento desde tus ajustes;",
             "• derecho de rectificación de datos inexactos (modificable directamente desde tus ajustes);",
             "• derecho de supresión: eliminación de tu cuenta en cualquier momento desde tus ajustes;",
             "• derecho a la limitación del tratamiento en ciertos casos;",
             "• derecho de oposición a determinados tratamientos, por ejemplo mediante tus preferencias de notificaciones;",
-            "• derecho a la portabilidad de tus datos en un formato estructurado;",
+            "• derecho a la portabilidad: exporta tus datos en un formato estructurado y legible por máquina (JSON) directamente desde tus ajustes;",
             "• derecho a retirar tu consentimiento en cualquier momento cuando el tratamiento dependa de él (por ejemplo, el inicio de sesión mediante un proveedor externo);",
             "• derecho a presentar una reclamación ante la autoridad de protección de datos competente (en Francia, la CNIL — cnil.fr).",
             "Para ejercer cualquiera de estos derechos, contáctanos en la dirección indicada en la sección Contacto."

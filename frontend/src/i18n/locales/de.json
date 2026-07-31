@@ -15,7 +15,9 @@
     "error": "Etwas ist schiefgelaufen",
     "yes": "Ja",
     "no": "Nein",
-    "unknown": "Unbekannt"
+    "unknown": "Unbekannt",
+    "previous": "Zurück",
+    "next": "Weiter"
   },
   "nav": {
     "catalog": "Katalog",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Konto löschen",
-      "warning": "Dies löscht dein Konto, deine Rezensionen, Freundschaften und Nachrichten dauerhaft. Dies kann nicht rückgängig gemacht werden.",
+      "warning": "Dies löscht dein Konto, deine Freundschaften und Nachrichten dauerhaft. Deine Rezensionen und Kommentare bleiben erhalten, werden aber anonymisiert (angezeigt als von einem gelöschten Nutzer). Dies kann nicht rückgängig gemacht werden.",
       "button": "Konto löschen",
       "confirmPasswordPlaceholder": "Bestätige dein Passwort",
       "confirmButton": "Endgültig löschen",
@@ -256,7 +258,14 @@
     "navNotifications": "Benachrichtigungen",
     "navSecurity": "Sicherheit",
     "navConnections": "Verbindungen",
-    "navDanger": "Gefahrenzone"
+    "navDanger": "Gefahrenzone",
+    "navData": "Deine Daten",
+    "export": {
+      "description": "Lade eine Kopie all deiner personenbezogenen Daten (Profil, Rezensionen, Kommentare, Spiele, Listen, Freunde, Nachrichten und Benachrichtigungen) als strukturierte JSON-Datei herunter.",
+      "button": "Meine Daten herunterladen",
+      "downloading": "Wird vorbereitet…",
+      "error": "Deine Daten konnten nicht exportiert werden"
+    }
   },
   "friends": {
     "title": "Freunde",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Community-Wertung",
     "eyeDlc": "Zusatzinhalte",
     "eyeAbout": "Über",
-    "aboutTitle": "Das Spiel"
+    "aboutTitle": "Das Spiel",
+    "rating": {
+      "globalTitle": "Gesamtwertung",
+      "players": "Spieler",
+      "votesOne": "{{count}} Stimme",
+      "votesMany": "{{count}} Stimmen"
+    },
+    "dateTypeLabel": "Oder Datum eingeben",
+    "datePartYear": "JJJJ",
+    "datePartMonth": "MM",
+    "datePartDay": "TT"
   },
   "share": {
     "defaultTitle": "Mit einem Freund teilen",
@@ -820,12 +839,12 @@
           "title": "Ihre Rechte",
           "body": [
             "Gemäß der Datenschutz-Grundverordnung (DSGVO) haben Sie folgende Rechte bezüglich Ihrer personenbezogenen Daten:",
-            "• Recht auf Auskunft über Ihre personenbezogenen Daten;",
+            "• Recht auf Auskunft über Ihre personenbezogenen Daten – Sie können jederzeit in Ihren Einstellungen eine vollständige Kopie herunterladen;",
             "• Recht auf Berichtigung unrichtiger Daten (die meisten Felder können direkt in Ihren Einstellungen geändert werden);",
             "• Recht auf Löschung: Löschen Sie Ihr Konto jederzeit in Ihren Einstellungen;",
             "• Recht auf Einschränkung der Verarbeitung in bestimmten Fällen;",
             "• Recht auf Widerspruch gegen bestimmte Verarbeitungen, zum Beispiel über Ihre Benachrichtigungseinstellungen;",
-            "• Recht auf Datenübertragbarkeit Ihrer Daten in einem strukturierten Format;",
+            "• Recht auf Datenübertragbarkeit: Exportieren Sie Ihre Daten in einem strukturierten, maschinenlesbaren Format (JSON) direkt in Ihren Einstellungen;",
             "• Recht auf Widerruf Ihrer Einwilligung jederzeit, wenn die Verarbeitung darauf beruht (zum Beispiel die Anmeldung über einen externen Anbieter);",
             "• Recht auf Beschwerde bei der zuständigen Datenschutzaufsichtsbehörde (in Frankreich die CNIL — cnil.fr).",
             "Um eines dieser Rechte auszuüben, kontaktieren Sie uns unter der im Abschnitt Kontakt angegebenen Adresse."

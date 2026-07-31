@@ -15,7 +15,9 @@
     "error": "Bir şeyler ters gitti",
     "yes": "Evet",
     "no": "Hayır",
-    "unknown": "Bilinmiyor"
+    "unknown": "Bilinmiyor",
+    "previous": "Önceki",
+    "next": "Sonraki"
   },
   "nav": {
     "catalog": "Katalog",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Hesabı sil",
-      "warning": "Bu işlem hesabını, incelemelerini, arkadaşlıklarını ve mesajlarını kalıcı olarak siler. Bu işlem geri alınamaz.",
+      "warning": "Bu işlem hesabını, arkadaşlıklarını ve mesajlarını kalıcı olarak siler. İncelemelerin ve yorumların saklanır ancak anonimleştirilir (silinmiş bir kullanıcıdan geliyormuş gibi gösterilir). Bu işlem geri alınamaz.",
       "button": "Hesabı sil",
       "confirmPasswordPlaceholder": "Şifreni onayla",
       "confirmButton": "Kalıcı olarak sil",
@@ -256,7 +258,14 @@
     "navNotifications": "Bildirimler",
     "navSecurity": "Güvenlik",
     "navConnections": "Bağlantılar",
-    "navDanger": "Tehlike bölgesi"
+    "navDanger": "Tehlike bölgesi",
+    "navData": "Verileriniz",
+    "export": {
+      "description": "Tüm kişisel verilerinizin (profil, incelemeler, yorumlar, oyunlar, listeler, arkadaşlar, mesajlar ve bildirimler) bir kopyasını yapılandırılmış bir JSON dosyası olarak indirin.",
+      "button": "Verilerimi indir",
+      "downloading": "Hazırlanıyor…",
+      "error": "Verileriniz dışa aktarılamadı"
+    }
   },
   "friends": {
     "title": "Arkadaşlar",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Topluluk puanı",
     "eyeDlc": "Ek içerik",
     "eyeAbout": "Hakkında",
-    "aboutTitle": "Oyun"
+    "aboutTitle": "Oyun",
+    "rating": {
+      "globalTitle": "Genel puan",
+      "players": "Oyuncular",
+      "votesOne": "{{count}} oy",
+      "votesMany": "{{count}} oy"
+    },
+    "dateTypeLabel": "Ya da bir tarih yazın",
+    "datePartYear": "YYYY",
+    "datePartMonth": "AA",
+    "datePartDay": "GG"
   },
   "share": {
     "defaultTitle": "Bir arkadaşınla paylaş",
@@ -820,12 +839,12 @@
           "title": "Haklarınız",
           "body": [
             "Genel Veri Koruma Yönetmeliği (GDPR) uyarınca kişisel verileriniz üzerinde aşağıdaki haklara sahipsiniz:",
-            "• kişisel verilerinize erişim hakkı;",
+            "• kişisel verilerinize erişim hakkı — ayarlarınızdan istediğiniz zaman tam bir kopya indirebilirsiniz;",
             "• yanlış verilerin düzeltilmesi hakkı (çoğu alan doğrudan ayarlarınızdan düzenlenebilir);",
             "• silme hakkı: hesabınızı istediğiniz zaman ayarlarınızdan silme;",
             "• belirli durumlarda işlemenin kısıtlanması hakkı;",
             "• örneğin bildirim tercihleriniz aracılığıyla belirli işlemelere itiraz etme hakkı;",
-            "• verilerinizin yapılandırılmış bir formatta taşınabilirlik hakkı;",
+            "• taşınabilirlik hakkı: verilerinizi yapılandırılmış, makine tarafından okunabilir bir biçimde (JSON) doğrudan ayarlarınızdan dışa aktarın;",
             "• işleme buna dayandığında (örneğin üçüncü taraf bir sağlayıcı üzerinden giriş yapmak) rızanızı istediğiniz zaman geri çekme hakkı;",
             "• yetkili veri koruma otoritesine (Fransa'da CNIL — cnil.fr) şikayette bulunma hakkı.",
             "Bu haklardan herhangi birini kullanmak için İletişim bölümünde belirtilen adresten bizimle iletişime geçin."

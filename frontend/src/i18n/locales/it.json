@@ -15,7 +15,9 @@
     "error": "Qualcosa è andato storto",
     "yes": "Sì",
     "no": "No",
-    "unknown": "Sconosciuto"
+    "unknown": "Sconosciuto",
+    "previous": "Precedente",
+    "next": "Successivo"
   },
   "nav": {
     "catalog": "Catalogo",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Elimina account",
-      "warning": "Questa azione elimina definitivamente il tuo account, le recensioni, le amicizie e i messaggi. Non può essere annullata.",
+      "warning": "Questa azione elimina definitivamente il tuo account, le amicizie e i messaggi. Le tue recensioni e i commenti vengono conservati ma anonimizzati (mostrati come di un utente eliminato). Non può essere annullata.",
       "button": "Elimina account",
       "confirmPasswordPlaceholder": "Conferma la tua password",
       "confirmButton": "Elimina definitivamente",
@@ -256,7 +258,14 @@
     "navNotifications": "Notifiche",
     "navSecurity": "Sicurezza",
     "navConnections": "Connessioni",
-    "navDanger": "Zona pericolosa"
+    "navDanger": "Zona pericolosa",
+    "navData": "I tuoi dati",
+    "export": {
+      "description": "Scarica una copia di tutti i tuoi dati personali (profilo, recensioni, commenti, giochi, liste, amici, messaggi e notifiche) in un file JSON strutturato.",
+      "button": "Scarica i miei dati",
+      "downloading": "Preparazione…",
+      "error": "Impossibile esportare i tuoi dati"
+    }
   },
   "friends": {
     "title": "Amici",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Voto della community",
     "eyeDlc": "Contenuti aggiuntivi",
     "eyeAbout": "Informazioni",
-    "aboutTitle": "Il gioco"
+    "aboutTitle": "Il gioco",
+    "rating": {
+      "globalTitle": "Voto complessivo",
+      "players": "Giocatori",
+      "votesOne": "{{count}} voto",
+      "votesMany": "{{count}} voti"
+    },
+    "dateTypeLabel": "Oppure digita una data",
+    "datePartYear": "AAAA",
+    "datePartMonth": "MM",
+    "datePartDay": "GG"
   },
   "share": {
     "defaultTitle": "Condividi con un amico",
@@ -820,12 +839,12 @@
           "title": "I tuoi diritti",
           "body": [
             "In conformità al Regolamento Generale sulla Protezione dei Dati (GDPR), disponi dei seguenti diritti:",
-            "• diritto di accesso ai tuoi dati personali;",
+            "• diritto di accesso ai tuoi dati personali: puoi scaricarne una copia completa in qualsiasi momento dalle impostazioni;",
             "• diritto di rettifica dei dati inesatti (modificabile direttamente dalle tue impostazioni);",
             "• diritto alla cancellazione: eliminazione del tuo account in qualsiasi momento dalle tue impostazioni;",
             "• diritto alla limitazione del trattamento in determinati casi;",
             "• diritto di opposizione a determinati trattamenti, ad esempio tramite le tue preferenze di notifica;",
-            "• diritto alla portabilità dei tuoi dati in un formato strutturato;",
+            "• diritto alla portabilità: esporta i tuoi dati in un formato strutturato e leggibile da una macchina (JSON) direttamente dalle impostazioni;",
             "• diritto di revocare il tuo consenso in qualsiasi momento quando il trattamento si basa su di esso (ad esempio l'accesso tramite un fornitore terzo);",
             "• diritto di presentare un reclamo all'autorità di protezione dei dati competente (in Francia, la CNIL — cnil.fr).",
             "Per esercitare uno di questi diritti, contattaci all'indirizzo indicato nella sezione Contatto."

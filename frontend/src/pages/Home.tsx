@@ -712,7 +712,7 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
       {/* Actions (connectés) posées par-dessus le lien de la carte */}
       {user && (
         <div className="absolute bottom-6 right-6 flex items-center gap-3 md:bottom-10 md:right-10">
-          <PlayedButton gameId={game.id} onDark />
+          <PlayedButton gameId={game.id} releaseDate={game.releaseDate} onDark />
           <a
             href={`${gameHref(game.id)}#review`}
             className="flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 shadow-lg shadow-accent/30 transition hover:brightness-110"

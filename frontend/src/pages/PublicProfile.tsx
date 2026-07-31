@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import gsap from 'gsap';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -220,10 +221,10 @@ const weekdayShort = (dow: number) =>
     timeZone: 'UTC',
   });
 
-// Sélecteur d'années à fenêtre glissante : au-delà de WINDOW années, on n'en
-// montre qu'un sous-ensemble encadré de flèches ‹ › pour défiler (sinon la liste
-// déborde du cadre, ex. 2026 → 2005). Clic sur une année visible = sélection.
-// `years` est trié du plus récent au plus ancien.
+// Sélecteur d'années à fenêtre glissante : au-delà de 5 années (ou de ce que la
+// largeur permet), on n'en montre qu'un sous-ensemble encadré de flèches ‹ › pour
+// défiler (sinon la liste déborde du cadre, ex. 2000 → 2026). Clic sur une année
+// visible = sélection. `years` est trié par ordre chronologique ascendant.
 function YearPager({
   years,
   year,
@@ -259,7 +260,9 @@ function YearPager({
     return () => ro.disconnect();
   }, [years.length]);
 
-  const WINDOW = Math.min(Math.max(1, capacity), years.length);
+  // Au plus 5 années visibles à la fois (au-delà → flèches ‹ ›), tout en restant
+  // borné par la largeur réelle (measure) pour ne jamais déborder sur mobile.
+  const WINDOW = Math.min(Math.max(1, capacity), years.length, 5);
   const paged = years.length > WINDOW;
   const maxStart = Math.max(0, years.length - WINDOW);
   // Fenêtre initiale centrée sur l'année sélectionnée (bornée aux extrémités).
@@ -270,6 +273,29 @@ function YearPager({
   const clampedStart = Math.min(start, maxStart);
   const visible = paged ? years.slice(clampedStart, clampedStart + WINDOW) : years;
 
+  // Anime le défilement : à chaque changement de fenêtre (clic ‹ / ›), les puces
+  // d'années glissent + apparaissent dans le sens du défilement (vers les récents
+  // = depuis la droite, vers les anciens = depuis la gauche), en léger décalé.
+  // Respecte prefers-reduced-motion et ne joue pas au montage initial.
+  const prevStartRef = useRef(clampedStart);
+  const pagingRef = useRef(false); // vrai uniquement après un clic ‹ / ›
+  useLayoutEffect(() => {
+    const wasPaging = pagingRef.current;
+    pagingRef.current = false;
+    const dir =
+      clampedStart > prevStartRef.current ? 1 : clampedStart < prevStartRef.current ? -1 : 0;
+    prevStartRef.current = clampedStart;
+    if (!wasPaging || dir === 0 || !wrapRef.current) return; // resize / montage → pas d'anim
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const chips = wrapRef.current.querySelectorAll('[data-year-chip]');
+    const ctx = gsap.context(() => {
+      // Glissement simple : clic gauche (dir<0) → les puces entrent depuis la
+      // gauche (vont vers la droite) ; clic droite (dir>0) → l'inverse.
+      gsap.from(chips, { x: dir * 20, duration: 0.28, ease: 'power2.out' });
+    }, wrapRef.current);
+    return () => ctx.revert();
+  }, [clampedStart]);
+
   const arrow =
     'flex h-6 w-6 shrink-0 items-center justify-center rounded text-zinc-500 transition hover:bg-zinc-100 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent dark:text-zinc-400 dark:hover:bg-zinc-800';
 
@@ -278,9 +304,12 @@ function YearPager({
       {paged && (
         <button
           type="button"
-          onClick={() => setStart((s) => Math.max(0, s - 1))}
+          onClick={() => {
+            pagingRef.current = true;
+            setStart((s) => Math.max(0, s - 1));
+          }}
           disabled={clampedStart === 0}
-          aria-label={t('profile.calNewerYears')}
+          aria-label={t('profile.calOlderYears')}
           className={arrow}
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2">
@@ -292,6 +321,7 @@ function YearPager({
         <button
           key={yr}
           type="button"
+          data-year-chip
           onClick={() => onPick(yr)}
           className={`rounded px-2 py-0.5 text-xs tabular-nums ${
             yr === year
@@ -305,9 +335,12 @@ function YearPager({
       {paged && (
         <button
           type="button"
-          onClick={() => setStart((s) => Math.min(maxStart, s + 1))}
+          onClick={() => {
+            pagingRef.current = true;
+            setStart((s) => Math.min(maxStart, s + 1));
+          }}
           disabled={clampedStart >= maxStart}
-          aria-label={t('profile.calOlderYears')}
+          aria-label={t('profile.calNewerYears')}
           className={arrow}
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2">
@@ -350,11 +383,17 @@ function CompletionCalendar({
 
   const years = useMemo(() => {
     const set = new Set([...done, ...perfect].map((e) => e.playedAt.slice(0, 4)));
-    return [...set].sort().reverse();
+    // Ordre chronologique ascendant : la plus ancienne à gauche, la plus récente
+    // à droite (ex. 2000 … 2026).
+    return [...set].sort();
   }, [done, perfect]);
 
-  // Année affichée : la sélection si elle existe encore, sinon la plus récente.
-  const year = yearSel && years.includes(yearSel) ? yearSel : (years[0] ?? String(new Date().getFullYear()));
+  // Année affichée : la sélection si elle existe encore, sinon la plus récente
+  // (dernière du tableau ascendant).
+  const year =
+    yearSel && years.includes(yearSel)
+      ? yearSel
+      : (years[years.length - 1] ?? String(new Date().getFullYear()));
 
   // Colonnes = semaines de 7 jours (dimanche en haut). Padding avant le 1er jan
   // + après le 31 déc pour des colonnes pleines. Mémoïsé sur l'année affichée.

@@ -15,7 +15,9 @@
     "error": "Ocorreu um erro",
     "yes": "Sim",
     "no": "Não",
-    "unknown": "Desconhecido"
+    "unknown": "Desconhecido",
+    "previous": "Anterior",
+    "next": "Seguinte"
   },
   "nav": {
     "catalog": "Catálogo",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Eliminar conta",
-      "warning": "Isto elimina permanentemente a tua conta, críticas, amizades e mensagens. Esta ação não pode ser revertida.",
+      "warning": "Isto elimina permanentemente a tua conta, amizades e mensagens. As tuas críticas e comentários são conservados mas anonimizados (apresentados como de um utilizador eliminado). Esta ação não pode ser revertida.",
       "button": "Eliminar conta",
       "confirmPasswordPlaceholder": "Confirma a tua palavra-passe",
       "confirmButton": "Eliminar permanentemente",
@@ -256,7 +258,14 @@
     "navNotifications": "Notificações",
     "navSecurity": "Segurança",
     "navConnections": "Ligações",
-    "navDanger": "Zona de perigo"
+    "navDanger": "Zona de perigo",
+    "navData": "Os seus dados",
+    "export": {
+      "description": "Transfira uma cópia de todos os seus dados pessoais (perfil, avaliações, comentários, jogos, listas, amigos, mensagens e notificações) num ficheiro JSON estruturado.",
+      "button": "Transferir os meus dados",
+      "downloading": "A preparar…",
+      "error": "Não foi possível exportar os seus dados"
+    }
   },
   "friends": {
     "title": "Amigos",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Nota da comunidade",
     "eyeDlc": "Conteúdo adicional",
     "eyeAbout": "Sobre",
-    "aboutTitle": "O jogo"
+    "aboutTitle": "O jogo",
+    "rating": {
+      "globalTitle": "Classificação global",
+      "players": "Jogadores",
+      "votesOne": "{{count}} voto",
+      "votesMany": "{{count}} votos"
+    },
+    "dateTypeLabel": "Ou escreve uma data",
+    "datePartYear": "AAAA",
+    "datePartMonth": "MM",
+    "datePartDay": "DD"
   },
   "share": {
     "defaultTitle": "Partilhar com um amigo",
@@ -820,12 +839,12 @@
           "title": "Os seus direitos",
           "body": [
             "Em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD), tem os seguintes direitos:",
-            "• direito de acesso aos seus dados pessoais;",
+            "• direito de acesso aos seus dados pessoais — pode transferir uma cópia completa a qualquer momento nas suas definições;",
             "• direito de retificação de dados inexatos (editável diretamente nas suas definições);",
             "• direito ao apagamento: eliminação da sua conta a qualquer momento a partir das suas definições;",
             "• direito à limitação do tratamento em certos casos;",
             "• direito de oposição a determinados tratamentos, por exemplo através das suas preferências de notificações;",
-            "• direito à portabilidade dos seus dados num formato estruturado;",
+            "• direito à portabilidade: exporte os seus dados num formato estruturado e legível por máquina (JSON) diretamente nas suas definições;",
             "• direito de retirar o seu consentimento a qualquer momento quando o tratamento depender dele (por exemplo, o início de sessão através de um fornecedor terceiro);",
             "• direito de apresentar uma reclamação junto da autoridade de proteção de dados competente (em França, a CNIL — cnil.fr).",
             "Para exercer qualquer um destes direitos, contacte-nos através do endereço indicado na secção Contacto."

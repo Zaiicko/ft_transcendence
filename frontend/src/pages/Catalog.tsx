@@ -320,14 +320,17 @@ export default function Catalog() {
 
       {/* Grille */}
       {loading ? (
-        <CoverGridSkeleton count={16} cols="sm:grid-cols-5 lg:grid-cols-8" />
+        <CoverGridSkeleton
+          count={16}
+          cols="sm:grid-cols-5 lg:grid-cols-8 3xl:grid-cols-10 4xl:grid-cols-12 5xl:grid-cols-[repeat(16,minmax(0,1fr))]"
+        />
       ) : games.length === 0 ? (
         <p className="py-16 text-center text-sm text-zinc-500 dark:text-zinc-400">
           {t('catalog.noResults')}
         </p>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-8">
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-8 3xl:grid-cols-10 4xl:grid-cols-12 5xl:grid-cols-[repeat(16,minmax(0,1fr))]">
             {games.map((g) => (
               <GameCard key={g.id} game={g} />
             ))}

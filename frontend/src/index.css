@@ -36,6 +36,14 @@
   /* Fonte display self-hostée (Sora) : titres + nom du site. Le texte
      courant reste en fonte système. La classe `font-display` en découle. */
   --font-display: 'Sora Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Breakpoints ultra-larges (au-delà du 2xl=1536px de Tailwind) : sur les
+     écrans QHD/4K/8K le contenu plafonné à max-w-6xl paraissait perdu au centre
+     avec d'immenses marges vides. On élargit le conteneur (et on densifie les
+     grilles) à partir de ces paliers. 120rem=1920, 160rem=2560, 240rem=3840. */
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 160rem;
+  --breakpoint-5xl: 240rem;
 }
 
 /* La bannière pleine largeur (w-screen) compte la scrollbar : sans ceci,

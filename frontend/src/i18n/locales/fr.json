@@ -15,7 +15,9 @@
     "error": "Une erreur est survenue",
     "yes": "Oui",
     "no": "Non",
-    "unknown": "Inconnu"
+    "unknown": "Inconnu",
+    "previous": "Précédent",
+    "next": "Suivant"
   },
   "nav": {
     "catalog": "Catalogue",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Supprimer le compte",
-      "warning": "Cela supprime définitivement ton compte, tes critiques, tes amitiés et tes messages. Action irréversible.",
+      "warning": "Cela supprime définitivement ton compte, tes amitiés et tes messages. Tes critiques et commentaires sont conservés mais anonymisés (affichés comme venant d'un utilisateur supprimé). Action irréversible.",
       "button": "Supprimer le compte",
       "confirmPasswordPlaceholder": "Confirme ton mot de passe",
       "confirmButton": "Supprimer définitivement",
@@ -256,7 +258,14 @@
     "navNotifications": "Notifications",
     "navSecurity": "Sécurité",
     "navConnections": "Connexions",
-    "navDanger": "Zone de danger"
+    "navDanger": "Zone de danger",
+    "navData": "Vos données",
+    "export": {
+      "description": "Téléchargez une copie de toutes vos données personnelles (profil, avis, commentaires, jeux, listes, amis, messages et notifications) dans un fichier JSON structuré.",
+      "button": "Télécharger mes données",
+      "downloading": "Préparation…",
+      "error": "Impossible d'exporter vos données"
+    }
   },
   "friends": {
     "title": "Amis",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Note de la communauté",
     "eyeDlc": "Contenu additionnel",
     "eyeAbout": "À propos",
-    "aboutTitle": "Le jeu"
+    "aboutTitle": "Le jeu",
+    "rating": {
+      "globalTitle": "Note globale",
+      "players": "Joueurs",
+      "votesOne": "{{count}} vote",
+      "votesMany": "{{count}} votes"
+    },
+    "dateTypeLabel": "Ou saisis une date",
+    "datePartYear": "AAAA",
+    "datePartMonth": "MM",
+    "datePartDay": "JJ"
   },
   "share": {
     "defaultTitle": "Partager à un ami",
@@ -820,12 +839,12 @@
           "title": "Vos droits",
           "body": [
             "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :",
-            "• droit d'accès à vos données personnelles ;",
+            "• droit d'accès à vos données personnelles — vous pouvez en télécharger une copie complète à tout moment depuis vos réglages ;",
             "• droit de rectification des données inexactes (modifiable directement depuis vos paramètres) ;",
             "• droit à l'effacement : suppression de votre compte à tout moment depuis vos paramètres ;",
             "• droit à la limitation du traitement dans certains cas ;",
             "• droit d'opposition à certains traitements, par exemple via vos préférences de notifications ;",
-            "• droit à la portabilité de vos données dans un format structuré ;",
+            "• droit à la portabilité : exportez vos données dans un format structuré et lisible par machine (JSON) directement depuis vos réglages ;",
             "• droit de retirer votre consentement à tout moment lorsque le traitement en dépend (par exemple la connexion via un fournisseur tiers) ;",
             "• droit d'introduire une réclamation auprès de l'autorité de protection des données compétente (en France, la CNIL — cnil.fr).",
             "Pour exercer l'un de ces droits, contactez-nous à l'adresse indiquée dans la section Contact."

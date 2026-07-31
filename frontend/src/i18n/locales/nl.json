@@ -15,7 +15,9 @@
     "error": "Er is iets misgegaan",
     "yes": "Ja",
     "no": "Nee",
-    "unknown": "Onbekend"
+    "unknown": "Onbekend",
+    "previous": "Vorige",
+    "next": "Volgende"
   },
   "nav": {
     "catalog": "Catalogus",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Account verwijderen",
-      "warning": "Dit verwijdert je account, recensies, vriendschappen en berichten permanent. Dit kan niet ongedaan worden gemaakt.",
+      "warning": "Dit verwijdert je account, vriendschappen en berichten permanent. Je recensies en reacties blijven bewaard maar worden geanonimiseerd (weergegeven als van een verwijderde gebruiker). Dit kan niet ongedaan worden gemaakt.",
       "button": "Account verwijderen",
       "confirmPasswordPlaceholder": "Bevestig je wachtwoord",
       "confirmButton": "Definitief verwijderen",
@@ -256,7 +258,14 @@
     "navNotifications": "Meldingen",
     "navSecurity": "Beveiliging",
     "navConnections": "Koppelingen",
-    "navDanger": "Gevarenzone"
+    "navDanger": "Gevarenzone",
+    "navData": "Jouw gegevens",
+    "export": {
+      "description": "Download een kopie van al je persoonlijke gegevens (profiel, recensies, reacties, games, lijsten, vrienden, berichten en meldingen) als een gestructureerd JSON-bestand.",
+      "button": "Mijn gegevens downloaden",
+      "downloading": "Voorbereiden…",
+      "error": "Kon je gegevens niet exporteren"
+    }
   },
   "friends": {
     "title": "Vrienden",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Communityscore",
     "eyeDlc": "Extra content",
     "eyeAbout": "Over",
-    "aboutTitle": "De game"
+    "aboutTitle": "De game",
+    "rating": {
+      "globalTitle": "Totaalscore",
+      "players": "Spelers",
+      "votesOne": "{{count}} stem",
+      "votesMany": "{{count}} stemmen"
+    },
+    "dateTypeLabel": "Of typ een datum",
+    "datePartYear": "JJJJ",
+    "datePartMonth": "MM",
+    "datePartDay": "DD"
   },
   "share": {
     "defaultTitle": "Delen met een vriend",
@@ -820,12 +839,12 @@
           "title": "Uw rechten",
           "body": [
             "Overeenkomstig de Algemene Verordening Gegevensbescherming (AVG) heeft u de volgende rechten:",
-            "• recht op inzage in uw persoonsgegevens;",
+            "• recht op inzage in uw persoonsgegevens — u kunt op elk moment een volledige kopie downloaden in uw instellingen;",
             "• recht op rectificatie van onjuiste gegevens (rechtstreeks aanpasbaar via uw instellingen);",
             "• recht op wissing: verwijder uw account op elk moment via uw instellingen;",
             "• recht op beperking van de verwerking in bepaalde gevallen;",
             "• recht op bezwaar tegen bepaalde verwerkingen, bijvoorbeeld via uw meldingsvoorkeuren;",
-            "• recht op overdraagbaarheid van uw gegevens in een gestructureerd formaat;",
+            "• recht op overdraagbaarheid: exporteer uw gegevens in een gestructureerd, machineleesbaar formaat (JSON) rechtstreeks vanuit uw instellingen;",
             "• recht om uw toestemming op elk moment in te trekken wanneer de verwerking daarop berust (bijvoorbeeld inloggen via een externe aanbieder);",
             "• recht om een klacht in te dienen bij de bevoegde gegevensbeschermingsautoriteit (in Frankrijk de CNIL — cnil.fr).",
             "Om een van deze rechten uit te oefenen, kunt u contact met ons opnemen via het adres vermeld in de sectie Contact."

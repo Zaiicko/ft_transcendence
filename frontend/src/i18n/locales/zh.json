@@ -15,7 +15,9 @@
     "error": "出错了",
     "yes": "是",
     "no": "否",
-    "unknown": "未知"
+    "unknown": "未知",
+    "previous": "上一个",
+    "next": "下一个"
   },
   "nav": {
     "catalog": "目录",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "删除账号",
-      "warning": "此操作将永久删除您的账号、评论、好友关系和消息，且无法撤销。",
+      "warning": "此操作将永久删除您的账号、好友关系和消息。您的评价和评论将被保留但匿名化（显示为来自已删除用户），且无法撤销。",
       "button": "删除账号",
       "confirmPasswordPlaceholder": "确认您的密码",
       "confirmButton": "永久删除",
@@ -256,7 +258,14 @@
     "navNotifications": "通知",
     "navSecurity": "安全",
     "navConnections": "关联账户",
-    "navDanger": "危险区域"
+    "navDanger": "危险区域",
+    "navData": "您的数据",
+    "export": {
+      "description": "以结构化 JSON 文件下载您的所有个人数据（个人资料、评价、评论、游戏、列表、好友、消息和通知）的副本。",
+      "button": "下载我的数据",
+      "downloading": "准备中…",
+      "error": "无法导出您的数据"
+    }
   },
   "friends": {
     "title": "好友",
@@ -671,7 +680,17 @@
     "eyeDistribution": "社区评分",
     "eyeDlc": "附加内容",
     "eyeAbout": "关于",
-    "aboutTitle": "游戏简介"
+    "aboutTitle": "游戏简介",
+    "rating": {
+      "globalTitle": "综合评分",
+      "players": "玩家",
+      "votesOne": "{{count}} 票",
+      "votesMany": "{{count}} 票"
+    },
+    "dateTypeLabel": "或输入日期",
+    "datePartYear": "年",
+    "datePartMonth": "月",
+    "datePartDay": "日"
   },
   "share": {
     "defaultTitle": "分享给好友",
@@ -820,12 +839,12 @@
           "title": "您的权利",
           "body": [
             "根据《通用数据保护条例》（GDPR），您对自己的个人数据享有以下权利：",
-            "• 访问您个人数据的权利；",
+            "• 访问您个人数据的权利——您可以随时在设置中下载完整副本；",
             "• 更正不准确数据的权利（大多数字段可直接在设置中修改）；",
             "• 删除权：随时可在设置中删除您的账户；",
             "• 在特定情况下限制处理的权利；",
             "• 对某些处理提出异议的权利，例如通过您的通知偏好设置；",
-            "• 以结构化格式获取您数据可携带性的权利；",
+            "• 数据可携权：可直接在设置中以结构化、机器可读的格式（JSON）导出您的数据；",
             "• 当处理依赖于同意时（例如通过第三方提供方登录），随时撤回同意的权利；",
             "• 向主管数据保护机构（在法国为 CNIL — cnil.fr）投诉的权利。",
             "如需行使上述任何权利，请通过“联系方式”部分中提供的地址与我们联系。"

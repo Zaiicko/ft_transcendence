@@ -15,7 +15,9 @@
     "error": "Coś poszło nie tak",
     "yes": "Tak",
     "no": "Nie",
-    "unknown": "Nieznane"
+    "unknown": "Nieznane",
+    "previous": "Poprzedni",
+    "next": "Następny"
   },
   "nav": {
     "catalog": "Katalog",
@@ -196,7 +198,7 @@
     },
     "delete": {
       "title": "Usuń konto",
-      "warning": "To trwale usunie Twoje konto, recenzje, znajomości i wiadomości. Tej operacji nie można cofnąć.",
+      "warning": "To trwale usunie Twoje konto, znajomości i wiadomości. Twoje recenzje i komentarze zostaną zachowane, ale zanonimizowane (wyświetlane jako od usuniętego użytkownika). Tej operacji nie można cofnąć.",
       "button": "Usuń konto",
       "confirmPasswordPlaceholder": "Potwierdź swoje hasło",
       "confirmButton": "Usuń na stałe",
@@ -256,7 +258,14 @@
     "navNotifications": "Powiadomienia",
     "navSecurity": "Bezpieczeństwo",
     "navConnections": "Połączenia",
-    "navDanger": "Strefa zagrożenia"
+    "navDanger": "Strefa zagrożenia",
+    "navData": "Twoje dane",
+    "export": {
+      "description": "Pobierz kopię wszystkich swoich danych osobowych (profil, recenzje, komentarze, gry, listy, znajomi, wiadomości i powiadomienia) w postaci ustrukturyzowanego pliku JSON.",
+      "button": "Pobierz moje dane",
+      "downloading": "Przygotowywanie…",
+      "error": "Nie udało się wyeksportować Twoich danych"
+    }
   },
   "friends": {
     "title": "Znajomi",
@@ -671,7 +680,17 @@
     "eyeDistribution": "Ocena społeczności",
     "eyeDlc": "Dodatkowa zawartość",
     "eyeAbout": "O grze",
-    "aboutTitle": "Gra"
+    "aboutTitle": "Gra",
+    "rating": {
+      "globalTitle": "Ocena ogólna",
+      "players": "Gracze",
+      "votesOne": "{{count}} głos",
+      "votesMany": "{{count}} głosów"
+    },
+    "dateTypeLabel": "Lub wpisz datę",
+    "datePartYear": "RRRR",
+    "datePartMonth": "MM",
+    "datePartDay": "DD"
   },
   "share": {
     "defaultTitle": "Udostępnij znajomemu",
@@ -820,12 +839,12 @@
           "title": "Twoje prawa",
           "body": [
             "Zgodnie z Ogólnym Rozporządzeniem o Ochronie Danych (RODO) przysługują Ci następujące prawa:",
-            "• prawo dostępu do Twoich danych osobowych;",
+            "• prawo dostępu do swoich danych osobowych — pełną kopię możesz pobrać w każdej chwili w ustawieniach;",
             "• prawo do sprostowania niedokładnych danych (możliwe do edycji bezpośrednio w ustawieniach);",
             "• prawo do usunięcia danych: usunięcie konta w dowolnym momencie w ustawieniach;",
             "• prawo do ograniczenia przetwarzania w określonych przypadkach;",
             "• prawo do sprzeciwu wobec niektórych przetwarzań, na przykład za pomocą preferencji powiadomień;",
-            "• prawo do przenoszenia danych w ustrukturyzowanym formacie;",
+            "• prawo do przenoszenia danych: eksportuj swoje dane w ustrukturyzowanym, nadającym się do odczytu maszynowego formacie (JSON) bezpośrednio z ustawień;",
             "• prawo do wycofania zgody w dowolnym momencie, gdy przetwarzanie się na niej opiera (na przykład logowanie przez zewnętrznego dostawcę);",
             "• prawo do wniesienia skargi do właściwego organu ochrony danych (we Francji jest to CNIL — cnil.fr).",
             "Aby skorzystać z któregokolwiek z tych praw, skontaktuj się z nami pod adresem podanym w sekcji Kontakt."

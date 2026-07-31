@@ -76,6 +76,9 @@ export default function Settings() {
   const [forgotSent, setForgotSent] = useState(false);
   const [forgotError, setForgotError] = useState<string | null>(null);
 
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -200,6 +203,33 @@ export default function Settings() {
     }
   }
 
+  // RGPD — export self-service : on ne passe pas par apiFetch (qui parse en JSON),
+  // on récupère le blob pour déclencher un téléchargement avec le nom de fichier
+  // fourni par le serveur (Content-Disposition).
+  async function handleExport() {
+    setExportError(null);
+    setExporting(true);
+    try {
+      const res = await fetch('/api/users/me/export', { credentials: 'include' });
+      if (!res.ok) throw new Error('export failed');
+      const blob = await res.blob();
+      const disposition = res.headers.get('Content-Disposition') ?? '';
+      const filename = disposition.match(/filename="?([^"]+)"?/)?.[1] ?? 'saveboxd-data.json';
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setExportError(t('settings.export.error'));
+    } finally {
+      setExporting(false);
+    }
+  }
+
   async function handleDelete() {
     setDeleteError(null);
     setDeleting(true);
@@ -221,6 +251,7 @@ export default function Settings() {
     { id: 'notifications', label: t('settings.navNotifications') },
     { id: 'securite', label: t('settings.navSecurity') },
     { id: 'connexions', label: t('settings.navConnections') },
+    { id: 'donnees', label: t('settings.navData') },
     { id: 'danger', label: t('settings.navDanger'), danger: true },
   ];
 
@@ -533,6 +564,23 @@ export default function Settings() {
           <div id="connexions" className="scroll-mt-24">
             <LinkedAccounts />
           </div>
+
+          {/* ---- Vos données (RGPD : accès + portabilité) ---- */}
+          <section id="donnees" className="card scroll-mt-24 p-5">
+            <SectionHead className="mb-4" title={t('settings.navData')} />
+            <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
+              {t('settings.export.description')}
+            </p>
+            <button
+              type="button"
+              onClick={handleExport}
+              disabled={exporting}
+              className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+            >
+              {exporting ? t('settings.export.downloading') : t('settings.export.button')}
+            </button>
+            {exportError && <p className="mt-3 text-sm text-red-400">{exportError}</p>}
+          </section>
 
           {/* ---- Zone de danger ---- */}
           <section

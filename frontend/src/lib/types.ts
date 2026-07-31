@@ -13,6 +13,9 @@ export interface GameSummary {
   avgUserRating?: number | null;
   userRatingCount?: number;
   igdbRating?: number | null;
+  igdbRatingCount?: number | null;
+  steamScore?: number | null;
+  steamRatingCount?: number | null;
   genres?: { id: number; name: string }[];
   platforms?: { id: number; name: string }[];
   companies?: { id: number; name: string; logoUrl: string | null }[];
