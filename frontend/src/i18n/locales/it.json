@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Quando un contatto Steam/42 si registra",
     "achievement": "Obiettivo sbloccato: <b>{{name}}</b>",
     "prefAchievement": "Obiettivi",
-    "prefAchievementHint": "Quando sblocchi un obiettivo"
+    "prefAchievementHint": "Quando sblocchi un obiettivo",
+    "clear": "Svuota"
   },
   "home": {
     "featuredBadge": "Gioco in evidenza",

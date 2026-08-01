@@ -52,6 +52,19 @@ html {
   overflow-x: hidden;
 }
 
+/* Header « verre dépoli » : le flou (backdrop-filter) n'est pas supporté partout
+   (certains Linux, anciennes versions Firefox/Chrome, ou GPU désactivé). Sans lui,
+   le fond semi-transparent laisse voir le contenu qui défile → le header paraît
+   transparent. Repli : fond OPAQUE quand le backdrop-filter est indisponible. */
+@supports not ((backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px))) {
+  .app-header {
+    background-color: var(--color-zinc-50);
+  }
+  .dark .app-header {
+    background-color: var(--color-zinc-950);
+  }
+}
+
 /* Accessibilité clavier : anneau de focus ambre visible uniquement au clavier
    (navigation Tab), jamais au clic souris — grâce à :focus-visible. Règle hors
    @layer pour l'emporter sur les `focus:outline-none` des champs/boutons. */

@@ -181,7 +181,7 @@ export default function Layout() {
       >
         {t('a11y.skipToContent')}
       </a>
-      <header className="sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/80 px-4 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/80">
+      <header className="app-header sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/90 px-4 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/90">
         <nav className="mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-3 sm:gap-6">
           {/* Burger : liens de nav sur petit/moyen écran (la barre inline est
               masquée < lg — trop chargée en dessous : 5 liens + recherche + icônes) */}

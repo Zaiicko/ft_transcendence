@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Steam/42 지인이 가입할 때",
     "achievement": "업적 달성: <b>{{name}}</b>",
     "prefAchievement": "업적",
-    "prefAchievementHint": "업적을 달성했을 때"
+    "prefAchievementHint": "업적을 달성했을 때",
+    "clear": "지우기"
   },
   "home": {
     "featuredBadge": "추천 게임",

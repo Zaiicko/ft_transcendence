@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Wanneer een Steam/42-contact zich aanmeldt",
     "achievement": "Prestatie ontgrendeld: <b>{{name}}</b>",
     "prefAchievement": "Prestaties",
-    "prefAchievementHint": "Wanneer je een prestatie ontgrendelt"
+    "prefAchievementHint": "Wanneer je een prestatie ontgrendelt",
+    "clear": "Wissen"
   },
   "home": {
     "featuredBadge": "Uitgelichte game",

@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Steam/42 の知り合いが登録したとき",
     "achievement": "実績を解除：<b>{{name}}</b>",
     "prefAchievement": "実績",
-    "prefAchievementHint": "実績を解除したとき"
+    "prefAchievementHint": "実績を解除したとき",
+    "clear": "クリア"
   },
   "home": {
     "featuredBadge": "注目のゲーム",

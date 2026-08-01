@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useTranslation } from 'react-i18next';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useFriendSocket } from '../friends/useFriendSocket';
 import i18n from '../i18n';
@@ -654,8 +654,24 @@ export default function PublicProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Onglet actif : « Aperçu » par défaut (résumé de chaque module)
-  const [tab, setTab] = useState<ProfileTab>('overview');
+  // Onglet actif reflété dans l'URL (?tab=…) : au reload (Cmd+R) ou au partage du
+  // lien, on retombe sur le même onglet plutôt que sur « Aperçu ».
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab');
+  const isTab = (v: string | null): v is ProfileTab =>
+    v === 'overview' || v === 'reviews' || v === 'games' || v === 'lists';
+  const [tab, setTab] = useState<ProfileTab>(isTab(urlTab) ? urlTab : 'overview');
+  useEffect(() => {
+    setSearchParams(
+      (prev) => {
+        const p = new URLSearchParams(prev);
+        if (tab === 'overview') p.delete('tab');
+        else p.set('tab', tab);
+        return p;
+      },
+      { replace: true },
+    );
+  }, [tab, setSearchParams]);
 
   // No synchronous setState in the body (react-hooks/set-state-in-effect):
   // every update happens in a promise callback.

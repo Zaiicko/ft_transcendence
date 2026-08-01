@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "When a Steam/42 contact signs up",
     "achievement": "Achievement unlocked: <b>{{name}}</b>",
     "prefAchievement": "Achievements",
-    "prefAchievementHint": "When you unlock an achievement"
+    "prefAchievementHint": "When you unlock an achievement",
+    "clear": "Clear"
   },
   "home": {
     "featuredBadge": "Featured game",

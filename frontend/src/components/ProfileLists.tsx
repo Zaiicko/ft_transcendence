@@ -203,9 +203,11 @@ function ListCard({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
-  // coverUrl local : maj immédiate après cadrage (le prop se resynchronise via
-  // onChanged, mais on évite l'attente du rechargement).
+  // coverUrl local : maj immédiate après cadrage (avant même le refetch).
   const [coverUrl, setCoverUrl] = useState(list.coverUrl);
+  // …mais on RESYNCHRONISE quand le parent renvoie des données fraîches (après
+  // reload) : sinon un cover retiré/changé n'apparaît qu'au rechargement manuel.
+  useEffect(() => setCoverUrl(list.coverUrl), [list.coverUrl]);
   const [coverOpen, setCoverOpen] = useState(false);
   const cover = coverUrl ? parseFrame(coverUrl) : null;
 
@@ -326,7 +328,7 @@ function ListCard({
           }}
         />
       ) : (
-        expanded && <ListGames listId={list.id} isSelf={isSelf} />
+        expanded && <ListGames listId={list.id} isSelf={isSelf} onChanged={onChanged} />
       )}
     </div>
   );
@@ -762,7 +764,17 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
 // Jeux d'une liste en LECTURE (repli au clic) : jaquette + titre + note/extrait
 // d'avis. Pour le propriétaire (isSelf), un champ d'ajout de jeux est dispo
 // d'office ici (pas besoin de passer par "modifier"). Les retraits sont dans EditList.
-function ListGames({ listId, isSelf }: { listId: number; isSelf: boolean }) {
+function ListGames({
+  listId,
+  isSelf,
+  onChanged,
+}: {
+  listId: number;
+  isSelf: boolean;
+  // Prévient le PARENT (ProfileLists) qu'un jeu a été ajouté → il refetch pour
+  // que la cover de la vignette (jaquettes des jeux) se mette à jour en direct.
+  onChanged?: () => void;
+}) {
   const { t } = useTranslation();
   const [detail, setDetail] = useState<GameListDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -802,7 +814,10 @@ function ListGames({ listId, isSelf }: { listId: number; isSelf: boolean }) {
           <AddGamesToList
             listId={listId}
             existingIds={new Set(detail.games.map((g) => g.id))}
-            onAdded={load}
+            onAdded={() => {
+              load(); // rafraîchit la vue dépliée
+              onChanged?.(); // + la cover de la vignette dans le parent
+            }}
           />
         </div>
       )}

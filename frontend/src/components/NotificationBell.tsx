@@ -28,12 +28,17 @@ export default function NotificationBell() {
       .catch(() => {});
   }, [user]);
 
-  // Liste chargée à l'ouverture
+  // Liste chargée à l'ouverture — et ouvrir le panneau = tout marquer comme VU
+  // (le badge disparaît, pas besoin de bouton « tout lire »).
   useEffect(() => {
     if (!open) return;
     apiFetch<AppNotification[]>('/notifications?page=1&limit=20')
-      .then(setItems)
+      .then((list) =>
+        setItems(list.map((n) => (n.readAt ? n : { ...n, readAt: new Date().toISOString() }))),
+      )
       .catch(() => {});
+    setUnread(0);
+    apiFetch('/notifications/read-all', { method: 'PATCH' }).catch(() => {});
   }, [open]);
 
   // Fermeture au clic extérieur / Échap
@@ -68,10 +73,11 @@ export default function NotificationBell() {
     apiFetch(`/notifications/${id}/read`, { method: 'PATCH' }).catch(() => {});
   }
 
-  function markAllRead() {
-    setItems((cur) => cur.map((n) => (n.readAt ? n : { ...n, readAt: new Date().toISOString() })));
+  // Bouton « clear » : vide toutes les notifications.
+  function clearAll() {
+    setItems([]);
     setUnread(0);
-    apiFetch('/notifications/read-all', { method: 'PATCH' }).catch(() => {});
+    apiFetch('/notifications', { method: 'DELETE' }).catch(() => {});
   }
 
   return (
@@ -85,9 +91,10 @@ export default function NotificationBell() {
       >
         <BellIcon />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-            {unread > 99 ? '99+' : unread}
-          </span>
+          <span
+            className="absolute right-0 top-0 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-zinc-50 dark:ring-zinc-950"
+            aria-hidden="true"
+          />
         )}
       </button>
 
@@ -95,13 +102,16 @@ export default function NotificationBell() {
         <div className="absolute right-0 z-30 mt-2 w-80 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
           <header className="flex items-center justify-between border-b border-zinc-200 px-4 py-2.5 dark:border-zinc-700">
             <h2 className="text-sm font-semibold">{t('notifications.title')}</h2>
-            {unread > 0 && (
+            {items.length > 0 && (
               <button
                 type="button"
-                onClick={markAllRead}
-                className="text-xs text-accent transition hover:brightness-110"
+                onClick={clearAll}
+                className="inline-flex items-center gap-1 text-xs text-zinc-500 transition hover:text-red-500 dark:text-zinc-400"
               >
-                {t('notifications.markAllRead')}
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6" />
+                </svg>
+                {t('notifications.clear')}
               </button>
             )}
           </header>

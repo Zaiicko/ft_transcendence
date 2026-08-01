@@ -119,6 +119,11 @@ export class NotificationsService {
     });
   }
 
+  // Vide toutes les notifications de l'utilisateur (bouton « clear »).
+  async clearAll(userId: number): Promise<void> {
+    await this.prisma.notification.deleteMany({ where: { userId } });
+  }
+
   private reviewFor(reviewId: number) {
     return this.prisma.review.findUnique({
       where: { id: reviewId },

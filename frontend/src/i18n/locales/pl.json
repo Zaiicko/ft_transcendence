@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Gdy kontakt ze Steam/42 się rejestruje",
     "achievement": "Odblokowano osiągnięcie: <b>{{name}}</b>",
     "prefAchievement": "Osiągnięcia",
-    "prefAchievementHint": "Gdy odblokujesz osiągnięcie"
+    "prefAchievementHint": "Gdy odblokujesz osiągnięcie",
+    "clear": "Wyczyść"
   },
   "home": {
     "featuredBadge": "Polecana gra",

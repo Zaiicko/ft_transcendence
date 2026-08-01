@@ -12,7 +12,10 @@ const MYMEMORY_CHUNK_SIZE = 400;
 const DEEPL_TARGET_OVERRIDES: Record<string, string> = { pt: 'PT-PT' };
 
 interface DeepLResponse {
-  translations?: { text: string }[];
+  // `detected_source_language` : code langue (ex. "FR") détecté par DeepL quand
+  // on ne fournit pas source_lang → sert à ne PAS traduire un texte déjà dans la
+  // langue cible (sinon DeepL/MyMemory le reformule en charabia).
+  translations?: { text: string; detected_source_language?: string }[];
 }
 
 interface MyMemoryResponse {
@@ -85,9 +88,13 @@ export class TranslationService {
     });
     if (!res.ok) throw new Error(`DeepL API returned ${res.status}`);
     const data = (await res.json()) as DeepLResponse;
-    const translated = data.translations?.[0]?.text;
-    if (!translated) throw new Error('DeepL API returned no translation');
-    return translated;
+    const first = data.translations?.[0];
+    if (!first?.text) throw new Error('DeepL API returned no translation');
+    // Texte déjà dans la langue cible (ex. commentaire FR, cible FR) → on renvoie
+    // l'original tel quel plutôt qu'une reformulation incohérente.
+    const detected = first.detected_source_language?.toLowerCase();
+    if (detected && detected === target.toLowerCase().slice(0, 2)) return text;
+    return first.text;
   }
 
   // Free, keyless last-resort fallback so translation works out of the box with

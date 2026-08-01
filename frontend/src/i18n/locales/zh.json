@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "当 Steam/42 联系人注册时",
     "achievement": "解锁成就：<b>{{name}}</b>",
     "prefAchievement": "成就",
-    "prefAchievementHint": "当你解锁成就时"
+    "prefAchievementHint": "当你解锁成就时",
+    "clear": "清空"
   },
   "home": {
     "featuredBadge": "精选游戏",

@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Wenn sich ein Steam/42-Kontakt registriert",
     "achievement": "Erfolg freigeschaltet: <b>{{name}}</b>",
     "prefAchievement": "Erfolge",
-    "prefAchievementHint": "Wenn du einen Erfolg freischaltest"
+    "prefAchievementHint": "Wenn du einen Erfolg freischaltest",
+    "clear": "Leeren"
   },
   "home": {
     "featuredBadge": "Vorgestelltes Spiel",

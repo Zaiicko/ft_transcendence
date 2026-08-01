@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Quando um contacto Steam/42 se regista",
     "achievement": "Conquista desbloqueada: <b>{{name}}</b>",
     "prefAchievement": "Conquistas",
-    "prefAchievementHint": "Quando você desbloqueia uma conquista"
+    "prefAchievementHint": "Quando você desbloqueia uma conquista",
+    "clear": "Limpar"
   },
   "home": {
     "featuredBadge": "Jogo em destaque",

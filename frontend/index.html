@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <!-- Déclarations multiples : Firefox ne prend pas toujours le .ico sans type
+         explicite ni sans `shortcut icon`, contrairement à Chrome. -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <title>Saveboxd</title>
   </head>
   <body>

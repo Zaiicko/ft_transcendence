@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -47,6 +48,13 @@ export class NotificationsController {
   @HttpCode(204)
   markAllRead(@CurrentUser() user: JwtPayload) {
     return this.notifications.markAllRead(user.sub);
+  }
+
+  // Vide toutes les notifications (bouton « clear »).
+  @Delete()
+  @HttpCode(204)
+  clearAll(@CurrentUser() user: JwtPayload) {
+    return this.notifications.clearAll(user.sub);
   }
 
   @Patch(':id/read')

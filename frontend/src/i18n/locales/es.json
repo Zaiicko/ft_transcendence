@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Cuando un contacto de Steam/42 se registra",
     "achievement": "Logro desbloqueado: <b>{{name}}</b>",
     "prefAchievement": "Logros",
-    "prefAchievementHint": "Cuando desbloqueas un logro"
+    "prefAchievementHint": "Cuando desbloqueas un logro",
+    "clear": "Vaciar"
   },
   "home": {
     "featuredBadge": "Juego destacado",

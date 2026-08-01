@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Quand un contact Steam/42 s’inscrit",
     "achievement": "Succès débloqué : <b>{{name}}</b>",
     "prefAchievement": "Succès",
-    "prefAchievementHint": "Quand tu débloques un succès"
+    "prefAchievementHint": "Quand tu débloques un succès",
+    "clear": "Effacer"
   },
   "home": {
     "featuredBadge": "Jeu à la une",

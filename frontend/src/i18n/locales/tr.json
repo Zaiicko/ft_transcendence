@@ -329,7 +329,8 @@
     "prefFriendJoinedHint": "Bir Steam/42 kişisi kaydolduğunda",
     "achievement": "Başarım açıldı: <b>{{name}}</b>",
     "prefAchievement": "Başarımlar",
-    "prefAchievementHint": "Bir başarım açtığında"
+    "prefAchievementHint": "Bir başarım açtığında",
+    "clear": "Temizle"
   },
   "home": {
     "featuredBadge": "Öne çıkan oyun",
