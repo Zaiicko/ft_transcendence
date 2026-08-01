@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
@@ -120,8 +121,7 @@ export default function PlayedButton({
   const [df, setDf] = useState<DateInput>({ year: '', month: '', day: '' });
   const [saving, setSaving] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  // Position fixe du popover (le bandeau de la fiche jeu masque le débordement).
-  const [coords, setCoords] = useState<{ left: number; top: number } | null>(null);
+  const popRef = useRef<HTMLDivElement>(null);
 
   const minStr = releaseDate ? releaseDate.slice(0, 10) : undefined;
   const maxStr = todayStr();
@@ -153,16 +153,20 @@ export default function PlayedButton({
 
   const done = played?.completedByMe ?? false;
 
-  // Ancre le popover sous le bouton (position fixe → échappe à l'overflow).
+  // Ancre le popover sous le bouton. Rendu dans un PORTAIL (document.body) pour
+  // échapper aux ancêtres « transformés » (cartes du hub animées au scroll) qui,
+  // sinon, redéfinissent le référentiel du position:fixed → popover décalé et
+  // coincé sous les modules voisins. Repositionnement DIRECT sur le nœud (pas de
+  // setState) : suit le scroll sans le retard d'un re-render, donc c'est fluide.
   useLayoutEffect(() => {
     if (!pickerOpen) return;
     const place = () => {
       const r = wrapRef.current?.getBoundingClientRect();
-      if (!r) return;
-      setCoords({
-        left: Math.max(8, Math.min(r.left, window.innerWidth - 288 - 8)),
-        top: r.bottom + 8,
-      });
+      const pop = popRef.current;
+      if (!r || !pop) return;
+      const w = pop.offsetWidth || 288;
+      pop.style.left = `${Math.max(8, Math.min(r.left, window.innerWidth - w - 8))}px`;
+      pop.style.top = `${r.bottom + 8}px`;
     };
     place();
     window.addEventListener('resize', place);
@@ -251,13 +255,13 @@ export default function PlayedButton({
         </span>
       )}
 
-      {pickerOpen && coords && (
+      {pickerOpen && createPortal(
         <>
           {/* Fond cliquable pour fermer sans valider */}
           <div className="fixed inset-0 z-30" onClick={() => setPickerOpen(false)} aria-hidden="true" />
           <div
-            className="fixed z-40 w-72 rounded-xl border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
-            style={{ left: coords.left, top: coords.top }}
+            ref={popRef}
+            className="fixed left-0 top-0 z-40 w-72 rounded-xl border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
           >
             <p className="mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-100">
               {t('game.completeDateTitle')}
@@ -304,7 +308,8 @@ export default function PlayedButton({
               </button>
             </div>
           </div>
-        </>
+        </>,
+        document.body,
       )}
     </div>
   );
