@@ -365,8 +365,7 @@
     "statRankCaption": "Clasificación de completados",
     "statUnranked": "Sin clasificar",
     "statAchievements": "Logros",
-    "activityTitle": "Actividad",
-    "activityLive": "En directo",
+    "activityTitle": "En vivo",
     "activityEmpty": "Nada todavía.",
     "activitySeeAll": "Ver todo el muro",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Borrar todo",
     "removeFilter": "Quitar {{name}}",
     "viewGame": "Ver ficha",
-    "showLess": "Ver menos"
+    "showLess": "Ver menos",
+    "sortRatingAsc": "Peor valorados",
+    "sortMostPlayedAsc": "Menos jugados",
+    "sortRecentAsc": "Más antiguos",
+    "sortPopularAsc": "Menos conocidos"
   },
   "game": {
     "markedTitle": "Hecho — haz clic para quitar",

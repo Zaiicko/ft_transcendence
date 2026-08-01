@@ -365,8 +365,7 @@
     "statRankCaption": "Tamamlama sıralaması",
     "statUnranked": "Sıralanmadı",
     "statAchievements": "Başarımlar",
-    "activityTitle": "Etkinlik",
-    "activityLive": "Canlı",
+    "activityTitle": "Canlı",
     "activityEmpty": "Henüz bir şey yok.",
     "activitySeeAll": "Tüm akışı gör",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Tümünü temizle",
     "removeFilter": "{{name}} kaldır",
     "viewGame": "Görüntüle",
-    "showLess": "Daha az göster"
+    "showLess": "Daha az göster",
+    "sortRatingAsc": "En düşük puanlı",
+    "sortMostPlayedAsc": "En az oynanan",
+    "sortRecentAsc": "En eski",
+    "sortPopularAsc": "En az bilinen"
   },
   "game": {
     "markedTitle": "Bitti — kaldırmak için tıkla",

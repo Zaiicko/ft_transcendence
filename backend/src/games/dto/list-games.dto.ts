@@ -21,6 +21,13 @@ export enum GameSort {
   POPULAR = 'popular',
 }
 
+// Direction du tri : chaque bouton bascule entre desc (défaut : mieux notés /
+// plus joués / plus récents / plus populaires) et asc (l'inverse).
+export enum SortDir {
+  DESC = 'desc',
+  ASC = 'asc',
+}
+
 export class ListGamesDto {
   @IsOptional()
   @Type(() => Number)
@@ -38,6 +45,10 @@ export class ListGamesDto {
   @IsOptional()
   @IsEnum(GameSort)
   sort = GameSort.RATING;
+
+  @IsOptional()
+  @IsEnum(SortDir)
+  dir = SortDir.DESC;
 
   // All filters are combinable, matched case-insensitively by substring
   @IsOptional()

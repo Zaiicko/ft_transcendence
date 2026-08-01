@@ -365,8 +365,7 @@
     "statRankCaption": "通关排行榜",
     "statUnranked": "未上榜",
     "statAchievements": "成就",
-    "activityTitle": "动态",
-    "activityLive": "实时",
+    "activityTitle": "实时",
     "activityEmpty": "暂时还没有。",
     "activitySeeAll": "查看全部动态",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "全部清除",
     "removeFilter": "移除 {{name}}",
     "viewGame": "查看详情",
-    "showLess": "收起"
+    "showLess": "收起",
+    "sortRatingAsc": "评分最低",
+    "sortMostPlayedAsc": "最少游玩",
+    "sortRecentAsc": "最早",
+    "sortPopularAsc": "最冷门"
   },
   "game": {
     "markedTitle": "已通关 — 点击取消",

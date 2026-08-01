@@ -365,8 +365,7 @@
     "statRankCaption": "Classifica completamenti",
     "statUnranked": "Non in classifica",
     "statAchievements": "Obiettivi",
-    "activityTitle": "Attività",
-    "activityLive": "In diretta",
+    "activityTitle": "In diretta",
     "activityEmpty": "Ancora niente.",
     "activitySeeAll": "Vedi tutto il feed",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Cancella tutto",
     "removeFilter": "Rimuovi {{name}}",
     "viewGame": "Vedi scheda",
-    "showLess": "Mostra meno"
+    "showLess": "Mostra meno",
+    "sortRatingAsc": "Meno votati",
+    "sortMostPlayedAsc": "Meno giocati",
+    "sortRecentAsc": "Più vecchi",
+    "sortPopularAsc": "Meno noti"
   },
   "game": {
     "markedTitle": "Fatto — clicca per rimuovere",

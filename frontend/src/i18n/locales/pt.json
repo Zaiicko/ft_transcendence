@@ -365,8 +365,7 @@
     "statRankCaption": "Ranking de conclusões",
     "statUnranked": "Sem classificação",
     "statAchievements": "Conquistas",
-    "activityTitle": "Atividade",
-    "activityLive": "Ao vivo",
+    "activityTitle": "Ao vivo",
     "activityEmpty": "Ainda nada.",
     "activitySeeAll": "Ver todo o feed",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Limpar tudo",
     "removeFilter": "Remover {{name}}",
     "viewGame": "Ver ficha",
-    "showLess": "Ver menos"
+    "showLess": "Ver menos",
+    "sortRatingAsc": "Pior avaliados",
+    "sortMostPlayedAsc": "Menos jogados",
+    "sortRecentAsc": "Mais antigos",
+    "sortPopularAsc": "Menos conhecidos"
   },
   "game": {
     "markedTitle": "Concluído — clica para remover",

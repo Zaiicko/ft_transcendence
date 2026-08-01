@@ -365,8 +365,7 @@
     "statRankCaption": "Ranking ukończeń",
     "statUnranked": "Bez pozycji",
     "statAchievements": "Osiągnięcia",
-    "activityTitle": "Aktywność",
-    "activityLive": "Na żywo",
+    "activityTitle": "Na żywo",
     "activityEmpty": "Jeszcze nic.",
     "activitySeeAll": "Zobacz cały kanał",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Wyczyść wszystko",
     "removeFilter": "Usuń {{name}}",
     "viewGame": "Zobacz grę",
-    "showLess": "Pokaż mniej"
+    "showLess": "Pokaż mniej",
+    "sortRatingAsc": "Najniżej oceniane",
+    "sortMostPlayedAsc": "Najmniej grane",
+    "sortRecentAsc": "Najstarsze",
+    "sortPopularAsc": "Najmniej znane"
   },
   "game": {
     "markedTitle": "Ukończone — kliknij, aby usunąć",

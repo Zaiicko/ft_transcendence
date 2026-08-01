@@ -75,17 +75,6 @@ export default function HomeActivity() {
 
   return (
     <div className="card overflow-hidden !rounded-2xl p-0">
-      <div className="flex items-center justify-between border-b border-zinc-900/10 px-4 py-3 dark:border-zinc-100/10">
-        <h3 className="text-sm font-semibold">{t('home.activityTitle')}</h3>
-        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-500">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-          {t('home.activityLive')}
-        </span>
-      </div>
-
       {loading ? (
         <div className="flex flex-col">
           {[0, 1, 2, 3].map((i) => (

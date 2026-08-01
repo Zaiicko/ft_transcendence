@@ -365,8 +365,7 @@
     "statRankCaption": "クリア数ランキング",
     "statUnranked": "ランク外",
     "statAchievements": "実績",
-    "activityTitle": "アクティビティ",
-    "activityLive": "ライブ",
+    "activityTitle": "ライブ",
     "activityEmpty": "まだ何もありません。",
     "activitySeeAll": "フィードをすべて見る",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "すべて解除",
     "removeFilter": "{{name}} を外す",
     "viewGame": "詳細を見る",
-    "showLess": "表示を減らす"
+    "showLess": "表示を減らす",
+    "sortRatingAsc": "評価が低い順",
+    "sortMostPlayedAsc": "プレイ数が少ない順",
+    "sortRecentAsc": "古い順",
+    "sortPopularAsc": "知名度が低い順"
   },
   "game": {
     "markedTitle": "クリア済み — クリックで解除",

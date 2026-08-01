@@ -365,8 +365,7 @@
     "statRankCaption": "Рейтинг прохождений",
     "statUnranked": "Без ранга",
     "statAchievements": "Достижения",
-    "activityTitle": "Активность",
-    "activityLive": "В эфире",
+    "activityTitle": "В эфире",
     "activityEmpty": "Пока пусто.",
     "activitySeeAll": "Смотреть всю ленту",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Очистить всё",
     "removeFilter": "Убрать {{name}}",
     "viewGame": "Открыть",
-    "showLess": "Показать меньше"
+    "showLess": "Показать меньше",
+    "sortRatingAsc": "Худшие оценки",
+    "sortMostPlayedAsc": "Реже играют",
+    "sortRecentAsc": "Старые",
+    "sortPopularAsc": "Менее известные"
   },
   "game": {
     "markedTitle": "Пройдено — нажмите, чтобы убрать",

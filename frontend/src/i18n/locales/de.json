@@ -365,8 +365,7 @@
     "statRankCaption": "Bestenliste Komplettierungen",
     "statUnranked": "Nicht platziert",
     "statAchievements": "Erfolge",
-    "activityTitle": "Aktivität",
-    "activityLive": "Live",
+    "activityTitle": "Live",
     "activityEmpty": "Noch nichts.",
     "activitySeeAll": "Ganzen Feed ansehen",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Alle löschen",
     "removeFilter": "{{name}} entfernen",
     "viewGame": "Ansehen",
-    "showLess": "Weniger anzeigen"
+    "showLess": "Weniger anzeigen",
+    "sortRatingAsc": "Schlechtest bewertet",
+    "sortMostPlayedAsc": "Am wenigsten gespielt",
+    "sortRecentAsc": "Älteste",
+    "sortPopularAsc": "Am wenigsten bekannt"
   },
   "game": {
     "markedTitle": "Erledigt — zum Entfernen klicken",

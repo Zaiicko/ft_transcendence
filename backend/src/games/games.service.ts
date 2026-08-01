@@ -4,7 +4,7 @@ import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { TranslationService } from '../translation/translation.service';
-import { GameSort, ListGamesDto } from './dto/list-games.dto';
+import { GameSort, ListGamesDto, SortDir } from './dto/list-games.dto';
 import { GamesSyncService } from './games-sync.service';
 
 // Below this many local matches, a search also queries IGDB to enrich the
@@ -96,11 +96,14 @@ export class GamesService {
     if (total === 0) return { data: [], total, page, limit };
     const ids = candidates.map((c) => c.id);
 
+    // Direction principale pilotée par dto.dir (chaque bouton bascule desc↔asc).
+    // Valeurs contrôlées par l'enum SortDir → Prisma.raw sans risque d'injection.
+    const dir = dto.dir === SortDir.ASC ? Prisma.raw('ASC') : Prisma.raw('DESC');
     const orderBy: Record<GameSort, Prisma.Sql> = {
-      [GameSort.RATING]: Prisma.sql`score DESC, s."igdbRatingCount" DESC NULLS LAST`,
-      [GameSort.MOST_PLAYED]: Prisma.sql`"playedCount" DESC, score DESC`,
-      [GameSort.RECENT]: Prisma.sql`s."releaseDate" DESC NULLS LAST`,
-      [GameSort.POPULAR]: Prisma.sql`s."igdbRatingCount" DESC NULLS LAST`,
+      [GameSort.RATING]: Prisma.sql`score ${dir}, s."igdbRatingCount" DESC NULLS LAST`,
+      [GameSort.MOST_PLAYED]: Prisma.sql`"playedCount" ${dir}, score DESC`,
+      [GameSort.RECENT]: Prisma.sql`s."releaseDate" ${dir} NULLS LAST`,
+      [GameSort.POPULAR]: Prisma.sql`s."igdbRatingCount" ${dir} NULLS LAST`,
     };
 
     type ScoredRow = {

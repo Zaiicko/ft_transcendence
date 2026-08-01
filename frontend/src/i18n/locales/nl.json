@@ -365,8 +365,7 @@
     "statRankCaption": "Ranglijst voltooiingen",
     "statUnranked": "Niet gerangschikt",
     "statAchievements": "Prestaties",
-    "activityTitle": "Activiteit",
-    "activityLive": "Live",
+    "activityTitle": "Live",
     "activityEmpty": "Nog niets.",
     "activitySeeAll": "Hele feed bekijken",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Alles wissen",
     "removeFilter": "{{name}} verwijderen",
     "viewGame": "Bekijken",
-    "showLess": "Minder tonen"
+    "showLess": "Minder tonen",
+    "sortRatingAsc": "Laagst beoordeeld",
+    "sortMostPlayedAsc": "Minst gespeeld",
+    "sortRecentAsc": "Oudste",
+    "sortPopularAsc": "Minst bekend"
   },
   "game": {
     "markedTitle": "Klaar — klik om te verwijderen",

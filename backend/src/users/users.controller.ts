@@ -27,6 +27,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { hashPassword, verifyPassword } from '../auth/password.util';
 import { AVATARS_DIR } from '../common/uploads';
+import { MailerService } from '../mailer/mailer.service';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { AvatarFrameDto } from './dto/avatar-frame.dto';
@@ -42,7 +43,10 @@ const MAX_AVATAR_BYTES = 4 * 1024 * 1024;
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly mailer: MailerService,
+  ) {}
 
   // Public profile page keyed by username: identity, badges, stats and recent
   // activity — privacy-safe (no email). `viewer` (optional auth) only sets the
@@ -155,6 +159,13 @@ export class UsersController {
     const safeName = data.account.username.replace(/[^a-zA-Z0-9_-]/g, '_');
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="saveboxd-data-${safeName}-${date}.json"`);
+    // RGPD — email de confirmation de l'opération sur les données (mailer.send
+    // avale ses erreurs → n'échoue jamais le téléchargement si le SMTP est down).
+    await this.mailer.send({
+      to: data.account.email,
+      subject: 'Your Saveboxd data export',
+      html: `<p>A copy of all your personal data was just downloaded from your Saveboxd settings.</p><p>If this wasn't you, change your password and enable two-factor authentication right away.</p>`,
+    });
     return data;
   }
 
@@ -170,8 +181,17 @@ export class UsersController {
       if (!valid) throw new UnauthorizedException('Incorrect password');
     }
 
+    // On capture l'e-mail AVANT la suppression (la ligne user disparaît ensuite).
+    const email = user.email;
     if (user.avatarUrl) await this.usersService.deleteAvatarFile(user.avatarUrl);
     await this.usersService.delete(current.sub);
+    // RGPD — email de confirmation de suppression (best-effort ; le compte est
+    // déjà supprimé, l'échec SMTP ne doit pas casser la réponse 204).
+    await this.mailer.send({
+      to: email,
+      subject: 'Your Saveboxd account has been deleted',
+      html: `<p>Your Saveboxd account and personal data have been permanently deleted, as you requested.</p><p>Your reviews and comments are kept but anonymized (shown as from a deleted user). If you did not request this, contact us immediately.</p>`,
+    });
   }
 
   @UseGuards(JwtAuthGuard)

@@ -227,7 +227,7 @@ export default function Home() {
           {featured ? (
             <Hero game={featured} />
           ) : (
-            <div className="h-[46vh] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
+            <div className="h-[46vh] max-h-[66vw] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
           )}
         </div>
       ) : (
@@ -239,7 +239,7 @@ export default function Home() {
             // screenshot 1080p : sans ça, les sections du dessous se câblent en
             // haut de page (→ animations déclenchées à tort au chargement) puis
             // sont poussées vers le bas quand la carte s'insère (double saut)
-            <div className="h-[46vh] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
+            <div className="h-[46vh] max-h-[66vw] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
           )}
         </div>
       )}
@@ -278,7 +278,7 @@ export default function Home() {
               user ? (
                 // Connecté : 4 colonnes dans la colonne rétrécie par l'activité
                 // des amis, avec le bouton « voir plus » qui déroule la suite.
-                <div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
+                <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 3xl:grid-cols-6 4xl:grid-cols-8">
                   {visiblePopular.map((g) => (
                     <GameCard key={g.id} game={g} />
                   ))}
@@ -287,9 +287,12 @@ export default function Home() {
                 // Anonyme : une seule ligne, adaptée à l'écran (3 jaquettes sur
                 // mobile, 6 sur desktop). Les jaquettes au-delà de la 3ᵉ sont
                 // masquées tant qu'on est en 3 colonnes → jamais de 2ᵉ rangée.
-                <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
-                  {popular.slice(0, 6).map((g, i) => (
-                    <div key={g.id} className={i >= 3 ? 'hidden sm:block' : undefined}>
+                <div className="grid grid-cols-3 gap-4 sm:grid-cols-6 3xl:grid-cols-8">
+                  {popular.slice(0, 8).map((g, i) => (
+                    <div
+                      key={g.id}
+                      className={i >= 6 ? 'hidden 3xl:block' : i >= 3 ? 'hidden sm:block' : undefined}
+                    >
                       <GameCard game={g} />
                     </div>
                   ))}
@@ -311,7 +314,11 @@ export default function Home() {
           </div>
           {user && (
             <aside>
-              <SectionHead eyebrow={t('home.activityEyebrow')} title={t('home.activityTitle')} />
+              <SectionHead
+                eyebrow={t('home.activityEyebrow')}
+                title={t('home.activityTitle')}
+                dotClass="text-emerald-500"
+              />
               <HomeActivity />
             </aside>
           )}
@@ -698,7 +705,7 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
             className={
               compact
                 ? 'h-full min-h-[36vh] w-full scale-110 object-cover'
-                : 'h-[46vh] w-full scale-110 object-cover md:h-[56vh]'
+                : 'h-[46vh] max-h-[66vw] w-full scale-110 object-cover md:h-[56vh]'
             }
           />
         ) : (
@@ -707,7 +714,7 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
             className={
               compact
                 ? 'h-full min-h-[36vh] scale-125 bg-cover bg-center opacity-60 blur-2xl'
-                : 'h-[46vh] scale-125 bg-cover bg-center opacity-60 blur-2xl md:h-[56vh]'
+                : 'h-[46vh] max-h-[66vw] scale-125 bg-cover bg-center opacity-60 blur-2xl md:h-[56vh]'
             }
             style={game.coverUrl ? { backgroundImage: `url(${game.coverUrl})` } : undefined}
           />

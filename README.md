@@ -194,7 +194,7 @@ Points: **Major = 2 pts**, **Minor = 1 pt**. Required minimum: **14**.
 > module (nor any game-dependent module such as AI Opponent, tournaments,
 > match history or spectator mode) is claimed.
 
-### Claimed modules (**18 points**)
+### Claimed modules (**19 points**)
 
 | # | Module | Cat. | Type | Pts | How it's implemented | By |
 |---|---|---|---|---|---|---|
@@ -210,8 +210,9 @@ Points: **Major = 2 pts**, **Minor = 1 pt**. Required minimum: **14**.
 | 10 | Two-Factor Authentication | User Mgmt | Minor | 1 | TOTP (otplib) + QR | `nicleena` |
 | 11 | Notification system | Web | Minor | 1 | Notifications on create/update/delete-type actions | `meskrabe`, `alama` |
 | 12 | Gamification | Gaming & UX | Minor | 1 | ≥3 of the list: **achievements + badges + leaderboards**, persistent, with visual feedback | `meskrabe`, `nicleena` |
+| 13 | **GDPR compliance** | Data & Analytics | Minor | 1 | Self-service data **export** (structured JSON — right of access/portability), account **deletion** with password confirmation (reviews/comments anonymized), and **confirmation emails** on both operations | `alama` |
 
-**Total claimed: 6 Major + 6 Minor = 18 points** (≥ 14, with margin).
+**Total claimed: 6 Major + 7 Minor = 19 points** (≥ 14, with margin).
 
 ### Custom module justification (#6 — Major, "Modules of choice")
 
@@ -247,9 +248,11 @@ demonstrated during the defense.*
   Discord OAuth, TOTP 2FA, email verification, standard user management); and
   backend work on platform sync, recommendations and i18n. *Challenge:
   implementing secure OAuth + TOTP 2FA flows end-to-end.*
-- **`alama`** — Catalog, reviews and lists; social features and profiles UI; and
-  a large part of the frontend/design system and DevOps. *Challenge: keeping the
-  UI consistent and responsive across the many pages.*
+- **`alama`** — Catalog, reviews and lists; social features and profiles UI;
+  **GDPR compliance** (self-service data export + account deletion with
+  confirmation emails); and a large part of the frontend/design system and
+  DevOps. *Challenge: keeping the UI consistent and responsive across the many
+  pages.*
 - **`vpramann`** — Frontend UI components and design system, legal pages
   (Privacy Policy / Terms of Service), and containerization work. *Challenge:
   responsive layout and the Docker/dev setup.*

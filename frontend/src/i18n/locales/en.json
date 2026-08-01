@@ -365,8 +365,7 @@
     "statRankCaption": "Completions leaderboard",
     "statUnranked": "Unranked",
     "statAchievements": "Achievements",
-    "activityTitle": "Activity",
-    "activityLive": "Live",
+    "activityTitle": "Live",
     "activityEmpty": "Nothing yet.",
     "activitySeeAll": "See the whole feed",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "Clear all",
     "removeFilter": "Remove {{name}}",
     "viewGame": "View game",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "sortRatingAsc": "Lowest rated",
+    "sortMostPlayedAsc": "Least played",
+    "sortRecentAsc": "Oldest",
+    "sortPopularAsc": "Least known"
   },
   "game": {
     "markedTitle": "Done — click to remove",

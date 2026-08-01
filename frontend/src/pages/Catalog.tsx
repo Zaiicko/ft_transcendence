@@ -13,13 +13,14 @@ const PAGE_SIZE = 24;
 // Tris exposés à l'utilisateur → valeurs de l'enum GameSort côté back. Les deux
 // premiers répondent à la demande « mieux notés / plus faits PAR LES USERS ».
 const SORTS = [
-  { value: 'rating', labelKey: 'catalog.sortRating' },
-  { value: 'most_played', labelKey: 'catalog.sortMostPlayed' },
-  { value: 'recent', labelKey: 'catalog.sortRecent' },
-  { value: 'popular', labelKey: 'catalog.sortPopular' },
+  { value: 'rating', labelKey: 'catalog.sortRating', ascKey: 'catalog.sortRatingAsc' },
+  { value: 'most_played', labelKey: 'catalog.sortMostPlayed', ascKey: 'catalog.sortMostPlayedAsc' },
+  { value: 'recent', labelKey: 'catalog.sortRecent', ascKey: 'catalog.sortRecentAsc' },
+  { value: 'popular', labelKey: 'catalog.sortPopular', ascKey: 'catalog.sortPopularAsc' },
 ] as const;
 
 type SortValue = (typeof SORTS)[number]['value'];
+type SortDir = 'desc' | 'asc';
 
 interface Page {
   data: GameSummary[];
@@ -36,6 +37,7 @@ interface Page {
 interface CatalogSnapshot {
   q: string;
   sort: SortValue;
+  dir: SortDir;
   genre: string | null;
   platform: string | null;
   company: string | null;
@@ -61,6 +63,7 @@ export default function Catalog() {
   const [q, setQ] = useState(restore ? restore.q : urlQ);
   const [debouncedQ, setDebouncedQ] = useState(restore ? restore.q : urlQ);
   const [sort, setSort] = useState<SortValue>(restore ? restore.sort : 'rating');
+  const [dir, setDir] = useState<SortDir>(restore ? restore.dir : 'desc');
   const [genre, setGenre] = useState<string | null>(restore ? restore.genre : null);
   const [platform, setPlatform] = useState<string | null>(restore ? restore.platform : null);
   const [company, setCompany] = useState<string | null>(restore ? restore.company : null);
@@ -117,13 +120,14 @@ export default function Catalog() {
   const params = useMemo(() => {
     const p = new URLSearchParams();
     p.set('sort', sort);
+    p.set('dir', dir);
     p.set('limit', String(PAGE_SIZE));
     if (query) p.set('q', query);
     if (genre) p.set('genre', genre);
     if (platform) p.set('platform', platform);
     if (company) p.set('company', company);
     return p.toString();
-  }, [sort, query, genre, platform, company]);
+  }, [sort, dir, query, genre, platform, company]);
 
   // Tout changement de filtre repart de la page 1 et réaffiche le squelette.
   const [prevParams, setPrevParams] = useState(params);
@@ -167,6 +171,7 @@ export default function Catalog() {
     catalogCache = {
       q: debouncedQ,
       sort,
+      dir,
       genre,
       platform,
       company,
@@ -175,7 +180,7 @@ export default function Catalog() {
       page,
       scrollY: catalogCache ? catalogCache.scrollY : 0,
     };
-  }, [debouncedQ, sort, genre, platform, company, games, total, page]);
+  }, [debouncedQ, sort, dir, genre, platform, company, games, total, page]);
 
   // Position de scroll mémorisée en direct (le scroll ne re-rend pas le composant)
   useEffect(() => {
@@ -242,7 +247,19 @@ export default function Catalog() {
                 aria-label={t('catalog.searchAria')}
               />
             </div>
-            <SortTabs value={sort} onChange={setSort} />
+            <SortTabs
+              value={sort}
+              dir={dir}
+              onSelect={(v) => {
+                // Clic sur le tri actif → on bascule la direction ; sur un autre
+                // → on bascule dessus (direction remise à desc par défaut).
+                if (v === sort) setDir((d) => (d === 'desc' ? 'asc' : 'desc'));
+                else {
+                  setSort(v);
+                  setDir('desc');
+                }
+              }}
+            />
             <Select
               label={t('catalog.platformLabel')}
               value={platform ?? ''}
@@ -384,24 +401,48 @@ export default function Catalog() {
 }
 
 // Tri en segmenté (pastilles) — remplace le select, plus lisible et brandé.
-function SortTabs({ value, onChange }: { value: SortValue; onChange: (v: SortValue) => void }) {
+function SortTabs({
+  value,
+  dir,
+  onSelect,
+}: {
+  value: SortValue;
+  dir: SortDir;
+  onSelect: (v: SortValue) => void;
+}) {
   const { t } = useTranslation();
   return (
     <div className="inline-flex flex-wrap gap-1 rounded-xl border border-zinc-300 bg-zinc-100/70 p-1 dark:border-zinc-700 dark:bg-zinc-800/60">
-      {SORTS.map((s) => (
-        <button
-          key={s.value}
-          type="button"
-          onClick={() => onChange(s.value)}
-          className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-            value === s.value
-              ? 'bg-accent text-zinc-950 shadow-sm'
-              : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-          }`}
-        >
-          {t(s.labelKey)}
-        </button>
-      ))}
+      {SORTS.map((s) => {
+        const active = value === s.value;
+        // Bouton actif : le libellé reflète la direction (ex. « Mieux notés » ↔
+        // « Moins notés ») et une flèche indique le sens ; inactif : libellé desc.
+        const label = active && dir === 'asc' ? t(s.ascKey) : t(s.labelKey);
+        return (
+          <button
+            key={s.value}
+            type="button"
+            onClick={() => onSelect(s.value)}
+            aria-pressed={active}
+            className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+              active
+                ? 'bg-accent text-zinc-950 shadow-sm'
+                : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
+            }`}
+          >
+            {label}
+            {active && (
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-none stroke-current stroke-2" aria-hidden="true">
+                {dir === 'asc' ? (
+                  <path d="m18 15-6-6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                ) : (
+                  <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                )}
+              </svg>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }

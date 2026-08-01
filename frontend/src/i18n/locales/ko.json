@@ -365,8 +365,7 @@
     "statRankCaption": "완료 순위표",
     "statUnranked": "순위 없음",
     "statAchievements": "도전과제",
-    "activityTitle": "활동",
-    "activityLive": "실시간",
+    "activityTitle": "실시간",
     "activityEmpty": "아직 없습니다.",
     "activitySeeAll": "전체 피드 보기",
     "landing": {
@@ -648,7 +647,11 @@
     "clearAll": "모두 지우기",
     "removeFilter": "{{name}} 제거",
     "viewGame": "자세히 보기",
-    "showLess": "간략히 보기"
+    "showLess": "간략히 보기",
+    "sortRatingAsc": "평점 낮은순",
+    "sortMostPlayedAsc": "적게 플레이",
+    "sortRecentAsc": "오래된순",
+    "sortPopularAsc": "덜 알려진"
   },
   "game": {
     "markedTitle": "완료 — 클릭하여 해제",
