@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { TFunction } from 'i18next';
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import AchievementIcon from '../components/AchievementIcon';
@@ -216,23 +216,19 @@ export default function Home() {
       {!user && landing && <LandingStats data={landing} />}
 
       {!user ? (
-        // Anonyme : « Trending » réduit à la moitié gauche de l'écran, et à
-        // droite un module listant toutes les fonctionnalités du site.
-        <div className="grid gap-6 lg:grid-cols-2 lg:items-stretch">
-          <div className="flex flex-col">
-            <SectionHead
-              eyebrow={t('home.landing.previewEyebrow')}
-              title={t('home.landing.previewTitle')}
-            />
-            <div className="flex-1">
-              {featured ? (
-                <Hero game={featured} compact />
-              ) : (
-                <div className="h-full min-h-[36vh] animate-pulse rounded-3xl bg-zinc-200 dark:bg-zinc-900" />
-              )}
-            </div>
-          </div>
-          <FeaturesModule />
+        // Anonyme : aperçu « Tendance » en pleine largeur. La liste des features
+        // (jugée redondante avec les piliers du module d'accroche + trop lourde)
+        // est remplacée par un ticker défilant dans <Landing />.
+        <div>
+          <SectionHead
+            eyebrow={t('home.landing.previewEyebrow')}
+            title={t('home.landing.previewTitle')}
+          />
+          {featured ? (
+            <Hero game={featured} />
+          ) : (
+            <div className="h-[46vh] animate-pulse rounded-3xl bg-zinc-200 md:h-[56vh] dark:bg-zinc-900" />
+          )}
         </div>
       ) : (
         <div>
@@ -412,6 +408,9 @@ function Landing() {
         </a>
       </div>
 
+      {/* Ticker : fait défiler toutes les fonctionnalités, une à une */}
+      <RotatingFeatures />
+
       {/* Trois piliers du produit */}
       <div className="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
         <LandingFeature
@@ -458,28 +457,57 @@ function LandingFeature({ title, desc, icon }: { title: string; desc: string; ic
   );
 }
 
-// Module « tout ce que le site permet » : carte occupant la moitié droite de
-// l'accueil anonyme, avec la liste cochée de toutes les fonctionnalités.
-function FeaturesModule() {
+// Ticker d'accroche : fait défiler une à une TOUTES les fonctionnalités du site.
+// Remplace l'ancienne liste cochée (jugée redondante avec les 3 piliers et trop
+// lourde) → on garde l'idée « voilà tout ce que ça fait » en une seule ligne
+// légère. Fondu+slide à chaque changement ; figé si l'utilisateur a demandé moins
+// d'animations (le cycle ne démarre pas). La liste complète reste dans le DOM
+// (sr-only) pour les lecteurs d'écran et le référencement.
+function RotatingFeatures() {
   const { t } = useTranslation();
-  const feats = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => t(`home.landing.feat${n}`));
+  // On n'affiche que les fonctionnalités PAS déjà mises en avant dans les 3
+  // piliers juste en dessous : on saute feat2 (note/critique/réactions), feat4
+  // (sync), feat6 (succès) et feat7 (classement) → il reste catalogue, listes,
+  // amis/chat, suivi de progression et recommandations perso (feat9).
+  const feats = useMemo(() => [1, 3, 5, 8, 9].map((n) => t(`home.landing.feat${n}`)), [t]);
+  const [i, setI] = useState(0);
+  const iRef = useRef(0);
+  // Crossfade qui se CHEVAUCHE : à chaque tick, la nouvelle phrase entre (depuis
+  // le bas) pendant que l'ancienne — gardée dans `leaving` et posée en overlay
+  // absolu — sort (vers le haut) EN MÊME TEMPS. Aucun instant vide → transition
+  // continue et douce. La phrase courante reste en flux → hauteur auto (gère le
+  // retour à la ligne sur mobile, contrairement à un roll à hauteur fixe).
+  const [leaving, setLeaving] = useState<string | null>(null);
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const id = window.setInterval(() => {
+      setLeaving(feats[iRef.current]);
+      iRef.current = (iRef.current + 1) % feats.length;
+      setI(iRef.current);
+    }, 3200);
+    return () => window.clearInterval(id);
+  }, [feats]);
+
+  const line = 'flex items-center justify-center gap-2 font-medium text-zinc-700 dark:text-zinc-200';
   return (
-    <div className="card flex h-full flex-col justify-center rounded-3xl p-6 sm:p-8">
-      <div className="mb-5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
-        <span className="text-accent">●</span> {t('home.landing.allTitle')}
-      </div>
-      <ul className="flex flex-col gap-3.5">
-        {feats.map((f, i) => (
-          <li key={i} className="flex items-start gap-3 text-sm leading-snug text-zinc-700 dark:text-zinc-200">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-              <svg viewBox="0 0 24 24" className="h-3 w-3 fill-none stroke-current" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 13l4 4L19 7" />
-              </svg>
-            </span>
-            {f}
-          </li>
-        ))}
-      </ul>
+    <div className="relative mt-6 flex justify-center text-sm" aria-hidden="true">
+      {/* Phrase courante (en flux → donne la hauteur), rejouée à chaque changement */}
+      <span key={i} className={`feat-enter ${line}`}>
+        <span className="text-accent">✦</span>
+        {feats[i]}
+      </span>
+      {/* Phrase sortante, en overlay au-dessus, qui se fond simultanément */}
+      {leaving !== null && (
+        <span
+          key={`leave-${i}`}
+          onAnimationEnd={() => setLeaving(null)}
+          className={`feat-leave absolute inset-0 ${line}`}
+        >
+          <span className="text-accent">✦</span>
+          {leaving}
+        </span>
+      )}
+      <span className="sr-only">{feats.join(' · ')}</span>
     </div>
   );
 }

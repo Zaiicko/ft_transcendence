@@ -378,7 +378,7 @@
       "feature1Title": "Sincroniza a tua biblioteca",
       "feature1Desc": "Importa automaticamente os teus jogos e troféus Steam, PlayStation e Xbox.",
       "feature2Title": "Avalia e critica",
-      "feature2Desc": "Atribui notas, escreve críticas, cria listas e segue os teus amigos.",
+      "feature2Desc": "Atribui notas, escreve críticas, reage e comenta as dos outros.",
       "feature3Title": "Desbloqueia e compete",
       "feature3Desc": "Ganha conquistas e sobe na classificação global.",
       "previewEyebrow": "Pré-visualização ao vivo",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Liga o Steam, a PlayStation e a Xbox — os teus jogos e troféus sincronizam automaticamente.",
       "achEyebrow": "Conquistas próprias",
       "achTitle": "Dezenas de emblemas para desbloquear",
-      "achSubtitle": "Ganha emblemas ao concluir jogos, escrever críticas, criar listas e adicionar amigos."
+      "achSubtitle": "Ganha emblemas ao concluir jogos, escrever críticas, criar listas e adicionar amigos.",
+      "feat9": "Recebe recomendações de jogos só para ti"
     },
     "recoBecauseGame": "Porque gostaste de {{title}}",
     "recoBecauseGenre": "Porque gostas de {{genre}}",

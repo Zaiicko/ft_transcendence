@@ -378,7 +378,7 @@
       "feature1Title": "라이브러리 동기화",
       "feature1Desc": "Steam·PlayStation·Xbox 게임과 트로피를 자동으로 가져옵니다.",
       "feature2Title": "평가 & 리뷰",
-      "feature2Desc": "게임에 점수를 매기고, 리뷰를 쓰고, 목록을 만들고, 친구를 팔로우하세요.",
+      "feature2Desc": "게임에 점수를 매기고, 리뷰를 쓰고, 다른 사람의 리뷰에 반응하고 댓글을 달아보세요.",
       "feature3Title": "해제 & 경쟁",
       "feature3Desc": "업적을 획득하고 글로벌 랭킹에 올라보세요.",
       "previewEyebrow": "실시간 미리보기",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Steam·PlayStation·Xbox 연동 — 게임과 트로피가 자동 동기화됩니다.",
       "achEyebrow": "자체 업적",
       "achTitle": "해제할 수 있는 수십 개의 배지",
-      "achSubtitle": "게임 완료, 리뷰 작성, 목록 생성, 친구 추가로 배지를 획득하세요."
+      "achSubtitle": "게임 완료, 리뷰 작성, 목록 생성, 친구 추가로 배지를 획득하세요.",
+      "feat9": "당신에게 딱 맞는 게임 추천 받기"
     },
     "recoBecauseGame": "「{{title}}」을(를) 좋아해서",
     "recoBecauseGenre": "{{genre}}을(를) 좋아해서",

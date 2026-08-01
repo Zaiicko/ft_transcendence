@@ -378,7 +378,7 @@
       "feature1Title": "Bibliothek synchronisieren",
       "feature1Desc": "Importiere deine Steam-, PlayStation- und Xbox-Spiele und Trophäen automatisch.",
       "feature2Title": "Bewerten & rezensieren",
-      "feature2Desc": "Bewerte Spiele, schreibe Rezensionen, erstelle Listen und folge deinen Freunden.",
+      "feature2Desc": "Bewerte Spiele, schreibe Rezensionen, reagiere und kommentiere die der anderen.",
       "feature3Title": "Freischalten & messen",
       "feature3Desc": "Verdiene Erfolge und klettere in der globalen Rangliste nach oben.",
       "previewEyebrow": "Live-Vorschau",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Verbinde Steam, PlayStation und Xbox — deine Spiele und Trophäen synchronisieren sich automatisch.",
       "achEyebrow": "Hauseigene Erfolge",
       "achTitle": "Dutzende Abzeichen zum Freischalten",
-      "achSubtitle": "Verdiene Abzeichen, indem du Spiele abschließt, Rezensionen schreibst, Listen erstellst und Freunde hinzufügst."
+      "achSubtitle": "Verdiene Abzeichen, indem du Spiele abschließt, Rezensionen schreibst, Listen erstellst und Freunde hinzufügst.",
+      "feat9": "Erhalte Spielempfehlungen nur für dich"
     },
     "recoBecauseGame": "Weil dir {{title}} gefallen hat",
     "recoBecauseGenre": "Weil du {{genre}} magst",

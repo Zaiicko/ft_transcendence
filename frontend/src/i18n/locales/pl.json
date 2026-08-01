@@ -378,7 +378,7 @@
       "feature1Title": "Zsynchronizuj bibliotekę",
       "feature1Desc": "Automatycznie importuj gry i trofea ze Steam, PlayStation i Xbox.",
       "feature2Title": "Oceniaj i recenzuj",
-      "feature2Desc": "Wystawiaj oceny, pisz recenzje, twórz listy i obserwuj znajomych.",
+      "feature2Desc": "Wystawiaj oceny, pisz recenzje, reaguj i komentuj recenzje innych.",
       "feature3Title": "Zdobywaj i rywalizuj",
       "feature3Desc": "Zdobywaj osiągnięcia i wspinaj się w globalnym rankingu.",
       "previewEyebrow": "Podgląd na żywo",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Połącz Steam, PlayStation i Xbox — twoje gry i trofea synchronizują się automatycznie.",
       "achEyebrow": "Własne osiągnięcia",
       "achTitle": "Dziesiątki odznak do zdobycia",
-      "achSubtitle": "Zdobywaj odznaki, kończąc gry, pisząc recenzje, tworząc listy i dodając znajomych."
+      "achSubtitle": "Zdobywaj odznaki, kończąc gry, pisząc recenzje, tworząc listy i dodając znajomych.",
+      "feat9": "Otrzymuj rekomendacje gier tylko dla ciebie"
     },
     "recoBecauseGame": "Bo spodobało ci się {{title}}",
     "recoBecauseGenre": "Bo lubisz {{genre}}",

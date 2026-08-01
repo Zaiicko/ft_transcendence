@@ -378,7 +378,7 @@
       "feature1Title": "Synchronise ta bibliothèque",
       "feature1Desc": "Importe automatiquement tes jeux et tes trophées Steam, PlayStation et Xbox.",
       "feature2Title": "Note & critique",
-      "feature2Desc": "Attribue des notes, écris des critiques, crée des listes et suis tes amis.",
+      "feature2Desc": "Attribue des notes, écris des critiques, réagis et commente celles des autres.",
       "feature3Title": "Débloque & rivalise",
       "feature3Desc": "Gagne des succès et grimpe au classement global.",
       "previewEyebrow": "Aperçu en direct",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Connecte Steam, PlayStation et Xbox — tes jeux et tes trophées se synchronisent tout seuls.",
       "achEyebrow": "Succès maison",
       "achTitle": "Des dizaines de badges à débloquer",
-      "achSubtitle": "Gagne des badges en finissant des jeux, en écrivant des critiques, en créant des listes et en ajoutant des amis."
+      "achSubtitle": "Gagne des badges en finissant des jeux, en écrivant des critiques, en créant des listes et en ajoutant des amis.",
+      "feat9": "Reçois des recommandations de jeux rien que pour toi"
     },
     "recoBecauseGame": "Parce que tu as aimé {{title}}",
     "recoBecauseGenre": "Parce que tu aimes {{genre}}",

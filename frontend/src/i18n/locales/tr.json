@@ -378,7 +378,7 @@
       "feature1Title": "Kütüphaneni senkronize et",
       "feature1Desc": "Steam, PlayStation ve Xbox oyunlarını ve kupalarını otomatik olarak içe aktar.",
       "feature2Title": "Puanla ve incele",
-      "feature2Desc": "Oyunlara puan ver, inceleme yaz, listeler oluştur ve arkadaşlarını takip et.",
+      "feature2Desc": "Oyunlara puan ver, inceleme yaz, başkalarınınkine tepki ver ve yorum yap.",
       "feature3Title": "Kilidi aç ve yarış",
       "feature3Desc": "Başarımlar kazan ve global sıralamada yüksel.",
       "previewEyebrow": "Canlı önizleme",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Steam, PlayStation ve Xbox'ı bağla — oyunların ve kupaların otomatik senkronize olur.",
       "achEyebrow": "Özgün başarımlar",
       "achTitle": "Açılacak onlarca rozet",
-      "achSubtitle": "Oyunları tamamlayarak, inceleme yazarak, listeler oluşturarak ve arkadaş ekleyerek rozetler kazan."
+      "achSubtitle": "Oyunları tamamlayarak, inceleme yazarak, listeler oluşturarak ve arkadaş ekleyerek rozetler kazan.",
+      "feat9": "Sana özel oyun önerileri al"
     },
     "recoBecauseGame": "{{title}} hoşuna gittiği için",
     "recoBecauseGenre": "{{genre}} sevdiğin için",

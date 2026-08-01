@@ -378,7 +378,7 @@
       "feature1Title": "同步你的游戏库",
       "feature1Desc": "自动导入你的 Steam、PlayStation 和 Xbox 游戏和奖杯。",
       "feature2Title": "评分与点评",
-      "feature2Desc": "为游戏打分、撰写评论、创建列表并关注好友。",
+      "feature2Desc": "为游戏打分、撰写评论，并对他人的评论点赞和留言。",
       "feature3Title": "解锁与竞争",
       "feature3Desc": "赢得成就，登顶全球排行榜。",
       "previewEyebrow": "实时预览",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "连接 Steam、PlayStation 和 Xbox — 游戏和奖杯自动同步。",
       "achEyebrow": "原创成就",
       "achTitle": "数十种徽章等你解锁",
-      "achSubtitle": "通过通关游戏、撰写点评、创建列表和添加好友来赢得徽章。"
+      "achSubtitle": "通过通关游戏、撰写点评、创建列表和添加好友来赢得徽章。",
+      "feat9": "获取专为你推荐的游戏"
     },
     "recoBecauseGame": "因为你喜欢《{{title}}》",
     "recoBecauseGenre": "因为你喜欢{{genre}}",

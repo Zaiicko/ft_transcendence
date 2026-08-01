@@ -378,7 +378,7 @@
       "feature1Title": "Synchroniseer je bibliotheek",
       "feature1Desc": "Importeer automatisch je Steam-, PlayStation- en Xbox-games en trofeeën.",
       "feature2Title": "Beoordeel & recenseer",
-      "feature2Desc": "Geef cijfers, schrijf recensies, maak lijsten en volg je vrienden.",
+      "feature2Desc": "Geef cijfers, schrijf recensies, reageer op en becommentarieer die van anderen.",
       "feature3Title": "Ontgrendel & wedijver",
       "feature3Desc": "Verdien prestaties en klim in de globale ranglijst.",
       "previewEyebrow": "Live voorbeeld",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Koppel Steam, PlayStation en Xbox — je games en trofeeën synchroniseren automatisch.",
       "achEyebrow": "Eigen prestaties",
       "achTitle": "Tientallen badges om te ontgrendelen",
-      "achSubtitle": "Verdien badges door games te voltooien, recensies te schrijven, lijsten te maken en vrienden toe te voegen."
+      "achSubtitle": "Verdien badges door games te voltooien, recensies te schrijven, lijsten te maken en vrienden toe te voegen.",
+      "feat9": "Ontvang game-aanbevelingen speciaal voor jou"
     },
     "recoBecauseGame": "Omdat je {{title}} leuk vond",
     "recoBecauseGenre": "Omdat je van {{genre}} houdt",

@@ -168,3 +168,41 @@ body {
     animation: none;
   }
 }
+
+/* Ticker de fonctionnalités (accueil anonyme) : la phrase courante entre depuis
+   le bas pendant que la précédente sort vers le haut, les deux EN MÊME TEMPS
+   (crossfade qui se chevauche) → transition continue et douce, sans instant vide. */
+@keyframes feat-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.55rem) scale(0.94);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+@keyframes feat-leave {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+.feat-enter {
+  animation: feat-enter 0.62s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+.feat-leave {
+  animation: feat-leave 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .feat-enter,
+  .feat-leave {
+    animation: none;
+  }
+}

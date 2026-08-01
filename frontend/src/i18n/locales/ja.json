@@ -378,7 +378,7 @@
       "feature1Title": "ライブラリを同期",
       "feature1Desc": "Steam・PlayStation・Xboxのゲームとトロフィーを自動でインポート。",
       "feature2Title": "評価＆レビュー",
-      "feature2Desc": "ゲームを採点し、レビューを書き、リストを作り、友達をフォロー。",
+      "feature2Desc": "ゲームを採点し、レビューを書き、他の人のレビューにリアクションやコメント。",
       "feature3Title": "解除して競う",
       "feature3Desc": "実績を獲得し、グローバルランキングを駆け上がろう。",
       "previewEyebrow": "ライブプレビュー",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Steam・PlayStation・Xboxを連携 — ゲームとトロフィーが自動で同期。",
       "achEyebrow": "オリジナル実績",
       "achTitle": "解除できるバッジは数十種類",
-      "achSubtitle": "ゲームのクリア、レビュー投稿、リスト作成、フレンド追加でバッジを獲得。"
+      "achSubtitle": "ゲームのクリア、レビュー投稿、リスト作成、フレンド追加でバッジを獲得。",
+      "feat9": "あなた向けのゲームのおすすめを受け取る"
     },
     "recoBecauseGame": "「{{title}}」が気に入ったから",
     "recoBecauseGenre": "{{genre}}が好きだから",

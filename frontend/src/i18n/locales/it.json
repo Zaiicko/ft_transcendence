@@ -378,7 +378,7 @@
       "feature1Title": "Sincronizza la libreria",
       "feature1Desc": "Importa automaticamente i tuoi giochi e trofei Steam, PlayStation e Xbox.",
       "feature2Title": "Vota e recensisci",
-      "feature2Desc": "Assegna voti, scrivi recensioni, crea liste e segui i tuoi amici.",
+      "feature2Desc": "Assegna voti, scrivi recensioni, reagisci e commenta quelle degli altri.",
       "feature3Title": "Sblocca e competi",
       "feature3Desc": "Ottieni obiettivi e scala la classifica globale.",
       "previewEyebrow": "Anteprima dal vivo",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Collega Steam, PlayStation e Xbox: i tuoi giochi e trofei si sincronizzano automaticamente.",
       "achEyebrow": "Obiettivi originali",
       "achTitle": "Decine di badge da sbloccare",
-      "achSubtitle": "Guadagna badge completando giochi, scrivendo recensioni, creando liste e aggiungendo amici."
+      "achSubtitle": "Guadagna badge completando giochi, scrivendo recensioni, creando liste e aggiungendo amici.",
+      "feat9": "Ricevi consigli di giochi pensati solo per te"
     },
     "recoBecauseGame": "Perché ti è piaciuto {{title}}",
     "recoBecauseGenre": "Perché ti piace {{genre}}",

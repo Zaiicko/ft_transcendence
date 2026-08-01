@@ -378,7 +378,7 @@
       "feature1Title": "Sync your library",
       "feature1Desc": "Import your Steam, PlayStation and Xbox games and trophies automatically.",
       "feature2Title": "Rate & review",
-      "feature2Desc": "Score games, write reviews, build lists and follow your friends.",
+      "feature2Desc": "Score games, write reviews, react to and comment on others'.",
       "feature3Title": "Unlock & compete",
       "feature3Desc": "Earn achievements and climb the global leaderboard.",
       "previewEyebrow": "Live preview",
@@ -403,7 +403,8 @@
       "platformsSubtitle": "Connect Steam, PlayStation and Xbox — your games and trophies sync automatically.",
       "achEyebrow": "Home-made achievements",
       "achTitle": "Dozens of badges to unlock",
-      "achSubtitle": "Earn badges as you complete games, write reviews, build lists and connect friends."
+      "achSubtitle": "Earn badges as you complete games, write reviews, build lists and connect friends.",
+      "feat9": "Get game recommendations made just for you"
     },
     "recoBecauseGame": "Because you liked {{title}}",
     "recoBecauseGenre": "Because you like {{genre}}",
