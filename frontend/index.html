@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Déclarations multiples : Firefox ne prend pas toujours le .ico sans type
-         explicite ni sans `shortcut icon`, contrairement à Chrome. -->
+    <!-- SVG en premier (fiable sur Firefox, contrairement au .ico), .ico en repli
+         pour les vieux navigateurs qui ne gèrent pas le favicon SVG. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <title>Saveboxd</title>
