@@ -14,7 +14,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AchievementsService } from '../achievements/achievements.service';
 import { FeedService } from '../feed/feed.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { toPublicUser } from '../users/public-user';
+import { toPublicUserLite } from '../users/public-user';
 import { UsersService } from '../users/users.service';
 import { SteamWebApiService } from './steam-web-api.service';
 
@@ -210,7 +210,7 @@ export class SteamController {
 
     return {
       private: false,
-      suggestions: candidates.filter((c) => !linked.has(c.id)).map(toPublicUser),
+      suggestions: candidates.filter((c) => !linked.has(c.id)).map(toPublicUserLite),
     };
   }
 }

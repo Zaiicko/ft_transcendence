@@ -188,9 +188,6 @@ faire `socket.disconnect().connect()` pour rejoindre/quitter la room perso.
       le score bayésien `score`
 - [ ] Pas de temps réel nécessaire ici — un fetch au montage suffit
 
-Démo de référence fonctionnelle : `frontend/public/test-api.html`
-(https://localhost:8443/test-api.html) — tout le contrat ci-dessus y est exercé.
-
 ---
 
 ## 6. Tests automatisés

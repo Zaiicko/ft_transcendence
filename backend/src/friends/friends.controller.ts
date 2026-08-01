@@ -12,7 +12,7 @@ import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PresenceService } from '../presence/presence.service';
-import { toPublicUser } from '../users/public-user';
+import { toPublicUserLite } from '../users/public-user';
 import { FriendsService } from './friends.service';
 
 @UseGuards(JwtAuthGuard)
@@ -27,7 +27,7 @@ export class FriendsController {
   async list(@CurrentUser() current: JwtPayload) {
     const friends = await this.friends.listFriends(current.sub);
     return friends.map((user) => ({
-      ...toPublicUser(user),
+      ...toPublicUserLite(user),
       isOnline: this.presence.isOnline(user.id),
     }));
   }
@@ -39,12 +39,12 @@ export class FriendsController {
       incoming: incoming.map((r) => ({
         id: r.id,
         createdAt: r.createdAt,
-        user: toPublicUser(r.requester),
+        user: toPublicUserLite(r.requester),
       })),
       outgoing: outgoing.map((r) => ({
         id: r.id,
         createdAt: r.createdAt,
-        user: toPublicUser(r.addressee),
+        user: toPublicUserLite(r.addressee),
       })),
     };
   }
@@ -52,7 +52,7 @@ export class FriendsController {
   @Get('suggestions')
   async suggestions(@CurrentUser() current: JwtPayload) {
     const suggested = await this.friends.suggestFriends(current.sub);
-    return suggested.map(({ user, via }) => ({ ...toPublicUser(user), via }));
+    return suggested.map(({ user, via }) => ({ ...toPublicUserLite(user), via }));
   }
 
   @Post('requests/:username')

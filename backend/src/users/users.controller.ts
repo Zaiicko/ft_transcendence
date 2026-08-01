@@ -32,7 +32,7 @@ import { DeleteAccountDto } from './dto/delete-account.dto';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { AvatarFrameDto } from './dto/avatar-frame.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { toPublicUser } from './public-user';
+import { toPublicUser, toPublicUserLite } from './public-user';
 import { UsersService } from './users.service';
 
 // image/gif inclus : l'avatar est stocké tel quel (aucun ré-encodage), donc le
@@ -76,12 +76,13 @@ export class UsersController {
     return this.usersService.getHomeStats(current.sub);
   }
 
-  // Public profile only — never return passwordHash / twoFactorSecret / providerId
+  // Public lookup by id → vue MINIMALE (identité + badges) : jamais email,
+  // réglages, tokens ni secrets d'un autre utilisateur.
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findById(id);
     if (!user) throw new NotFoundException();
-    return toPublicUser(user);
+    return toPublicUserLite(user);
   }
 
   @UseGuards(JwtAuthGuard)

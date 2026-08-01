@@ -27,6 +27,33 @@ export type PublicUser = Omit<
   tutorialSeen: boolean;
 };
 
+// Vue MINIMALE d'un AUTRE utilisateur (amis, demandes, suggestions, /users/:id).
+// `toPublicUser` garde l'email et les réglages — légitime pour SES PROPRES données
+// (/users/me), mais une fuite s'il est appliqué à autrui. Cette vue n'expose que
+// l'identité + ce que le front affiche vraiment (badges) : aucun email, réglage,
+// cache de librairie, langue, dernière connexion, etc.
+export type PublicUserLite = {
+  id: number;
+  username: string;
+  avatarUrl: string | null;
+  provider: User['provider'];
+  steamId: string | null;
+  psnLinked: boolean;
+  xboxLinked: boolean;
+};
+
+export function toPublicUserLite(user: User): PublicUserLite {
+  return {
+    id: user.id,
+    username: user.username,
+    avatarUrl: user.avatarUrl,
+    provider: user.provider,
+    steamId: user.steamId,
+    psnLinked: user.psnAccountId !== null,
+    xboxLinked: user.xboxXuid !== null,
+  };
+}
+
 // Strip auth-internal fields before a User ever leaves the backend
 export function toPublicUser(user: User): PublicUser {
   const {
