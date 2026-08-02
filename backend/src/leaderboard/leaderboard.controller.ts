@@ -18,8 +18,8 @@ const WINDOWS: LeaderboardWindow[] = ['all', 'month'];
 export class LeaderboardController {
   constructor(private readonly leaderboard: LeaderboardService) {}
 
-  // Classement des joueurs par métrique / portée / fenêtre. Paramètres invalides
-  // ⇒ valeur par défaut (completions / friends / all).
+  // Player ranking by metric / scope / window. Invalid parameters fall back to
+  // the defaults (completions / friends / all).
   @Get()
   get(
     @CurrentUser() current: JwtPayload,
@@ -47,8 +47,8 @@ export class LeaderboardController {
     );
   }
 
-  // Récompenses de classement d'un utilisateur (podiums globaux all-time) : sert
-  // à afficher un badge à côté de son pseudo. Chemin distinct de @Get() racine.
+  // A user's ranking awards (global all-time podiums), shown as a badge next to
+  // their username. Distinct path from the root @Get().
   @Get('badges/:userId')
   badges(@Param('userId', ParseIntPipe) userId: number) {
     return this.leaderboard.getRankBadges(userId);

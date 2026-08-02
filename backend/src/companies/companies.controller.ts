@@ -5,7 +5,7 @@ import { CompaniesService } from './companies.service';
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
-  // Déclaré avant ':id' pour que "search" ne soit pas parsé comme un id.
+  // Declared before ':id' so "search" isn't parsed as an id.
   @Get('search')
   search(@Query('q') q?: string) {
     return this.companiesService.search(q?.trim() ?? '');

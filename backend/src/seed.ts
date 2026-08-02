@@ -10,7 +10,7 @@ async function main() {
   });
 
   const count = Number(process.env.SEED_COUNT ?? 1000);
-  // Seuil de votes IGDB : baisser pour dépasser ~6,8k jeux (voir seedPopular).
+  // IGDB vote threshold: lower it to go past ~6.8k games (see seedPopular).
   const minRatings = Number(process.env.SEED_MIN_RATINGS ?? 20);
   console.log(`Seeding the ${count} most rated IGDB games (min ${minRatings} ratings)...`);
 

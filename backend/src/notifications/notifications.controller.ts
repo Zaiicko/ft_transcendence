@@ -17,7 +17,7 @@ import { ListNotificationsDto } from './dto/list-notifications.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { NotificationsService } from './notifications.service';
 
-// Tout est privé : une notification n'appartient qu'à son destinataire
+// Everything is private: a notification belongs only to its recipient
 @UseGuards(JwtAuthGuard)
 @Controller('notifications')
 export class NotificationsController {
@@ -33,7 +33,7 @@ export class NotificationsController {
     return this.notifications.unreadCount(user.sub);
   }
 
-  // Préférences par type (activé/désactivé) — opt-out
+  // Per-type preferences (enabled/disabled) — opt-out
   @Get('preferences')
   getPreferences(@CurrentUser() user: JwtPayload) {
     return this.notifications.getPreferences(user.sub);
@@ -50,7 +50,7 @@ export class NotificationsController {
     return this.notifications.markAllRead(user.sub);
   }
 
-  // Vide toutes les notifications (bouton « clear »).
+  // Empties every notification (the "clear" button).
   @Delete()
   @HttpCode(204)
   clearAll(@CurrentUser() user: JwtPayload) {

@@ -11,8 +11,8 @@ const FILTERS: FeedFilter[] = ['reviews', 'played', 'completed', 'likes', 'achie
 export class FeedController {
   constructor(private readonly feed: FeedService) {}
 
-  // Feed d'activité des amis (avis + jeux faits + likes), pagination par curseur.
-  // `type` optionnel restreint à un onglet (reviews | played | likes).
+  // Friends' activity feed (reviews, played games, likes), cursor-paginated.
+  // The optional `type` narrows it to one tab.
   @Get()
   getFeed(
     @CurrentUser() current: JwtPayload,

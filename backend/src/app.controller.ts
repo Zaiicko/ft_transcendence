@@ -15,9 +15,9 @@ export class AppController {
     return { status: 'ok', database: 'up' };
   }
 
-  // Données publiques de la home (visiteur anonyme) : chiffres réels du site +
-  // le n°1 de CHAQUE catégorie de classement. Pas de guard (route ouverte, comme
-  // /health). Lecture seule.
+  // Public home data for signed-out visitors: real site counts plus the top
+  // player of EACH leaderboard category. No guard — an open route like
+  // /health, read-only.
   @Get('home/landing')
   async landing() {
     const metrics: LeaderboardMetric[] = ['completions', 'played', 'reviews'];
@@ -27,7 +27,7 @@ export class AppController {
       this.prisma.user.count(),
       ...metrics.map((m) => this.leaderboard.getPublicTop(m, 1)),
     ]);
-    // Un objet par catégorie ayant au moins un joueur classé (métrique + n°1).
+    // One entry per category that has at least one ranked player.
     const topPlayers = metrics.flatMap((metric, i) => {
       const row = tops[i][0];
       return row ? [{ metric, user: row.user, score: row.score }] : [];

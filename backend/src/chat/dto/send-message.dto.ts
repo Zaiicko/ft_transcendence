@@ -22,7 +22,7 @@ export class SendMessageDto {
   @MaxLength(2000)
   content?: string;
 
-  // Références de partage (selon `type`) — le service valide la cohérence
+  // Share references, depending on `type` — the service checks consistency
   @IsOptional()
   @IsInt()
   @IsPositive()

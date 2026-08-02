@@ -37,7 +37,7 @@ const MAX_COVER_BYTES = 4 * 1024 * 1024;
 export class ListsController {
   constructor(private readonly lists: ListsService) {}
 
-  // Image de couverture (tous formats dont GIF animé, stockée telle quelle).
+  // Cover image, any format including animated GIF, stored as-is.
   @UseGuards(JwtAuthGuard)
   @Post(':id/cover')
   @UseInterceptors(
@@ -60,7 +60,7 @@ export class ListsController {
     return this.lists.setCover(current.sub, id, `/api/uploads/list-covers/${file.filename}`);
   }
 
-  // Zoom/centrage de la couverture (encodé dans coverUrl via #af=scale,x,y).
+  // Cover zoom/centering, encoded in coverUrl as #af=scale,x,y.
   @UseGuards(JwtAuthGuard)
   @Patch(':id/cover-frame')
   setCoverFrame(
@@ -77,7 +77,7 @@ export class ListsController {
     return this.lists.removeCover(current.sub, id);
   }
 
-  // Mes listes (privées comprises)
+  // My lists, private ones included
   @UseGuards(JwtAuthGuard)
   @Get('mine')
   mine(
@@ -87,8 +87,8 @@ export class ListsController {
     return this.lists.listMine(current.sub, gameId || undefined);
   }
 
-  // Détail d'une liste — publique pour tous, privée réservée au propriétaire.
-  // Guard optionnel : le viewer (si connecté) sert au contrôle d'accès.
+  // List detail: public to everyone, private to its owner. The optional guard
+  // supplies the viewer, when signed in, for the access check.
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number, @CurrentUser() current?: JwtPayload) {

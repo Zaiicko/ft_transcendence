@@ -62,8 +62,8 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
 
-    // Pseudo choisi plus tard dans le wizard d'onboarding : s'il est fourni on
-    // le valide, sinon on en génère un unique depuis l'e-mail (comme OAuth).
+    // The username is picked later in the onboarding wizard: validate it when
+    // supplied, otherwise derive a unique one from the email, as OAuth does.
     let username: string;
     if (dto.username) {
       if (await this.users.findByUsername(dto.username)) {
@@ -85,9 +85,9 @@ export class AuthService {
     return user;
   }
 
-  // Dérive un pseudo unique d'un libellé (nom OAuth ou partie locale d'e-mail) :
-  // minuscules, caractères autorisés uniquement, puis suffixe numérique en cas
-  // de collision. Partagé par l'inscription classique et OAuth.
+  // Derives a unique username from a label (OAuth display name or the local
+  // part of an email): lowercase, allowed characters only, then a numeric
+  // suffix on collision. Shared by classic signup and OAuth.
   private async generateUniqueUsername(seed: string): Promise<string> {
     const base = seed.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20) || 'player';
     let username = base;
@@ -347,8 +347,8 @@ export class AuthService {
   }
 
   private frontendUrl(): string {
-    // Slash final toléré dans .env : sans ça, `${base}/x` produit "//x"
-    // (callback Steam en 404, redirections et liens d'emails cassés)
+    // Tolerates a trailing slash in .env: without this, `${base}/x` yields
+    // "//x" — a 404 on the Steam callback and broken redirects and email links
     const url = this.config.get<string>('FRONTEND_URL') ?? 'https://localhost:8443';
     return url.replace(/\/+$/, '');
   }

@@ -27,11 +27,11 @@ export type PublicUser = Omit<
   tutorialSeen: boolean;
 };
 
-// Vue MINIMALE d'un AUTRE utilisateur (amis, demandes, suggestions, /users/:id).
-// `toPublicUser` garde l'email et les réglages — légitime pour SES PROPRES données
-// (/users/me), mais une fuite s'il est appliqué à autrui. Cette vue n'expose que
-// l'identité + ce que le front affiche vraiment (badges) : aucun email, réglage,
-// cache de librairie, langue, dernière connexion, etc.
+// MINIMAL view of ANOTHER user (friends, requests, suggestions, /users/:id).
+// `toPublicUser` keeps the email and settings — fine for one's OWN data on
+// /users/me, a leak on anyone else. This view exposes only identity and what
+// the front really displays (badges): no email, settings, library cache,
+// language or last-seen.
 export type PublicUserLite = {
   id: number;
   username: string;

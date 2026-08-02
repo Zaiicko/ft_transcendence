@@ -4,8 +4,8 @@ export class SignupDto {
   @IsEmail()
   email!: string;
 
-  // Optionnel : le pseudo est choisi dans le wizard d'onboarding. S'il n'est pas
-  // fourni, le backend en génère un unique à partir de l'e-mail (comme OAuth).
+  // Optional: the username is chosen in the onboarding wizard. Without one the
+  // backend derives a unique username from the email, as OAuth does.
   @IsOptional()
   @IsString()
   @MinLength(3)

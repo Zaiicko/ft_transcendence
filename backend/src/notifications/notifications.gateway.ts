@@ -18,8 +18,8 @@ function parseCookies(cookieHeader: string | undefined): Record<string, string> 
 // Options must be IDENTICAL to the other gateways: Nest shares one Socket.IO
 // server per {port, path} — see reviews.gateway.ts for the crash story.
 //
-// Chaque socket authentifiée rejoint sa room personnelle "user:<id>" : notifier
-// quelqu'un = émettre dans sa room, tous ses onglets reçoivent, où qu'ils soient.
+// Every authenticated socket joins its own "user:<id>" room, so notifying
+// someone means emitting into that room and all their tabs receive it.
 @WebSocketGateway({ path: '/socket.io' })
 export class NotificationsGateway implements OnGatewayConnection {
   @WebSocketServer()
@@ -33,13 +33,13 @@ export class NotificationsGateway implements OnGatewayConnection {
   async handleConnection(socket: Socket): Promise<void> {
     try {
       const token = parseCookies(socket.handshake.headers.cookie).access_token;
-      if (!token) return; // anonyme : pas de room perso, la socket vit sa vie
+      if (!token) return; // anonymous: no personal room, the socket lives on
       const payload = await this.jwt.verifyAsync<JwtPayload>(token, {
         secret: this.config.get<string>('JWT_SECRET'),
       });
       await socket.join(`user:${payload.sub}`);
     } catch {
-      // token invalide/expiré : même traitement qu'anonyme
+      // invalid or expired token: treated exactly like anonymous
     }
   }
 

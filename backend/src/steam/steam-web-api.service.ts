@@ -17,8 +17,8 @@ export interface SteamOwnedGame {
 export interface SteamAchievements {
   unlocked: number;
   total: number;
-  // Unix seconds du dernier succès débloqué (0 si aucun). Quand le jeu est à
-  // 100 %, c'est la date réelle de complétion → calendrier « Terminé ».
+  // Unix seconds of the last achievement unlocked (0 if none). At 100% this is
+  // the real completion date, which feeds the "Completed" calendar.
   lastUnlock: number;
 }
 
@@ -71,10 +71,9 @@ export class SteamWebApiService {
     return data.friendslist?.friends?.map((f) => f.steamid) ?? [];
   }
 
-  // Achievements du joueur pour un jeu donné. null = le jeu n'a pas de succès,
-  // le profil est privé, ou l'app n'a pas de stats. Résilient (aucune exception
-  // remontée) car il est appelé en masse, un appel par jeu — un jeu qui
-  // échoue ne doit pas casser toute la bibliothèque.
+  // A player's achievements for one game. null means the game has none, the
+  // profile is private, or the app has no stats. Never throws: it is called in
+  // bulk, one call per game, and one failure must not break the whole library.
   async getPlayerAchievements(steamId: string, appId: number): Promise<SteamAchievements | null> {
     try {
       const qs = new URLSearchParams({ key: this.key(), steamid: steamId, appid: String(appId) });
@@ -94,7 +93,7 @@ export class SteamWebApiService {
       return {
         unlocked: unlockedAch.length,
         total: stats.achievements.length,
-        // Date réelle du 100 % = dernier succès obtenu (max unlocktime).
+        // The real 100% date is the latest achievement (max unlocktime).
         lastUnlock: unlockedAch.reduce((max, a) => Math.max(max, a.unlocktime ?? 0), 0),
       };
     } catch {

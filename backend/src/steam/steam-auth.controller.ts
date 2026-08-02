@@ -52,13 +52,13 @@ export class SteamAuthController {
     private readonly webApi: SteamWebApiService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
-    // Lazy (via ModuleRef) pour éviter un cycle Steam ↔ Friends
+    // Lazy, via ModuleRef, to avoid a Steam <-> Friends cycle
     private readonly moduleRef: ModuleRef,
   ) {}
 
   private frontendUrl(): string {
-    // Slash final toléré dans .env : sans ça, `${base}/x` produit "//x"
-    // (callback Steam en 404, redirections et liens d'emails cassés)
+    // Tolerates a trailing slash in .env: without this, `${base}/x` yields
+    // "//x" — a 404 on the Steam callback and broken redirects and email links
     const url = this.config.get<string>('FRONTEND_URL') ?? 'https://localhost:8443';
     return url.replace(/\/+$/, '');
   }
@@ -93,7 +93,7 @@ export class SteamAuthController {
         where: { id: current.sub },
         data: { steamId, steamAchievements: Prisma.DbNull },
       });
-      // Succès « comptes liés » (résolu en lazy pour éviter un cycle de modules)
+      // "Linked accounts" achievements, resolved lazily to avoid a module cycle
       void this.moduleRef
         .get(AchievementsService, { strict: false })
         .evaluate(current.sub, ['linked']);
@@ -101,8 +101,8 @@ export class SteamAuthController {
     }
 
     // Case 2 — this Steam account is already linked to a user: log them in.
-    // On passe par /profile (comme 42/Google) : le front y relit la page
-    // d'origine mémorisée au clic et y renvoie (sinon accueil).
+    // Goes through /profile like 42/Google: the front reads back the page
+    // remembered at click time and returns there, or home as a fallback.
     if (owner) {
       setAuthCookies(res, await this.auth.issueTokens(owner));
       return res.redirect(`${front}/profile`);
@@ -183,7 +183,7 @@ export class SteamAuthController {
 
     res.clearCookie(PENDING_COOKIE, { path: PENDING_COOKIE_PATH });
     setAuthCookies(res, await this.auth.issueTokens(user));
-    // Prévient les amis Steam déjà inscrits que ce contact a rejoint (best-effort)
+    // Tells already-registered Steam friends this contact joined (best-effort)
     this.moduleRef
       .get(FriendsService, { strict: false })
       .notifyContactJoined(user.id)

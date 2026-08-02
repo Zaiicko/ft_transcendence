@@ -4,11 +4,11 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { AchievementsController } from './achievements.controller';
 import { AchievementsService } from './achievements.service';
 
-// Dépend de FeedModule (FeedGateway pour pousser la carte de feed au déblocage)
-// et NotificationsModule (notification perso). Ces deux modules importent
-// AuthModule, qui importe Friends/Users → Lists/Steam/PSN. Ces derniers importent
-// AchievementsModule via forwardRef pour casser le cycle de modules côté
-// consommateur (voir chaque module concerné).
+// Depends on FeedModule (FeedGateway pushes the feed card on unlock) and
+// NotificationsModule (the personal notification). Both import AuthModule,
+// which pulls in Friends/Users and then Lists/Steam/PSN — and those import
+// AchievementsModule through forwardRef to break the cycle on the consumer
+// side (see each module concerned).
 @Module({
   imports: [FeedModule, NotificationsModule],
   controllers: [AchievementsController],

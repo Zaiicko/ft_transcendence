@@ -1,7 +1,7 @@
 import { IsNumber, Max, Min } from 'class-validator';
 
-// Cadrage de l'avatar (zoom + décalage), encodé ensuite dans avatarUrl via un
-// fragment #af=scale,x,y. x/y sont des pourcentages de translation de l'image.
+// Avatar framing (zoom + offset), later encoded in avatarUrl as an
+// #af=scale,x,y fragment. x/y are image translation percentages.
 export class AvatarFrameDto {
   @IsNumber()
   @Min(1)

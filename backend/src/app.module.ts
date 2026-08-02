@@ -26,13 +26,13 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    // Planificateur (cron) : rafraîchissement de fond des complétions 100 %.
+    // Cron scheduler: background refresh of 100% completions.
     ScheduleModule.forRoot(),
     // Baseline rate limit for every HTTP route (WebSocket traffic is
     // unaffected — gated separately by JWT on the socket handshake).
     // Sensitive auth routes tighten this further via @Throttle(...).
-    // skipIf : désactivé sous NODE_ENV=test — les suites e2e (reviews/ranking)
-    // créent >5 comptes et sinon se prennent des 429 sur signup. Zéro effet prod.
+    // skipIf disables it under NODE_ENV=test: the e2e suites create more than
+    // 5 accounts and would otherwise hit 429 on signup. No effect in prod.
     ThrottlerModule.forRoot({
       throttlers: [{ name: 'default', ttl: 60_000, limit: 120 }],
       skipIf: () => process.env.NODE_ENV === 'test',

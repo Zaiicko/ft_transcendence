@@ -34,9 +34,9 @@ export class ReviewsController {
     return this.reviewsService.highlights(query.days, query.page, query.limit, viewer?.sub);
   }
 
-  // Avis d'un utilisateur (par pseudo), paginés + triés (récents / populaires /
-  // discutés) — alimente le "Charger plus" et le tri de la section avis du
-  // profil. Deux segments après /reviews : pas de collision avec @Get(':id').
+  // A user's reviews by username, paginated and sorted (recent / popular /
+  // discussed): backs "Load more" and the sort control on the profile. Two
+  // segments after /reviews, so no collision with @Get(':id').
   @UseGuards(OptionalJwtAuthGuard)
   @Get('user/:username')
   forUser(
@@ -61,16 +61,16 @@ export class ReviewsController {
     return this.reviewsService.findOne(id, viewer?.sub);
   }
 
-  // Traduction "à la demande" du titre + texte d'UN avis vers ?lang= — public,
-  // mis en cache par langue. Deux segments → pas de collision avec @Get(':id').
+  // On-demand translation of ONE review's title and text into ?lang= — public
+  // and cached per language. Two segments, so no collision with @Get(':id').
   @Get(':id/translation')
   translate(@Param('id', ParseIntPipe) id: number, @Query() query: TranslateReviewDto) {
     return this.reviewsService.translateReview(id, query.lang);
   }
 
-  // Auto-traduction en lot : { ids, lang } → { [id]: { title, text } }. Une seule
-  // requête pour toute la liste d'avis affichée. Chemin littéral "translations"
-  // (POST) → pas de collision avec @Post(':id/like') etc.
+  // Batch auto-translation: { ids, lang } -> { [id]: { title, text } }, one
+  // request for the whole displayed list. The literal "translations" path can't
+  // collide with @Post(':id/like') and friends.
   @Post('translations')
   translateMany(@Body() dto: TranslateReviewsDto) {
     return this.reviewsService.translateReviews(dto.ids, dto.lang);

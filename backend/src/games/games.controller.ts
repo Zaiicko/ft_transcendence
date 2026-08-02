@@ -81,7 +81,7 @@ export class GamesController {
     return this.gamesService.unmarkPlayed(user.sub, id);
   }
 
-  // « Terminé » manuel (complétion) — alimente le calendrier vert + le feed
+  // Manual "completed": feeds the green calendar and the activity feed
   @UseGuards(JwtAuthGuard)
   @Put(':id/completed')
   markCompleted(

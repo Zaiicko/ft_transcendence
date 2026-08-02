@@ -65,10 +65,10 @@ export class GamesSyncService {
 
   // Bulk import of the most rated games. Idempotent (upsert by igdbId):
   // safe to re-run to refresh data or extend the catalog.
-  // minRatings : seuil de votes IGDB. Plus il est bas, plus il y a de jeux
-  // éligibles (>20 ≈ 6,8k, >10 ≈ 11k, >0 ≈ 30k) — d'où le plafond quand on en
-  // demande plus qu'il n'en existe au-dessus du seuil. minRatings est un number,
-  // interpolé tel quel (pas d'injection possible dans la requête IGDB).
+  // minRatings is the IGDB vote threshold: the lower it is, the more games
+  // qualify (>20 ~ 6.8k, >10 ~ 11k, >0 ~ 30k), which is why asking for more
+  // than exist above the threshold simply caps out. It is a number, so
+  // interpolating it into the IGDB query carries no injection risk.
   async seedPopular(count: number, minRatings = 20): Promise<number> {
     let imported = 0;
     for (let offset = 0; offset < count; offset += PAGE_SIZE) {

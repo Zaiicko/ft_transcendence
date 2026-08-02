@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { AchievementsService } from './achievements.service';
 
-// Succès d'un utilisateur (public — pour la section « Succès » du profil).
+// A user's achievements, public: powers the profile's "Achievements" section.
 @Controller('achievements')
 export class AchievementsController {
   constructor(private readonly achievements: AchievementsService) {}

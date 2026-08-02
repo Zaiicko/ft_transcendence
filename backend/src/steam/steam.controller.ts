@@ -42,7 +42,7 @@ export class SteamController {
   // The user's Steam library, matched against our catalog through the
   // steamAppId mapping. The frontend lists these so the user can mark them
   // played / rate them (existing reviews & playedGame endpoints).
-  // `?refresh=true` force une resynchronisation des succès.
+  // `?refresh=true` forces an achievement resync.
   @Get('library')
   async library(@CurrentUser() current: JwtPayload, @Query('refresh') refresh?: string) {
     const user = await this.users.findById(current.sub);
@@ -83,13 +83,13 @@ export class SteamController {
       },
     });
 
-    // Succès : synchronisés une seule fois puis mis en cache sur l'utilisateur
-    // (Steam n'a pas d'appel groupé, c'est 1 requête/jeu — trop lourd à refaire
-    // à chaque affichage). On resynchronise si le cache est absent ou si
-    // ?refresh=true.
-    // perGame : { appId: [obtenus, total, lastUnlock] }. lastUnlock = unix s du
-    // dernier succès (0 si aucun) → date réelle du 100 %. (Anciennes entrées en
-    // cache sont des paires [obtenus, total] : le 3ᵉ champ retombe sur 0.)
+    // Achievements are synced once then cached on the user: Steam has no batch
+    // call, so it is one request per game, far too heavy to redo on every view.
+    // A resync happens when the cache is missing or ?refresh=true.
+    // perGame is { appId: [earned, total, lastUnlock] }, lastUnlock being the
+    // unix seconds of the last achievement (0 if none) — the real 100% date.
+    // Older cache entries are [earned, total] pairs, so the 3rd field falls
+    // back to 0.
     const cached = user.steamAchievements as
       | { syncedAt: string; perGame: Record<string, [number, number, number]> }
       | null;
@@ -120,8 +120,8 @@ export class SteamController {
       })
       .sort((a, b) => b.playtimeMinutes - a.playtimeMinutes);
 
-    // Résumé global : sur TOUS les jeux synchronisés (pas seulement ceux du
-    // catalogue), pour refléter la vraie progression Steam de l'utilisateur.
+    // Global summary over ALL synced games, not just the catalog ones, so it
+    // reflects the user's real Steam progress.
     const entries = Object.values(perGame);
     const summary = {
       unlocked: entries.reduce((n, [u]) => n + u, 0),
@@ -131,9 +131,9 @@ export class SteamController {
       syncedAt,
     };
 
-    // Jeux du catalogue à 100 % (tous les succès obtenus) → événements de feed +
-    // calendrier « Terminé ». Date réelle du 100 % = dernier succès débloqué
-    // (lastUnlock, unix s) ; 0 → on laisse le défaut (now) côté insertion.
+    // Catalog games at 100% -> feed events and the "Completed" calendar. The
+    // real 100% date is the last achievement unlocked (lastUnlock, unix s);
+    // 0 leaves the insert default (now).
     const completed = matched
       .filter((m) => m.achievements && m.achievements.total > 0 && m.achievements.unlocked === m.achievements.total)
       .map((m) => {
@@ -155,9 +155,9 @@ export class SteamController {
     };
   }
 
-  // Récupère les succès de TOUS les jeux joués (temps de jeu > 0), les plus
-  // joués d'abord, par lots concurrents bornés. Plafond de sécurité pour éviter
-  // un cas pathologique (bibliothèque énorme) — au-delà, on prend les plus joués.
+  // Fetches achievements for EVERY played game (playtime > 0), most played
+  // first, in bounded concurrent batches. The safety cap guards against a
+  // pathological library; beyond it, only the most played are kept.
   private async syncAchievements(
     steamId: string,
     owned: { appid: number; playtime_forever: number }[],

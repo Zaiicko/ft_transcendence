@@ -1,21 +1,20 @@
-// Bootstrap idempotent du catalogue, lancé une fois au démarrage du conteneur
-// (voir le CMD du Dockerfile). Objectif : « tout marche avec une commande »
-// (make) même hors-ligne, à la soutenance.
+// Idempotent catalog bootstrap, run once at container start (see the
+// Dockerfile CMD). The goal is "everything works with one command" (make),
+// offline included, on defence day.
 //
-// Fixture-first : si le catalogue est vide, on importe la fixture committée
-// (catalog_seed.json) — instantané, déterministe, mêmes ids sur toutes les
-// machines. La fixture manquante seulement, on retombe sur un seed IGDB live
-// (creds + réseau requis). Si le catalogue contient déjà des jeux, on ne touche
-// à rien (survit à chaque `make re`). Pour agrandir/rafraîchir depuis IGDB :
-// `make seed [SEED_COUNT=N]`.
+// Fixture first: an empty catalog imports the committed catalog_seed.json —
+// instant, deterministic, same ids on every machine. Only a missing fixture
+// falls back to a live IGDB seed, which needs credentials and network. A
+// catalog that already holds games is left alone, so it survives `make re`.
+// To grow or refresh it from IGDB: `make seed [SEED_COUNT=N]`.
 import { existsSync, readFileSync } from 'fs';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CatalogGameRecord, GamesSyncService } from './games/games-sync.service';
 import { PrismaService } from './prisma/prisma.service';
 
-// Chemin relatif à /app (cwd du conteneur) = backend/catalog_seed.json côté
-// hôte, car docker-compose ne bind-mount que ./backend.
+// Relative to /app (the container cwd), which is backend/catalog_seed.json on
+// the host, since docker-compose only bind-mounts ./backend.
 const SEED_FILE = process.env.CATALOG_SEED_FILE ?? 'catalog_seed.json';
 
 async function main() {
@@ -49,9 +48,9 @@ async function main() {
 }
 
 main().catch((err) => {
-  // On ne bloque jamais le démarrage de l'app : on log et on sort en 0 pour que
-  // le `&& npm run start:dev` du CMD enchaîne (catalogue vide plutôt que
-  // crash-loop du conteneur).
+  // Never blocks the app from starting: log and exit 0 so the CMD's
+  // `&& npm run start:dev` still runs — an empty catalog beats a crash-looping
+  // container.
   console.error('Catalog bootstrap failed:', (err as Error).message ?? err);
   process.exit(0);
 });

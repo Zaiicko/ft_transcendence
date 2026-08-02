@@ -1,7 +1,7 @@
 import { IsDateString, IsOptional } from 'class-validator';
 
-// Corps optionnel des marquages « fait » / « terminé » : la date choisie par
-// l'user (jeux faits avant le compte / pas le jour même). Absente → maintenant.
+// Optional body for the "played" / "completed" markers: the user's own date,
+// for games finished before signing up. Absent means now.
 export class MarkDateDto {
   @IsOptional()
   @IsDateString()

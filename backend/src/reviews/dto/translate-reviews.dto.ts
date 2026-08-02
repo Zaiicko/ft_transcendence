@@ -1,8 +1,8 @@
 import { ArrayMaxSize, IsIn, IsInt } from 'class-validator';
 import { SUPPORTED_LANGUAGES } from '../../users/dto/update-profile.dto';
 
-// Traduction en lot (auto-traduction de tous les avis affichés) : une seule
-// requête, la traduction des manquants est séquentielle côté serveur.
+// Batch translation of every displayed review: one request, with the missing
+// ones translated sequentially server-side.
 export class TranslateReviewsDto {
   @ArrayMaxSize(50)
   @IsInt({ each: true })

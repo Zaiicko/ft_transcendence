@@ -6,10 +6,10 @@ import { UsersModule } from '../users/users.module';
 import { XboxApiService } from './xbox-api.service';
 import { XboxController } from './xbox.controller';
 
-// Fonctionnalités liées au compte Xbox via OpenXBL (xbl.io). Modèle à clé
-// service unique (XBL_API_KEY) : les utilisateurs déclarent leur gamertag
-// public, le backend le résout et lit leurs jeux/succès publics. Aucun jeton par
-// utilisateur. Miroir de PsnModule.
+// Xbox account features through OpenXBL (xbl.io). Single service-key model
+// (XBL_API_KEY): users declare their public gamertag, the backend resolves it
+// and reads their public games and achievements. No per-user token.
+// Mirrors PsnModule.
 @Module({
   imports: [AuthModule, UsersModule, FeedModule, AchievementsModule],
   controllers: [XboxController],

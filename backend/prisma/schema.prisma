@@ -60,66 +60,65 @@ model User {
   provider         AuthProvider @default(LOCAL)
   providerId       String?
   steamId          String?      @unique
-  // Cache des succès Steam (Steam n'a pas d'appel groupé : 1 requête/jeu). Une
-  // fois synchronisé, on stocke ici { syncedAt, perGame: { appId: [obtenus,
-  // total] } } pour ne pas re-tout-charger à chaque affichage. Vidé au (dé)liage.
+  // Steam achievement cache (Steam has no batch call, so it is one request per
+  // game). Once synced we store { syncedAt, perGame: { appId: [earned, total] } }
+  // here to avoid reloading everything on each view. Cleared on (un)link.
   steamAchievements Json?
-  // Compte Discord rattaché (connexion secondaire, comme steamId). Sert aussi
-  // d'identifiant de login pour les comptes créés via Discord.
+  // Linked Discord account (a secondary login, like steamId). Also acts as the
+  // login identifier for accounts created through Discord.
   discordId        String?      @unique
-  // Compte PlayStation rattaché : l'utilisateur déclare son PSN Online ID, le
-  // backend le résout en accountId via sa propre session PSN service (une seule
-  // session côté serveur, cf. PSN_SERVICE_NPSSO). On ne stocke aucun jeton par
-  // utilisateur. accountId sert au matching d'amis, onlineId à l'affichage.
-  // Import-only (profils publics) : ce n'est pas un moyen de connexion. Pas de
-  // @unique : la liaison ne prouve pas la propriété (simple lecture d'un profil
-  // public), donc réserver un accountId bloquerait le compte d'autrui.
+  // Linked PlayStation account: the user declares their PSN Online ID and the
+  // backend resolves it to an accountId through its own PSN service session
+  // (one server-side session, see PSN_SERVICE_NPSSO). No per-user token is
+  // stored. accountId drives friend matching, onlineId is for display.
+  // Import-only from public profiles — not a way to sign in. No @unique:
+  // linking proves nothing (we only read a public profile), so reserving an
+  // accountId would lock someone else out of their own.
   psnAccountId     String?
   psnOnlineId      String?
-  // Cache de la bibliothèque PSN (titres à trophées + résumé), même principe que
-  // xboxLibrary/steamAchievements : évite de rappeler PSN à chaque affichage
-  // (une erreur passagère affichait à tort "profil privé"). Resync sur
-  // ?refresh=true, vidé au (dé)liage.
+  // PSN library cache (trophy titles + summary), same idea as xboxLibrary and
+  // steamAchievements: avoids calling PSN on every view, where a transient
+  // error used to show a bogus "private profile". Resynced on ?refresh=true,
+  // cleared on (un)link.
   psnLibrary       Json?
-  // Compte Xbox rattaché : l'utilisateur déclare son gamertag public, le backend
-  // le résout en XUID via sa clé service OpenXBL (une seule clé côté serveur, cf.
-  // XBL_API_KEY) et lit ses jeux/succès publics. Aucun jeton par utilisateur.
-  // xuid identifie le profil, gamertag sert à l'affichage. Import-only (profils
-  // publics) : ce n'est pas un moyen de connexion. Miroir de psnAccountId, pas
-  // de @unique pour la même raison (réserver un XUID bloquerait autrui).
+  // Linked Xbox account: the user declares their public gamertag, the backend
+  // resolves it to a XUID with its OpenXBL service key (one server-side key,
+  // see XBL_API_KEY) and reads their public games and achievements. No per-user
+  // token. xuid identifies the profile, gamertag is for display. Import-only
+  // from public profiles — not a way to sign in. Mirrors psnAccountId, and has
+  // no @unique for the same reason.
   xboxXuid         String?
   xboxGamertag     String?
-  // Cache de la bibliothèque Xbox (OpenXBL renvoie ~1000 titres, lent à
-  // recharger à chaque affichage). Une fois récupéré, on stocke ici
-  // { syncedAt, titles: [...] } ; on ne resynchronise que sur ?refresh=true.
-  // Vidé au (dé)liage. Pendant de steamAchievements.
+  // Xbox library cache (OpenXBL returns ~1000 titles, slow to reload each
+  // view). Once fetched we store { syncedAt, titles: [...] } and only resync on
+  // ?refresh=true. Cleared on (un)link. Counterpart of steamAchievements.
   xboxLibrary      Json?
   twoFactorSecret  String?
   twoFactorEnabled Boolean      @default(false)
   language         String       @default("en")
-  // Préférences de notifications par type : { REVIEW_LIKE: false, ... }.
-  // Absent/true = activé (opt-out). Null = tout activé (défaut).
+  // Per-type notification preferences: { REVIEW_LIKE: false, ... }.
+  // Absent or true means enabled (opt-out); null means everything is on.
   notificationPrefs Json?
   // Null until the address is confirmed via the emailed verification link
   // (set immediately on OAuth signup, since the provider already verified it)
   emailVerifiedAt  DateTime?
   // Last WebSocket disconnect time — used for "last seen" once offline
   lastSeenAt       DateTime?
-  // Onboarding wizard completion : null tant que le wizard n'a pas été terminé
-  // ou explicitement passé → le front redirige vers /welcome tant que c'est nul.
+  // Onboarding wizard completion: null until the wizard is finished or
+  // explicitly skipped; while null the front redirects to /welcome.
   onboardedAt      DateTime?
-  // Tour guidé « à quoi sert chaque bouton » : null tant qu'il n'a pas été vu ni
-  // passé. Se déclenche une fois, juste après l'onboarding. Rejouable à la
-  // demande (menu réglages) sans remettre ce champ à nul.
+  // Guided "what each button does" tour: null until seen or skipped. Fires once,
+  // right after onboarding, and can be replayed from the settings menu without
+  // resetting this field.
   tutorialSeenAt   DateTime?
-  // Amorçage des complétions 100 % par plateforme : { steam?: true, xbox?: true,
-  // psn?: true }. La 1ʳᵉ synchro d'une plateforme enregistre l'existant SANS rien
-  // pousser au feed (sinon tous les vieux 100 % s'annonceraient d'un coup), puis
-  // marque la plateforme ici ; ensuite seules les nouvelles complétions émettent.
+  // Per-platform 100% completion seeding: { steam?: true, xbox?: true,
+  // psn?: true }. A platform's first sync records what already exists WITHOUT
+  // pushing to the feed (every old 100% would announce at once) and marks the
+  // platform here; afterwards only new completions emit.
   completionSeed   Json?
-  // Dernière tentative de re-synchro de fond des complétions (cf. CompletionsService).
-  // Cadence le cron : un compte n'est « à rafraîchir » que si c'est nul ou périmé.
-  // Bumpé à CHAQUE tentative (même en échec) pour ne pas marteler un profil privé.
+  // Last background completion resync attempt (see CompletionsService). Paces
+  // the cron: an account is only "due" when this is null or stale. Bumped on
+  // EVERY attempt, failures included, so a private profile isn't hammered.
   completionCheckedAt DateTime?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
@@ -182,12 +181,12 @@ model Friendship {
   @@unique([requesterId, addresseeId])
 }
 
-// Jalon de classement : instant où un utilisateur (subject) entre dans le top 3
-// d'un classement, pour l'afficher dans le feed. `scope` = 'global' (viewerId
-// null, visible par tous ses amis) ou 'friends' (viewerId = l'observateur dont
-// le cercle est concerné, car « top 3 de tes amis » est relatif à chacun).
-// Anti-spam applicatif : on n'enregistre qu'un NOUVEAU meilleur rang par
-// (subject, metric, scope, viewer).
+// Leaderboard milestone: the moment a user (subject) enters a leaderboard's top
+// 3, so the feed can show it. `scope` is 'global' (viewerId null, visible to
+// all their friends) or 'friends' (viewerId is the observer whose circle is
+// concerned, since "top 3 of your friends" is relative to each person).
+// Application-level anti-spam: only a NEW best rank per
+// (subject, metric, scope, viewer) is stored.
 model LeaderboardMilestone {
   id        Int      @id @default(autoincrement())
   subject   User     @relation("MilestoneSubject", fields: [subjectId], references: [id], onDelete: Cascade)
@@ -303,15 +302,15 @@ model Company {
 // comments are shared by both targets for free.
 model Review {
   id        Int      @id @default(autoincrement())
-  // SetNull, pas Cascade : à la suppression du compte le contenu reste,
-  // anonymisé ("[utilisateur supprimé]") — décision d'équipe, cf. docs/reviews-api.md
+  // SetNull rather than Cascade: deleting an account keeps the content,
+  // anonymised as "[deleted user]". Team decision, see docs/reviews-api.md
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId    Int?
   game      Game?    @relation(fields: [gameId], references: [id], onDelete: Cascade)
   gameId    Int?
   company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId Int?
-  // Short headline, e.g. "Rencontres du Pire Type !"
+  // Short headline, e.g. "A masterpiece of frustration"
   title     String
   // 0–10 (displayed as 5 stars with halves)
   rating    Int
@@ -335,9 +334,9 @@ model Review {
   @@index([companyId])
 }
 
-// Traduction machine (bouton "Traduire") du titre + texte d'un avis, à la
-// demande, mise en cache par langue. Supprimée en cascade avec l'avis, et
-// invalidée à l'édition de l'avis (voir reviews.service.update).
+// On-demand machine translation of a review's title and text (the "Translate"
+// button), cached per language. Cascade-deleted with the review and invalidated
+// when it is edited (see reviews.service.update).
 model ReviewTranslation {
   id       Int    @id @default(autoincrement())
   review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
@@ -383,8 +382,8 @@ model ReviewComment {
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId    Int?
   text      String
-  // Tombstone Reddit-style : un commentaire supprimé qui a des réponses reste
-  // en "[supprimé]" (texte vidé, userId null) pour que le thread survive
+  // Reddit-style tombstone: a deleted comment that has replies stays as
+  // "[deleted]" (text emptied, userId null) so the thread survives
   deletedAt DateTime?
 
   // Null parent = top-level comment on the review
@@ -436,22 +435,22 @@ model PlayedGame {
   game     Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
   gameId   Int
   status   PlayStatus
-  // Date « j'ai fait ce jeu » choisie par l'user (peut être antérieure à la
-  // création du compte). Alimente le calendrier « joué ».
+  // The user's own "I played this" date, which may predate their account.
+  // Feeds the "played" calendar.
   playedAt DateTime?
-  // Horodatage de l'action (distinct de playedAt, choisi par l'user) : ordonne
-  // le feed d'activité des amis
+  // When the action happened, distinct from the user-chosen playedAt: orders
+  // the friends' activity feed
   createdAt DateTime @default(now())
 
   @@unique([userId, gameId])
   @@index([userId, createdAt])
 }
 
-// Jeu du catalogue complété à 100 % sur une plateforme (tous les succès Steam /
-// gamerscore Xbox complet / 100 % de trophées ou platine PSN). Détecté à la
-// synchro de bibliothèque, en comparant l'état 100 % courant aux lignes déjà
-// enregistrées. Alimente un événement dédié du feed des amis. `platform` fait
-// partie de la clé : un même jeu complété sur Steam ET PSN compte deux fois.
+// A catalog game completed 100% on a platform (every Steam achievement, full
+// Xbox gamerscore, all PSN trophies or a platinum). Detected at library sync by
+// comparing the current 100% state against the rows already stored. Drives a
+// dedicated friends-feed event. `platform` is part of the key, so the same game
+// completed on Steam AND PSN counts twice.
 model GameCompletion {
   id       Int      @id @default(autoincrement())
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -459,12 +458,12 @@ model GameCompletion {
   game     Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
   gameId   Int
   platform String // 'steam' | 'xbox' | 'psn' | 'manual'
-  // Date réelle du 100 % : max unlock succès (Steam), dernier trophée /
-  // lastUpdatedDateTime (PSN), lastPlayed (Xbox), ou date choisie par l'user
-  // (manuel). Alimente le calendrier « terminé ». Défaut = now pour l'existant.
+  // Real 100% date: latest achievement unlock (Steam), last trophy /
+  // lastUpdatedDateTime (PSN), lastPlayed (Xbox), or the user's own date when
+  // manual. Feeds the "completed" calendar; defaults to now for existing rows.
   completedAt DateTime @default(now())
-  // Horodatage d'insertion (détection / clic) : ordonne le feed d'activité,
-  // indépendamment de la date réelle de complétion.
+  // Insert timestamp (detection or click): orders the activity feed,
+  // independently of the real completion date.
   createdAt DateTime @default(now())
 
   @@unique([userId, gameId, platform])
@@ -472,18 +471,18 @@ model GameCompletion {
   @@index([userId, completedAt])
 }
 
-// Succès « maison » débloqués par un utilisateur. La définition (famille, palier,
-// seuil, icône) vit dans le catalogue côté code (achievements.catalog.ts) ; ici
-// on ne stocke que la clé débloquée + la date. Alimente la section « Succès » du
-// profil, une notification et une carte de feed au déblocage.
+// In-house achievements a user unlocked. The definition (family, tier,
+// threshold, icon) lives in the code catalog (achievements.catalog.ts); only
+// the unlocked key and its date are stored here. Drives the profile's
+// "Achievements" section, a notification and a feed card on unlock.
 model UserAchievement {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
-  key        String // clé du catalogue, ex. 'completions_50'
+  key        String // catalog key, e.g. 'completions_50'
   unlockedAt DateTime @default(now())
-  // Débloqué par une vraie action (→ notif + carte de feed) vs amorçage silencieux
-  // (backfill / auto-réparation). Seuls les `announced` apparaissent dans le feed.
+  // Unlocked by a real action (notification + feed card) versus a silent
+  // backfill or self-repair. Only `announced` rows reach the feed.
   announced  Boolean  @default(false)
 
   @@unique([userId, key])
@@ -534,11 +533,10 @@ model Message {
   recipient   User        @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
   recipientId Int
   type        MessageType @default(TEXT)
-  // Texte du message (ou légende accompagnant un partage) — optionnel pour un
-  // partage sans commentaire.
+  // Message text, or the caption on a share — optional for a bare share.
   content     String?
-  // Références de partage : au plus une non-nulle selon `type`. SetNull pour
-  // survivre à la suppression de la cible (le message reste, sans sa carte).
+  // Share references: at most one is non-null, depending on `type`. SetNull so
+  // the message survives its target's deletion, just without the card.
   game         Game?   @relation(fields: [gameId], references: [id], onDelete: SetNull)
   gameId       Int?
   review       Review? @relation(fields: [reviewId], references: [id], onDelete: SetNull)
@@ -562,6 +560,6 @@ model Notification {
   readAt    DateTime?
   createdAt DateTime         @default(now())
 
-  // La requête chaude : "mes notifications non lues"
+  // The hot query: "my unread notifications"
   @@index([userId, readAt])
 }

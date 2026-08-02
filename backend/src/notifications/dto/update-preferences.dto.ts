@@ -1,7 +1,7 @@
 import { IsBoolean, IsOptional } from 'class-validator';
 
-// Chaque type personnalisable est optionnel (opt-out). Les clés inconnues sont
-// ignorées par le service ; la whitelist ne garde que ces champs.
+// Every customisable type is optional (opt-out). Unknown keys are ignored by
+// the service; the whitelist keeps only these fields.
 export class UpdatePreferencesDto {
   @IsOptional()
   @IsBoolean()

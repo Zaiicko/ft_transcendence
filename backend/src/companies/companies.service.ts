@@ -30,8 +30,8 @@ export class CompaniesService {
     return company;
   }
 
-  // Recherche de studios par nom (pour la barre de recherche). Les plus
-  // prolifiques d'abord (pertinence). Renvoie de quoi afficher la vignette.
+  // Studio search by name for the search bar, most prolific first for
+  // relevance. Returns just enough to render the thumbnail.
   async search(term: string) {
     if (!term) return { data: [] };
     const data = await this.prisma.company.findMany({

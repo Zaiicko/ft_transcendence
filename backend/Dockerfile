@@ -9,15 +9,16 @@ COPY . .
 RUN npx prisma generate
 
 # Dev mode: sync deps + schema, then start with hot reload.
-# backend_node_modules (docker-compose.yml) est un volume nommé : il persiste
-# entre les `docker compose up` et écrase ce que RUN npm install a posé dans
-# l'image au build — d'où le npm install au démarrage, sinon un nouveau paquet
-# ajouté par un coéquipier n'est jamais installé automatiquement.
+# backend_node_modules (docker-compose.yml) is a named volume: it persists
+# across `docker compose up` and shadows whatever RUN npm install placed in the
+# image at build time. Hence the npm install at startup — without it, a package
+# a teammate adds is never installed automatically.
 # --accept-data-loss: deliberate choice over prisma migrate. The evaluated
 # scenario (fresh clone -> empty DB) never loses anything; only local dev
 # data is at risk on destructive schema changes, and `make seed` regenerates
 # it. Without the flag, any risky schema change merged by a teammate makes
 # this container crash-loop on existing databases.
-# catalog:ensure (fixture-first) : remplit le catalogue si vide au tout premier
-# démarrage, sinon ne fait rien — d'où "make" seul = app peuplée et démontrable.
+# catalog:ensure is fixture-first: it fills an empty catalog on the very first
+# start and does nothing afterwards, so plain `make` yields a populated,
+# demoable app.
 CMD ["sh", "-c", "npm install && npx prisma generate && npx prisma db push --accept-data-loss && npm run catalog:ensure && npm run start:dev"]

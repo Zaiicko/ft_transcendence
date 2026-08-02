@@ -169,9 +169,9 @@ export class ReviewCommentsService {
     await this.emitChanged(reviewId);
   }
 
-  // Reddit-style : un commentaire qui a des réponses devient une "pierre
-  // tombale" anonyme (le thread dessous survit) ; une feuille est vraiment
-  // supprimée, puis on élague les tombales ancêtres restées sans enfant.
+  // Reddit-style: a comment with replies becomes an anonymous tombstone so the
+  // thread below survives; a leaf is really deleted, after which ancestor
+  // tombstones left without children are pruned.
   private async removeOrTombstone(id: number) {
     const replies = await this.prisma.reviewComment.count({ where: { parentId: id } });
     if (replies > 0) {
@@ -255,7 +255,7 @@ export class ReviewCommentsService {
     if (count > 0) await this.emitReaction(commentId);
   }
 
-  // On ne réagit pas sur une tombale (ses réactions ont été purgées)
+  // No reacting on a tombstone — its reactions were already purged
   private async assertAlive(commentId: number) {
     const comment = await this.prisma.reviewComment.findUnique({
       where: { id: commentId },

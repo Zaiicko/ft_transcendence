@@ -1,7 +1,7 @@
 import { ArrayMaxSize, IsArray, IsInt } from 'class-validator';
 
-// Nouvel ordre des jeux d'une liste : les gameId dans l'ordre voulu. La position
-// de chaque item devient son index dans ce tableau.
+// New ordering for a list: the gameIds in the wanted order. Each item's
+// position becomes its index in this array.
 export class ReorderListDto {
   @IsArray()
   @ArrayMaxSize(30)

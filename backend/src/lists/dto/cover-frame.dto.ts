@@ -1,8 +1,8 @@
 import { IsNumber, Max, Min } from 'class-validator';
 
-// Cadrage de la couverture de liste (zoom + décalage), encodé ensuite dans
-// coverUrl via un fragment #af=scale,x,y. Miroir de AvatarFrameDto : x/y sont
-// des pourcentages de translation de l'image.
+// List cover framing (zoom + offset), later encoded in coverUrl as an
+// #af=scale,x,y fragment. Mirrors AvatarFrameDto: x/y are image translation
+// percentages.
 export class CoverFrameDto {
   @IsNumber()
   @Min(1)

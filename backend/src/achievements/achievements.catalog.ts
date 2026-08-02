@@ -1,35 +1,35 @@
-// Catalogue des succès « maison ». Les définitions vivent ici (pas en base) : la
-// table UserAchievement ne stocke que la clé débloquée + la date. Chaque famille
-// a une métrique scalaire (voir AchievementsService.metric) et des paliers
-// croissants ; la clé est `${family}_${threshold}`.
+// In-house achievement catalog. Definitions live here rather than in the DB:
+// UserAchievement only stores the unlocked key and its date. Each family has a
+// scalar metric (see AchievementsService.metric) and rising tiers; the key is
+// `${family}_${threshold}`.
 
 export type AchievementFamily =
-  | 'completions' // jeux terminés (manuel + 100 % plateforme), distincts
-  | 'perfect' // 100 % plateforme (Steam/Xbox/PSN), distincts
-  | 'reviews' // avis écrits
-  | 'lists' // listes créées
-  | 'friends' // amis (acceptés)
-  | 'genres' // genres différents parmi les jeux terminés
-  | 'studio' // max jeux notés d'un même studio
-  | 'linked' // comptes plateforme liés (Steam / Xbox / PlayStation)
-  | 'popular' // total de j'aime reçus sur ses critiques
-  | 'supporter' // total de j'aime donnés aux critiques des autres
-  | 'favorite' // critiques notées 10/10
-  | 'harsh' // critiques notées 0
-  | 'veteran'; // ancienneté du compte (mois)
+  | 'completions' // distinct finished games (manual + platform 100%)
+  | 'perfect' // distinct platform 100% (Steam/Xbox/PSN)
+  | 'reviews' // reviews written
+  | 'lists' // lists created
+  | 'friends' // accepted friends
+  | 'genres' // distinct genres among finished games
+  | 'studio' // most rated games from one studio
+  | 'linked' // linked platform accounts (Steam / Xbox / PlayStation)
+  | 'popular' // likes received on their reviews
+  | 'supporter' // likes given to other people's reviews
+  | 'favorite' // reviews rated 10/10
+  | 'harsh' // reviews rated 0
+  | 'veteran'; // account age in months
 
 export interface AchievementDef {
   key: string;
   family: AchievementFamily;
-  // Palier dans la famille (1 = bronze, 2 = argent, 3 = or, 4 = platine, 5 = diamant)
+  // Tier within the family (1 bronze, 2 silver, 3 gold, 4 platinum, 5 diamond)
   tier: number;
   threshold: number;
-  // Emoji d'icône (même famille = même emoji ; la couleur du palier fait le reste)
+  // Icon emoji: same family means same emoji, the tier colour does the rest
   icon: string;
 }
 
-// Icône par famille (emoji — l'affichage utilise des SVG thématiques côté front,
-// ce champ n'est plus lu par l'UI mais gardé pour compat/logs).
+// Emoji per family. The front renders themed SVGs instead, so the UI no longer
+// reads this field — kept for compatibility and logs.
 const ICON: Record<AchievementFamily, string> = {
   completions: '🏁',
   perfect: '💯',
@@ -83,8 +83,8 @@ export function getAchievement(key: string): AchievementDef | undefined {
 
 export const ACHIEVEMENT_FAMILIES = Object.keys(TIERS) as AchievementFamily[];
 
-// Forme d'une carte de succès dans le feed (construite à l'identique par le
-// broadcast temps réel et par getFeed pour un rendu cohérent).
+// Shape of an achievement card in the feed, built identically by the real-time
+// broadcast and by getFeed so both render the same.
 export interface AchievementFeedItem {
   id: string;
   kind: 'achievement';

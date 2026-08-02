@@ -21,19 +21,19 @@ import { SendMessageDto } from './dto/send-message.dto';
 export class ChatController {
   constructor(private readonly chat: ChatService) {}
 
-  // Liste des conversations (amis + dernier message + non-lus + en ligne)
+  // Conversation list: friends with last message, unread count and presence
   @Get('conversations')
   conversations(@CurrentUser() current: JwtPayload) {
     return this.chat.listConversations(current.sub);
   }
 
-  // Total de messages non lus (pastille de la bulle de chat)
+  // Total unread messages, for the chat bubble badge
   @Get('unread-count')
   unread(@CurrentUser() current: JwtPayload) {
     return this.chat.unreadCount(current.sub);
   }
 
-  // Fil avec un ami (marque comme lu). Deux segments : pas de clash avec les GET ci-dessus.
+  // Thread with a friend; marks it read. Two segments, so no clash with the GETs above.
   @Get('with/:userId')
   thread(
     @CurrentUser() current: JwtPayload,

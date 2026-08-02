@@ -65,9 +65,9 @@ export class FriendsService {
     return created;
   }
 
-  // Temps réel : prévient les users concernés qu'un lien d'amitié a changé
-  // (demande / acceptation / refus / suppression) → refetch côté profil, page
-  // Friends et widget de chat. Room "user:<id>" partagée (cf. ChatGateway).
+  // Real-time: tells the users involved that a friendship changed (request,
+  // accept, decline, removal) so the profile, Friends page and chat widget
+  // refetch. Shares the "user:<id>" room with ChatGateway.
   private notifyFriendUpdate(...userIds: number[]) {
     for (const id of userIds) this.chatGateway.emitToUser(id, 'friend:update', {});
   }
@@ -81,11 +81,11 @@ export class FriendsService {
       where: { id: requestId },
       data: { status: FriendshipStatus.ACCEPTED },
     });
-    // Les deux côtés voient l'amitié + la nouvelle conversation sans refresh
+    // Both sides see the friendship and the new conversation without a refresh
     this.notifyFriendUpdate(request.requesterId, request.addresseeId);
-    // Le demandeur est notifié que sa demande a été acceptée
+    // The requester is told their request was accepted
     await this.notifications.friendAccepted(request.addresseeId, request.requesterId);
-    // Succès « amis » : les deux gagnent un ami
+    // "Friends" achievements: both gained one
     void this.achievements.evaluate(request.requesterId, ['friends']);
     void this.achievements.evaluate(request.addresseeId, ['friends']);
     return updated;
@@ -114,7 +114,7 @@ export class FriendsService {
     });
     if (!friendship) throw new NotFoundException();
     await this.prisma.friendship.delete({ where: { id: friendship.id } });
-    // La conversation + les états d'amitié disparaissent des deux côtés en direct
+    // Conversation and friendship state vanish on both sides, live
     this.notifyFriendUpdate(currentUserId, friendUserId);
   }
 
@@ -143,13 +143,9 @@ export class FriendsService {
     return { incoming, outgoing };
   }
 
-  // People you may know, excluding yourself and anyone you already have a
-  // friendship or pending request with (in either direction). Two sources:
-  // your Steam friends who are on Saveboxd (if your Steam is linked), and —
-  // when you signed in with 42 — other 42-authenticated users.
-  // À l'inscription d'un nouvel utilisateur : prévient ses contacts déjà
-  // présents (amis Steam via la liste Steam, camarades 42 via le provider) que
-  // « X a rejoint ». Steam prioritaire (lien perso > école). Best-effort.
+  // On signup, tells the new user's existing contacts that "X joined" — Steam
+  // friends via the Steam list, 42 classmates via the provider. Steam wins on
+  // a tie (personal link over school). Best-effort.
   async notifyContactJoined(newUserId: number): Promise<void> {
     try {
       const nu = await this.prisma.user.findUnique({
@@ -170,7 +166,7 @@ export class FriendsService {
             for (const u of users) steamRecipients.add(u.id);
           }
         } catch {
-          // Pas de STEAM_API_KEY / Steam injoignable — on saute les contacts Steam
+          // No STEAM_API_KEY or Steam unreachable: skip the Steam contacts
         }
       }
 
@@ -192,7 +188,7 @@ export class FriendsService {
         ),
       ]);
     } catch {
-      // Jamais bloquant pour l'inscription
+      // Never blocks the signup
     }
   }
 
@@ -229,8 +225,8 @@ export class FriendsService {
       }
     }
 
-    // Amis PlayStation sur Saveboxd (si le compte PSN est lié). Ne remplace pas
-    // une entrée Steam déjà posée (lien perso prioritaire, comme Steam vs 42).
+    // PlayStation friends on Saveboxd when PSN is linked. Never overwrites an
+    // existing Steam entry — personal link wins, as with Steam over 42.
     if (me.psnAccountId) {
       try {
         const friendAccountIds = await this.psnApi.getFriendAccountIds(me.psnAccountId);
@@ -243,7 +239,7 @@ export class FriendsService {
           }
         }
       } catch {
-        // Session PSN indispo / liste d'amis privée — on saute les suggestions PSN
+        // PSN session down or friend list private: skip the PSN suggestions
       }
     }
 

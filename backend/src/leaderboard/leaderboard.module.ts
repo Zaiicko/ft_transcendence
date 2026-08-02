@@ -3,8 +3,8 @@ import { AuthModule } from '../auth/auth.module';
 import { LeaderboardController } from './leaderboard.controller';
 import { LeaderboardService } from './leaderboard.service';
 
-// Classements (complétions / jeux faits / avis) par portée et fenêtre. Lecture
-// seule sur des données déjà en base : n'importe qu'AuthModule (JwtAuthGuard).
+// Leaderboards (completions / played / reviews) by scope and window. Read-only
+// over data already stored, so AuthModule (JwtAuthGuard) is the only import.
 @Module({
   imports: [AuthModule],
   controllers: [LeaderboardController],

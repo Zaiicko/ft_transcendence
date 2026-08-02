@@ -21,8 +21,8 @@ export enum GameSort {
   POPULAR = 'popular',
 }
 
-// Direction du tri : chaque bouton bascule entre desc (défaut : mieux notés /
-// plus joués / plus récents / plus populaires) et asc (l'inverse).
+// Sort direction: each button toggles between desc (the default — best rated,
+// most played, newest, most popular) and asc.
 export enum SortDir {
   DESC = 'desc',
   ASC = 'asc',

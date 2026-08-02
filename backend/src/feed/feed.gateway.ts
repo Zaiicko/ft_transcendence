@@ -15,10 +15,9 @@ function parseCookies(cookieHeader: string | undefined): Record<string, string> 
   return out;
 }
 
-// Options IDENTIQUES aux autres gateways : Nest partage un seul serveur
-// Socket.IO par {port, path} (cf. notifications.gateway.ts). Chaque socket
-// rejoint sa room perso "user:<id>" ; pousser une activité de feed à quelqu'un
-// = émettre dans sa room.
+// Options IDENTICAL to the other gateways: Nest shares one Socket.IO server per
+// {port, path} (see notifications.gateway.ts). Each socket joins its own
+// "user:<id>" room, so pushing feed activity means emitting into that room.
 @WebSocketGateway({ path: '/socket.io' })
 export class FeedGateway implements OnGatewayConnection {
   @WebSocketServer()
@@ -38,7 +37,7 @@ export class FeedGateway implements OnGatewayConnection {
       });
       await socket.join(`user:${payload.sub}`);
     } catch {
-      // token invalide/expiré : anonyme
+      // invalid or expired token: anonymous
     }
   }
 

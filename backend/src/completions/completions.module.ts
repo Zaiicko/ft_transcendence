@@ -6,10 +6,10 @@ import { SteamModule } from '../steam/steam.module';
 import { XboxModule } from '../xbox/xbox.module';
 import { CompletionsService } from './completions.service';
 
-// Rafraîchissement de fond des complétions 100 % (cron). Réutilise les services
-// API exportés par chaque plateforme + FeedService (via FeedModule) pour rejouer
-// exactement la même détection que la synchro interactive de bibliothèque.
-// Aucun contrôleur : purement planifié (cf. ScheduleModule dans AppModule).
+// Cron-driven background refresh of 100% completions. Reuses each platform's
+// exported API service plus FeedService (via FeedModule) to replay exactly the
+// same detection as an interactive library sync. No controller — purely
+// scheduled, see ScheduleModule in AppModule.
 @Module({
   imports: [FeedModule, SteamModule, XboxModule, PsnModule, AchievementsModule],
   providers: [CompletionsService],

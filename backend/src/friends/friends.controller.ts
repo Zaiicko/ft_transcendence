@@ -49,6 +49,10 @@ export class FriendsController {
     };
   }
 
+  // People you may know, excluding yourself and anyone you already have a
+  // friendship or pending request with (either direction). Sources: your Steam
+  // friends on Saveboxd when Steam is linked, your PSN friends when PSN is,
+  // and — if you signed in with 42 — other 42-authenticated users.
   @Get('suggestions')
   async suggestions(@CurrentUser() current: JwtPayload) {
     const suggested = await this.friends.suggestFriends(current.sub);

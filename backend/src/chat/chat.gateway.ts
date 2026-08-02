@@ -15,9 +15,9 @@ function parseCookies(cookieHeader: string | undefined): Record<string, string> 
   return out;
 }
 
-// Options IDENTIQUES aux autres gateways : Nest partage un seul serveur
-// Socket.IO par {port, path} (cf. reviews.gateway.ts). Chaque socket rejoint sa
-// room perso "user:<id>" ; envoyer un message = émettre dans la room du destinataire.
+// Options IDENTICAL to the other gateways: Nest shares one Socket.IO server per
+// {port, path} (see reviews.gateway.ts). Each socket joins its own "user:<id>"
+// room, so sending a message means emitting into the recipient's room.
 @WebSocketGateway({ path: '/socket.io' })
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection {
       });
       await socket.join(`user:${payload.sub}`);
     } catch {
-      // token invalide/expiré : socket anonyme, pas de room perso
+      // invalid or expired token: anonymous socket, no personal room
     }
   }
 

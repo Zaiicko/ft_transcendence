@@ -6,10 +6,10 @@ import { UsersModule } from '../users/users.module';
 import { PsnApiService } from './psn-api.service';
 import { PsnController } from './psn.controller';
 
-// Fonctionnalités liées au compte PlayStation via la lib psn-api. Modèle à
-// session service unique (PSN_SERVICE_NPSSO) : les utilisateurs déclarent leur
-// PSN Online ID public, le backend le résout et lira leurs jeux/trophées/amis
-// publics. Aucun jeton par utilisateur.
+// PlayStation account features through the psn-api lib. Single service-session
+// model (PSN_SERVICE_NPSSO): users declare their public PSN Online ID, the
+// backend resolves it and reads their public games, trophies and friends.
+// No per-user token.
 @Module({
   imports: [AuthModule, UsersModule, FeedModule, forwardRef(() => AchievementsModule)],
   controllers: [PsnController],

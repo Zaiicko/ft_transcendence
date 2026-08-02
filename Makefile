@@ -2,10 +2,10 @@ NAME = Saveboxd
 COMPOSE = docker compose
 URL = https://localhost:8443
 
-# On stocke les VRAIS octets d'échappement (via printf) plutôt que le texte
-# "\033[..m" : sinon `echo "$(RED)"` n'affiche la couleur que sur les shells dont
-# le echo interprète \033 (dash/sh Linux), pas sur macOS/bash → couleurs
-# incohérentes selon le terminal. Ici, echo recrache l'octet ESC réel partout.
+# Store the REAL escape bytes (via printf) instead of the literal "\033[..m":
+# otherwise `echo "$(RED)"` only colours output on shells whose echo interprets
+# \033 (dash/sh on Linux), not on macOS/bash, so colours differ per terminal.
+# This way echo emits the actual ESC byte everywhere.
 RED = $(shell printf '\033[31m')
 YELLOW = $(shell printf '\033[93m')
 GREEN = $(shell printf '\033[32m')

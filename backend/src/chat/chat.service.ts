@@ -10,8 +10,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ChatGateway } from './chat.gateway';
 import { SendMessageDto } from './dto/send-message.dto';
 
-// Sélection commune : un message hydraté avec l'expéditeur + l'aperçu de la
-// cible partagée (au plus une non-nulle selon `type`).
+// Shared selection: a message hydrated with its sender and the preview of the
+// shared target (at most one is non-null, depending on `type`).
 const messageInclude = {
   sender: { select: { id: true, username: true, avatarUrl: true } },
   game: { select: { id: true, title: true, coverUrl: true } },
@@ -35,8 +35,8 @@ export class ChatService {
     private readonly gateway: ChatGateway,
   ) {}
 
-  // Liste des conversations = amis, avec dernier message, non-lus et statut en
-  // ligne. Trié : conversations avec activité d'abord (dernier message récent).
+  // Conversations are the friend list, each with its last message, unread count
+  // and online status. Sorted with active conversations first.
   async listConversations(userId: number) {
     const friendIds = await this.friendIds(userId);
     if (friendIds.length === 0) return [];
@@ -66,7 +66,7 @@ export class ChatService {
       }),
     );
 
-    // Amis avec messages en premier (plus récent d'abord), puis le reste
+    // Friends with messages first, newest first, then the rest
     return convos.sort((a, b) => {
       const ta = a.lastMessage ? a.lastMessage.createdAt.getTime() : 0;
       const tb = b.lastMessage ? b.lastMessage.createdAt.getTime() : 0;
@@ -74,7 +74,7 @@ export class ChatService {
     });
   }
 
-  // Fil entre l'utilisateur et un ami (marque les messages reçus comme lus).
+  // Thread between the user and a friend; marks received messages as read.
   async getThread(userId: number, otherId: number, page: number, limit: number) {
     await this.assertFriends(userId, otherId);
     const messages = await this.prisma.message.findMany({
@@ -85,7 +85,7 @@ export class ChatService {
       include: messageInclude,
     });
     await this.markRead(userId, otherId);
-    // Renvoyé en ordre chronologique (le plus ancien en haut)
+    // Returned in chronological order, oldest at the top
     return messages.reverse();
   }
 
@@ -99,8 +99,8 @@ export class ChatService {
       data,
       include: messageInclude,
     });
-    // Temps réel : destinataire + autres onglets de l'expéditeur reçoivent le
-    // message hydraté (mêmes données que le fil / la liste de conversations).
+    // Real-time: the recipient and the sender's other tabs get the hydrated
+    // message, the same shape as the thread and the conversation list.
     this.gateway.emitToUser(dto.toUserId, 'chat:message', message);
     this.gateway.emitToUser(userId, 'chat:message', message);
     return message;
@@ -111,7 +111,7 @@ export class ChatService {
       where: { senderId: otherId, recipientId: userId, readAt: null },
       data: { readAt: new Date() },
     });
-    // Prévient l'expéditeur que ses messages ont été lus (accusé de lecture)
+    // Read receipt: tells the sender their messages were read
     if (count > 0) this.gateway.emitToUser(otherId, 'chat:read', { by: userId });
     return { ok: true };
   }
@@ -125,7 +125,7 @@ export class ChatService {
 
   // ---- helpers ----
 
-  // Construit le `data` du message selon le type et valide la cohérence des refs
+  // Builds the message `data` from its type and checks the refs are consistent
   private async buildMessageData(
     userId: number,
     dto: SendMessageDto,

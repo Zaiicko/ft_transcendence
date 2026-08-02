@@ -5,9 +5,9 @@ import { FeedController } from './feed.controller';
 import { FeedGateway } from './feed.gateway';
 import { FeedService } from './feed.service';
 
-// N'importe qu'AuthModule (JwtService pour le handshake WS) et LeaderboardModule
-// (détection des jalons de classement) : aucune dépendance vers Reviews/Games,
-// donc ces modules peuvent importer Feed sans créer de cycle.
+// Imports only AuthModule (JwtService for the WS handshake) and
+// LeaderboardModule (milestone detection). Nothing points at Reviews or Games,
+// so those modules can import Feed without creating a cycle.
 @Module({
   imports: [AuthModule, LeaderboardModule],
   controllers: [FeedController],

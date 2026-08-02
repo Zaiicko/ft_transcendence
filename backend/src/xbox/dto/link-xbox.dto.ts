@@ -1,9 +1,8 @@
 import { IsString, Matches } from 'class-validator';
 
-// Rattachement d'un compte Xbox : l'utilisateur déclare son gamertag public
-// (1-30 caractères : lettres, chiffres, espaces — les gamertags modernes
-// autorisent les espaces). Le backend le résout ensuite en XUID via sa clé
-// service OpenXBL. Miroir de LinkPsnDto.
+// Linking an Xbox account: the user declares their public gamertag (1-30 chars
+// of letters, digits and spaces — modern gamertags allow spaces), which the
+// backend resolves to a XUID with its OpenXBL service key. Mirrors LinkPsnDto.
 export class LinkXboxDto {
   @IsString()
   @Matches(/^[a-zA-Z0-9 ]{1,30}$/, {
