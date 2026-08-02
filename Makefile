@@ -2,12 +2,16 @@ NAME = Saveboxd
 COMPOSE = docker compose
 URL = https://localhost:8443
 
-RED = \033[31m
-YELLOW = \033[93m
-GREEN = \033[32m
-CYAN = \033[36m
-RESET = \033[0m
-BOLD = \033[1m
+# On stocke les VRAIS octets d'échappement (via printf) plutôt que le texte
+# "\033[..m" : sinon `echo "$(RED)"` n'affiche la couleur que sur les shells dont
+# le echo interprète \033 (dash/sh Linux), pas sur macOS/bash → couleurs
+# incohérentes selon le terminal. Ici, echo recrache l'octet ESC réel partout.
+RED = $(shell printf '\033[31m')
+YELLOW = $(shell printf '\033[93m')
+GREEN = $(shell printf '\033[32m')
+CYAN = $(shell printf '\033[36m')
+RESET = $(shell printf '\033[0m')
+BOLD = $(shell printf '\033[1m')
 
 SPINNERS = "🔄 🔁 🔃 🔄 🔁 🔃"
 
