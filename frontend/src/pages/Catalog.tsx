@@ -15,7 +15,6 @@ const SORTS = [
   { value: 'rating', labelKey: 'catalog.sortRating', ascKey: 'catalog.sortRatingAsc' },
   { value: 'most_played', labelKey: 'catalog.sortMostPlayed', ascKey: 'catalog.sortMostPlayedAsc' },
   { value: 'recent', labelKey: 'catalog.sortRecent', ascKey: 'catalog.sortRecentAsc' },
-  { value: 'popular', labelKey: 'catalog.sortPopular', ascKey: 'catalog.sortPopularAsc' },
 ] as const;
 
 type SortValue = (typeof SORTS)[number]['value'];

@@ -69,7 +69,7 @@ export class GamesService {
   // Combinable filters (Prisma), then computed sorts (SQL aggregates: weighted
   // score, played count) on the filtered ids — same two-step pattern as the
   // reviews net-score sort.
-  async list(dto: ListGamesDto) {
+  async list(dto: ListGamesDto, userId?: number) {
     const { page, limit } = dto;
     const where: Prisma.GameWhereInput = {
       // DLCs/expansions/mods never flood the catalog — they live on their
@@ -90,6 +90,13 @@ export class GamesService {
         companies: { some: { name: { contains: dto.company, mode: 'insensitive' as const } } },
       }),
     };
+
+    // Discovery surface (home "most played" row): hide games this viewer has
+    // already finished. Opt-in per request (?excludeCompleted=true) and only
+    // when authenticated — the catalog itself never sends it.
+    if (dto.excludeCompleted && userId) {
+      where.completions = { none: { userId } };
+    }
 
     const candidates = await this.prisma.game.findMany({ where, select: { id: true } });
     const total = candidates.length;
@@ -529,9 +536,19 @@ export class GamesService {
     const likedGenreIds = [...genreWeight].filter(([, w]) => w > 0).map(([id]) => id);
     if (likedGenreIds.length === 0) return { data: [] };
 
-    // Never recommend something the user has already reviewed or played.
+    // Never recommend something the user has already reviewed, played or
+    // completed. A manual completion always implies a PlayedGame too, but we
+    // add GameCompletion explicitly so platform-synced 100%s are covered as well.
+    const completed = await this.prisma.gameCompletion.findMany({
+      where: { userId },
+      select: { gameId: true },
+    });
     const exclude = [
-      ...new Set([...played.map((p) => p.gameId), ...reviews.map((r) => r.gameId as number)]),
+      ...new Set([
+        ...played.map((p) => p.gameId),
+        ...reviews.map((r) => r.gameId as number),
+        ...completed.map((c) => c.gameId),
+      ]),
     ];
 
     const candidates = await this.prisma.game.findMany({

@@ -24,9 +24,10 @@ import { GamesService } from './games.service';
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Get()
-  list(@Query() query: ListGamesDto) {
-    return this.gamesService.list(query);
+  list(@Query() query: ListGamesDto, @CurrentUser() user?: JwtPayload) {
+    return this.gamesService.list(query, user?.sub);
   }
 
   // Declared before ':id' so "search" is not parsed as an id.

@@ -1,5 +1,6 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsEnum,
   IsInt,
   IsOptional,
@@ -74,4 +75,12 @@ export class ListGamesDto {
   @MinLength(2)
   @MaxLength(100)
   q?: string;
+
+  // Signed-in only: drop games the viewer has already completed (any
+  // GameCompletion). Used by the home "most played" row so it stays a
+  // discovery surface. Ignored for anonymous requests (no viewer).
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  excludeCompleted?: boolean;
 }

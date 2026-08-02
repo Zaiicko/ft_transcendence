@@ -74,7 +74,7 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      apiFetch<{ data: GameSummary[] }>('/games?sort=popular&limit=50'),
+      apiFetch<{ data: GameSummary[] }>('/games?sort=most_played&limit=50&excludeCompleted=true'),
       apiFetch<ReviewHighlight[]>('/reviews/highlights?limit=30').catch(() => []),
     ]).then(async ([games, feed]) => {
       if (cancelled) return;
@@ -661,11 +661,19 @@ function Platforms() {
 
 // En-tête de section : petit "eyebrow" ambre au-dessus d'un titre display, pour
 // donner de la hiérarchie (au lieu du même minuscule label gris partout).
-function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
+function SectionHead({
+  eyebrow,
+  title,
+  dotClass = 'text-accent',
+}: {
+  eyebrow: string;
+  title: string;
+  dotClass?: string;
+}) {
   return (
     <div className="mb-4">
       <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
-        <span className="text-accent">●</span> {eyebrow}
+        <span className={dotClass}>●</span> {eyebrow}
       </div>
       <h2 className="font-display mt-1.5 text-2xl font-bold tracking-tight">{title}</h2>
     </div>
