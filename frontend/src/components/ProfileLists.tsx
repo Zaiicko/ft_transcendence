@@ -19,12 +19,10 @@ import Stars, { StarIcon } from './Stars';
 
 gsap.registerPlugin(Flip);
 
-// Doit rester aligné avec MAX_GAMES_PER_LIST du backend (lists.service)
+// Must stay in sync with MAX_GAMES_PER_LIST on the backend (lists.service).
 const MAX_GAMES_PER_LIST = 30;
 
-// Section "Listes" du profil. Pour le propriétaire (isSelf) : gestion complète
-// (création, renommage, public/privé, suppression, retrait de jeux) sur toutes
-// ses listes. Pour un visiteur : seules les listes publiques, en lecture seule.
+// Profile "Lists" section. For the owner (isSelf): full management (create, rename, public/private, delete, remove games) over all their lists. For a visitor: public lists only, read-only.
 export default function ProfileLists({
   isSelf,
   publicLists,
@@ -36,8 +34,7 @@ export default function ProfileLists({
   const [lists, setLists] = useState<GameListSummary[]>(publicLists);
   const [creating, setCreating] = useState(false);
 
-  // Le propriétaire recharge la liste complète (publiques + privées) ;
-  // le visiteur garde les listes publiques passées par le profil.
+  // The owner reloads the full list (public + private); a visitor keeps the public lists passed by the profile.
   const reload = useCallback(() => {
     if (!isSelf) return;
     apiFetch<GameListSummary[]>('/lists/mine')
@@ -156,7 +153,7 @@ function CreateListForm({
   );
 }
 
-// Interrupteur public/privé réutilisé (création + édition)
+// Reusable public/private toggle (create + edit).
 function VisibilityToggle({
   isPublic,
   onChange,
@@ -203,10 +200,9 @@ function ListCard({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
-  // coverUrl local : maj immédiate après cadrage (avant même le refetch).
+  // Local coverUrl: updated immediately after framing (before the refetch).
   const [coverUrl, setCoverUrl] = useState(list.coverUrl);
-  // …mais on RESYNCHRONISE quand le parent renvoie des données fraîches (après
-  // reload) : sinon un cover retiré/changé n'apparaît qu'au rechargement manuel.
+  // …but RESYNC when the parent returns fresh data (after reload): otherwise a removed/changed cover only shows on a manual reload.
   useEffect(() => setCoverUrl(list.coverUrl), [list.coverUrl]);
   const [coverOpen, setCoverOpen] = useState(false);
   const cover = coverUrl ? parseFrame(coverUrl) : null;
@@ -214,7 +210,6 @@ function ListCard({
   return (
     <div className="card overflow-hidden">
       <div className="flex items-stretch gap-3 p-3">
-        {/* Aperçu : jaquettes empilées en éventail */}
         <button
           type="button"
           onClick={() => (editing ? setCoverOpen((v) => !v) : setExpanded((v) => !v))}
@@ -224,7 +219,6 @@ function ListCard({
           {cover ? (
             <span className="relative block h-16 w-24 overflow-hidden rounded shadow ring-1 ring-black/10">
               <img src={cover.src} alt="" style={framedImgStyle(cover.scale, cover.x, cover.y)} />
-              {/* Édition : message explicite « cliquer pour changer », toujours visible */}
               {editing && (
                 <span className="absolute inset-x-0 bottom-0 bg-black/55 py-0.5 text-center text-[9px] font-medium leading-tight text-white">
                   ✎ {t('lists.changeCover')}
@@ -232,7 +226,7 @@ function ListCard({
               )}
             </span>
           ) : editing ? (
-            // Pas de couverture en édition : emplacement dédié, clairement cliquable
+            // No cover in edit mode: a dedicated, clearly clickable slot.
             <span className="flex h-16 w-full flex-col items-center justify-center gap-0.5 rounded border border-dashed border-zinc-400/70 bg-zinc-200/50 text-center text-[10px] font-medium text-zinc-500 dark:border-zinc-600 dark:bg-zinc-800/50">
               <span aria-hidden="true">✎</span>
               {t('lists.addCover')}
@@ -301,9 +295,7 @@ function ListCard({
         )}
       </div>
 
-      {/* Édition : nom/visibilité + jeux, tout "en attente" jusqu'à Enregistrer
-          (Annuler abandonne tout, y compris les retraits de jeux). Sinon, déplié
-          = liste en lecture avec les notes/avis. */}
+      {/* Edit: name/visibility + games, all "pending" until Save (Cancel discards everything, including game removals). Otherwise, expanded = read view with ratings/reviews. */}
       {isSelf && editing && coverOpen && (
         <div className="px-3 pb-1">
           <ListCoverFramer
@@ -334,8 +326,7 @@ function ListCard({
   );
 }
 
-// Recherche + ajout de jeux à une liste (mode édition). Ajout immédiat (POST
-// item) puis rafraîchissement. Respecte la limite serveur (30 jeux → 409).
+// Search + add games to a list (edit mode). Immediate add (POST item) then refresh. Respects the server limit (30 games → 409).
 function AddGamesToList({
   listId,
   existingIds,
@@ -440,10 +431,7 @@ function AddGamesToList({
   );
 }
 
-// Édition complète d'une liste : nom, visibilité ET jeux — le tout "en attente".
-// La poubelle MARQUE un jeu à retirer (barré, réversible) sans appel réseau ;
-// "Enregistrer" applique nom/visibilité + les retraits marqués ; "Annuler"
-// (onDone) abandonne tout.
+// Full list editing: name, visibility AND games — all "pending". The trash MARKS a game for removal (struck through, reversible) with no network call; "Save" applies name/visibility + marked removals; "Cancel" (onDone) discards everything.
 function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void }) {
   const { t } = useTranslation();
   const [name, setName] = useState(list.name);
@@ -474,20 +462,15 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
       return next;
     });
 
-  // Réordonnancement par glisser-déposer LIVE : dès qu'on survole un autre jeu en
-  // le tirant, on le déplace à cette place (les autres glissent via Flip). L'ordre
-  // n'est persisté (PATCH) qu'au relâchement. En cas d'échec, on recharge.
+  // LIVE drag-and-drop reordering: hovering another game while dragging moves it there (others slide via Flip). Order is persisted (PATCH) only on drop; on failure, reload.
   const dragId = useRef<number | null>(null);
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const gamesWrapRef = useRef<HTMLDivElement>(null);
   const flipState = useRef<ReturnType<typeof Flip.getState> | null>(null);
 
-  // Réordonnancement live géré au niveau du CONTENEUR (pas item par item) → marche
-  // même dans les gaps, aux bords, ou quand le curseur dépasse le cadre : on insère
-  // à la place la plus proche. Règle unifiée liste/grille : l'index d'insertion =
-  // nombre d'items (hors celui tiré) dont le centre (x+y) précède le curseur.
+  // Live reordering handled at the CONTAINER level (not per item) → works even in gaps, at edges, or when the cursor leaves the frame: insert at the nearest slot. Unified list/grid rule: insertion index = number of items (excluding the dragged one) whose center (x+y) precedes the cursor.
   function moveOver(e: ReactDragEvent<HTMLElement>) {
-    e.preventDefault(); // autorise le drop / dragend partout dans le conteneur
+    e.preventDefault(); // allow drop / dragend anywhere in the container
     const from = dragId.current;
     const wrap = gamesWrapRef.current;
     if (from == null || !detail || !wrap) return;
@@ -496,8 +479,7 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
     for (const el of items) {
       if (Number(el.dataset.id) === from) continue;
       const r = el.getBoundingClientRect();
-      // Liste (pleine largeur) : comparer UNIQUEMENT en Y (sinon centerX ≫ curseur
-      // à gauche fausse tout). Grille : centre 2D (x+y) pour l'ordre de lecture.
+      // List (full width): compare ONLY on Y (else centerX ≫ left cursor skews it). Grid: 2D center (x+y) for reading order.
       const beforeCursor = compact
         ? r.left + r.width / 2 + (r.top + r.height / 2) < e.clientX + e.clientY
         : r.top + r.height / 2 < e.clientY;
@@ -509,7 +491,7 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
     const next = [...games];
     const [moved] = next.splice(fromIdx, 1);
     next.splice(insertIdx, 0, moved);
-    if (next.every((g, i) => g.id === games[i].id)) return; // aucun changement
+    if (next.every((g, i) => g.id === games[i].id)) return; // no change
     flipState.current = Flip.getState(items);
     setDetail({ ...detail, games: next });
   }
@@ -524,9 +506,7 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
     }).catch(() => loadDetail());
   }
 
-  // Après chaque déplacement, Flip glisse chaque jaquette de son ancienne position
-  // vers la nouvelle. Pas d'`absolute` : sinon le conteneur s'effondre le temps de
-  // l'anim → clignotement de tout le bloc.
+  // After each move, Flip slides each cover from its old position to the new one. No `absolute`: otherwise the container collapses during the anim → the whole block flickers.
   useLayoutEffect(() => {
     if (!flipState.current) return;
     Flip.from(flipState.current, { duration: 0.2, ease: 'power2.out' });
@@ -579,8 +559,7 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
           </div>
 
           {compact ? (
-            // Compact : grille de jaquettes multi-lignes ; retrait/annuler en
-            // surimpression (jaquette grisée si marquée).
+            // Compact: multi-row cover grid; remove/undo overlaid (cover greyed if marked).
             <div className="flex flex-wrap gap-2 rounded-lg border border-zinc-200 p-2 dark:border-zinc-800">
               {detail.games.map((g) => {
                 const marked = removals.has(g.id);
@@ -679,7 +658,6 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
                       title={t('lists.dragToReorder')}
                       aria-hidden
                     >
-                      {/* Poignée (grip) */}
                       <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                         <circle cx="9" cy="6" r="1.4" />
                         <circle cx="15" cy="6" r="1.4" />
@@ -761,9 +739,7 @@ function EditList({ list, onDone }: { list: GameListSummary; onDone: () => void 
   );
 }
 
-// Jeux d'une liste en LECTURE (repli au clic) : jaquette + titre + note/extrait
-// d'avis. Pour le propriétaire (isSelf), un champ d'ajout de jeux est dispo
-// d'office ici (pas besoin de passer par "modifier"). Les retraits sont dans EditList.
+// Games of a list in READ mode (collapsible on click): cover + title + rating/review excerpt. For the owner (isSelf), an add-games field is available here directly (no need to go through "edit"). Removals live in EditList.
 function ListGames({
   listId,
   isSelf,
@@ -771,14 +747,13 @@ function ListGames({
 }: {
   listId: number;
   isSelf: boolean;
-  // Prévient le PARENT (ProfileLists) qu'un jeu a été ajouté → il refetch pour
-  // que la cover de la vignette (jaquettes des jeux) se mette à jour en direct.
+  // Notifies the PARENT (ProfileLists) that a game was added → it refetches so the thumbnail cover (game covers) updates live.
   onChanged?: () => void;
 }) {
   const { t } = useTranslation();
   const [detail, setDetail] = useState<GameListDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // null = auto (compact au-delà de 6) ; sinon choix manuel via le switch.
+  // null = auto (compact beyond 6); otherwise a manual choice via the switch.
   const [compactOverride, setCompactOverride] = useState<boolean | null>(null);
 
   const load = useCallback(() => {
@@ -803,8 +778,7 @@ function ListGames({
         {t('lists.loading')}
       </p>
     );
-  // Compact = grille de jaquettes multi-lignes (avec badge note) ; détaillé =
-  // lignes avec l'extrait d'avis. Défaut : compact au-delà de 6, sinon détaillé.
+  // Compact = multi-row cover grid (with rating badge); detailed = rows with the review excerpt. Default: compact beyond 6, else detailed.
   const compact = compactOverride ?? detail.games.length > 6;
 
   return (
@@ -815,8 +789,8 @@ function ListGames({
             listId={listId}
             existingIds={new Set(detail.games.map((g) => g.id))}
             onAdded={() => {
-              load(); // rafraîchit la vue dépliée
-              onChanged?.(); // + la cover de la vignette dans le parent
+              load(); // refresh the expanded view
+              onChanged?.(); // + the thumbnail cover in the parent
             }}
           />
         </div>
@@ -880,7 +854,6 @@ function ListGames({
                   {g.title}
                 </Link>
 
-                {/* Avis du propriétaire : note + extrait, cliquable vers l'avis */}
                 {g.review ? (
                   <Link to={`/game/${g.id}#review-${g.review.id}`} className="mt-1 block">
                     <Stars rating={g.review.rating} className="text-amber-500" />
@@ -907,7 +880,7 @@ function ListGames({
   );
 }
 
-// Bascule vue compacte (grille de jaquettes) / détaillée (lignes avec avis).
+// Toggle compact view (cover grid) / detailed (rows with reviews).
 function ViewToggle({ compact, onChange }: { compact: boolean; onChange: (c: boolean) => void }) {
   const { t } = useTranslation();
   const cls = (active: boolean) =>
@@ -922,7 +895,6 @@ function ViewToggle({ compact, onChange }: { compact: boolean; onChange: (c: boo
         aria-pressed={!compact}
         className={cls(!compact)}
       >
-        {/* Lignes (détaillé) */}
         <svg
           viewBox="0 0 24 24"
           className="h-4 w-4 fill-none stroke-current"
@@ -941,7 +913,6 @@ function ViewToggle({ compact, onChange }: { compact: boolean; onChange: (c: boo
         aria-pressed={compact}
         className={cls(compact)}
       >
-        {/* Grille (compact) */}
         <svg
           viewBox="0 0 24 24"
           className="h-4 w-4 fill-none stroke-current"

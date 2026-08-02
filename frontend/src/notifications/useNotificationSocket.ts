@@ -2,8 +2,7 @@ import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import type { AppNotification } from '../lib/types';
 
-// Reçoit les notifications en temps réel (event `notification:new`). Latest-ref :
-// abonné une fois tant que `enabled`, appelle toujours le handler le plus récent.
+// Real-time notifications (`notification:new`); subscribed once while `enabled`, always calls the latest handler.
 export function useNotificationSocket(onNew: (n: AppNotification) => void, enabled: boolean): void {
   const ref = useRef(onNew);
 

@@ -10,8 +10,7 @@ import { GameFacets, GameSummary } from '../lib/types';
 
 const PAGE_SIZE = 24;
 
-// Tris exposés à l'utilisateur → valeurs de l'enum GameSort côté back. Les deux
-// premiers répondent à la demande « mieux notés / plus faits PAR LES USERS ».
+// Sorts exposed to the user → GameSort enum values on the backend. The first two answer the "best rated / most played BY USERS" request.
 const SORTS = [
   { value: 'rating', labelKey: 'catalog.sortRating', ascKey: 'catalog.sortRatingAsc' },
   { value: 'most_played', labelKey: 'catalog.sortMostPlayed', ascKey: 'catalog.sortMostPlayedAsc' },
@@ -29,11 +28,7 @@ interface Page {
   limit: number;
 }
 
-// Snapshot du catalogue mémorisé le temps de la session SPA (perdu au vrai
-// reload navigateur). Permet de revenir EXACTEMENT où on était après avoir
-// ouvert une fiche jeu : filtres, jeux empilés par « charger plus », scroll.
-// La clé de validité est q : elle est reflétée dans l'URL (?q=), donc au retour
-// navigateur l'URL et le cache concordent → réhydratation.
+// Catalog snapshot kept for the SPA session (lost on a real browser reload). Lets you return EXACTLY where you were after opening a game page: filters, games stacked via "load more", scroll. The validity key is q: reflected in the URL (?q=), so on browser back the URL and cache agree → rehydration.
 interface CatalogSnapshot {
   q: string;
   sort: SortValue;
@@ -50,13 +45,11 @@ let catalogCache: CatalogSnapshot | null = null;
 
 export default function Catalog() {
   const { t, i18n } = useTranslation();
-  // useSearchParams : lecture/écriture des query params de l'URL (comme un
-  // useState synchronisé avec la barre d'adresse).
+  // useSearchParams: read/write the URL query params (like a useState synced with the address bar).
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQ = searchParams.get('q') ?? '';
 
-  // Réhydratation : seulement si le cache existe ET porte le même q que l'URL
-  // (sinon = nouvelle recherche volontaire depuis le header → départ à neuf).
+  // Rehydration: only if the cache exists AND carries the same q as the URL (else = a deliberate new search from the header → start fresh).
   const restore = catalogCache && catalogCache.q === urlQ ? catalogCache : null;
   const restoreScroll = useRef(restore ? restore.scrollY : null);
 
@@ -75,11 +68,10 @@ export default function Catalog() {
   const [loading, setLoading] = useState(restore ? false : true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  // Le back valide q avec MinLength(2) : on ne l'envoie qu'à partir de 2 lettres
+  // The backend validates q with MinLength(2): only sent from 2 letters on.
   const query = debouncedQ.trim().length >= 2 ? debouncedQ.trim() : '';
 
-  // Recherche externe (header/retour navigateur) → état local. Ajustement AU
-  // RENDU plutôt qu'un effet (évite un rendu en cascade + set-state-in-effect).
+  // External search (header/browser back) → local state. Adjusted during RENDER rather than an effect (avoids a cascade render + set-state-in-effect).
   const [prevUrlQ, setPrevUrlQ] = useState(urlQ);
   if (urlQ !== prevUrlQ) {
     setPrevUrlQ(urlQ);
@@ -87,14 +79,13 @@ export default function Catalog() {
     setDebouncedQ(urlQ);
   }
 
-  // Débounce de la saisie locale
+  // Debounce the local input.
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQ(q), 300);
     return () => clearTimeout(timer);
   }, [q]);
 
-  // Reflet de la recherche dans l'URL (replace = pas de spam d'historique) pour
-  // aligner l'URL et le cache (clé = q).
+  // Reflect the search in the URL (replace = no history spam) to align the URL and cache (key = q).
   useEffect(() => {
     if (debouncedQ === (searchParams.get('q') ?? '')) return;
     const next = new URLSearchParams(searchParams);
@@ -103,14 +94,12 @@ export default function Catalog() {
     setSearchParams(next, { replace: true });
   }, [debouncedQ, searchParams, setSearchParams]);
 
-  // Restauration du scroll après réhydratation : les jeux sont déjà rendus
-  // (état initial depuis le cache) donc la hauteur est correcte. useLayoutEffect
-  // = avant la peinture, pour éviter tout saut visible.
+  // Restore scroll after rehydration: games are already rendered (initial state from cache) so the height is correct. useLayoutEffect = before paint, to avoid any visible jump.
   useLayoutEffect(() => {
     if (restoreScroll.current != null) window.scrollTo(0, restoreScroll.current);
   }, []);
 
-  // Facettes chargées une fois
+  // Facets loaded once.
   useEffect(() => {
     apiFetch<GameFacets>('/games/facets')
       .then(setFacets)
@@ -129,7 +118,7 @@ export default function Catalog() {
     return p.toString();
   }, [sort, dir, query, genre, platform, company]);
 
-  // Tout changement de filtre repart de la page 1 et réaffiche le squelette.
+  // Any filter change restarts at page 1 and re-shows the skeleton.
   const [prevParams, setPrevParams] = useState(params);
   if (params !== prevParams) {
     setPrevParams(params);
@@ -137,10 +126,7 @@ export default function Catalog() {
     setLoading(true);
   }
 
-  // Une requête par couple (filtres, page). page 1 = remplace la grille, page >
-  // 1 = empile (« Charger plus »). lastKey = dernier couple déjà chargé : évite
-  // (1) de re-fetch les jeux empilés restaurés au remontage, (2) le double appel
-  // du double-montage StrictMode qui, en page > 1, empilerait des doublons.
+  // One request per (filters, page) pair. page 1 = replaces the grid, page > 1 = appends ("Load more"). lastKey = last pair already loaded: avoids (1) re-fetching restored stacked games on remount, (2) StrictMode's double-mount call which, on page > 1, would append duplicates.
   const lastKey = useRef(restore ? `${params}::${page}` : '');
   const reqId = useRef(0);
   useEffect(() => {
@@ -165,8 +151,7 @@ export default function Catalog() {
       });
   }, [params, page]);
 
-  // Sauvegarde continue du snapshot (relu au remontage). scrollY est mis à jour
-  // en direct par le listener ci-dessous ; ici on rafraîchit les données.
+  // Continuously save the snapshot (re-read on remount). scrollY is updated live by the listener below; here we refresh the data.
   useEffect(() => {
     catalogCache = {
       q: debouncedQ,
@@ -182,7 +167,7 @@ export default function Catalog() {
     };
   }, [debouncedQ, sort, dir, genre, platform, company, games, total, page]);
 
-  // Position de scroll mémorisée en direct (le scroll ne re-rend pas le composant)
+  // Scroll position saved live (scrolling doesn't re-render the component).
   useEffect(() => {
     const onScroll = () => {
       if (catalogCache) catalogCache.scrollY = window.scrollY;
@@ -193,7 +178,7 @@ export default function Catalog() {
 
   const hasMore = games.length < total;
 
-  // Filtres actifs (pastilles retirables) — libellé + action de retrait.
+  // Active filters (removable chips) — label + removal action.
   const activePills: { key: string; label: string; clear: () => void }[] = [];
   if (genre) activePills.push({ key: 'genre', label: translateGenre(genre, t), clear: () => setGenre(null) });
   if (platform) activePills.push({ key: 'platform', label: platform, clear: () => setPlatform(null) });
@@ -201,11 +186,8 @@ export default function Catalog() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* ---- En-tête immersif : eyebrow brandé + titre + recherche + tri + filtres ---- */}
       <header className="relative rounded-3xl border border-zinc-900/10 bg-white p-6 shadow-sm dark:border-zinc-100/10 dark:bg-zinc-900 sm:p-8">
-        {/* Halo clippé à la carte via un conteneur dédié : la carte elle-même n'a
-            pas d'overflow-hidden, sinon les menus déroulants (plateforme/studio)
-            seraient rognés par ses bords. */}
+        {/* Halo clipped to the card via a dedicated container: the card itself has no overflow-hidden, otherwise the dropdowns (platform/studio) would be clipped by its edges. */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
           <div className="absolute -left-12 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
         </div>
@@ -234,7 +216,6 @@ export default function Catalog() {
             )}
           </div>
 
-          {/* Barre d'outils : recherche + tri (segmenté) + plateforme + studio */}
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <div className="relative min-w-52 flex-1">
               <SearchIcon />
@@ -251,8 +232,7 @@ export default function Catalog() {
               value={sort}
               dir={dir}
               onSelect={(v) => {
-                // Clic sur le tri actif → on bascule la direction ; sur un autre
-                // → on bascule dessus (direction remise à desc par défaut).
+                // Click the active sort → toggle direction; another → switch to it (direction reset to desc).
                 if (v === sort) setDir((d) => (d === 'desc' ? 'asc' : 'desc'));
                 else {
                   setSort(v);
@@ -280,7 +260,6 @@ export default function Catalog() {
             />
           </div>
 
-          {/* Puces de genres */}
           {facets && facets.genres.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {facets.genres.map((g) => (
@@ -335,7 +314,6 @@ export default function Catalog() {
         </div>
       )}
 
-      {/* Grille */}
       {loading ? (
         <CoverGridSkeleton
           count={16}
@@ -354,13 +332,11 @@ export default function Catalog() {
           </div>
           {(hasMore || games.length > PAGE_SIZE) && (
             <div className="mt-2 flex items-center justify-center gap-3">
-              {/* Flèche haut : replie au premier palier (sans re-fetch) */}
               {games.length > PAGE_SIZE && (
                 <button
                   type="button"
                   onClick={() => {
-                    // Fige la clé de la page courante pour que l'effet ne
-                    // recharge pas au retour à la page 1.
+                    // Freeze the current page's key so the effect doesn't reload when returning to page 1.
                     lastKey.current = `${params}::1`;
                     setGames((g) => g.slice(0, PAGE_SIZE));
                     setPage(1);
@@ -374,7 +350,6 @@ export default function Catalog() {
                   </svg>
                 </button>
               )}
-              {/* Flèche bas : charge la page suivante */}
               {hasMore && (
                 <button
                   type="button"
@@ -400,7 +375,7 @@ export default function Catalog() {
   );
 }
 
-// Tri en segmenté (pastilles) — remplace le select, plus lisible et brandé.
+// Segmented sort (pills) — replaces the select, more readable and branded.
 function SortTabs({
   value,
   dir,
@@ -415,8 +390,7 @@ function SortTabs({
     <div className="inline-flex flex-wrap gap-1 rounded-xl border border-zinc-300 bg-zinc-100/70 p-1 dark:border-zinc-700 dark:bg-zinc-800/60">
       {SORTS.map((s) => {
         const active = value === s.value;
-        // Bouton actif : le libellé reflète la direction (ex. « Mieux notés » ↔
-        // « Moins notés ») et une flèche indique le sens ; inactif : libellé desc.
+        // Active button: the label reflects the direction (e.g. "Best rated" ↔ "Lowest rated") with an arrow; inactive: desc label.
         const label = active && dir === 'asc' ? t(s.ascKey) : t(s.labelKey);
         return (
           <button
@@ -461,14 +435,12 @@ function GameCard({ game }: { game: GameSummary }) {
             {game.title}
           </div>
         )}
-        {/* Badge score posé sur la jaquette */}
         {game.score !== undefined && (
           <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-zinc-950/70 px-2 py-0.5 text-xs font-bold text-white backdrop-blur">
             <StarIcon className="h-3 w-3 text-accent" />
             {game.score.toFixed(1)}
           </span>
         )}
-        {/* Overlay au survol : genre/plateforme + appel à l'action */}
         <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-zinc-950/90 via-zinc-950/25 to-transparent p-3 opacity-0 transition duration-200 group-hover:opacity-100">
           {(genre || platform) && (
             <div className="mb-1.5 flex flex-wrap gap-1.5 text-[10px] text-zinc-100">

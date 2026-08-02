@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
-// Écoute les changements d'amitié (demande / acceptation / refus / suppression)
-// émis par le backend en `friend:update`, et déclenche un refetch. Utilisé par
-// le profil public, la page Friends et le widget de chat. Latest-ref : abonné
-// une fois tant que `enabled`, appelle toujours le handler le plus récent.
+// Listens for friendship changes (`friend:update`) and triggers a refetch; latest-ref pattern.
 export function useFriendSocket(onUpdate: () => void, enabled: boolean): void {
   const ref = useRef(onUpdate);
 

@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../lib/api';
 import SectionHead from './SectionHead';
 
-// Types personnalisables (doivent matcher NotificationsService.CUSTOMIZABLE).
-// Les libellés/hints viennent de i18n (notifications.pref*).
+// Customizable types (must match NotificationsService.CUSTOMIZABLE); labels/hints from i18n.
 const TYPES: { key: string; labelKey: string; hintKey: string }[] = [
   { key: 'FRIEND_REQUEST', labelKey: 'notifications.prefFriendRequest', hintKey: 'notifications.prefFriendRequestHint' },
   { key: 'FRIEND_ACCEPT', labelKey: 'notifications.prefFriendAccept', hintKey: 'notifications.prefFriendAcceptHint' },
@@ -15,7 +14,7 @@ const TYPES: { key: string; labelKey: string; hintKey: string }[] = [
   { key: 'ACHIEVEMENT', labelKey: 'notifications.prefAchievement', hintKey: 'notifications.prefAchievementHint' },
 ];
 
-// Cloche filaire (trait 1.6, style TiMN) — partagée par la section et le titre
+// Outline bell icon (1.6 stroke), shared by the section and title.
 export function BellIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg
@@ -32,8 +31,7 @@ export function BellIcon({ className = 'h-4 w-4' }: { className?: string }) {
   );
 }
 
-// Liste réutilisable des interrupteurs (opt-out par type). Utilisée à la fois
-// dans la page Settings et dans la fenêtre du menu rouage.
+// Reusable per-type toggle list (opt-out), used in Settings and the gear menu.
 export function NotificationPrefsList() {
   const { t } = useTranslation();
   const [prefs, setPrefs] = useState<Record<string, boolean> | null>(null);
@@ -48,7 +46,7 @@ export function NotificationPrefsList() {
     setPrefs((cur) => {
       if (!cur) return cur;
       const next = { ...cur, [key]: !cur[key] };
-      // Optimiste : on envoie le changement, on revient en arrière si erreur
+      // Optimistic: send the change, roll back on error.
       apiFetch('/notifications/preferences', {
         method: 'PATCH',
         body: JSON.stringify({ [key]: next[key] }),
@@ -91,7 +89,7 @@ export function NotificationPrefsList() {
   );
 }
 
-// Section "Notifications" des réglages (page Settings)
+// Notifications section of the Settings page.
 export default function NotificationSettings() {
   const { t } = useTranslation();
   return (

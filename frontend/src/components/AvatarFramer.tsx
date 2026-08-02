@@ -13,8 +13,7 @@ import { framedImgStyle } from './Avatar';
 const PREVIEW = 200;
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/gif';
 
-// Décalage max (%) qui garde l'image couvrante à ce zoom : au-delà, un bord vide
-// apparaîtrait. À scale 1 → 0 (aucun déplacement), à scale 2 → 50 %.
+// Max offset (%) keeping the image covering at this zoom (0 at scale 1, 50% at scale 2).
 const panLimit = (scale: number) => (scale - 1) * 50;
 const clamp = (v: number, lim: number) => Math.max(-lim, Math.min(lim, v));
 
@@ -25,11 +24,7 @@ function currentFrame(url: string): { scale: number; x: number; y: number } {
   return { scale: scale || 1, x: x || 0, y: y || 0 };
 }
 
-// Interface unique « changer la photo » : on choisit un fichier (ou on garde
-// l'avatar courant), on zoome (slider) et on centre (glisser), puis on
-// enregistre. À la sauvegarde : upload du nouveau fichier si besoin, puis PATCH
-// du cadrage (encodé dans avatarUrl côté back). WYSIWYG via avatarTransform,
-// le même transform que le composant Avatar.
+// "Change photo" flow: pick a file, zoom (slider) and pan (drag), then save (upload + framing PATCH), WYSIWYG.
 export default function AvatarFramer({
   avatarUrl,
   onClose,
@@ -44,7 +39,6 @@ export default function AvatarFramer({
   const [x, setX] = useState(init.x);
   const [y, setY] = useState(init.y);
   const [file, setFile] = useState<File | null>(null);
-  // Aperçu : objectURL du fichier choisi, ou l'avatar courant (sans fragment).
   const [previewUrl, setPreviewUrl] = useState<string>(() =>
     avatarUrl ? avatarUrl.split('#af=')[0] : '',
   );
@@ -53,7 +47,6 @@ export default function AvatarFramer({
   const drag = useRef<{ px: number; py: number; x: number; y: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Libère l'objectURL du fichier local quand il change / au démontage
   useEffect(() => {
     return () => {
       if (previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
@@ -66,7 +59,6 @@ export default function AvatarFramer({
     setError(null);
     setFile(f);
     setPreviewUrl(URL.createObjectURL(f));
-    // Nouvelle image → cadrage neutre
     setScale(1);
     setX(0);
     setY(0);
@@ -124,7 +116,6 @@ export default function AvatarFramer({
   return (
     <div className="mt-3 flex flex-col items-center gap-3 rounded-xl border border-zinc-200 p-4 dark:border-zinc-700">
       {previewUrl ? (
-        // Image positionnée sans transform → clip rond toujours fiable.
         <div
           style={{ width: PREVIEW, height: PREVIEW }}
           onPointerDown={onPointerDown}

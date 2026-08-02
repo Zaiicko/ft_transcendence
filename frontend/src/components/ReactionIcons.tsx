@@ -1,6 +1,4 @@
-// Icônes filaires des réactions d'avis (pouce haut/bas, bulle de commentaire),
-// même style que le rouage/dé du site (trait 1.6, contour). Remplacent les
-// emojis 👍👎💬 pour un rendu cohérent.
+// Outline review-reaction icons (thumbs up/down, comment bubble), matching the site's line style.
 
 type IconProps = { className?: string };
 const BASE = 'shrink-0 fill-none stroke-current';

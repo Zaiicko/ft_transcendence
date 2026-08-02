@@ -14,11 +14,8 @@ export default function Company() {
   const { id } = useParams();
   const companyId = Number(id);
 
-  // Résultat tagué par id : au changement de studio, l'ancien contenu est
-  // ignoré sans setState synchrone dans l'effet. company === null → 404.
+  // Result tagged by id: stale content ignored on studio change; company === null → 404.
   const [loaded, setLoaded] = useState<{ id: number; company: CompanyDetail | null } | null>(null);
-  // Stats des critiques du studio (moyenne + nombre), alimentées par
-  // ReviewsSection via onStats.
   const [stats, setStats] = useState<ReviewStats | null>(null);
 
   useEffect(() => {
@@ -35,8 +32,7 @@ export default function Company() {
     };
   }, [companyId]);
 
-  // Certains studios ont des centaines de jeux : on n'en affiche qu'un lot au
-  // départ, le bouton dévoile la suite (évite de charger 300+ jaquettes).
+  // Some studios have hundreds of games — show a first batch, button reveals more.
   const [shownGames, setShownGames] = useState(GAMES_STEP);
 
   const company = loaded?.id === companyId ? loaded.company : undefined;
@@ -58,8 +54,6 @@ export default function Company() {
 
   return (
     <div className="flex flex-col gap-10">
-      {/* En-tête studio : logo (si dispo) + nom + méta (note moyenne, nb de
-          jeux). La note vient des critiques du studio lui-même. */}
       <div className="card flex flex-col items-start gap-6 p-6 sm:flex-row sm:items-center">
         {company.logoUrl ? (
           <img
@@ -100,7 +94,6 @@ export default function Company() {
         </div>
       </div>
 
-      {/* Jeux du studio */}
       {company.games.length > 0 && (
         <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">

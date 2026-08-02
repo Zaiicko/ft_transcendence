@@ -1,18 +1,7 @@
-// Effet "scramble/décodage" façon Matrix : chaque lettre défile sur des symboles
-// aléatoires puis se fige sur la bonne, en progression gauche→droite.
-//
-// Layout STABLE : l'effet est calé sur le texte FINAL, et les espaces / retours
-// à la ligne ne défilent jamais. Chaque mot garde donc la longueur exacte du mot
-// final pendant toute l'animation → le retour à la ligne est identique du début
-// à la fin (5 lignes restent 5 lignes, 40 mots restent 40 mots), aucun reflow.
-//
-// Sécurité : le texte vient de l'API (résumé IGDB) et est injecté via innerHTML
-// pour styliser les caractères en défilement → on échappe < > & ; l'état final
-// utilise textContent (auto-échappé).
+// Matrix-style scramble/decode effect (left→right), with a stable layout (spaces/newlines never scramble) and escaped scrambling chars since the text comes from the API.
 
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&*+=-';
-// Étalement des instants de résolution sur ~50 frames quel que soit la longueur
-// → durée totale bornée (~1,3 s) même pour un long paragraphe.
+// Spread the resolve times over ~50 frames so total duration stays bounded (~1.3s).
 const SPREAD = 50;
 
 const escapeChar = (c: string) =>
@@ -24,7 +13,6 @@ export function scrambleText(el: HTMLElement, text: string): () => void {
   const length = text.length;
   const queue = Array.from({ length }, (_, i) => ({
     to: text[i],
-    // Espace / tab / retour à la ligne : jamais scramblé (fige le layout).
     space: /\s/.test(text[i]),
     end: Math.floor((i / length) * SPREAD) + 14 + Math.floor(Math.random() * 16),
     char: '',
@@ -46,14 +34,13 @@ export function scrambleText(el: HTMLElement, text: string): () => void {
     }
     el.innerHTML = output;
     if (complete === queue.length) {
-      el.textContent = text; // état final propre (retire les <span>)
+      el.textContent = text; // clean final state (removes the <span>s)
       return;
     }
     frame++;
     raf = requestAnimationFrame(update);
   };
-  // 1re frame synchrone : appelé depuis un useLayoutEffect → pose l'état de
-  // départ avant le paint, pas de flash du texte final.
+  // First frame is synchronous (from useLayoutEffect) → no flash of the final text.
   update();
   return () => cancelAnimationFrame(raf);
 }

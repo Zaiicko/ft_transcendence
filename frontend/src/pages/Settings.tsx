@@ -27,8 +27,7 @@ function secretFromOtpauthUrl(otpauthUrl: string): string {
   }
 }
 
-// Displayed provider name for "you sign in through {{provider}}" — only
-// reachable for OAuth-only accounts (no password), so LOCAL never appears.
+// Displayed provider name for "you sign in through {{provider}}" (OAuth-only accounts).
 function providerLabel(provider: AuthProvider, t: TFunction): string {
   switch (provider) {
     case 'STEAM':
@@ -61,7 +60,6 @@ export default function Settings() {
   const [resendError, setResendError] = useState<string | null>(null);
 
   const [twoFactorSetup, setTwoFactorSetup] = useState<TwoFactorSetup | null>(null);
-  // Révèle le champ de code pour désactiver la 2FA (déclenché par l'interrupteur)
   const [showDisableForm, setShowDisableForm] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [twoFactorBusy, setTwoFactorBusy] = useState(false);
@@ -182,10 +180,7 @@ export default function Settings() {
     }
   }
 
-  // « Mot de passe oublié ? » depuis les paramètres (déjà connecté) : envoie le
-  // même email de réinitialisation que la page publique, à sa propre adresse.
-  // Utile quand on a oublié son mot de passe actuel et qu'on ne peut donc pas
-  // remplir le champ requis du formulaire de changement.
+  // "Forgot password?" from settings: sends the same reset email to your own address.
   async function handleForgotPassword() {
     setForgotError(null);
     setForgotSent(false);
@@ -203,9 +198,7 @@ export default function Settings() {
     }
   }
 
-  // RGPD — export self-service : on ne passe pas par apiFetch (qui parse en JSON),
-  // on récupère le blob pour déclencher un téléchargement avec le nom de fichier
-  // fourni par le serveur (Content-Disposition).
+  // GDPR self-service export: fetch the blob (not apiFetch) to download with the server's filename.
   async function handleExport() {
     setExportError(null);
     setExporting(true);
@@ -257,7 +250,6 @@ export default function Settings() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      {/* En-tête immersif brandé */}
       <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
         <span className="text-accent">●</span> {t('settings.eyebrow')}
       </div>
@@ -293,7 +285,6 @@ export default function Settings() {
         </nav>
 
         <div className="flex min-w-0 flex-col gap-6">
-          {/* ---- Profil : avatar + identité + bio ---- */}
           <section id="profil" className="card scroll-mt-24 p-5">
             <SectionHead className="mb-4" title={t('settings.navProfile')} />
             <div className="mb-4 flex items-center gap-4">
@@ -395,7 +386,6 @@ export default function Settings() {
             <NotificationSettings />
           </div>
 
-          {/* ---- Sécurité : 2FA + mot de passe ---- */}
           <section id="securite" className="card scroll-mt-24 p-5">
       <SectionHead className="mb-4" title={t('settings.navSecurity')} />
 
@@ -463,7 +453,6 @@ export default function Settings() {
         </div>
       )}
 
-      {/* Désactivation : code requis (révélé par l'interrupteur) */}
       {user.twoFactorEnabled && showDisableForm && (
         <form onSubmit={handleDisableTwoFactor} className="mt-4 flex gap-2">
           <input
@@ -512,7 +501,6 @@ export default function Settings() {
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 className="field px-4 py-1.5"
               />
-              {/* Oublié son mot de passe actuel : envoi d'un lien de réinit par email */}
               <div className="-mt-1 text-sm">
                 {forgotSent ? (
                   <p className="text-green-400">
@@ -560,12 +548,10 @@ export default function Settings() {
       </form>
           </section>
 
-          {/* ---- Connexions (comptes liés) ---- */}
           <div id="connexions" className="scroll-mt-24">
             <LinkedAccounts />
           </div>
 
-          {/* ---- Vos données (RGPD : accès + portabilité) ---- */}
           <section id="donnees" className="card scroll-mt-24 p-5">
             <SectionHead className="mb-4" title={t('settings.navData')} />
             <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">

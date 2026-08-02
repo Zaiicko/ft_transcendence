@@ -10,8 +10,7 @@ import AchievementIcon from './AchievementIcon';
 import { useNotificationSocket } from '../notifications/useNotificationSocket';
 import Avatar from './Avatar';
 
-// Cloche de notifications (navbar) : pastille de non-lus + panneau déroulant.
-// Temps réel via `notification:new`. Rendue uniquement pour un user connecté.
+// Navbar notification bell: unread dot + dropdown panel, real-time via `notification:new`.
 export default function NotificationBell() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -20,7 +19,6 @@ export default function NotificationBell() {
   const [unread, setUnread] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Compteur de non-lus au montage (persiste même panneau fermé)
   useEffect(() => {
     if (!user) return;
     apiFetch<{ count: number }>('/notifications/unread-count')
@@ -28,8 +26,7 @@ export default function NotificationBell() {
       .catch(() => {});
   }, [user]);
 
-  // Liste chargée à l'ouverture — et ouvrir le panneau = tout marquer comme VU
-  // (le badge disparaît, pas besoin de bouton « tout lire »).
+  // Opening the panel marks everything as read (the badge clears).
   useEffect(() => {
     if (!open) return;
     apiFetch<AppNotification[]>('/notifications?page=1&limit=20')
@@ -41,7 +38,6 @@ export default function NotificationBell() {
     apiFetch('/notifications/read-all', { method: 'PATCH' }).catch(() => {});
   }, [open]);
 
-  // Fermeture au clic extérieur / Échap
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
@@ -73,7 +69,6 @@ export default function NotificationBell() {
     apiFetch(`/notifications/${id}/read`, { method: 'PATCH' }).catch(() => {});
   }
 
-  // Bouton « clear » : vide toutes les notifications.
   function clearAll() {
     setItems([]);
     setUnread(0);
@@ -169,7 +164,7 @@ export default function NotificationBell() {
   );
 }
 
-// Cible du clic selon le type
+// Click target by notification type.
 function linkFor(n: AppNotification): string {
   const p = n.payload;
   switch (n.type) {
@@ -190,8 +185,7 @@ function linkFor(n: AppNotification): string {
   }
 }
 
-// Libellé de la notification (acteur en gras). L'ordre des mots et la tournure
-// sont portés par les clés de traduction ; <Trans> insère le nom en gras.
+// Notification label (actor in bold); wording comes from translation keys.
 function messageFor(n: AppNotification): ReactNode {
   const who = n.payload.actorUsername ?? i18n.t('notifications.someone');
   const title = n.payload.reviewTitle;

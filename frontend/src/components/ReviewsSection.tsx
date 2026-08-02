@@ -18,12 +18,11 @@ import Stars from './Stars';
 export type ReviewStats = {
   _avg: { rating: number | null };
   _count: number;
-  // Répartition des notes 0–10 (index = note) — alimente l'histogramme de la fiche.
+  // Rating distribution 0–10 (index = rating) — feeds the game page histogram.
   distribution?: number[];
 };
 
-// Contrat du module reviews (docs/reviews-api.md §1) — user null = compte
-// supprimé (contenu anonymisé, à tolérer partout)
+// reviews module contract (docs/reviews-api.md §1) — user null = deleted account (anonymized content, tolerated everywhere).
 interface ReviewT {
   id: number;
   rating: number;
@@ -42,12 +41,10 @@ const SORTS: { key: Sort; labelKey: string }[] = [
   { key: 'discussed', labelKey: 'reviews.sortDiscussed' },
 ];
 
-// Avis chargés par lot, avec un bouton « Charger plus »
+// Reviews loaded in batches, with a "Load more" button.
 const PAGE_SIZE = 10;
 
-// Section d'avis complète (liste + formulaire + likes + commentaires threadés +
-// temps réel), partagée par la fiche jeu et la fiche studio. Le back est
-// symétrique : `:target` = `games/:id` ou `companies/:id` (docs/reviews-api.md).
+// Full reviews section (list + form + likes + threaded comments + real-time), shared by the game and studio pages. The backend is symmetric: `:target` = `games/:id` or `companies/:id` (docs/reviews-api.md).
 export default function ReviewsSection({
   target,
   onStats,
@@ -67,24 +64,19 @@ export default function ReviewsSection({
 
   const [reviews, setReviews] = useState<ReviewT[]>([]);
   const [sort, setSort] = useState<Sort>('popular');
-  // Pagination : page courante, fin atteinte (dernier lot < PAGE_SIZE), et
-  // état du bouton pendant le chargement du lot suivant.
+  // Pagination: current page, end reached (last batch < PAGE_SIZE), and the button state while the next batch loads.
   const [page, setPage] = useState(1);
   const [reachedEnd, setReachedEnd] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  // Threads ouverts (id des avis dépliés) + version par avis, bumpée par le
-  // temps réel (comment:changed) pour refetch un thread ouvert.
+  // Open threads (ids of expanded reviews) + per-review version, bumped by real-time (comment:changed) to refetch an open thread.
   const [openThreads, setOpenThreads] = useState<Set<number>>(new Set());
   const [commentVersions, setCommentVersions] = useState<Record<number, number>>({});
   const [editingId, setEditingId] = useState<number | null>(null);
-  // Le formulaire d'avis est replié par défaut, ouvert par un bouton.
+  // The review form is collapsed by default, opened by a button.
   const [showForm, setShowForm] = useState(false);
   const reviewRef = useRef<HTMLElement>(null);
 
-  // Auto-traduction des avis vers la langue courante (batch au chargement). Cache
-  // local par (id, langue). Par défaut on AFFICHE la traduction ; `showOriginal`
-  // = avis pour lesquels on a cliqué "Voir l'original". Le bouton n'apparaît que
-  // si la traduction diffère de l'original (sinon l'avis est déjà dans ta langue).
+  // Auto-translate reviews to the current language (batch on load). Local cache per (id, language). By default we SHOW the translation; `showOriginal` = reviews where "See original" was clicked. The button appears only if the translation differs from the original (else the review is already in your language).
   const [translations, setTranslations] = useState<Record<string, { title: string; text: string }>>(
     {},
   );
@@ -102,9 +94,7 @@ export default function ReviewsSection({
     return tr && !showOriginal.has(r.id) ? tr : { title: r.title, text: r.text };
   };
 
-  // Traduit en lot les avis affichés sans traduction pour la langue courante
-  // (un seul appel). Relancé au chargement de nouveaux avis ou changement de
-  // langue. Clé par (id, langue) → pas de reset d'état entre les langues.
+  // Batch-translate the shown reviews lacking a translation for the current language (single call). Re-run on new reviews or a language change. Keyed by (id, language) → no state reset between languages.
   useEffect(() => {
     const missing = reviews.filter((r) => !(trKey(r.id) in translations)).map((r) => r.id);
     if (missing.length === 0) return;
@@ -146,8 +136,7 @@ export default function ReviewsSection({
   const bumpVersion = (rid: number) =>
     setCommentVersions((v) => ({ ...v, [rid]: (v[rid] ?? 0) + 1 }));
 
-  // Charge le lot suivant et l'ajoute à la suite. On dédoublonne : un avis déjà
-  // présent (ex. celui épinglé via #review-<id>) n'est pas ajouté deux fois.
+  // Load the next batch and append it. We dedup: an already-present review (e.g. the one pinned via #review-<id>) isn't added twice.
   async function loadMore() {
     setLoadingMore(true);
     const next = page + 1;
@@ -172,15 +161,13 @@ export default function ReviewsSection({
       .catch(() => {});
   }
 
-  // Note : refreshStats dépend de `base` (stable pour une cible). On resynchro
-  // les stats au montage / changement de cible.
+  // Note: refreshStats depends on `base` (stable for a target). We resync the stats on mount / target change.
   useEffect(() => {
     refreshStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [base]);
 
-  // Chargement / rechargement de la première page (au montage, changement de
-  // tri, ou arrivée via un lien profond).
+  // Load / reload the first page (on mount, sort change, or arrival via a deep link).
   useEffect(() => {
     let cancelled = false;
     const pinId = hash.startsWith('#review-') ? Number(hash.slice('#review-'.length)) : NaN;
@@ -190,9 +177,7 @@ export default function ReviewsSection({
         setReviews(list);
         setPage(1);
         setReachedEnd(list.length < PAGE_SIZE);
-        // Avis ciblé (#review-<id>) absent du lot chargé : on le récupère seul
-        // et on l'épingle en tête, pour toujours atterrir dessus même sur un jeu
-        // très commenté. On vérifie qu'il appartient bien à cette cible.
+        // Targeted review (#review-<id>) missing from the loaded batch: fetch it alone and pin it on top, to always land on it even on a heavily-commented game. We check it belongs to this target.
         if (!Number.isNaN(pinId) && !list.some((r) => r.id === pinId)) {
           apiFetch<ReviewT & { game?: { id: number }; company?: { id: number } }>(
             `/reviews/${pinId}`,
@@ -213,26 +198,21 @@ export default function ReviewsSection({
     };
   }, [base, sort, hash, kind, id]);
 
-  // Arrivée via un lien #review (bloc critiques) ou #review-<id> (un avis
-  // précis, ex. depuis le profil). On défile une seule fois par hash, en
-  // retentant quand la liste finit de charger (l'ancre n'existe qu'ensuite).
+  // Arrival via a #review link (reviews block) or #review-<id> (a specific review, e.g. from the profile). We scroll once per hash, retrying when the list finishes loading (the anchor only exists then).
   const scrolledFor = useRef<string | null>(null);
   useEffect(() => {
     if (!hash.startsWith('#review')) return;
     if (scrolledFor.current === hash) return;
     const el = document.getElementById(hash.slice(1));
     const target = el ?? (hash === '#review' ? reviewRef.current : null);
-    if (!target) return; // pas encore monté : on retentera au prochain rendu
+    if (!target) return; // not mounted yet: retry on the next render
     scrolledFor.current = hash;
     target.scrollIntoView({ behavior: 'smooth', block: el && hash !== '#review' ? 'center' : 'start' });
   }, [hash, reviews]);
 
-  // 👍/👎 exclusifs et idempotents côté serveur (204 sans payload). Patch
-  // optimiste AVANT l'await : sinon l'event socket `review:reaction` (compteur
-  // absolu) arrive pendant l'await et le patch se cumule dessus → double
-  // comptage. L'event réconcilie ensuite les compteurs à la valeur serveur.
+  // 👍/👎 exclusive and idempotent server-side (204, no payload). Optimistic patch BEFORE the await: otherwise the `review:reaction` socket event (absolute counter) arrives during the await and the patch stacks on it → double counting. The event then reconciles the counters to the server value.
   async function react(review: ReviewT, r: 'like' | 'dislike') {
-    // Invité → redirection login (retour ici après connexion) ; sinon on agit.
+    // Guest → redirect to login (returns here after sign-in); otherwise act.
     if (!requireAuth()) return;
     const removing = review.myReaction === r;
     setReviews((list) =>
@@ -251,7 +231,7 @@ export default function ReviewsSection({
     try {
       await apiFetch(`/reviews/${review.id}/${r}`, { method: removing ? 'DELETE' : 'POST' });
     } catch {
-      replaceReview(review.id); // échec → resynchronise sur le serveur
+      replaceReview(review.id); // failure → resync from the server
     }
   }
 
@@ -261,8 +241,7 @@ export default function ReviewsSection({
     refreshStats();
   }
 
-  // Re-fetch ciblé d'une review (édition/commentaire d'un autre onglet) —
-  // jamais la liste entière, sinon les threads ouverts se referment.
+  // Targeted refetch of a review (edit/comment from another tab) — never the whole list, else open threads close.
   function replaceReview(reviewId: number) {
     apiFetch<ReviewT>(`/reviews/${reviewId}`)
       .then((fresh) =>
@@ -271,9 +250,7 @@ export default function ReviewsSection({
       .catch(() => {});
   }
 
-  // Temps réel : les 6 évènements de la room (docs/reviews-api.md §3). Les
-  // payloads de réaction portent les compteurs absolus → on les pose tels quels
-  // (idempotent avec le patch optimiste local, pas de double comptage).
+  // Real-time: the room's 6 events (docs/reviews-api.md §3). Reaction payloads carry absolute counters → applied as-is (idempotent with the local optimistic patch, no double counting).
   useReviewSocket(kind, id, {
     onReviewCreated: (raw) => {
       const created = raw as ReviewT;
@@ -292,8 +269,8 @@ export default function ReviewsSection({
         ),
       ),
     onCommentChanged: (reviewId) => {
-      replaceReview(reviewId); // met à jour le compteur 💬
-      bumpVersion(reviewId); // rafraîchit le thread s'il est ouvert
+      replaceReview(reviewId); // update the 💬 counter
+      bumpVersion(reviewId); // refresh the thread if it's open
     },
     onCommentReaction: ({ commentId, likes, dislikes }) =>
       emitCommentReaction({ commentId, likes, dislikes }),
@@ -301,10 +278,7 @@ export default function ReviewsSection({
 
   const alreadyReviewed = user != null && reviews.some((r) => r.user?.id === user.id);
 
-  // « Critiquer » (hero / barre d'actions) mène à #review → on déplie directement
-  // le formulaire pour l'utilisateur qui n'a pas encore d'avis. Ajustement AU
-  // RENDU (pas un effet : évite le setState-in-effect) déclenché une seule fois
-  // via un drapeau — l'utilisateur peut ensuite refermer sans que ça se rouvre.
+  // "Review" (hero / action bar) leads to #review → we directly expand the form for a user without a review yet. Adjusted during RENDER (not an effect: avoids setState-in-effect), triggered once via a flag — the user can then close it without it reopening.
   const autoOpenedForm = useRef(false);
   if (!autoOpenedForm.current && hash === '#review' && user && !alreadyReviewed) {
     autoOpenedForm.current = true;
@@ -414,7 +388,6 @@ export default function ReviewsSection({
                         <div className="truncate text-sm font-semibold">{r.user.username}</div>
                       </div>
                     </Link>
-                    {/* Badge de rang (top 3 global) à côté du pseudo, hors du lien */}
                     <LeaderboardRankBadge userId={r.user.id} />
                   </>
                 ) : (
@@ -522,7 +495,6 @@ export default function ReviewsSection({
                           </button>
                         </>
                       )}
-                      {/* Date en bas à droite de l'avis */}
                       <span>{new Date(r.createdAt).toLocaleDateString(i18n.language)}</span>
                     </div>
                   </div>
@@ -657,9 +629,7 @@ function ReviewForm({
   );
 }
 
-// Édition d'un avis existant (PATCH /reviews/:id) — même contrôles que le
-// formulaire de création, pré-remplis. onSaved patche l'avis dans la liste ;
-// l'event socket review:updated réconcilie ensuite les autres onglets.
+// Editing an existing review (PATCH /reviews/:id) — same controls as the create form, pre-filled. onSaved patches the review in the list; the review:updated socket event then reconciles the other tabs.
 function EditReviewForm({
   review,
   onCancel,

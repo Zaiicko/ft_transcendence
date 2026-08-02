@@ -9,8 +9,7 @@ import PsnConnectModal from './PsnConnectModal';
 import XboxConnectModal from './XboxConnectModal';
 import SteamBadge from './SteamBadge';
 
-// Logos officiels des services (Simple Icons, CC0), sur fond de la couleur de
-// la marque — même style de badge que Steam/Discord.
+// Official service logos (Simple Icons, CC0) on brand-color backgrounds.
 const XBOX_PATH =
   'M4.102 21.033C6.211 22.881 8.977 24 12 24c3.026 0 5.789-1.119 7.902-2.967 1.877-1.912-4.316-8.709-7.902-11.417-3.582 2.708-9.779 9.505-7.898 11.417zm11.16-14.406c2.5 2.961 7.484 10.313 6.076 12.912C23.002 17.48 24 14.861 24 12.004c0-3.34-1.365-6.362-3.57-8.536 0 0-.027-.022-.082-.042-.063-.022-.152-.045-.281-.045-.592 0-1.985.434-4.805 3.246zM3.654 3.426c-.057.02-.082.041-.086.042C1.365 5.642 0 8.664 0 12.004c0 2.854.998 5.473 2.661 7.533-1.401-2.605 3.579-9.951 6.08-12.91-2.82-2.813-4.216-3.245-4.806-3.245-.131 0-.223.021-.281.046v-.002zM12 3.551S9.055 1.828 6.755 1.746c-.903-.033-1.454.295-1.521.339C7.379.646 9.659 0 11.984 0H12c2.334 0 4.605.646 6.766 2.085-.068-.046-.615-.372-1.52-.339C14.946 1.828 12 3.545 12 3.545v.006z';
 const PLAYSTATION_PATH =
@@ -29,18 +28,17 @@ function BrandMark({ color, path }: { color: string; path: string }) {
   );
 }
 
-// Une entrée du bloc « Comptes liés ». Ajouter un vrai service plus tard = une
-// ligne de plus ici (icône + linked + linkHref + unlinkPath).
+// One "Linked accounts" row; adding a real service later = one more line here.
 interface Service {
   key: string;
   label: string;
   mark: ReactNode;
   available: boolean;
   linked: boolean;
-  linkHref?: string; // navigation navigateur qui démarre le rattachement OAuth
+  linkHref?: string; // browser navigation that starts the OAuth linking
   onLink?: () => void; // rattachement via modale (ex. PlayStation : coller un jeton)
   unlinkPath?: string; // endpoint DELETE
-  extra?: ReactNode; // action en plus quand lié (ex. « voir la bibliothèque »)
+  extra?: ReactNode; // extra action when linked (e.g. "view the library")
 }
 
 const pill =
@@ -52,16 +50,12 @@ export default function LinkedAccounts() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // ?connect (depuis les bulles non liées de la bibliothèque) : on amène juste
-  // l'utilisateur devant le bloc de liaison (comme Steam) — l'ouverture de la
-  // modale reste manuelle.
+  // ?connect (from the library's unlinked chips): just scroll the user to the linking block.
   const connectParam = searchParams.get('connect');
   const [psnModalOpen, setPsnModalOpen] = useState(false);
   const [xboxModalOpen, setXboxModalOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Fait défiler jusqu'au bloc « comptes liés » puis nettoie ?connect pour qu'un
-  // rechargement ne refasse pas défiler. Une seule fois, au montage.
   useEffect(() => {
     if (!connectParam) return;
     cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });

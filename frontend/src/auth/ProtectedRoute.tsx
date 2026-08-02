@@ -7,10 +7,7 @@ export default function ProtectedRoute() {
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-  // Nouvel inscrit qui n'a pas terminé (ni explicitement passé) le wizard : on
-  // le ramène sur /welcome tant que onboardedAt est nul — y compris au retour de
-  // la liaison Steam (redirection pleine page). /welcome lui-même est exclu pour
-  // ne pas boucler.
+  // New signups who haven't finished onboarding are sent back to /welcome (itself excluded to avoid a loop).
   if (!user.onboarded && location.pathname !== '/welcome') {
     return <Navigate to="/welcome" replace />;
   }

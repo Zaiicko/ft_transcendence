@@ -3,29 +3,27 @@ import { useTranslation } from 'react-i18next';
 import { apiFetch } from '../lib/api';
 import type { LeaderboardBadge, LeaderboardMetric } from '../lib/types';
 
-// Teinte du podium (or / argent / bronze), cohérente avec la page Classement.
+// Podium tint (gold/silver/bronze), matching the Leaderboard page.
 const MEDAL_COLOR: Record<number, string> = {
   1: 'text-amber-400',
   2: 'text-zinc-400',
   3: 'text-amber-700',
 };
 
-// Réutilise les libellés de métrique déjà traduits (13 langues) de la page Classement.
+// Reuses the already-translated metric labels from the Leaderboard page.
 const METRIC_LABEL: Record<LeaderboardMetric, string> = {
   completions: 'leaderboard.metricCompletions',
   played: 'leaderboard.metricPlayed',
   reviews: 'leaderboard.metricReviews',
 };
 
-// Cache mémoire par userId : une page de reviews peut afficher plusieurs badges
-// (voire le même auteur plusieurs fois) — on ne récupère les podiums qu'une fois
-// par utilisateur pour la session.
+// Per-userId memory cache: podiums are fetched once per user per session (a page can show many badges).
 const badgeCache = new Map<number, Promise<LeaderboardBadge[]>>();
 function fetchBadges(userId: number): Promise<LeaderboardBadge[]> {
   let p = badgeCache.get(userId);
   if (!p) {
     p = apiFetch<LeaderboardBadge[]>(`/leaderboard/badges/${userId}`).catch(() => {
-      badgeCache.delete(userId); // échec : ne pas mémoriser, réessayer plus tard
+      badgeCache.delete(userId); // failure: don't cache, retry later
       return [];
     });
     badgeCache.set(userId, p);
@@ -33,10 +31,7 @@ function fetchBadges(userId: number): Promise<LeaderboardBadge[]> {
   return p;
 }
 
-// Badge de rang affiché à côté du pseudo quand l'utilisateur est sur un podium
-// GLOBAL (top 3 all-time) d'au moins une catégorie. Au survol ou au clic, une
-// bulle liste les catégories concernées et le rang. La médaille prend la teinte
-// du MEILLEUR rang obtenu. N'affiche rien si aucun podium.
+// Rank badge next to the username when the user is top-3 all-time in at least one category; medal takes the best rank's tint.
 export default function LeaderboardRankBadge({ userId }: { userId: number }) {
   const { t } = useTranslation();
   const [badges, setBadges] = useState<LeaderboardBadge[] | null>(null);
@@ -51,7 +46,6 @@ export default function LeaderboardRankBadge({ userId }: { userId: number }) {
     };
   }, [userId]);
 
-  // Ferme la bulle (ouverte au clic) sur un clic extérieur.
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
@@ -63,7 +57,6 @@ export default function LeaderboardRankBadge({ userId }: { userId: number }) {
 
   if (!badges || badges.length === 0) return null;
 
-  // Rang le plus prestigieux (1 devant 3) → teinte de la médaille du badge.
   const best = badges.reduce((m, b) => Math.min(m, b.rank), Infinity);
 
   return (
@@ -105,7 +98,7 @@ export default function LeaderboardRankBadge({ userId }: { userId: number }) {
   );
 }
 
-// Même médaille filaire que la page Classement (la couleur vient de currentColor).
+// Same outline medal as the Leaderboard page (color via currentColor).
 function MedalIcon({ className = '' }: { className?: string }) {
   return (
     <svg

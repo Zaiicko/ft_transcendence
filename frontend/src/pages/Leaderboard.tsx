@@ -27,7 +27,7 @@ const WINDOWS: { key: LeaderboardWindow; labelKey: string }[] = [
   { key: 'month', labelKey: 'leaderboard.windowMonth' },
 ];
 
-// Teinte or / argent / bronze pour le podium (anneau d'avatar + score).
+// Gold/silver/bronze podium tint (avatar ring + score).
 const PLACE = {
   1: { ring: 'ring-amber-400', text: 'text-amber-400', bar: 'from-amber-300 to-amber-500' },
   2: { ring: 'ring-zinc-400', text: 'text-zinc-400', bar: 'from-zinc-300 to-zinc-400' },
@@ -42,14 +42,12 @@ export default function Leaderboard() {
   const [window, setWindow] = useState<LeaderboardWindow>('all');
   const [data, setData] = useState<LeaderboardResult | null>(null);
   const [loading, setLoading] = useState(true);
-  // Nb de lignes chargées. Le backend plafonne à 100 (LeaderboardService).
+  // Number of rows loaded; the backend caps at 100 (LeaderboardService).
   const [limit, setLimit] = useState(20);
   const MAX = 100;
   const STEP = 20;
 
-  // Tout changement de FILTRE réaffiche le chargement et repart au top 20.
-  // Ajustement d'état AU RENDU (pattern React officiel) plutôt qu'un setLoading
-  // synchrone dans l'effet → évite la règle react-hooks/set-state-in-effect.
+  // Any FILTER change re-shows loading and restarts at top 20 (state adjusted during render, not in the effect).
   const queryKey = `${metric}-${scope}-${window}`;
   const [prevQueryKey, setPrevQueryKey] = useState(queryKey);
   if (queryKey !== prevQueryKey) {
@@ -69,21 +67,19 @@ export default function Leaderboard() {
     return () => {
       cancelled = true;
     };
-    // `limit` augmente sans repasser par le skeleton (loading reste false) : la
-    // liste s'allonge simplement au clic sur « Voir plus ».
+    // `limit` grows without re-showing the skeleton; the list just extends on "See more".
   }, [metric, scope, window, limit]);
 
   const rows = data?.rows ?? [];
   const podium = rows.slice(0, 3);
   const rest = rows.slice(3);
-  // Barres de progression relatives au 1ᵉʳ (score max).
+  // Progress bars relative to the #1 (max score).
   const topScore = rows[0]?.score ?? 1;
   const meInRows = rows.some((r) => r.user.id === user?.id);
   const metricLabel = t(METRICS.find((m) => m.key === metric)!.labelKey);
 
   return (
     <div className="mx-auto max-w-3xl">
-      {/* En-tête brandé, centré */}
       <div className="mb-7 text-center">
         <div className="flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
           <span className="text-accent">●</span> {t('leaderboard.eyebrow')}
@@ -93,7 +89,6 @@ export default function Leaderboard() {
         </h1>
       </div>
 
-      {/* Filtres en pilules, centrés */}
       <div className="flex flex-col items-center gap-3">
         <SegmentedTabs
           options={METRICS.map((m) => ({ key: m.key, label: t(m.labelKey) }))}
@@ -146,14 +141,12 @@ export default function Leaderboard() {
           </EmptyState>
         ) : (
           <>
-            {/* Podium top 3 : 2ᵉ à gauche, 1ᵉʳ au centre (surélevé), 3ᵉ à droite */}
             <div className="mb-4 grid grid-cols-3 items-end gap-3 sm:gap-4">
               <div>{podium[1] && <Pod row={podium[1]} place={2} me={podium[1].user.id === user?.id} />}</div>
               <div>{podium[0] && <Pod row={podium[0]} place={1} me={podium[0].user.id === user?.id} />}</div>
               <div>{podium[2] && <Pod row={podium[2]} place={3} me={podium[2].user.id === user?.id} />}</div>
             </div>
 
-            {/* Reste du classement (rang 4→N) */}
             {rest.length > 0 && (
               <div className="card divide-y divide-zinc-900/[0.06] overflow-hidden !rounded-2xl dark:divide-zinc-100/[0.06]">
                 {rest.map((row) => (
@@ -167,8 +160,6 @@ export default function Leaderboard() {
               </div>
             )}
 
-            {/* Voir plus : recharge un palier plus large (jusqu'au plafond 100).
-                Visible tant que le backend a renvoyé une page pleine. */}
             {rows.length >= limit && limit < MAX && (
               <button
                 type="button"
@@ -179,8 +170,6 @@ export default function Leaderboard() {
               </button>
             )}
 
-            {/* Ma position, épinglée en bas — TOUJOURS visible si je ne suis pas
-                déjà dans le top affiché, même non classé (score 0 → rang « — »). */}
             {!meInRows && user && (
               <div className="sticky bottom-4 mt-4">
                 <div className="card !rounded-2xl border-accent/40 bg-accent/10 shadow-lg shadow-accent/20 backdrop-blur">
@@ -203,9 +192,7 @@ export default function Leaderboard() {
   );
 }
 
-// Marche du podium : avatar cerclé de la couleur du rang, médaille, pseudo, score.
-// « toi » est signalé par un label sous le pseudo (pas un contour de carte : il
-// entrerait en conflit avec la couronne ambre du 1ᵉʳ).
+// Podium step: avatar ringed with the rank color, medal, username, score; "you" is marked by a label under the name.
 function Pod({ row, place, me }: { row: LeaderboardRow; place: 1 | 2 | 3; me: boolean }) {
   const { t } = useTranslation();
   const c = PLACE[place];
@@ -238,8 +225,7 @@ function Pod({ row, place, me }: { row: LeaderboardRow; place: 1 | 2 | 3; me: bo
   );
 }
 
-// Ligne du classement (rang 4+) : rang, avatar, pseudo + barre de progression
-// relative au 1ᵉʳ, score. Réutilisée pour la ligne « toi » épinglée.
+// Leaderboard row (rank 4+): rank, avatar, username + progress bar relative to #1, score; reused for the pinned "you" row.
 function ListRow({
   row,
   topScore,
@@ -251,7 +237,7 @@ function ListRow({
   topScore: number;
   me: boolean;
   pinnedLabel?: string;
-  // Rang affiché (override) — « — » pour un joueur non classé (score 0).
+  // Displayed rank (override) — "—" for an unranked player (score 0).
   displayRank?: string;
 }) {
   const pct = row.score > 0 ? Math.max(4, Math.round((row.score / topScore) * 100)) : 0;
@@ -282,8 +268,7 @@ function ListRow({
   );
 }
 
-// Groupe de boutons « segmenté ». variant primary = pilules pleines (métrique),
-// secondary = groupe compact encadré (portée/fenêtre).
+// Segmented button group: variant primary = filled pills (metric), secondary = compact bordered group (scope/window).
 function SegmentedTabs({
   options,
   value,
@@ -335,7 +320,7 @@ function SegmentedTabs({
   );
 }
 
-// Couronne pleine (or) posée sur le 1ᵉʳ du podium.
+// Filled gold crown on the podium #1.
 function CrownIcon({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={`fill-current ${className}`} aria-hidden="true">
@@ -344,8 +329,7 @@ function CrownIcon({ className = '' }: { className?: string }) {
   );
 }
 
-// Médaille façon trait — la couleur vient de `currentColor`, pilotée par la
-// classe text-* selon le rang.
+// Outline medal — color from `currentColor`, driven by the rank's text-* class.
 function MedalIcon({ className = '' }: { className?: string }) {
   return (
     <svg

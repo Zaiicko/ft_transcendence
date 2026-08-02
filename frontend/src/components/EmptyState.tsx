@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
-// État vide soigné : icône filaire dans un cercle + titre + phrase, dans un
-// bloc discret en pointillés. Remplace les phrases nues (« No reviews yet »).
+// Polished empty state: outline icon in a circle + title + line, in a dashed block.
 export default function EmptyState({
   icon,
   title,
@@ -31,7 +30,7 @@ export default function EmptyState({
   );
 }
 
-// Icônes filaires prêtes (trait 1.6, style TiMN) pour les états vides
+// Ready-made outline icons (1.6 stroke) for empty states.
 const wire = {
   viewBox: '0 0 24 24',
   className: 'h-5 w-5 fill-none stroke-current',

@@ -43,7 +43,7 @@ interface LibraryResponse {
 
 const sum = (c: TrophyCounts) => c.bronze + c.silver + c.gold + c.platinum;
 
-// Pastilles colorées des 4 grades de trophées (platine, or, argent, bronze).
+// Colored pills for the 4 trophy grades (platinum, gold, silver, bronze).
 const GRADES: { key: keyof TrophyCounts; color: string }[] = [
   { key: 'platinum', color: '#8bb9e8' },
   { key: 'gold', color: '#e6b53c' },
@@ -51,7 +51,7 @@ const GRADES: { key: keyof TrophyCounts; color: string }[] = [
   { key: 'bronze', color: '#cd7f45' },
 ];
 
-// Icône de trophée (coupe) colorée selon le grade PSN
+// Trophy (cup) icon colored by PSN grade.
 function TrophyIcon({ color, className = '' }: { color: string; className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill={color} aria-hidden="true">
@@ -73,8 +73,7 @@ function TrophyTally({ counts, className = '' }: { counts: TrophyCounts; classNa
   );
 }
 
-// `embedded` : rendu dans la page globale « Mes bibliothèques » — on masque le
-// titre h1 (l'onglet porte déjà le nom de la plateforme).
+// `embedded`: rendered inside the unified "My libraries" page (hides the h1).
 export default function PsnLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -85,8 +84,7 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
   const [error, setError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
 
-  // Resynchronise la bibliothèque depuis PSN (force ?refresh=true) — utile après
-  // avoir joué de nouveaux jeux ou passé son profil en public.
+  // Resync the library from PSN (?refresh=true) — after playing new games or making the profile public.
   async function refreshLibrary() {
     setSyncing(true);
     try {
@@ -108,8 +106,7 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
         setError(err instanceof ApiError ? err.message : t('psn.loadError'));
       })
       .finally(() => setLoading(false));
-    // t n'est lu que dans le catch (message d'erreur) : le rajouter referait un
-    // fetch à chaque changement de langue, non voulu — on charge une seule fois.
+    // t is only read in the catch — adding it would re-fetch on every language change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [psnLinked]);
 
@@ -194,7 +191,6 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
         </p>
       )}
 
-      {/* Résumé de trophées : niveau + total par grade */}
       {summary && (
         <div className="card mb-10 flex flex-wrap items-center gap-x-8 gap-y-3 p-4">
           <div>
@@ -242,7 +238,6 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
                     <p className="p-2 pb-0 text-sm font-medium leading-tight">{game.title}</p>
                   </Link>
                   <div className="flex flex-1 flex-col gap-1 p-2 pt-1">
-                    {/* Progression de trophées : x/y + % */}
                     <p className="mt-auto text-xs text-zinc-400">
                       {t('psn.trophyProgress', {
                         earned: sum(game.trophies.earned),

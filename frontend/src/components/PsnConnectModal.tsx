@@ -4,10 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { apiFetch, ApiError } from '../lib/api';
 import Modal from './Modal';
 
-// Modale de rattachement PlayStation, modèle "juste l'ID" (comme
-// infinitebacklog) : l'utilisateur tape son PSN Online ID public, le backend le
-// résout via sa session service. Aucun jeton à coller. Le profil PSN doit être
-// public pour être trouvé. Au succès on affiche l'onlineId puis on rafraîchit.
+// PlayStation link modal ("just the ID" model): user types their public PSN Online ID, resolved by the backend's service session.
 export default function PsnConnectModal({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
   const { refreshUser } = useAuth();
@@ -74,7 +71,6 @@ export default function PsnConnectModal({ onClose }: { onClose: () => void }) {
             />
           </div>
 
-          {/* Rappel : le profil doit être public pour être importé */}
           <p className="flex items-start gap-2 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-500 dark:bg-zinc-800/60 dark:text-zinc-400">
             <svg
               viewBox="0 0 24 24"

@@ -10,9 +10,7 @@ import type { ChatConversation, ChatMessage } from '../lib/types';
 import Avatar from './Avatar';
 import Stars from './Stars';
 
-// Bulle de chat flottante (bas-droite). Fermée : un rond avec pastille de
-// non-lus. Ouverte : un panneau avec la liste des conversations, ou le fil d'un
-// ami. Temps réel via useChatSocket ; n'est monté que pour un utilisateur connecté.
+// Floating chat bubble (bottom-right): closed = dot with unread badge, open = conversations or a thread; real-time via useChatSocket.
 export default function ChatWidget() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -24,7 +22,7 @@ export default function ChatWidget() {
   const [sending, setSending] = useState(false);
 
   const me = user?.id ?? 0;
-  // Latest-ref : le handler socket connaît le fil ouvert sans se réabonner
+  // Latest-ref: the socket handler knows the open thread without re-subscribing.
   const activeRef = useRef<number | null>(null);
   useEffect(() => {
     activeRef.current = open ? activeId : null;
@@ -52,8 +50,7 @@ export default function ChatWidget() {
 
   const activeFriend = conversations.find((c) => c.friend.id === activeId)?.friend ?? null;
 
-  // Ouvre un fil : charge l'historique (le GET marque lu côté serveur) et
-  // remet le compteur local à zéro.
+  // Open a thread: load history (the GET marks it read server-side) and reset the local counter.
   const openThread = useCallback((friendId: number) => {
     setActiveId(friendId);
     setMessages([]);
@@ -65,7 +62,7 @@ export default function ChatWidget() {
     );
   }, []);
 
-  // ---- temps réel ----
+  // ---- real-time ----
   const onMessage = useCallback(
     (msg: ManagedMessage) => {
       const other = otherIdOf(msg);
@@ -73,7 +70,6 @@ export default function ChatWidget() {
 
       if (viewing) {
         setMessages((cur) => (cur.some((m) => m.id === msg.id) ? cur : [...cur, msg]));
-        // Message entrant sur le fil ouvert → marquer lu tout de suite
         if (msg.senderId === other) {
           apiFetch(`/chat/with/${other}/read`, { method: 'POST' }).catch(() => {});
         }
@@ -91,7 +87,6 @@ export default function ChatWidget() {
           lastMessage: msg,
           unread: cur[idx].unread + (incomingUnread ? 1 : 0),
         };
-        // Remonte la conversation en tête
         return [updated, ...cur.slice(0, idx), ...cur.slice(idx + 1)];
       });
     },
@@ -100,7 +95,6 @@ export default function ChatWidget() {
 
   const onRead = useCallback(
     (by: number) => {
-      // `by` a lu mes messages → accusé de lecture sur le fil ouvert
       if (activeRef.current !== by) return;
       setMessages((cur) =>
         cur.map((m) =>
@@ -114,10 +108,8 @@ export default function ChatWidget() {
   );
 
   useChatSocket({ onMessage, onRead }, !!user);
-  // Amitié acceptée/supprimée → recharge la liste des conversations
   useFriendSocket(loadConversations, !!user);
 
-  // Rechargement à l'ouverture du panneau (fraîcheur : nouveaux amis, non-lus)
   useEffect(() => {
     if (open) loadConversations();
   }, [open, loadConversations]);
@@ -127,14 +119,14 @@ export default function ChatWidget() {
     if (!body || !activeId || sending) return;
     setSending(true);
     try {
-      // Le message revient via la socket (echo à l'expéditeur) → pas d'ajout ici
+      // The message comes back via the socket (echo to sender) → not added here.
       await apiFetch('/chat', {
         method: 'POST',
         body: JSON.stringify({ toUserId: activeId, content: body }),
       });
       setText('');
     } catch {
-      /* on garde le texte pour réessayer */
+      /* keep the text to retry */
     } finally {
       setSending(false);
     }
@@ -184,7 +176,7 @@ export default function ChatWidget() {
   );
 }
 
-// ChatMessage tel que reçu du socket / REST (alias local plus court)
+// ChatMessage as received from socket / REST (shorter local alias).
 type ManagedMessage = ChatMessage;
 
 function ConversationList({
@@ -365,7 +357,7 @@ function MessageBubble({ message, mine }: { message: ChatMessage; mine: boolean 
   );
 }
 
-// Carte de partage à l'intérieur d'une bulle (jeu / avis / profil)
+// Share card inside a bubble (game / review / profile).
 function ShareCard({ message }: { message: ChatMessage }) {
   const { t } = useTranslation();
   if (message.type === 'GAME' && message.game) {

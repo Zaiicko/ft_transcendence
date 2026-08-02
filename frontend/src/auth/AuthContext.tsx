@@ -3,13 +3,7 @@ import i18n, { LanguageCode, loadLanguage, SUPPORTED_LANGUAGES } from '../i18n';
 import { apiFetch } from '../lib/api';
 import type { PublicUser } from '../lib/types';
 
-// Applique la langue enregistrée sur le profil, pour la retrouver d'un
-// appareil à l'autre une fois connecté. 'en' est ignoré : c'est aussi la
-// valeur par défaut en base pour un compte qui n'a jamais choisi de langue
-// explicitement (via le sélecteur, qui PATCH /users/me à chaque changement)
-// — le traiter comme "non défini" laisse la détection navigateur/
-// localStorage gagner pour un nouvel inscrit dont le compte est encore à
-// sa valeur par défaut, au lieu d'écraser à tort un français auto-détecté.
+// Apply the language saved on the profile (roams across devices); 'en' is ignored so browser/localStorage detection wins for a brand-new account.
 function applyUserLanguage(user: PublicUser): void {
   const code = user.language as LanguageCode;
   if (
@@ -17,7 +11,6 @@ function applyUserLanguage(user: PublicUser): void {
     SUPPORTED_LANGUAGES.some((l) => l.code === code) &&
     i18n.resolvedLanguage !== code
   ) {
-    // Charge la locale (lazy) avant de basculer, sinon flash de clés brutes.
     void loadLanguage(code).then(() => i18n.changeLanguage(code));
   }
 }
@@ -60,9 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [applyUser]);
 
   useEffect(() => {
-    // setState only happens in the promise callbacks (async), never in the
-    // effect's synchronous body — see react-hooks/set-state-in-effect
-    // /auth/me renvoie l'utilisateur ou null (200) — plus de 401 déconnecté.
+    // setState only in the async callbacks, never in the effect body (react-hooks/set-state-in-effect); /auth/me returns the user or null (200).
     apiFetch<PublicUser | null>('/auth/me')
       .then((me) => (me ? applyUser(me) : setUser(null)))
       .catch(() => setUser(null))
@@ -94,8 +85,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signup = useCallback(
-    // Pas de pseudo : il est choisi ensuite dans le wizard d'onboarding (le
-    // backend en génère un provisoire depuis l'e-mail).
     async (email: string, password: string) => {
       applyUser(
         await apiFetch<PublicUser>('/auth/signup', {

@@ -18,16 +18,14 @@ export default function SearchBar() {
   const [results, setResults] = useState<GameSummary[]>([]);
   const [companies, setCompanies] = useState<CompanyHit[]>([]);
   const [open, setOpen] = useState(false);
-  // searched : une recherche locale a abouti pour la saisie courante — permet
-  // de distinguer "pas encore cherché" de "cherché, zéro résultat"
+  // searched: a local search completed for the current input (distinguishes "not searched" from "0 results").
   const [searched, setSearched] = useState(false);
   const [importing, setImporting] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
 
   const trimmed = query.trim();
 
-  // Recherche live : débounce 300 ms, plus besoin d'Entrée. Le nettoyage du
-  // timer à chaque frappe annule la requête précédente (anti course).
+  // Live search: 300ms debounce; clearing the timer on each keystroke cancels the previous request.
   useEffect(() => {
     let cancelled = false;
     const timer = setTimeout(async () => {
@@ -38,8 +36,7 @@ export default function SearchBar() {
         return;
       }
       try {
-        // Jeux + studios en parallèle ; la recherche studios ne doit pas faire
-        // échouer l'ensemble si elle plante (catch → liste vide).
+        // Games + studios in parallel; a failing studio search must not break the whole (catch → empty).
         const [gameRes, companyRes] = await Promise.all([
           apiFetch<{ data: GameSummary[] }>(`/games/search?q=${encodeURIComponent(trimmed)}`),
           apiFetch<{ data: CompanyHit[] }>(
@@ -52,7 +49,7 @@ export default function SearchBar() {
         setSearched(true);
         setOpen(true);
       } catch {
-        /* réseau : on laisse l'état précédent */
+        /* network: keep the previous state */
       }
     }, DEBOUNCE_MS);
     return () => {
@@ -61,7 +58,6 @@ export default function SearchBar() {
     };
   }, [trimmed]);
 
-  // Clic en dehors → referme le menu (sans effacer la saisie)
   useEffect(() => {
     function onPointerDown(e: MouseEvent) {
       if (boxRef.current && !boxRef.current.contains(e.target as Node)) setOpen(false);
@@ -70,8 +66,7 @@ export default function SearchBar() {
     return () => document.removeEventListener('mousedown', onPointerDown);
   }, []);
 
-  // Import à la demande depuis IGDB quand le catalogue local ne connaît pas
-  // le jeu (action explicite — cf. games.service, seuil ON_DEMAND_THRESHOLD)
+  // On-demand IGDB import when the local catalog doesn't know the game (explicit action).
   async function importFromIgdb() {
     if (!trimmed || importing) return;
     setImporting(true);
@@ -82,13 +77,12 @@ export default function SearchBar() {
       setResults(data.slice(0, 8));
       setSearched(true);
     } catch {
-      /* IGDB indisponible : le message "aucun résultat" reste affiché */
+      /* IGDB unavailable: keep the "no results" message */
     } finally {
       setImporting(false);
     }
   }
 
-  // Entrée → page de résultats complète (le catalogue, piloté par ?q=)
   function submitSearch() {
     if (trimmed.length < MIN_CHARS) return;
     setOpen(false);
@@ -115,8 +109,7 @@ export default function SearchBar() {
   }
 
   async function randomGame() {
-    // Les ids ne sont pas contigus (imports par machine) : on tire une page
-    // de taille 1 au hasard plutôt qu'un id au hasard
+    // IDs aren't contiguous (machine imports) → pull a random page of size 1 instead of a random id.
     const { total } = await apiFetch<{ total: number }>('/games?limit=1');
     if (!total) return;
     const page = 1 + Math.floor(Math.random() * total);
@@ -126,8 +119,7 @@ export default function SearchBar() {
 
   const disc = useRef<SVGSVGElement>(null);
 
-  // Effet vinyle : un tour sur lui-même à chaque clic, dans un sens aléatoire
-  // (GSAP cumule la rotation avec '+=' / '-=' pour repartir de l'angle courant).
+  // Vinyl effect: one full spin per click in a random direction (GSAP accumulates with +=/-=).
   function spinAndPick(img: SVGSVGElement | null) {
     if (img) {
       const dir = Math.random() < 0.5 ? '+=360' : '-=360';
@@ -136,7 +128,6 @@ export default function SearchBar() {
     void randomGame();
   }
 
-  // Pill fantôme façon TiMN : quasi invisible au repos, bordure ambre au focus
   const field =
     'rounded-full border border-zinc-400/40 bg-zinc-900/5 dark:border-zinc-100/10 dark:bg-zinc-100/5';
 
@@ -164,10 +155,6 @@ export default function SearchBar() {
           aria-label={t('catalog.randomGame')}
           className={`${field} flex items-center px-3 transition hover:border-accent`}
         >
-          {/* Boîte mystère filaire (style TiMN, trait 1.6) : cube isométrique
-              avec un « ? » sur chacune des trois faces visibles. La couleur
-              suit currentColor (héritée du bouton), l'animation de rotation
-              GSAP s'applique au <svg> comme avant sur l'image. */}
           <svg
             ref={disc}
             viewBox="0 0 24 24"
@@ -188,7 +175,6 @@ export default function SearchBar() {
               textAnchor="middle"
               dominantBaseline="central"
             >
-              {/* Un « ? » centré sur chacune des trois faces (haut, gauche, droite) */}
               <text x="12" y="7">?</text>
               <text x="7.6" y="14.7">?</text>
               <text x="16.4" y="14.7">?</text>
@@ -220,7 +206,6 @@ export default function SearchBar() {
             </ul>
           )}
 
-          {/* Studios trouvés → lien vers leur fiche */}
           {companies.length > 0 && (
             <ul className={results.length > 0 ? 'border-t border-zinc-200 dark:border-zinc-800' : ''}>
               <li className="px-4 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
@@ -251,7 +236,6 @@ export default function SearchBar() {
             </ul>
           )}
 
-          {/* Aucun jeu connu → import IGDB (comme prévu avec la game db) */}
           {noResults && !importing && (
             <div className="px-4 py-3 text-sm">
               <p className="text-zinc-500 dark:text-zinc-400">

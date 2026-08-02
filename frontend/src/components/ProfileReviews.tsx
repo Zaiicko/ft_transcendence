@@ -16,10 +16,7 @@ const SORTS: { key: Sort; labelKey: string }[] = [
   { key: 'discussed', labelKey: 'reviews.sortDiscussed' },
 ];
 
-// Section "Recent reviews" du profil : limitée à 10, triable (populaires /
-// récentes / discutées) comme la fiche jeu, avec un bouton "Charger plus".
-// `seed` = les 10 avis récents fournis par le profil : affichés instantanément
-// puis remplacés par le tri courant (populaires par défaut).
+// Profile "Recent reviews" section: capped at 10, sortable like the game page, with "Load more".
 export default function ProfileReviews({
   username,
   seed,
@@ -27,7 +24,6 @@ export default function ProfileReviews({
 }: {
   username: string;
   seed: ProfileReview[];
-  // Dans la modale du profil : la modale porte déjà le titre, on masque le h2.
   embedded?: boolean;
 }) {
   const { t } = useTranslation();
@@ -129,8 +125,6 @@ function ReviewCard({ r }: { r: ProfileReview }) {
   const name = r.game?.title ?? r.company?.name ?? t('common.unknown');
   const cover = r.game?.coverUrl ?? r.company?.logoUrl ?? null;
   const isCompany = !r.game && !!r.company;
-  // Cliquer la carte ouvre l'avis précis sur la page du jeu/studio (ancre
-  // #review-<id> gérée par ReviewsSection).
   const href = r.game
     ? `/game/${r.game.id}#review-${r.id}`
     : r.company
@@ -139,7 +133,6 @@ function ReviewCard({ r }: { r: ProfileReview }) {
 
   const inner = (
     <>
-      {/* Petite jaquette du jeu (ou logo du studio) noté */}
       {cover ? (
         <img
           src={cover}
@@ -160,7 +153,6 @@ function ReviewCard({ r }: { r: ProfileReview }) {
         </div>
         {r.title && <p className="mt-1 text-sm font-medium">{r.title}</p>}
         <p className="mt-1 line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400">{r.text}</p>
-        {/* Compteurs (rendent le tri lisible) */}
         <div className="mt-2 flex items-center gap-3 text-xs text-zinc-400 dark:text-zinc-500">
           <span className="inline-flex items-center gap-1">
             <ThumbIcon /> {r._count.likes}

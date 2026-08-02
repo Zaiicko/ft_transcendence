@@ -12,9 +12,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  // Après connexion on revient là où l'utilisateur était (transmis via `from`
-  // par la navbar ou ProtectedRoute). À défaut → accueil, jamais les settings ;
-  // on évite aussi de reboucler sur les pages d'auth.
+  // After sign-in, return where the user was (passed via `from` by the navbar or ProtectedRoute). Otherwise → home, never settings; also avoid looping back to the auth pages.
   const rawFrom = (location.state as { from?: string } | null)?.from;
   const from = rawFrom && !['/login', '/signup'].includes(rawFrom) ? rawFrom : '/';
   const oauthError = searchParams.get('error');

@@ -1,12 +1,7 @@
 import { Component, ReactNode } from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 
-// React ne propose pas de hook pour intercepter une erreur de rendu : il faut
-// une classe avec getDerivedStateFromError (l'équivalent React d'un try/catch
-// autour de tout le sous-arbre). Sans filet, une exception pendant le rendu
-// démonte l'arbre entier → écran blanc. On affiche à la place un message + un
-// bouton pour recharger. withTranslation() : les hooks (useTranslation) sont
-// interdits dans une classe, ce HOC injecte `t` en prop.
+// Class component (React has no render-error hook) that catches subtree exceptions and shows a reload fallback instead of a white screen.
 class ErrorBoundaryBase extends Component<
   WithTranslation & { children: ReactNode },
   { hasError: boolean }

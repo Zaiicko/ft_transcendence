@@ -1,7 +1,6 @@
 export type AuthProvider = 'LOCAL' | 'FORTYTWO' | 'GOOGLE' | 'STEAM' | 'DISCORD';
 
-// Ligne renvoyée par GET /games (liste/recherche) — score = mélange bayésien
-// note IGDB + notes utilisateurs (voir docs/reviews-api.md)
+// Row returned by GET /games (list/search) — score = Bayesian blend of IGDB rating + user ratings (see docs/reviews-api.md).
 export interface GameSummary {
   id: number;
   title: string;
@@ -19,39 +18,35 @@ export interface GameSummary {
   genres?: { id: number; name: string }[];
   platforms?: { id: number; name: string }[];
   companies?: { id: number; name: string; logoUrl: string | null }[];
-  // Présents uniquement sur GET /games/:id (fiche) : le jeu parent si ce jeu
-  // est un DLC/extension, et la liste de ses propres DLC/extensions.
+  // Only on GET /games/:id: the parent game if this is a DLC/expansion, and its own DLCs/expansions.
   parent?: { id: number; title: string; coverUrl: string | null } | null;
   dlcs?: GameDlc[];
-  // Présent uniquement sur GET /games/recommendations : pourquoi ce jeu est
-  // recommandé (genre déterminant + éventuel jeu ancre bien noté).
+  // Only on GET /games/recommendations: why this game is recommended (deciding genre + optional well-rated anchor game).
   reason?: RecommendationReason | null;
 }
 
-// Raison variée d'une reco (le back alterne les types entre les cartes). Union
-// discriminée par `kind` :
-//  - 'game'   : un jeu ancre (aimé ou joué) → « parce que tu as aimé/joué à X »
-//  - 'studio' : un studio apprécié → « parce que tu aimes les jeux de X »
-//  - 'genre'  : un genre apprécié → « parce que tu aimes X »
+// Varied reason for a recommendation (the backend alternates types across cards). Discriminated union on `kind`:
+//  - 'game'   : an anchor game (liked or played) → "because you liked/played X"
+//  - 'studio' : a liked studio → "because you like X's games"
+//  - 'genre'  : a liked genre → "because you like X"
 export type RecommendationReason =
   | { kind: 'game'; game: { id: number; title: string; kind: 'liked' | 'played' } }
   | { kind: 'studio'; studio: { id: number; name: string } }
   | { kind: 'genre'; genre: { id: number; name: string } };
 
-// GET /users/me/home-stats — bande de stats « ton année en jeux » de l'accueil
+// GET /users/me/home-stats — the home "your year in games" stat strip.
 export interface HomeStats {
-  done: number; // jeux marqués « fait » (série ambre)
-  perfect: number; // jeux 100 % sur une plateforme (série verte)
+  done: number; // games marked "done" (amber series)
+  perfect: number; // 100% games on a platform (green series)
   reviews: number;
-  avgRating: number | null; // null si aucune critique
+  avgRating: number | null; // null if no reviews
   achievements: { unlocked: number; total: number };
-  rank: { rank: number } | null; // rang mondial (complétions), null si non classé
+  rank: { rank: number } | null; // world rank (completions), null if unranked
 }
 
-// GET /home/landing — données publiques de la home (visiteur anonyme) : chiffres
-// réels du site + podium global (complétions all-time).
+// GET /home/landing — public home data (anonymous visitor): real site figures + global podium (all-time completions).
 export interface LandingTopPlayer {
-  metric: LeaderboardMetric; // n°1 de cette catégorie
+  metric: LeaderboardMetric; // #1 of this category
   user: { id: number; username: string; avatarUrl: string | null };
   score: number;
 }
@@ -62,7 +57,7 @@ export interface HomeLanding {
   topPlayers: LandingTopPlayer[];
 }
 
-// GET /companies/:id — fiche studio + ses jeux principaux
+// GET /companies/:id — studio page + its main games.
 export interface CompanyDetail {
   id: number;
   name: string;
@@ -77,7 +72,7 @@ export interface CompanyDetail {
   _count: { games: number; reviews: number };
 }
 
-// Contenu additionnel rattaché à un jeu (DLC, extension, standalone)
+// Extra content attached to a game (DLC, expansion, standalone).
 export interface GameDlc {
   id: number;
   title: string;
@@ -87,8 +82,7 @@ export interface GameDlc {
   igdbRating?: number | null;
 }
 
-// GET /games/facets — filtres disponibles pour le catalogue (seulement ceux
-// réellement rattachés à des jeux, les plus utilisés d'abord)
+// GET /games/facets — available catalog filters (only those actually attached to games, most-used first).
 export interface GameFacet {
   id: number;
   name: string;
@@ -100,18 +94,18 @@ export interface GameFacets {
   companies: GameFacet[];
 }
 
-// Résumé d'une liste (carte) — GET /lists/mine, profil public, etc.
+// List summary (card) — GET /lists/mine, public profile, etc.
 export interface GameListSummary {
   id: number;
   name: string;
   isPublic: boolean;
-  coverUrl: string | null; // image de couverture perso (upload), sinon null
+  coverUrl: string | null; // custom cover image (upload), else null
   gameCount: number;
-  covers: string[]; // jusqu'à 5 jaquettes pour l'aperçu empilé
-  contains?: boolean; // présent quand /lists/mine est appelé avec ?gameId=
+  covers: string[]; // up to 5 covers for the stacked preview
+  contains?: boolean; // present when /lists/mine is called with ?gameId=
 }
 
-// Détail d'une liste — GET /lists/:id
+// List detail — GET /lists/:id
 export interface GameListDetail {
   id: number;
   name: string;
@@ -123,7 +117,7 @@ export interface GameListDetail {
     title: string;
     coverUrl: string | null;
     releaseDate: string | null;
-    // Avis du propriétaire de la liste sur ce jeu (note + extrait), si noté
+    // The list owner's review of this game (rating + excerpt), if rated
     review: { id: number; rating: number; title: string; text: string } | null;
   }[];
 }
@@ -139,7 +133,7 @@ export type NotificationType =
   | 'FRIEND_JOINED'
   | 'ACHIEVEMENT';
 
-// payload dépend du type ; tous les champs sont donc optionnels côté front
+// payload depends on type; all fields are therefore optional on the front
 export interface AppNotification {
   id: number;
   type: NotificationType;
@@ -152,16 +146,16 @@ export interface AppNotification {
     gameId?: number | null;
     companyId?: number | null;
     commentId?: number;
-    // FRIEND_JOINED : via quel réseau ce contact a rejoint
+    // FRIEND_JOINED: which network this contact joined through
     via?: 'steam' | '42';
-    // ACHIEVEMENT : clé du succès débloqué
+    // ACHIEVEMENT: key of the unlocked achievement
     achievementKey?: string;
   };
   readAt: string | null;
   createdAt: string;
 }
 
-// ---- Chat / messagerie ----
+// ---- Chat / messaging ----
 export type MessageType = 'TEXT' | 'GAME' | 'REVIEW' | 'PROFILE';
 
 export interface ChatMessage {
@@ -173,7 +167,7 @@ export interface ChatMessage {
   readAt: string | null;
   createdAt: string;
   sender: { id: number; username: string; avatarUrl: string | null };
-  // Aperçus de partage : au plus un non-null selon `type`
+  // Share previews: at most one non-null depending on `type`.
   game: { id: number; title: string; coverUrl: string | null } | null;
   review: {
     id: number;
@@ -191,8 +185,7 @@ export interface ChatConversation {
   unread: number;
 }
 
-// Item de GET /reviews/highlights — user null = compte supprimé,
-// exactement un de game/company est non-null
+// Item from GET /reviews/highlights — user null = deleted account; exactly one of game/company is non-null.
 export interface ReviewHighlight {
   id: number;
   rating: number;
@@ -205,13 +198,13 @@ export interface ReviewHighlight {
   _count: { likes: number; dislikes: number; comments: number };
 }
 
-// ---- Feed d'activité des amis (GET /feed + event WS `feed:new`) ----
+// ---- Friend activity feed (GET /feed + WS event `feed:new`) ----
 export type FeedActor = { id: number; username: string; avatarUrl: string | null };
 export type FeedGameRef = { id: number; title: string; coverUrl: string | null };
 
 type FeedCompanyRef = { id: number; name: string; logoUrl: string | null };
 
-// Avis/commentaire cible d'un « like » (assez pour libellé + lien)
+// Review/comment targeted by a "like" (enough for label + link).
 export interface FeedReviewTarget {
   id: number;
   title: string;
@@ -226,8 +219,7 @@ export interface FeedCommentTarget {
   review: { id: number; game: FeedGameRef | null; company: FeedCompanyRef | null };
 }
 
-// `id` unique tous types confondus (préfixé), `at` = date de l'action
-// (tri + curseur "charger plus")
+// `id` unique across all types (prefixed), `at` = action date (sort + "load more" cursor).
 export type FeedItem =
   | { id: string; kind: 'review'; at: string; review: ReviewHighlight }
   | { id: string; kind: 'played'; at: string; actor: FeedActor; game: FeedGameRef }
@@ -260,7 +252,7 @@ export interface FeedPage {
   nextCursor: string | null;
 }
 
-// ---- Classements (GET /leaderboard) ----
+// ---- Leaderboards (GET /leaderboard) ----
 export type LeaderboardMetric = 'completions' | 'played' | 'reviews';
 export type LeaderboardScope = 'friends' | 'global';
 export type LeaderboardWindow = 'all' | 'month';
@@ -276,18 +268,17 @@ export interface LeaderboardResult {
   scope: LeaderboardScope;
   window: LeaderboardWindow;
   rows: LeaderboardRow[];
-  // Rang du viewer même hors du top affiché ; null s'il n'est pas classé.
+  // Viewer's rank even outside the shown top; null if unranked.
   me: { rank: number; score: number } | null;
 }
 
-// Podium global (all-time) d'un utilisateur sur une métrique : alimente le badge
-// de rang affiché à côté du pseudo. Seuls les rangs 1 à 3 sont renvoyés.
+// A user's global (all-time) podium on a metric: feeds the rank badge next to the username; only ranks 1-3 are returned.
 export interface LeaderboardBadge {
   metric: LeaderboardMetric;
   rank: number;
 }
 
-// ---- Succès « maison » (GET /achievements/user/:id) ----
+// ---- In-house achievements (GET /achievements/user/:id) ----
 export type AchievementFamily =
   | 'completions'
   | 'perfect'
@@ -306,16 +297,15 @@ export type AchievementFamily =
 export interface Achievement {
   key: string;
   family: AchievementFamily;
-  tier: number; // 1 = bronze … 5 = diamant
+  tier: number; // 1 = bronze … 5 = diamond
   threshold: number;
   icon: string; // emoji
   unlocked: boolean;
   unlockedAt: string | null;
-  progress: number; // valeur courante bornée au seuil
+  progress: number; // current value clamped to the threshold
 }
 
-// GET /achievements/user/:id — succès + jeux illustrant certaines familles
-// (notés 10 = coups de cœur, notés 0 = critiques sévères).
+// GET /achievements/user/:id — achievements + games illustrating some families (rated 10 = favorites, rated 0 = harsh reviews).
 export interface AchievementsPayload {
   items: Achievement[];
   ratedGames: { favorite: GameRef[]; harsh: GameRef[] };
@@ -333,8 +323,7 @@ export interface ProfilePlayedGame {
   game: GameRef;
 }
 
-// Un avis tel qu'affiché sur le profil (seed du profil + GET
-// /users/profile/:username/reviews). Exactement un de game/company est non-null.
+// A review as shown on the profile (profile seed + GET /users/profile/:username/reviews). Exactly one of game/company is non-null.
 export interface ProfileReview {
   id: number;
   title: string;
@@ -359,17 +348,15 @@ export interface PublicProfile {
   createdAt: string;
   reviewCount: number;
   playedCount: number;
-  rank: { rank: number } | null; // rang mondial (complétions), null si non classé
+  rank: { rank: number } | null; // world rank (completions), null if unranked
   topGames: { rating: number; game: GameRef }[];
   recentReviews: ProfileReview[];
-  // Calendrier de complétion — deux séries : `completions` = jeux marqués
-  // « fait » à la main (ambre), `perfectGames` = 100 % plateforme (vert).
+  // Completion calendar — two series: `completions` = games marked "done" by hand (amber), `perfectGames` = 100% platform (green).
   completions: { playedAt: string; game: GameRef }[];
   perfectGames: { playedAt: string; game: GameRef }[];
   friendState: FriendState;
   publicLists: GameListSummary[];
-  // Nb de listes affiché dans l'onglet : total (privées incluses) pour le
-  // propriétaire, sinon seulement les publiques.
+  // List count shown in the tab: total (private included) for the owner, else only public ones.
   listCount: number;
 }
 
@@ -382,20 +369,16 @@ export interface PublicUser {
   provider: AuthProvider;
   steamId: string | null;
   discordId: string | null;
-  // PlayStation lié via psn-api : le jeton NPSSO et l'accountId restent côté
-  // backend ; on n'expose que l'état lié + l'onlineId (affichage).
+  // PlayStation linked via psn-api: the NPSSO token and accountId stay on the backend; only the linked state + onlineId are exposed.
   psnLinked: boolean;
   psnOnlineId: string | null;
-  // Xbox lié via OpenXBL : la clé service et le XUID restent côté backend ; on
-  // n'expose que l'état lié + le gamertag (affichage). Miroir de psnLinked.
+  // Xbox linked via OpenXBL: the service key and XUID stay on the backend; only the linked state + gamertag are exposed. Mirror of psnLinked.
   xboxLinked: boolean;
   xboxGamertag: string | null;
   hasPassword: boolean;
-  // Onboarding wizard terminé ou explicitement passé. Tant que false, on
-  // redirige vers /welcome (voir ProtectedRoute).
+  // Onboarding wizard finished or explicitly skipped. While false, redirect to /welcome (see ProtectedRoute).
   onboarded: boolean;
-  // Tour guidé « à quoi sert chaque bouton » déjà vu ou passé. Tant que false
-  // (et onboarded true), il se lance une fois automatiquement.
+  // Guided tour already seen or skipped. While false (and onboarded true), it auto-starts once.
   tutorialSeen: boolean;
   twoFactorEnabled: boolean;
   emailVerifiedAt: string | null;

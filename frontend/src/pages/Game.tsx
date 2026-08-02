@@ -18,24 +18,18 @@ import { GameDlc, GameSummary } from '../lib/types';
 const screenshot1080 = (g: GameSummary) =>
   g.screenshots?.[0]?.replace(/t_[a-z0-9_]+/, 't_1080p') ?? null;
 
-// Poids bayésien : les notes externes (IGDB+Steam) comptent ensemble comme ce
-// nombre de votes joueurs virtuels — une poignée d'avis ne peut donc pas faire
-// chuter (ni exploser) la note, mais une vraie foule d'utilisateurs finit par
-// prendre le dessus. Même valeur/esprit que le score du catalogue (côté back).
+// Bayesian weight: external ratings (IGDB+Steam) together count as this many virtual player votes — a handful of reviews can't crash (or inflate) the score, but a real crowd of users eventually takes over. Same value/spirit as the catalog score (backend).
 const RATING_EXTERNAL_WEIGHT = 10;
 
-type RatingSource = { value: number; count: number | null }; // value sur 0–10
+type RatingSource = { value: number; count: number | null }; // value on 0–10
 type BlendedRating = {
-  score: number; // 0–10, moyenne pondérée affichée dans l'anneau
+  score: number; // 0–10, weighted average shown in the ring
   players?: RatingSource;
   igdb?: RatingSource;
   steam?: RatingSource;
 };
 
-// Note globale d'un jeu = moyenne pondérée des sources disponibles, jamais une
-// seule source qui écrase les autres. Les externes (IGDB, Steam) forment une
-// « note externe » (leur moyenne) qui pèse RATING_EXTERNAL_WEIGHT votes ; les
-// avis joueurs pèsent 1 chacun et prennent le dessus quand ils sont nombreux.
+// A game's overall rating = weighted average of the available sources, never a single source crushing the others. Externals (IGDB, Steam) form an "external rating" (their average) weighing RATING_EXTERNAL_WEIGHT votes; player reviews weigh 1 each and take over when numerous.
 function blendRating(game: GameSummary, stats: ReviewStats | null): BlendedRating | null {
   const players =
     stats && stats._count > 0 && stats._avg.rating != null
@@ -70,33 +64,24 @@ export default function Game() {
   const gameId = Number(id);
   const { t, i18n } = useTranslation();
 
-  // Résultats tagués par id : au changement de jeu, l'ancien contenu est
-  // ignoré sans setState synchrone dans l'effet (règle set-state-in-effect).
-  // game === null → 404 ; entrée absente/id différent → chargement.
+  // Results tagged by id: on a game change, the old content is ignored without a setState in the effect (set-state-in-effect rule). game === null → 404; missing entry/different id → loading.
   const [loaded, setLoaded] = useState<{ id: number; game: GameSummary | null } | null>(null);
-  // Stats des critiques (moyenne + nombre) affichées dans l'en-tête ; alimentées
-  // par ReviewsSection via onStats à chaque création/suppression/temps réel.
+  // Review stats (average + count) shown in the header; fed by ReviewsSection via onStats on each create/delete/real-time event.
   const [stats, setStats] = useState<ReviewStats | null>(null);
-  // Bumpé quand on poste un avis : le back marque alors le jeu "fait"
-  // automatiquement, ce compteur force PlayedButton à recharger son état.
+  // Bumped when posting a review: the backend then auto-marks the game "done"; this counter forces PlayedButton to reload its state.
   const [playedRefresh, setPlayedRefresh] = useState(0);
   const summaryRef = useRef<HTMLParagraphElement>(null);
-  // Mémorise le dernier résumé par jeu pour ne faire le fondu QUE sur le
-  // remplacement par la traduction (pas à l'affichage initial ni au changement
-  // de jeu).
+  // Remember the last summary per game to fade ONLY on replacement by the translation (not on initial display or game change).
   const summarySeen = useRef<{ id: number; summary: string | null } | null>(null);
 
-  // Résumé traduit du jeu courant (id + texte), séparé du jeu de base pour
-  // qu'un changement de langue ne repasse PAS par l'anglais.
+  // Translated summary of the current game (id + text), kept separate from the base game so a language change doesn't go back through English.
   const [translated, setTranslated] = useState<{ id: number; text: string } | null>(null);
 
-  // Barre d'actions collante : le titre du jeu n'y apparaît qu'une fois le hero
-  // sorti de l'écran (observé ci-dessous).
+  // Sticky action bar: the game title appears only once the hero scrolls off screen (observed below).
   const heroRef = useRef<HTMLDivElement>(null);
   const [heroOut, setHeroOut] = useState(false);
 
-  // Jeu de base (résumé anglais) — rechargé seulement au changement de JEU :
-  // l'en-tête, la jaquette, les avis s'affichent tout de suite.
+  // Base game (English summary) — reloaded only on a GAME change: header, cover, reviews show immediately.
   useEffect(() => {
     let cancelled = false;
     apiFetch<GameSummary>(`/games/${gameId}`)
@@ -111,13 +96,11 @@ export default function Game() {
     };
   }, [gameId]);
 
-  // Traduction du résumé — au changement de jeu OU de langue. Récupérée en
-  // arrière-plan (appel DeepL lent au 1er affichage) puis substituée. En anglais
-  // (apiLang() === '') → pas de requête, on repasse au résumé de base.
+  // Summary translation — on a game OR language change. Fetched in the background (slow DeepL call on first display) then substituted. In English (apiLang() === '') → no request, back to the base summary.
   useEffect(() => {
     let cancelled = false;
     const lang = apiLang();
-    if (!lang) return; // anglais : displaySummary retombe sur la base (voir plus bas)
+    if (!lang) return; // English: displaySummary falls back to the base (see below)
     apiFetch<GameSummary>(`/games/${gameId}?lang=${lang}`)
       .then((g) => {
         if (!cancelled) setTranslated({ id: gameId, text: g.summary ?? '' });
@@ -130,7 +113,7 @@ export default function Game() {
 
   const game = loaded?.id === gameId ? loaded.game : undefined;
 
-  // Le titre de la barre collante apparaît quand le hero quitte le haut de l'écran.
+  // The sticky bar title appears when the hero leaves the top of the screen.
   useEffect(() => {
     const el = heroRef.current;
     if (!el) return;
@@ -140,17 +123,11 @@ export default function Game() {
     io.observe(el);
     return () => io.disconnect();
   }, [game?.id]);
-  // Résumé affiché : en anglais (apiLang() === '') → la base ; sinon la traduction
-  // du jeu courant (on garde l'ancienne le temps que la nouvelle langue arrive →
-  // pas de clignotement anglais entre deux langues).
+  // Displayed summary: in English (apiLang() === '') → the base; otherwise the current game's translation (kept until the new language arrives → no English flicker between languages).
   const displaySummary =
     translated?.id === gameId && apiLang() !== '' ? translated.text : (game?.summary ?? null);
 
-  // Effet "décodage" (scramble) quand le résumé AFFICHÉ change (traduction
-  // arrivée, ou changement de langue) : décode vers le nouveau texte depuis
-  // l'actuel — jamais de retour à l'anglais entre deux langues. Pas au 1er
-  // affichage d'un jeu ni au changement de jeu (mémorisé par id). useLayoutEffect
-  // : démarre avant le paint (pas de flash du texte final).
+  // "Decode" (scramble) effect when the DISPLAYED summary changes (translation arrived, or language change): decodes to the new text from the current one — never back to English between languages. Not on a game's first display or game change (remembered by id). useLayoutEffect: starts before paint (no flash of the final text).
   useLayoutEffect(() => {
     const cur = displaySummary;
     const seen = summarySeen.current;
@@ -177,13 +154,12 @@ export default function Game() {
 
   const banner = screenshot1080(game);
   const year = game.releaseDate ? new Date(game.releaseDate).getFullYear() : null;
-  // Note affichée dans l'anneau : moyenne pondérée de toutes les sources
-  // (joueurs + IGDB + Steam), réactive en live aux nouveaux avis via `stats`.
+  // Rating shown in the ring: weighted average of all sources (players + IGDB + Steam), live-reactive to new reviews via `stats`.
   const rating = blendRating(game, stats);
-  // Distribution dispo (au moins un avis) → sidebar sticky à droite des critiques.
+  // Distribution available (at least one review) → sticky sidebar to the right of the reviews.
   const hasDist = !!(stats && stats._count > 0 && stats.distribution);
 
-  // Identité (titre + méta) — `onDark` sur le dégradé du screenshot (texte clair).
+  // Identity (title + meta) — `onDark` over the screenshot gradient (light text).
   const identity = (onDark: boolean) => (
     <>
       <h1
@@ -217,7 +193,6 @@ export default function Game() {
           </Link>
         ))}
       </div>
-      {/* Plateformes */}
       {game.platforms && game.platforms.length > 0 && (
         <div className={`mt-2 flex flex-wrap items-center gap-1.5 text-[11px] font-semibold ${onDark ? 'text-zinc-300' : 'text-zinc-500 dark:text-zinc-400'}`}>
           {game.platforms.slice(0, 6).map((p) => (
@@ -230,7 +205,7 @@ export default function Game() {
     </>
   );
 
-  // Barre d'actions (réutilisée dans le hero et la barre collante).
+  // Action bar (reused in the hero and the sticky bar).
   const actions = (
     <>
       <PlayedButton gameId={gameId} releaseDate={game.releaseDate} showCount refreshKey={playedRefresh} />
@@ -254,7 +229,6 @@ export default function Game() {
 
   return (
     <div className="flex flex-col gap-8">
-      {/* ---- HERO cinématique : screenshot + halo ambre + jaquette + anneau de note ---- */}
       <div ref={heroRef}>
         {banner ? (
           <div className="relative overflow-hidden rounded-2xl border border-zinc-900/10 shadow-xl dark:border-zinc-100/10">
@@ -277,11 +251,8 @@ export default function Game() {
         )}
       </div>
 
-      {/* ---- Barre d'actions collante (sous la nav) ----
-          Sans cadre : jamais de fond ni de bordure — seulement les boutons (et le
-          nom du jeu qui apparaît en fondu une fois le hero sorti). Pas de
-          backdrop-blur non plus (il ferait de cette barre le bloc conteneur des
-          popups en position:fixed → Fait / Ajouter à une liste décalés). */}
+      {/* ---- Sticky action bar (under the nav) ----
+          Frameless: never a background or border — just the buttons (and the game name fading in once the hero scrolls off). No backdrop-blur either (it would make this bar the containing block for the position:fixed popups → Done / Add to list offset). */}
       <div className="sticky top-16 z-30">
         <div className="flex items-center gap-3 py-3">
           <span
@@ -293,7 +264,6 @@ export default function Game() {
         </div>
       </div>
 
-      {/* Ce jeu est lui-même un DLC/extension : lien retour vers le jeu de base */}
       {game.parent && (
         <Link
           to={`/game/${game.parent.id}`}
@@ -315,12 +285,9 @@ export default function Game() {
         </section>
       )}
 
-      {/* Extensions & DLC rattachés */}
       {game.dlcs && game.dlcs.length > 0 && <DlcSelector dlcs={game.dlcs} />}
 
-      {/* Critiques (principal) + répartition des notes en sidebar sticky à
-          droite (comme la maquette). Sans avis : pas de grille, avis pleine
-          largeur. Sur mobile la distribution passe au-dessus des avis. */}
+      {/* Reviews (main) + rating distribution in a sticky sidebar on the right. Without reviews: no grid, full-width reviews. On mobile the distribution goes above the reviews. */}
       <div className={hasDist ? 'grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start' : undefined}>
         {hasDist && (
           <aside className="lg:order-2 lg:sticky lg:top-32">
@@ -331,7 +298,6 @@ export default function Game() {
             />
           </aside>
         )}
-        {/* ReviewsSection porte déjà id="review" + scroll-mt (ancre « Critiquer ») */}
         <div className="min-w-0 lg:order-1">
           <ReviewsSection
             target={{ kind: 'game', id: gameId }}
@@ -344,10 +310,7 @@ export default function Game() {
   );
 }
 
-// Anneau de note (0–10) affichant la moyenne pondérée. Au survol (ou focus
-// clavier), un tooltip détaille chaque source : joueurs Saveboxd, IGDB, Steam,
-// avec leur note et leur nombre de votes/avis. L'accent ambre remplit l'anneau
-// proportionnellement.
+// Rating ring (0–10) showing the weighted average. On hover (or keyboard focus), a tooltip details each source: Saveboxd players, IGDB, Steam, with their rating and vote/review count. The amber accent fills the ring proportionally.
 function ScoreRing({ rating, onDark = false }: { rating: BlendedRating; onDark?: boolean }) {
   const { t } = useTranslation();
   const r = 26;
@@ -397,8 +360,7 @@ function ScoreRing({ rating, onDark = false }: { rating: BlendedRating; onDark?:
         <span className={`text-[10px] font-semibold ${onDark ? 'text-zinc-300' : 'text-zinc-400'}`}>/10</span>
       </div>
 
-      {/* Tooltip : détail des sources (survol + focus). Fond opaque → lisible sur
-          le hero sombre comme sur la carte claire. */}
+      {/* Tooltip: source breakdown (hover + focus). Opaque background → readable on both the dark hero and the light card. */}
       <div className="pointer-events-none absolute bottom-full right-0 z-40 mb-2 w-60 rounded-xl bg-zinc-900 p-3 text-left opacity-0 shadow-xl ring-1 ring-white/10 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
         <div className="mb-2 flex items-baseline justify-between gap-2 border-b border-white/10 pb-2">
           <span className="text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
@@ -425,8 +387,7 @@ function ScoreRing({ rating, onDark = false }: { rating: BlendedRating; onDark?:
   );
 }
 
-// Carte verticale de répartition des notes (0–10) pour la sidebar : moyenne en
-// gros, nombre d'avis, puis l'histogramme 10→0.
+// Vertical rating-distribution card (0–10) for the sidebar: big average, review count, then the 10→0 histogram.
 function RatingDistribution({ avg, count, distribution }: { avg: number; count: number; distribution: number[] }) {
   const { t } = useTranslation();
   const max = Math.max(1, ...distribution);
@@ -462,7 +423,7 @@ function RatingDistribution({ avg, count, distribution }: { avg: number; count: 
   );
 }
 
-// Libellé traduit du type de contenu additionnel
+// Translated label of the additional-content type.
 function dlcTypeLabel(type: string, t: TFunction): string {
   if (type === 'EXPANSION') return t('game.dlcExpansion');
   if (type === 'STANDALONE') return t('game.dlcStandalone');
@@ -471,7 +432,7 @@ function dlcTypeLabel(type: string, t: TFunction): string {
 
 const dlcYear = (d: GameDlc) => d.releaseDate?.slice(0, 4);
 
-// Petit lien "Noter" → ouvre la fiche du DLC sur le formulaire de critique
+// Small "Rate" link → opens the DLC page on the review form.
 function RateLink({ id }: { id: number }) {
   const { t } = useTranslation();
   return (
@@ -495,8 +456,7 @@ function RateLink({ id }: { id: number }) {
   );
 }
 
-// Variante A : un menu déroulant pour choisir un DLC, puis un panneau avec le
-// toggle "fait" (sur place) et le bouton "Noter" pour le DLC sélectionné.
+// Variant A: a dropdown to pick a DLC, then a panel with the "done" toggle (in place) and the "Rate" button for the selected DLC.
 function DlcSelector({ dlcs }: { dlcs: GameDlc[] }) {
   const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<number | null>(null);

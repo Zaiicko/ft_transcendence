@@ -4,7 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { apiFetch } from '../lib/api';
 import Avatar from './Avatar';
 
-// Ce qu'on partage : exactement une variante, mappée sur POST /chat
+// What we share: exactly one variant, mapped to POST /chat.
 export type ShareTarget =
   | { type: 'GAME'; gameId: number }
   | { type: 'REVIEW'; reviewId: number }
@@ -12,9 +12,7 @@ export type ShareTarget =
 
 type Friend = { id: number; username: string; avatarUrl: string | null };
 
-// Bouton "enveloppe" : ouvre un mini-sélecteur d'amis et envoie le partage
-// (jeu / avis / profil) dans le chat. `triggerClassName` adapte le style au
-// contexte (rond sur les en-têtes, discret dans une barre d'actions).
+// "Envelope" button: opens a friend picker and shares (game/review/profile) into chat.
 export default function ShareButton({
   target,
   triggerClassName,
@@ -77,7 +75,7 @@ export default function ShareButton({
       });
       setSentTo((cur) => new Set(cur).add(friendId));
     } catch {
-      /* silencieux : on peut réessayer */
+      /* silent: retryable */
     } finally {
       setBusyId(null);
     }
@@ -146,7 +144,7 @@ export default function ShareButton({
   );
 }
 
-// Icône "partage" iOS/web : flèche vers le haut sortant d'une boîte
+// iOS/web share icon.
 function ShareIcon() {
   return (
     <svg

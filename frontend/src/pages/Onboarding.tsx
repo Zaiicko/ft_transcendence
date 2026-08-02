@@ -8,16 +8,12 @@ import XboxConnectModal from '../components/XboxConnectModal';
 import { LanguageCode, loadLanguage, SUPPORTED_LANGUAGES } from '../i18n';
 import { apiFetch, ApiError } from '../lib/api';
 
-// Wizard de bienvenue affiché juste après l'inscription (voir ProtectedRoute :
-// tant que user.onboarded est faux, toute page protégée y renvoie). 3 étapes :
-// pseudo (pré-rempli par le service), photo (AvatarFramer, pré-remplie par le
-// service), liaison des comptes de jeu. « Terminer » et « Passer » posent
-// onboardedAt côté back (POST /users/me/onboarded) → plus de redirection auto.
+// Welcome wizard shown right after sign-up (see ProtectedRoute: while user.onboarded is false, protected pages redirect here). 3 steps: username, photo, game-account linking. "Finish" and "Skip" set onboardedAt server-side.
 
 const STEP_KEY = 'onboardingStep';
 const TOTAL_STEPS = 3;
 
-// Logos officiels (Simple Icons, CC0) pour les cartes de services.
+// Official logos (Simple Icons, CC0) for the service cards.
 const STEAM_PATH =
   'M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z';
 const XBOX_PATH =
@@ -41,10 +37,7 @@ function ServiceIcon({ color, path }: { color: string; path: string }) {
 const pill =
   'rounded-full border border-zinc-400/60 px-4 py-1.5 text-sm font-medium transition hover:border-accent hover:text-accent disabled:opacity-50 dark:border-zinc-600';
 
-// Sélecteur de langue du welcome : applique le choix IMMÉDIATEMENT (contrairement
-// au sélecteur du menu qui n'applique qu'à la fermeture), pour que le reste du
-// wizard ET le tour guidé lancé juste après soient dans la langue choisie.
-// Persistance : localStorage (i18next) + profil (best-effort).
+// Welcome language picker: applies the choice IMMEDIATELY (unlike the menu one) so the rest of the wizard and the following guided tour are in the chosen language; persisted to localStorage + profile (best-effort).
 function OnboardingLanguagePicker() {
   const { t, i18n } = useTranslation();
   const { user, refreshUser } = useAuth();
@@ -121,7 +114,7 @@ export default function Onboarding() {
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
 
-  // On reprend à l'étape mémorisée (retour de liaison Steam / page quittée).
+  // Resume at the remembered step (return from Steam linking / left page).
   const [step, setStep] = useState<number>(() => {
     const saved = Number(sessionStorage.getItem(STEP_KEY));
     return saved >= 1 && saved <= TOTAL_STEPS ? saved : 1;
@@ -147,7 +140,7 @@ export default function Onboarding() {
   async function saveUsername(e: FormEvent) {
     e.preventDefault();
     setUsernameError(null);
-    // Pseudo inchangé : on ne rappelle pas l'API.
+    // Username unchanged: skip the API call.
     if (username === user!.username) {
       goTo(2);
       return;
@@ -164,9 +157,7 @@ export default function Onboarding() {
     }
   }
 
-  // Pose onboardedAt puis quitte le wizard. Utilisé par « Terminer » et par le
-  // « Passer » global : dans les deux cas l'utilisateur ne sera plus redirigé
-  // ici automatiquement (il devra repasser par les réglages).
+  // Set onboardedAt then leave the wizard (used by "Finish" and the global "Skip"): the user is no longer auto-redirected here.
   async function finish() {
     setFinishing(true);
     try {
@@ -175,8 +166,7 @@ export default function Onboarding() {
       sessionStorage.removeItem(STEP_KEY);
       navigate('/', { replace: true });
     } catch {
-      // En cas d'échec réseau on laisse l'utilisateur sur place plutôt que de le
-      // bloquer : il pourra réessayer.
+      // On network failure, leave the user in place so they can retry.
       setFinishing(false);
     }
   }
@@ -218,8 +208,6 @@ export default function Onboarding() {
 
   return (
     <div className="mx-auto max-w-lg py-6">
-      {/* En-tête : titre de bienvenue + choix de la langue (pour que la suite,
-          y compris le tour guidé qui démarre après, soit dans ta langue). */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
@@ -243,7 +231,6 @@ export default function Onboarding() {
       </div>
 
       <div className="card p-6">
-        {/* Étape 1 — Pseudo */}
         {step === 1 && (
           <form onSubmit={saveUsername} className="flex flex-col gap-4">
             <div>
@@ -277,8 +264,6 @@ export default function Onboarding() {
           </form>
         )}
 
-        {/* Étape 2 — Photo de profil (réutilise AvatarFramer, pré-rempli par le
-            service). Save/Cancel du framer avancent tous deux à l'étape 3. */}
         {step === 2 && (
           <div className="flex flex-col gap-4">
             <div>
@@ -307,7 +292,6 @@ export default function Onboarding() {
           </div>
         )}
 
-        {/* Étape 3 — Liaison des comptes de jeu */}
         {step === 3 && (
           <div className="flex flex-col gap-4">
             <div>
@@ -317,8 +301,6 @@ export default function Onboarding() {
               </p>
             </div>
 
-            {/* Avertissement bien visible, valable pour les 3 services : sans
-                profil public, aucun import possible. */}
             <div className="flex items-start gap-3 rounded-xl border border-amber-400/60 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
               <svg
                 viewBox="0 0 24 24"

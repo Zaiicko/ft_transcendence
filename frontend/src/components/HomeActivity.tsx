@@ -8,16 +8,14 @@ import { FAMILY_NAME_KEY, tierClasses } from '../lib/achievements';
 import type { FeedItem, FeedPage } from '../lib/types';
 import AchievementIcon from './AchievementIcon';
 
-// Colonne « Activité des amis » compacte de l'accueil : les mêmes items que la
-// page Fil, condensés en une ligne, avec push temps réel. Réutilise les clés
-// i18n feed.* (déjà traduites) pour ne rien ajouter côté traduction.
+// Compact "friend activity" home column: feed items condensed to one line, real-time.
 
 const HOME_FEED_LIMIT = 6;
 const gameHref = (id: number) => `/game/${id}`;
 const companyHref = (id: number) => `/company/${id}`;
 const strong = 'font-semibold text-zinc-900 dark:text-zinc-100';
 
-// Date relative courte, localisée (repris de FriendFeed).
+// Short localized relative time (from FriendFeed).
 function relativeTime(iso: string): string {
   const t = i18n.t.bind(i18n);
   const diff = Date.now() - new Date(iso).getTime();
@@ -38,7 +36,7 @@ const RANK_METRIC_LABEL: Record<string, string> = {
   reviews: 'leaderboard.metricReviews',
 };
 
-// Cible (jeu ou studio) d'un avis → libellé + lien profond vers l'avis.
+// A review's target (game or studio) → label + deep link.
 function reviewTarget(
   game: { id: number; title: string } | null,
   company: { id: number; name: string } | null,
@@ -66,7 +64,6 @@ export default function HomeActivity() {
     };
   }, []);
 
-  // Un nouvel item d'ami s'insère en tête, la liste reste courte.
   useFeedSocket((item) => {
     setItems((prev) =>
       prev.some((i) => i.id === item.id) ? prev : [item, ...prev].slice(0, HOME_FEED_LIMIT),
@@ -110,13 +107,12 @@ export default function HomeActivity() {
   );
 }
 
-// Une ligne compacte : pastille (icône ou avatar) + phrase <Trans> + heure.
+// Compact row: pill (icon or avatar) + <Trans> sentence + time.
 function Row({ item }: { item: FeedItem }) {
   const { t } = useTranslation();
   const rowClass =
     'flex items-start gap-3 border-b border-zinc-900/[0.06] px-4 py-3 transition last:border-0 hover:bg-zinc-900/[0.03] dark:border-zinc-100/[0.06] dark:hover:bg-zinc-100/[0.03]';
 
-  // Ligne de texte + heure, factorisée.
   const line = (node: ReactNode, at: string) => (
     <div className="min-w-0 flex-1">
       <div className="truncate text-[13px] text-zinc-600 dark:text-zinc-400">{node}</div>
@@ -242,8 +238,7 @@ function Row({ item }: { item: FeedItem }) {
   }
 }
 
-// Pastille avatar-substitut colorée par type d'évènement (ambre = critique/like,
-// émeraude = jeu fait/100 %). Discrète, dans le thème du site.
+// Colored avatar-substitute pill by event type (amber = review/like, emerald = played/100%).
 function Dot({ tone }: { tone: 'amber' | 'emerald' }) {
   const cls =
     tone === 'emerald'

@@ -4,18 +4,16 @@ import { apiFetch, ApiError } from '../lib/api';
 import type { GameListSummary } from '../lib/types';
 import { framedImgStyle, parseFrame } from './Avatar';
 
-// Preview au ratio de la vignette de couverture (3:2) → cadrage WYSIWYG.
+// Preview at the cover thumbnail ratio (3:2) for WYSIWYG framing.
 const PREVIEW_W = 240;
 const PREVIEW_H = 160;
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/gif';
 
-// Décalage max (%) qui garde l'image couvrante à ce zoom (cf. AvatarFramer).
+// Max offset (%) keeping the image covering at this zoom (cf. AvatarFramer).
 const panLimit = (scale: number) => (scale - 1) * 50;
 const clamp = (v: number, lim: number) => Math.max(-lim, Math.min(lim, v));
 
-// Cadrage de la couverture, même mécanisme que l'avatar : on upload l'original
-// (GIF compris → reste animé) puis on stocke scale/x/y dans coverUrl via #af=.
-// Panneau inline ; onChange remonte le nouveau coverUrl (null si retiré).
+// Cover framing (like the avatar): upload the original, store scale/x/y in coverUrl via #af=.
 export default function ListCoverFramer({
   listId,
   coverUrl,
@@ -69,7 +67,6 @@ export default function ListCoverFramer({
   function onPointerMove(e: ReactPointerEvent<HTMLDivElement>) {
     if (!drag.current) return;
     const lim = panLimit(scale);
-    // x/y en % du conteneur → convertir le déplacement px selon chaque axe.
     const dx = ((e.clientX - drag.current.px) / PREVIEW_W) * 100;
     const dy = ((e.clientY - drag.current.py) / PREVIEW_H) * 100;
     setX(clamp(drag.current.x + dx, lim));

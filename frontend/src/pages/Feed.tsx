@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import FriendFeed from '../components/FriendFeed';
 
-// Page dédiée : l'activité récente des amis (avis + jeux faits), en temps réel
+// Dedicated page: recent friend activity (reviews + completed games), in real time.
 export default function Feed() {
   const { t } = useTranslation();
   return (
     <div className="mx-auto max-w-2xl">
-      {/* En-tête immersif brandé + pastille « temps réel » */}
       <header className="relative mb-6 rounded-3xl border border-zinc-900/10 bg-white p-6 shadow-sm dark:border-zinc-100/10 dark:bg-zinc-900 sm:p-7">
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
           <div className="absolute -left-10 -top-20 h-64 w-64 rounded-full bg-accent/25 blur-3xl" />

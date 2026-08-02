@@ -6,7 +6,7 @@ import PsnLibrary from './PsnLibrary';
 import SteamLibrary from './SteamLibrary';
 import XboxLibrary from './XboxLibrary';
 
-// Logos (Simple Icons, CC0) — pavés de marque colorés dans le sélecteur
+// Brand logos (Simple Icons, CC0) — colored brand tiles in the selector.
 const STEAM_PATH =
   'M11.98 0C5.6 0 .37 4.94 0 11.24l6.44 2.66a3.4 3.4 0 0 1 1.92-.59l2.86-4.15v-.06a4.54 4.54 0 1 1 4.54 4.54h-.11l-4.08 2.92c0 .05 0 .1 0 .14a3.41 3.41 0 0 1-6.75.62L.05 15.9A12 12 0 1 0 11.98 0zm-4.4 18.2l-1.47-.6a2.56 2.56 0 0 0 4.7-1.98 2.56 2.56 0 0 0-3.36-1.36l1.52.63a1.88 1.88 0 1 1-1.44 3.47zm8.98-9.35a3.03 3.03 0 1 0-6.06 0 3.03 3.03 0 0 0 6.06 0zm-5.3 0a2.27 2.27 0 1 1 4.54 0 2.27 2.27 0 0 1-4.54 0z';
 const PSN_PATH =
@@ -23,7 +23,7 @@ interface Platform {
   panel: React.ReactNode;
 }
 
-// Pavé de marque coloré (logo blanc sur fond de la plateforme)
+// Colored brand tile (white logo on the platform's color).
 function BrandTile({ color, path }: { color: string; path: string }) {
   return (
     <span
@@ -37,8 +37,7 @@ function BrandTile({ color, path }: { color: string; path: string }) {
   );
 }
 
-// Page globale « Mes bibliothèques » : un onglet par plateforme. Seules celles
-// dont le compte est lié sont sélectionnables.
+// Unified "My libraries" page: one tab per platform, only linked ones selectable.
 export default function Library() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -80,7 +79,6 @@ export default function Library() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* En-tête immersif brandé */}
       <header className="relative rounded-3xl border border-zinc-900/10 bg-white p-6 shadow-sm dark:border-zinc-100/10 dark:bg-zinc-900 sm:p-8">
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
           <div className="absolute -left-12 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
@@ -98,7 +96,6 @@ export default function Library() {
         </div>
       </header>
 
-      {/* Sélecteur de plateformes en cartes */}
       <div className="grid gap-3 sm:grid-cols-3">
         {platforms.map((p) => {
           const isActive = p.key === active;
@@ -134,7 +131,7 @@ export default function Library() {
             : p.linked
               ? `${base} border-zinc-900/10 hover:border-accent/50 dark:border-zinc-100/10`
               : `${base} border-dashed border-zinc-300 hover:border-accent dark:border-zinc-700`;
-          // Non liée → renvoie vers la fenêtre de liaison des réglages.
+          // Not linked → send to the settings linking window.
           if (!p.linked) {
             return (
               <Link key={p.key} to={`/settings?connect=${p.key}`} className={cls}>

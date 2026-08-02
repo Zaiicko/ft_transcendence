@@ -6,8 +6,7 @@ import AuthShell from '../components/AuthShell';
 import OAuthButtons from '../components/OAuthButtons';
 import { apiFetch, ApiError } from '../lib/api';
 
-// Steam personas allow spaces/emojis; our usernames don't. Prefill what we can
-// and let the user adjust the rest.
+// Steam personas allow spaces/emojis ours don't — prefill what we can.
 function sanitizeUsername(name: string): string {
   return name.replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 24);
 }
@@ -18,9 +17,7 @@ export default function Signup() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
 
-  // Arriving from the Steam callback: the verified steamId travels in an
-  // httpOnly cookie, Steam gives no email — the user completes the account
-  // here (username prefilled with their Steam persona, password optional).
+  // From the Steam callback: steamId arrives in an httpOnly cookie (no email), user finishes here.
   const steamPending = params.get('steam') === 'pending';
 
   const [email, setEmail] = useState('');
@@ -44,7 +41,6 @@ export default function Signup() {
         });
         await refreshUser();
       } else {
-        // Pseudo choisi ensuite dans le wizard d'onboarding (/welcome).
         await signup(email, password);
       }
       navigate('/welcome', { replace: true });
@@ -85,8 +81,6 @@ export default function Signup() {
           onChange={(e) => setEmail(e.target.value)}
           className="field px-4 py-2.5"
         />
-        {/* Pseudo demandé seulement au flux Steam (pré-rempli par le persona) ;
-            en inscription classique il est choisi ensuite dans /welcome. */}
         {steamPending && (
           <input
             type="text"

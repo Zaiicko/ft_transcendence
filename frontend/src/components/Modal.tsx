@@ -1,15 +1,11 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// Sélecteur des éléments naturellement focusables (pour le focus initial + le
-// piège à focus). :not([disabled]) / tabindex="-1" exclus.
+// Selector for naturally focusable elements (initial focus + focus trap).
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-// Modale générique : voile assombri + carte centrée scrollable. Se ferme au
-// clic sur le voile, sur la croix, ou avec Échap. Accessibilité (WCAG 2.4.3) :
-// focus déplacé dans la modale à l'ouverture, piégé au Tab, restauré sur
-// l'élément déclencheur à la fermeture. Le contenu ne défile pas la page dessous.
+// Generic modal: dimmed overlay + centered scrollable card, closes on overlay/✕/Esc, with a focus trap (WCAG 2.4.3).
 export default function Modal({
   title,
   onClose,
@@ -25,10 +21,8 @@ export default function Modal({
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    // Élément qui avait le focus avant l'ouverture (pour le rendre à la fermeture)
     const previouslyFocused = document.activeElement as HTMLElement | null;
 
-    // Focus initial : 1er élément focusable, sinon la carte elle-même (tabIndex -1)
     const initial = dialog?.querySelector<HTMLElement>(FOCUSABLE) ?? dialog;
     initial?.focus();
 
@@ -38,8 +32,7 @@ export default function Modal({
         return;
       }
       if (e.key !== 'Tab' || !dialog) return;
-      // Piège à focus : Tab boucle à l'intérieur de la modale (offsetParent null
-      // = élément masqué → écarté).
+      // Focus trap: Tab loops inside the modal (hidden elements skipped).
       const items = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
         (el) => el.offsetParent !== null,
       );

@@ -1,7 +1,4 @@
-// Petit bus d'évènements pour router `comment:reaction` (compteurs absolus) du
-// socket (reçu dans Game.tsx) jusqu'au bon CommentNode, qui vit dans l'état
-// local de ReviewComments — inatteignable par props sans tout remonter. Chaque
-// CommentNode s'abonne à son id ; Game.tsx publie à la réception de l'évènement.
+// Tiny event bus routing socket `comment:reaction` updates to the right CommentNode, unreachable by props.
 export interface CommentReactionEvent {
   commentId: number;
   likes: number;

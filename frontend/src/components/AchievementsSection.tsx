@@ -7,7 +7,7 @@ import { FAMILY_DESC_KEY, FAMILY_NAME_KEY, tierClasses } from '../lib/achievemen
 import { Achievement, AchievementFamily, AchievementsPayload, GameRef } from '../lib/types';
 import AchievementIcon from './AchievementIcon';
 
-// Ordre d'affichage des familles
+// Family display order.
 const FAMILY_ORDER: AchievementFamily[] = [
   'completions',
   'perfect',
@@ -26,14 +26,12 @@ const FAMILY_ORDER: AchievementFamily[] = [
 
 interface FamilyGroup {
   family: AchievementFamily;
-  tiers: Achievement[]; // triés par palier croissant
+  tiers: Achievement[]; // sorted by ascending tier
   unlocked: number;
-  highestTier: number; // palier max débloqué (0 = aucun) → teinte de l'icône
+  highestTier: number; // highest unlocked tier (0 = none) → icon tint
 }
 
-// Section « Succès » du profil : un badge par FAMILLE (pas un par palier). Clic
-// sur un badge → panneau détaillant chaque palier (débloqué + date, ou barre de
-// progression) avec la description complète.
+// Profile "Achievements" section: one badge per family; clicking opens per-tier detail.
 export default function AchievementsSection({ userId }: { userId: number }) {
   const { t, i18n } = useTranslation();
   const [data, setData] = useState<AchievementsPayload | null>(null);
@@ -121,7 +119,6 @@ export default function AchievementsSection({ userId }: { userId: number }) {
         })}
       </ul>
 
-      {/* Panneau détaillé de la famille sélectionnée (descriptions complètes) */}
       {active && (
         <div className="card mt-3 p-4">
           <div className="mb-3 flex items-center gap-3">
@@ -182,7 +179,6 @@ export default function AchievementsSection({ userId }: { userId: number }) {
             })}
           </ol>
 
-          {/* Jeux illustrant la famille : notés 10 (coup de cœur) / 0 (sévère) */}
           {(active.family === 'favorite' || active.family === 'harsh') &&
             data &&
             data.ratedGames[active.family].length > 0 && (

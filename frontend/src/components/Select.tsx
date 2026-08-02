@@ -5,9 +5,7 @@ export interface SelectOption {
   label: string;
 }
 
-// Dropdown custom (pas un <select> natif) : sous Chromium/Linux la popup native
-// s'ouvre en blanc (color-scheme/option ignorés). Ici on maîtrise le menu, qui
-// suit le thème jour/nuit. `className` pilote la largeur du bouton déclencheur.
+// Custom dropdown (not a native <select>): themeable, avoids the white native popup on Chromium/Linux.
 export default function Select({
   label,
   value,
@@ -25,7 +23,6 @@ export default function Select({
   const ref = useRef<HTMLDivElement>(null);
   const current = options.find((o) => o.value === value) ?? options[0];
 
-  // Fermeture au clic extérieur / Échap
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {

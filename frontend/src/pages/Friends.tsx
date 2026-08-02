@@ -25,8 +25,7 @@ interface FriendRequestRow {
   user: PublicUser;
 }
 
-// Suggested by the backend: your Steam friends on Saveboxd, or fellow
-// 42 students when you signed in with 42
+// Suggested by the backend: your Steam friends on Saveboxd, or fellow 42 students.
 type Suggestion = PublicUser & { via: 'steam' | '42' | 'psn' };
 
 export default function Friends() {
@@ -42,10 +41,7 @@ export default function Friends() {
   const [sendError, setSendError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
-  // load() is deliberately split into a pure fetch + stable state-applying
-  // callbacks: its body contains no setState, so it stays safe to call from
-  // the effect below (react-hooks/set-state-in-effect) — every state update
-  // happens in an async promise callback.
+  // load() has no setState in its body (safe from the effect); updates happen in async callbacks.
   const fetchAll = useCallback(
     () =>
       Promise.all([
@@ -64,7 +60,6 @@ export default function Friends() {
       setSuggestions(suggested);
       setError(null);
     },
-    // `fetchAll` is only used as a type above, not as a value
     [],
   );
 
@@ -86,8 +81,7 @@ export default function Friends() {
     void load();
   }, [load]);
 
-  // Temps réel : demande reçue/acceptée/refusée/retirée → amis + demandes se
-  // mettent à jour sans refresh (l'autre côté aussi).
+  // Real-time: friend requests/accepts/removals update friends + requests without a refresh.
   useFriendSocket(load, true);
 
   usePresenceSocket(
@@ -154,7 +148,6 @@ export default function Friends() {
 
   return (
     <div className="flex flex-col gap-8">
-      {/* ---- En-tête immersif : eyebrow brandé + stats + barre d'ajout ---- */}
       <header className="relative rounded-3xl border border-zinc-900/10 bg-white p-6 shadow-sm dark:border-zinc-100/10 dark:bg-zinc-900 sm:p-8">
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
           <div className="absolute -left-12 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
@@ -201,7 +194,6 @@ export default function Friends() {
 
       {error && <p className="text-sm text-red-400">{error}</p>}
 
-      {/* Demandes reçues — cartes ambrées, mises en avant */}
       {incoming.length > 0 && (
         <section>
           <SectionHead eyebrow={t('friends.eyeRequests')} title={t('friends.pendingRequests')} />
@@ -253,7 +245,6 @@ export default function Friends() {
         </section>
       )}
 
-      {/* Demandes envoyées */}
       {outgoing.length > 0 && (
         <section>
           <SectionHead eyebrow={t('friends.eyeSent')} title={t('friends.sentRequests')} />
@@ -287,7 +278,6 @@ export default function Friends() {
         </section>
       )}
 
-      {/* Suggestions — cartes pointillées avec la provenance */}
       {suggestions.length > 0 && (
         <section>
           <SectionHead eyebrow={t('friends.eyeSuggested')} title={t('friends.suggestedFriends')} />
@@ -319,7 +309,6 @@ export default function Friends() {
         </section>
       )}
 
-      {/* Tes amis — grille de cartes, présence en direct, retrait au survol */}
       <section>
         <SectionHead eyebrow={t('friends.eyeFriends')} title={t('friends.yourFriends')} />
         {friends.length === 0 ? (
@@ -336,7 +325,6 @@ export default function Friends() {
                   to={`/u/${f.username}`}
                   className="card flex items-center gap-3 p-3.5 transition hover:-translate-y-0.5 hover:border-accent/50"
                 >
-                  {/* Avatar + pastille de présence sur le coin bas-droit */}
                   <span className="relative shrink-0">
                     <Avatar username={f.username} avatarUrl={f.avatarUrl} size={44} />
                     <span
@@ -379,8 +367,7 @@ export default function Friends() {
   );
 }
 
-// Tuile de stat dans l'en-tête (valeur en gros + libellé). `tone="green"`
-// pour « en ligne ».
+// Header stat tile (big value + label); tone="green" for "online".
 function Stat({ value, label, tone }: { value: number; label: string; tone?: 'green' }) {
   return (
     <div className="text-center">
@@ -394,7 +381,7 @@ function Stat({ value, label, tone }: { value: number; label: string; tone?: 'gr
   );
 }
 
-// Badges des comptes liés (identiques partout : 42 / Discord / Steam / PSN / Xbox)
+// Linked-account badges (42 / Discord / Steam / PSN / Xbox).
 function ProviderBadges({
   u,
 }: {
@@ -411,7 +398,7 @@ function ProviderBadges({
   );
 }
 
-// Libellé de provenance d'une suggestion (via quel réseau elle a été trouvée)
+// Suggestion provenance label (which network found it).
 function suggestionVia(via: Suggestion['via'], t: ReturnType<typeof useTranslation>['t']): string {
   if (via === 'steam') return t('friends.viaSteam');
   if (via === 'psn') return t('friends.viaPsn');

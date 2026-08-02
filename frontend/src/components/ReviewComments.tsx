@@ -7,9 +7,7 @@ import { ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import { onCommentReaction } from '../games/commentBus';
 import { apiFetch } from '../lib/api';
 
-// Thread de commentaires d'un avis (docs/reviews-api.md §2). Récursif jusqu'à
-// 3 niveaux, tombales Reddit (deleted → « [supprimé] », thread conservé),
-// like/dislike optimistes, réponses chargées à la demande.
+// Comment thread for a review (docs/reviews-api.md §2): recursive up to 3 levels, Reddit-style tombstones (deleted → "[deleted]"), optimistic like/dislike, replies loaded on demand.
 export interface CommentT {
   id: number;
   text: string;
@@ -22,7 +20,7 @@ export interface CommentT {
 
 const MAX_DEPTH = 3;
 
-// Petite flèche « répondre », même trait que les autres icônes filaires
+// Small "reply" arrow, same stroke as the other outline icons.
 function ReplyIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
   return (
     <svg
@@ -47,8 +45,8 @@ export default function ReviewComments({
 }: {
   reviewId: number;
   currentUserId: number | null;
-  version: number; // bumpé par le temps réel (comment:changed) → refetch racine
-  onChanged: () => void; // remonte le compteur 💬 de l'avis après ma mutation
+  version: number; // bumped by real-time (comment:changed) → root refetch
+  onChanged: () => void; // bumps the review's 💬 counter after my mutation
 }) {
   const { t } = useTranslation();
   const requireAuth = useRequireAuth();
@@ -144,27 +142,25 @@ function CommentNode({
   reviewId: number;
   depth: number;
   currentUserId: number | null;
-  reload: () => void; // refetch du niveau parent (après édition/suppression)
+  reload: () => void; // refetch the parent level (after edit/delete)
   onChanged: () => void;
 }) {
   const { t } = useTranslation();
   const requireAuth = useRequireAuth();
   const [c, setC] = useState(comment);
   const [seen, setSeen] = useState(comment);
-  const [replies, setReplies] = useState<CommentT[] | null>(null); // null = pas encore chargées
+  const [replies, setReplies] = useState<CommentT[] | null>(null); // null = not loaded yet
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(comment.text);
 
-  // Resync sans effet : quand le parent refetch, il passe un nouvel objet
-  // `comment` → on réaligne l'état local (pattern « ajuster pendant le rendu »).
+  // Resync without an effect: when the parent refetches it passes a new `comment` object → realign local state during render.
   if (comment !== seen) {
     setSeen(comment);
     setC(comment);
   }
 
-  // Temps réel des réactions de commentaire : le bus porte les compteurs
-  // absolus (docs §3), on pose la valeur serveur telle quelle pour cet id.
+  // Real-time comment reactions: the bus carries absolute counters (docs §3), applied as-is for this id.
   useEffect(
     () =>
       onCommentReaction(({ commentId, likes, dislikes }) => {
@@ -180,11 +176,10 @@ function CommentNode({
       .catch(() => {});
   }
 
-  // Optimiste AVANT l'await (même piège que les avis : l'event `comment:reaction`
-  // absolu arrive pendant l'await et se cumulerait avec le patch local).
+  // Optimistic BEFORE the await (same trap as reviews: the absolute `comment:reaction` event arrives during the await and would double-count).
   async function react(kind: 'like' | 'dislike') {
     if (c.deleted) return;
-    // Invité → redirection login (retour ici après connexion) ; sinon on agit.
+    // Guest → redirect to login (returns here after sign-in); otherwise act.
     if (!requireAuth()) return;
     const removing = c.myReaction === kind;
     setC((prev) => {
@@ -218,12 +213,12 @@ function CommentNode({
 
   async function remove() {
     await apiFetch(`/comments/${c.id}`, { method: 'DELETE' });
-    reload(); // avec réponses → tombale ; sans → disparaît (le parent refetch)
+    reload(); // with replies → tombstone; without → disappears (parent refetches)
     onChanged();
   }
 
   const mine = currentUserId != null && c.user?.id === currentUserId;
-  // Le bouton est visible même pour un invité : le clic déclenche requireAuth.
+  // The button is visible even for a guest: the click triggers requireAuth.
   const canReply = !c.deleted && depth < MAX_DEPTH;
 
   return (
@@ -349,7 +344,6 @@ function CommentNode({
             </div>
           )}
 
-          {/* Réponses : chargées à la demande, puis rendues récursivement */}
           {replies === null
             ? c._count.replies > 0 && (
                 <button
@@ -381,9 +375,7 @@ function CommentNode({
   );
 }
 
-// Champ de saisie partagé : nouveau commentaire racine (parentId absent) ou
-// réponse (parentId fourni). Racine comme réponse ciblent le même endpoint
-// POST /reviews/:reviewId/comments — la profondeur est validée côté serveur.
+// Shared input field: a new root comment (no parentId) or a reply (parentId given); both hit POST /reviews/:reviewId/comments, depth validated server-side.
 function Composer({
   reviewId,
   parentId,
@@ -411,7 +403,7 @@ function Composer({
       setText('');
       onDone();
     } catch {
-      /* l'appelant re-fetch de toute façon */
+      /* the caller re-fetches anyway */
     } finally {
       setSending(false);
     }

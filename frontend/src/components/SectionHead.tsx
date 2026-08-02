@@ -1,12 +1,9 @@
-// En-tête de section « brandé » (comme l'accueil) : petit eyebrow ambre en
-// majuscules au-dessus d'un titre en fonte display — remplace les petits labels
-// gris uniformes. Réutilisé sur le profil et ses blocs (avis, listes, succès).
+// Branded section header: amber uppercase eyebrow above a display-font title.
 export default function SectionHead({
   eyebrow,
   title,
   className = 'mb-4',
-  // Couleur de la pastille de l'eyebrow — ambre (accent) par défaut, mais on peut
-  // la passer en vert pour les modules « live » (ex. activité des amis).
+  // Eyebrow dot color — amber by default, green for "live" modules.
   dotClass = 'text-accent',
 }: {
   eyebrow?: string;

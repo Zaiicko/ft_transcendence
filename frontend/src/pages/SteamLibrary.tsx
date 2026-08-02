@@ -39,7 +39,7 @@ interface LibraryResponse {
   achievements?: AchievementSummary;
 }
 
-// Étoile pleine (ambre) : succès Steam débloqués
+// Filled amber star: unlocked Steam achievements.
 function StarIcon({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
@@ -55,8 +55,7 @@ function formatPlaytime(minutes: number): string {
   return t('steam.playHours', { count: Math.round(minutes / 60) });
 }
 
-// `embedded` : rendu dans la page globale « Mes bibliothèques » (onglets par
-// plateforme) — on masque alors le titre h1, l'onglet porte déjà le nom.
+// `embedded`: rendered inside the unified "My libraries" page (hides the h1).
 export default function SteamLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -64,21 +63,18 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
   const steamLinked = Boolean(user?.steamId);
 
   const [library, setLibrary] = useState<LibraryResponse | null>(null);
-  // Nothing to load when no Steam account is linked
   const [loading, setLoading] = useState(steamLinked);
   const [error, setError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
 
-  // Resynchronise les succès (force ?refresh=true) — utile après avoir joué de
-  // nouveaux jeux ou passé son profil en public. Le reste de la biblio ne bouge
-  // pas, on ne remplace que la réponse /steam/library.
+  // Resync achievements (?refresh=true) — after playing new games or making the profile public.
   async function refreshAchievements() {
     setSyncing(true);
     try {
       const lib = await apiFetch<LibraryResponse>('/steam/library?refresh=true');
       setLibrary(lib);
     } catch {
-      // silencieux : on garde l'affichage courant
+      // silent: keep the current view
     } finally {
       setSyncing(false);
     }
@@ -86,8 +82,7 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
 
   useEffect(() => {
     if (!steamLinked) return;
-    // setState only happens in the promise callbacks (async), never in the
-    // effect's synchronous body — see react-hooks/set-state-in-effect
+    // setState only in the async callbacks, never in the effect body (react-hooks/set-state-in-effect).
     apiFetch<LibraryResponse>('/steam/library')
       .then((lib) => {
         setLibrary(lib);
@@ -96,14 +91,11 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
         setError(err instanceof ApiError ? err.message : t('steam.loadError'));
       })
       .finally(() => setLoading(false));
-    // t n'est lu que dans le catch (message d'erreur) : le rajouter referait un
-    // fetch à chaque changement de langue, non voulu — on charge une seule fois.
+    // t is only read in the catch — adding it would re-fetch on every language change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steamLinked]);
 
-  // Coche "fait" directement depuis la bibliothèque : l'API renvoie déjà
-  // playedStatus par jeu, on patche l'état local au lieu de re-fetcher
-  // (la liste peut compter des centaines de jeux)
+  // "Done" toggle straight from the library: patch local state (playedStatus is already per-game) instead of re-fetching.
   async function togglePlayed(game: SteamLibraryGame) {
     const marked = game.playedStatus === 'PLAYED';
     await apiFetch(`/games/${game.id}/played`, { method: marked ? 'DELETE' : 'PUT' });
@@ -168,7 +160,6 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
         <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('steam.title')}</h1>
       )}
 
-      {/* Résumé des succès (synchronisé une fois, puis en cache) */}
       {library?.achievements && (
         <div className="card mb-10 flex flex-wrap items-center gap-x-8 gap-y-3 p-4">
           <p className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
@@ -262,8 +253,6 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                         </span>
                       </p>
                     )}
-                    {/* PLAYED est porté par le knob ambre ; seuls les autres
-                        statuts (playing/backlog) gardent leur étiquette */}
                     {game.playedStatus && game.playedStatus !== 'PLAYED' && (
                       <span className="self-start rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-300">
                         {t(game.playedStatus === 'PLAYING' ? 'steam.statusPlaying' : 'steam.statusBacklog')}
@@ -281,7 +270,6 @@ export default function SteamLibrary({ embedded = false }: { embedded?: boolean 
                             : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                         }`}
                       >
-                        {/* Coche cerclée filaire (trait 1.6) : "fait" */}
                         <svg
                           viewBox="0 0 24 24"
                           className="h-4 w-4 fill-none stroke-current"

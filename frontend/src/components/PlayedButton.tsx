@@ -5,7 +5,7 @@ import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import { apiFetch } from '../lib/api';
 
-// Compteur "l'ont terminé" + si le viewer l'a marqué « fait » (completedByMe).
+// "Completed it" counter + whether the viewer marked it "done" (completedByMe).
 type PlayedInfo = {
   count: number;
   completedCount: number;
@@ -13,23 +13,22 @@ type PlayedInfo = {
   completedByMe: boolean;
 };
 
-// Saisie de date en 3 champs indépendants (chaînes, éventuellement vides pour une
-// date partielle : « juste l'année », « année + mois »…).
+// Date input as 3 independent fields (strings, possibly empty for a partial date: "year only", "year + month"…).
 type DateInput = { year: string; month: string; day: string };
 
-// Date du jour au format YYYY-MM-DD (heure locale).
+// Today's date as YYYY-MM-DD (local time).
 function todayStr(): string {
   const d = new Date();
   const off = d.getTimezoneOffset();
   return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
 }
 
-// YYYY-MM-DD → ISO (midi local, pour ne pas décaler le jour selon le fuseau).
+// YYYY-MM-DD → ISO (local noon, so the day doesn't shift by timezone).
 function toIso(dateStr: string): string {
   return new Date(`${dateStr}T12:00:00`).toISOString();
 }
 
-// Découpe/recompose une date locale YYYY-MM-DD sans passer par le fuseau UTC.
+// Split/rebuild a local YYYY-MM-DD date without going through UTC.
 function parseYmd(s: string): { y: number; m: number; d: number } {
   const [y, m, d] = s.split('-').map(Number);
   return { y, m: m - 1, d };
@@ -37,19 +36,18 @@ function parseYmd(s: string): { y: number; m: number; d: number } {
 function ymd(y: number, m: number, d: number): string {
   return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 }
-// Dernier jour d'un mois (m1 = 1..12), gère les années bissextiles.
+// Last day of a month (m1 = 1..12), handles leap years.
 function lastDayOfMonth(y: number, m1: number): number {
   return new Date(y, m1, 0).getDate();
 }
 
-// Résout une saisie potentiellement PARTIELLE en une date envoyable.
-//  • année seule       → n'importe quand dans l'année
-//  • année + mois      → n'importe quand dans le mois
-//  • date complète     → ce jour précis
-// On valide par chevauchement de l'intervalle [lo, hi] avec [sortie, aujourd'hui],
-// et on cale la date stockée sur la sortie du jeu si la saisie (imprécise) tombe
-// avant — car IGDB stocke souvent un jour « placeholder » (1ᵉʳ janvier) quand seule
-// l'année est connue, donc bloquer au jour près serait faux.
+// Resolve a possibly PARTIAL input into a sendable date.
+//  • year only    → anytime in the year
+//  • year + month → anytime in the month
+//  • full date    → that exact day
+// Validated by overlap of [lo, hi] with [release, today]; the stored date is clamped
+// to the game's release when an imprecise input falls before it — IGDB often stores a
+// placeholder day (Jan 1st) when only the year is known, so day-precise blocking would be wrong.
 function resolveCompletion(
   df: DateInput,
   minStr: string | undefined,
@@ -64,7 +62,7 @@ function resolveCompletion(
   let exact: string | undefined;
 
   if (df.month === '') {
-    if (df.day !== '') return { valid: false }; // un jour sans mois n'a pas de sens
+    if (df.day !== '') return { valid: false }; // a day without a month makes no sense
     lo = `${df.year}-01-01`;
     hi = `${df.year}-12-31`;
   } else {
@@ -78,23 +76,21 @@ function resolveCompletion(
       const d = Number(df.day);
       const dt = new Date(y, m - 1, d);
       if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d)
-        return { valid: false }; // date inexistante (ex. 31/02)
+        return { valid: false }; // non-existent date (e.g. 31/02)
       lo = ymd(y, m - 1, d);
       hi = lo;
       exact = lo;
     }
   }
 
-  if (hi < release) return { valid: false }; // entièrement avant la sortie
-  if (lo > maxStr) return { valid: false }; // entièrement dans le futur
-  const send = lo < release ? release : lo; // cale sur la sortie si besoin
+  if (hi < release) return { valid: false }; // entirely before release
+  if (lo > maxStr) return { valid: false }; // entirely in the future
+  const send = lo < release ? release : lo; // clamp to release if needed
   if (send > maxStr) return { valid: false };
   return { valid: true, send, exact };
 }
 
-// Bouton unique « je l'ai fait » (coche cerclée) : marque le jeu comme terminé
-// (complétion manuelle → calendrier « Terminé » + feed). Marquer ouvre un
-// sélecteur de date (calendrier + saisie en cases) qu'on peut dater dans le passé.
+// Single "I did it" button (circled check): marks the game completed (manual completion → "Completed" calendar + feed); opens a date picker (calendar + boxed input) that can be backdated.
 export default function PlayedButton({
   gameId,
   releaseDate = null,
@@ -103,13 +99,11 @@ export default function PlayedButton({
   refreshKey = 0,
 }: {
   gameId: number;
-  // Date de sortie du jeu (ISO) : borne min du sélecteur — on ne peut pas avoir
-  // fini un jeu avant sa sortie. Absente (null) → pas de borne basse.
+  // Game release date (ISO): the picker's min bound — you can't finish a game before release. Absent (null) → no lower bound.
   releaseDate?: string | null;
   onDark?: boolean;
   showCount?: boolean;
-  // Incrémenté par le parent (ex : après avoir posté un avis) pour forcer un
-  // rechargement de l'état.
+  // Bumped by the parent (e.g. after posting a review) to force a state reload.
   refreshKey?: number;
 }) {
   const { t, i18n } = useTranslation();
@@ -117,7 +111,7 @@ export default function PlayedButton({
   const requireAuth = useRequireAuth();
   const [played, setPlayed] = useState<PlayedInfo | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
-  // Source de vérité : les 3 champs de date (vides à l'ouverture).
+  // Source of truth: the 3 date fields (empty on open).
   const [df, setDf] = useState<DateInput>({ year: '', month: '', day: '' });
   const [saving, setSaving] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -126,10 +120,9 @@ export default function PlayedButton({
   const minStr = releaseDate ? releaseDate.slice(0, 10) : undefined;
   const maxStr = todayStr();
   const resolved = resolveCompletion(df, minStr, maxStr);
-  // On ne signale l'erreur (bordure rouge) qu'une fois l'année complète — pas
-  // pendant qu'on tape encore les chiffres.
+  // Only flag the error (red border) once the year is complete — not while still typing.
   const showInvalid = df.year.length === 4 && !resolved.valid;
-  // Mois affiché par le calendrier : suit ce que l'user tape (année/mois).
+  // Month shown by the calendar: follows what the user types (year/month).
   const anchor = /^\d{4}$/.test(df.year)
     ? `${df.year}-${
         df.month && Number(df.month) >= 1 && Number(df.month) <= 12
@@ -138,7 +131,7 @@ export default function PlayedButton({
       }-01`
     : '';
 
-  // Rechargé quand la session change : `mine` dépend du cookie du viewer
+  // Reloaded when the session changes: `mine` depends on the viewer's cookie.
   useEffect(() => {
     let cancelled = false;
     apiFetch<PlayedInfo>(`/games/${gameId}/played`)
@@ -153,11 +146,7 @@ export default function PlayedButton({
 
   const done = played?.completedByMe ?? false;
 
-  // Ancre le popover sous le bouton. Rendu dans un PORTAIL (document.body) pour
-  // échapper aux ancêtres « transformés » (cartes du hub animées au scroll) qui,
-  // sinon, redéfinissent le référentiel du position:fixed → popover décalé et
-  // coincé sous les modules voisins. Repositionnement DIRECT sur le nœud (pas de
-  // setState) : suit le scroll sans le retard d'un re-render, donc c'est fluide.
+  // Anchor the popover under the button. Rendered in a PORTAL (document.body) to escape "transformed" ancestors (scroll-animated hub cards) that would otherwise redefine the position:fixed reference. Repositioned DIRECTLY on the node (no setState) so it follows scroll without a re-render lag.
   useLayoutEffect(() => {
     if (!pickerOpen) return;
     const place = () => {
@@ -178,8 +167,7 @@ export default function PlayedButton({
   }, [pickerOpen]);
 
   async function toggle() {
-    // Invité → redirection login ; déjà terminé → on retire directement ;
-    // sinon on ouvre le sélecteur de date (cases vides).
+    // Guest → redirect to login; already done → remove directly; otherwise open the date picker (empty fields).
     if (!requireAuth() || !played) return;
     if (done) {
       await apiFetch(`/games/${gameId}/completed`, { method: 'DELETE' });
@@ -191,7 +179,7 @@ export default function PlayedButton({
     }
   }
 
-  // Valide la date choisie et marque le jeu terminé à cette date.
+  // Validate the chosen date and mark the game completed on it.
   async function confirmDate() {
     if (!played || saving || !resolved.valid || !resolved.send) return;
     setSaving(true);
@@ -229,7 +217,6 @@ export default function PlayedButton({
         aria-pressed={done}
         className={knob(done, 'border-accent bg-accent text-zinc-950')}
       >
-        {/* Coche cerclée filaire (trait 1.6, style TiMN) : "fait" */}
         <svg
           viewBox="0 0 24 24"
           className="h-4 w-4 shrink-0 fill-none stroke-current"
@@ -257,7 +244,6 @@ export default function PlayedButton({
 
       {pickerOpen && createPortal(
         <>
-          {/* Fond cliquable pour fermer sans valider */}
           <div className="fixed inset-0 z-30" onClick={() => setPickerOpen(false)} aria-hidden="true" />
           <div
             ref={popRef}
@@ -279,9 +265,6 @@ export default function PlayedButton({
               }}
             />
 
-            {/* Saisie manuelle par cases — ordre selon la langue (JJ/MM/AAAA en
-                FR, MM/JJ/AAAA en US, AAAA/MM/JJ en JA/ZH/KO…). Cases vides = date
-                partielle acceptée (ex. juste l'année pour un vieux jeu). */}
             <div className="mt-3">
               <span className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
                 {t('game.dateTypeLabel')}
@@ -315,26 +298,22 @@ export default function PlayedButton({
   );
 }
 
-// Premier jour de la semaine selon la locale (0=dimanche … 6=samedi), via
-// l'API Intl quand dispo (FR/UE=lundi, US=dimanche), lundi par défaut sinon.
+// First day of week per locale (0=Sunday … 6=Saturday), via the Intl API when available (EU=Monday, US=Sunday), Monday by default otherwise.
 function weekStartFor(lang: string): number {
   try {
     const loc = new Intl.Locale(lang) as Intl.Locale & {
       weekInfo?: { firstDay: number };
       getWeekInfo?: () => { firstDay: number };
     };
-    const fd = (loc.weekInfo ?? loc.getWeekInfo?.())?.firstDay; // 1=lundi … 7=dimanche
-    if (fd) return fd % 7; // 7→0 (dimanche), 1→1 (lundi) …
+    const fd = (loc.weekInfo ?? loc.getWeekInfo?.())?.firstDay; // 1=Monday … 7=Sunday
+    if (fd) return fd % 7; // 7→0 (Sunday), 1→1 (Monday) …
   } catch {
-    /* Intl.Locale.weekInfo non supporté → défaut lundi */
+    /* Intl.Locale.weekInfo unsupported → default Monday */
   }
   return 1;
 }
 
-// Calendrier mensuel maison (remplace l'<input type="date"> natif, incohérent
-// d'un navigateur à l'autre). Grille 6×7, navigation par mois, jour sélectionné
-// en ambre, « aujourd'hui » cerclé, jours hors [sortie, aujourd'hui] désactivés.
-// `view` ancre le mois affiché (suit la saisie), `selected` surligne un jour.
+// In-house monthly calendar (replaces the native <input type="date">, inconsistent across browsers). 6×7 grid, month navigation, selected day in amber, "today" circled, days outside [release, today] disabled. `view` anchors the shown month (follows input), `selected` highlights a day.
 function Calendar({
   selected,
   view,
@@ -343,10 +322,10 @@ function Calendar({
   lang,
   onSelect,
 }: {
-  selected: string; // YYYY-MM-DD surligné ('' = aucun)
-  view: string; // YYYY-MM-DD ancrant le mois affiché ('' = aujourd'hui)
-  min?: string; // YYYY-MM-DD min cliquable (sortie du jeu)
-  max: string; // YYYY-MM-DD max cliquable (aujourd'hui)
+  selected: string; // highlighted YYYY-MM-DD ('' = none)
+  view: string; // YYYY-MM-DD anchoring the shown month ('' = today)
+  min?: string; // min clickable YYYY-MM-DD (game release)
+  max: string; // max clickable YYYY-MM-DD (today)
   lang: string;
   onSelect: (d: string) => void;
 }) {
@@ -354,8 +333,7 @@ function Calendar({
   const anchorOf = (s: string) => (/^\d{4}-\d{2}-\d{2}$/.test(s) ? parseYmd(s) : null);
   const init = anchorOf(view) ?? anchorOf(max) ?? { y: new Date().getFullYear(), m: new Date().getMonth(), d: 1 };
   const [vs, setVs] = useState({ y: init.y, m: init.m });
-  // Suit l'ancre externe (l'user tape une année/un mois) sans casser la
-  // navigation aux flèches (view inchangé → l'effet ne se redéclenche pas).
+  // Follows the external anchor (user types a year/month) without breaking arrow navigation (unchanged view → effect doesn't re-fire).
   useEffect(() => {
     const a = anchorOf(view);
     if (a) setVs({ y: a.y, m: a.m });
@@ -448,9 +426,7 @@ function Calendar({
 
 type DatePart = { type: 'year' | 'month' | 'day' } | { type: 'literal'; value: string };
 
-// Ordre + séparateurs de date de la locale, via Intl : séquence de « parts »
-// (champs + littéraux) telle que le pays l'écrit — JJ/MM/AAAA en FR, MM/JJ/AAAA
-// en US, AAAA/MM/JJ en JA… On rend une case par champ, un séparateur par littéral.
+// Locale date order + separators, via Intl: the sequence of "parts" (fields + literals) as the country writes it — DD/MM/YYYY in FR, MM/DD/YYYY in US, YYYY/MM/DD in JA… One box per field, one separator per literal.
 function localeDateParts(lang: string): DatePart[] {
   try {
     const parts = new Intl.DateTimeFormat(lang, {
@@ -465,7 +441,7 @@ function localeDateParts(lang: string): DatePart[] {
     );
     if (['year', 'month', 'day'].every((tp) => seq.some((s) => s.type === tp))) return seq;
   } catch {
-    /* Intl indisponible → repli ISO */
+    /* Intl unavailable → ISO fallback */
   }
   return [
     { type: 'year' },
@@ -476,9 +452,7 @@ function localeDateParts(lang: string): DatePart[] {
   ];
 }
 
-// Nb de jours d'un mois pour le clamp de saisie. Année inconnue → 2000
-// (bissextile) pour rester permissif sur le 29/02 ; la vraie validation (date
-// réelle) est faite plus haut par resolveCompletion.
+// Days in a month for input clamping. Unknown year → 2000 (leap) to stay permissive on Feb 29; the real validation is done above by resolveCompletion.
 function daysInMonthOf(year: string, month: string): number {
   const m = Number(month);
   if (!Number.isInteger(m) || m < 1 || m > 12) return 31;
@@ -486,11 +460,7 @@ function daysInMonthOf(year: string, month: string): number {
   return new Date(y, m, 0).getDate();
 }
 
-// Saisie de date en cases séparées, ordonnées selon la langue. Composant contrôlé
-// (pas d'état interne) : n'accepte que des chiffres, borne les valeurs (mois ≤ 12,
-// jour ≤ nb de jours du mois → taper 60 en jour donne 31/30/28…), auto-avance à la
-// case suivante une fois pleine, et Backspace sur une case vide revient à la
-// précédente.
+// Date input in separate boxes, ordered by language. Controlled component (no internal state): digits only, clamps values (month ≤ 12, day ≤ days in the month → typing 60 for day gives 31/30/28…), auto-advances to the next box when full, and Backspace on an empty box returns to the previous one.
 function DateFields({
   value,
   lang,
@@ -525,7 +495,7 @@ function DateFields({
     let digits = raw.replace(/\D/g, '').slice(0, maxLen);
     const next: DateInput = { ...value, [type]: digits };
 
-    // Bornes : mois ≤ 12, jour ≤ nb de jours du mois courant.
+    // Bounds: month ≤ 12, day ≤ days in the current month.
     if (digits !== '') {
       const n = Number(digits);
       if (type === 'month' && n > 12) digits = '12';
@@ -535,15 +505,14 @@ function DateFields({
       }
       next[type] = digits;
     }
-    // Changer le mois peut invalider un jour déjà saisi (ex. 31 → février).
+    // Changing the month can invalidate an already-typed day (e.g. 31 → February).
     if (type === 'month' && next.day !== '') {
       const maxD = daysInMonthOf(next.year, next.month);
       if (Number(next.day) > maxD) next.day = String(maxD);
     }
     onChange(next);
 
-    // Auto-avance : case pleine, OU chiffre qui ne peut plus rien accueillir
-    // (mois > 1, jour > 3 → forcément à un chiffre).
+    // Auto-advance: box full, OR a digit that can't take more (month > 1, day > 3 → necessarily one digit).
     const full =
       digits.length === maxLen ||
       (type === 'month' && digits.length === 1 && Number(digits) > 1) ||

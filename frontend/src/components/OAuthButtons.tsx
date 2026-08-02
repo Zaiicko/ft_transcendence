@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
-// Connexion via fournisseurs OAuth/OpenID : boutons logo (sans texte). Fond
-// aux couleurs de chaque marque pour que le logo contraste en jour comme en
-// nuit. Partagé par Login et Signup.
+// OAuth/OpenID provider buttons (logo only), each on its brand color for day/night contrast.
 const BASE =
   'flex h-11 flex-1 items-center justify-center rounded-full border transition hover:brightness-110';
 
@@ -11,9 +9,7 @@ export default function OAuthButtons() {
   const { t } = useTranslation();
   const location = useLocation();
 
-  // Le flux OAuth 42/Google est une redirection pleine page : on mémorise la
-  // page d'origine (transmise via location.state.from) dans sessionStorage, que
-  // LegacyProfileRedirect relira au retour pour un compte existant.
+  // OAuth is a full-page redirect: remember the origin page in sessionStorage for the return.
   const rememberOrigin = () => {
     const from = (location.state as { from?: string } | null)?.from;
     const dest = from && !['/login', '/signup'].includes(from) ? from : '/';

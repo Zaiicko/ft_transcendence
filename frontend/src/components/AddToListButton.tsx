@@ -5,12 +5,10 @@ import { apiFetch, ApiError } from '../lib/api';
 import type { GameListSummary } from '../lib/types';
 
 const MAX_LISTS = 6;
-// Doit rester aligné avec MAX_GAMES_PER_LIST du backend (lists.service)
+// Must stay in sync with MAX_GAMES_PER_LIST on the backend (lists.service).
 const MAX_GAMES = 30;
 
-// Bouton "signet" sur la fiche jeu : ouvre un menu des listes du viewer. On coche
-// / décoche les listes voulues (sans appel réseau), puis "Valider" applique tous
-// les changements d'un coup et referme le menu. Création rapide d'une liste en bas.
+// "Bookmark" button on the game page: opens a menu of the viewer's lists; toggle lists (no network), then "Apply" commits all changes at once. Quick list creation at the bottom.
 export default function AddToListButton({
   gameId,
   onDark = false,
@@ -22,22 +20,17 @@ export default function AddToListButton({
   const requireAuth = useRequireAuth();
   const [open, setOpen] = useState(false);
   const [lists, setLists] = useState<GameListSummary[] | null>(null);
-  // Changements en attente : listId → présence voulue. Appliqués seulement au
-  // clic "Valider". Vide = rien de modifié.
+  // Pending changes: listId → desired membership, applied only on "Apply"; empty = nothing changed.
   const [pending, setPending] = useState<Record<number, boolean>>({});
   const [saving, setSaving] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
-  // Position calculée (en `fixed`) du menu quand il est posé sur la bannière
-  // (onDark) : celle-ci a `overflow-hidden`, donc un menu en `absolute` qui
-  // s'ouvre vers le haut se fait rogner dès qu'il y a beaucoup de listes. En
-  // `fixed`, ancré au bouton, il échappe au rognage et sa hauteur est bornée à
-  // l'espace réellement disponible au-dessus (il défile plutôt que d'être coupé).
+  // Computed `fixed` position of the menu when it sits on the banner (onDark), which has `overflow-hidden`: fixed anchoring to the button escapes clipping and bounds the height to the space above.
   const [coords, setCoords] = useState<{ left: number; bottom: number; maxHeight: number } | null>(
     null,
   );
 
-  // Fermeture au clic extérieur / touche Échap (abandonne les changements)
+  // Close on outside click / Esc (discards changes).
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
@@ -54,8 +47,7 @@ export default function AddToListButton({
     };
   }, [open]);
 
-  // (Re)charge les listes + l'appartenance de ce jeu à l'ouverture, et repart
-  // d'un état "aucun changement en attente".
+  // (Re)load the lists + this game's membership on open, resetting to "no pending changes".
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
@@ -73,8 +65,7 @@ export default function AddToListButton({
     };
   }, [open, gameId]);
 
-  // Calcule/recalcule la position du menu quand il est sur la bannière. Recalé
-  // au resize et au scroll (capture) pour rester collé au bouton.
+  // Compute the menu position when on the banner; recomputed on resize and scroll (capture) to stay glued to the button.
   useLayoutEffect(() => {
     if (!open || !onDark) return;
     function compute() {
@@ -84,11 +75,11 @@ export default function AddToListButton({
       const GAP = 8;
       const width = 256; // w-64
       setCoords({
-        // aligné à gauche du bouton, borné pour ne pas déborder de l'écran
+        // left-aligned to the button, bounded to stay on screen
         left: Math.max(8, Math.min(r.left, window.innerWidth - width - 8)),
-        // posé au-dessus du bouton
+        // placed above the button
         bottom: window.innerHeight - r.top + GAP,
-        // jamais plus haut que l'espace libre au-dessus → défilement
+        // never taller than the free space above → scrolls
         maxHeight: Math.max(120, r.top - GAP - 8),
       });
     }
@@ -105,13 +96,10 @@ export default function AddToListButton({
   const togglePending = (list: GameListSummary) =>
     setPending((p) => ({ ...p, [list.id]: !checked(list) }));
 
-  // On masque une liste PLEINE (30 jeux) qui ne contient pas ce jeu : on ne peut
-  // pas l'y ajouter. Une liste pleine qui le contient déjà reste visible (pour
-  // pouvoir l'en retirer).
+  // Hide a FULL list (30 games) that doesn't contain this game (can't add); a full list already containing it stays visible (to remove).
   const visibleLists = (lists ?? []).filter((l) => l.contains || l.gameCount < MAX_GAMES);
 
-  // Applique tous les changements (seulement ceux qui diffèrent de l'état
-  // serveur), puis referme.
+  // Apply all changes (only those differing from the server state), then close.
   async function validate() {
     if (!lists) return;
     setSaving(true);
@@ -131,7 +119,7 @@ export default function AddToListButton({
       setOpen(false);
       setPending({});
     } catch {
-      /* silencieux : l'état reste tel quel */
+      /* silent: state stays as-is */
     } finally {
       setSaving(false);
     }
@@ -152,7 +140,6 @@ export default function AddToListButton({
             : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
         }`}
       >
-        {/* Signet filaire (trait 1.6, style TiMN) */}
         <svg
           viewBox="0 0 24 24"
           className="h-4 w-4 shrink-0 fill-none stroke-current"
@@ -166,10 +153,7 @@ export default function AddToListButton({
       </button>
 
       {open && (!onDark || coords) && (
-        // Sur la bannière (onDark), le conteneur parent a `overflow-hidden` : on
-        // sort le menu du flux avec un positionnement `fixed` (ancré au bouton)
-        // pour qu'il ne soit pas rogné, avec une hauteur bornée qui le fait
-        // défiler. Hors bannière, simple menu déroulant en dessous.
+        // On the banner (onDark), the parent has `overflow-hidden`: the menu uses `fixed` positioning (anchored to the button) so it isn't clipped, with a bounded scrollable height. Off the banner, a plain dropdown below.
         <div
           style={
             onDark && coords
@@ -228,7 +212,6 @@ export default function AddToListButton({
             )}
           </div>
 
-          {/* Création rapide — masquée une fois la limite de listes atteinte */}
           {lists && lists.length < MAX_LISTS && (
             <QuickCreate
               gameId={gameId}
@@ -236,7 +219,6 @@ export default function AddToListButton({
             />
           )}
 
-          {/* Barre "Valider" : applique les cases cochées puis ferme */}
           {visibleLists.length > 0 && (
             <div className="shrink-0 border-t border-zinc-200 p-2 dark:border-zinc-700">
               <button
@@ -255,7 +237,7 @@ export default function AddToListButton({
   );
 }
 
-// Crée une liste et y ajoute directement le jeu courant
+// Create a list and add the current game to it directly.
 function QuickCreate({
   gameId,
   onCreated,

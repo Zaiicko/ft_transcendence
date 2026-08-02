@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// Tour guidé « à quoi sert chaque bouton » : un projecteur (spotlight) découpe
-// un trou sombre autour du VRAI bouton de la nav (ciblé par son [data-tour]) et
-// une bulle explicative se place à côté. Suivant / Précédent / Passer + un
-// compteur d'étapes. Les étapes dont la cible est absente ou masquée (ex. liens
-// de nav cachés sur mobile) sont automatiquement ignorées.
+// Guided tour: a spotlight cuts a dark hole around the real nav button ([data-tour]) with an explanatory bubble; absent/hidden steps are skipped.
 
-// Ordre des étapes = ordre de lecture de la barre. `key` == valeur data-tour.
+// Step order = reading order of the bar; `key` == data-tour value.
 const STEP_KEYS = [
   'home',
   'chat',
@@ -24,28 +20,25 @@ const STEP_KEYS = [
 
 type Rect = { top: number; left: number; width: number; height: number };
 
-const PAD = 8; // marge du trou autour de l'élément
-const GAP = 12; // écart bulle ↔ élément
+const PAD = 8; // hole margin around the element
+const GAP = 12; // gap bubble ↔ element
 
 function targetOf(key: string): HTMLElement | null {
   const el = document.querySelector<HTMLElement>(`[data-tour="${key}"]`);
   if (!el) return null;
   const r = el.getBoundingClientRect();
-  // Élément présent mais masqué (display:none → width/height 0) : on l'ignore.
   return r.width > 0 && r.height > 0 ? el : null;
 }
 
 export default function Tutorial({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
-  // Étapes réellement présentes à l'écran, figées à l'ouverture du tour.
   const [steps, setSteps] = useState<string[]>([]);
   const [i, setI] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const tipRef = useRef<HTMLDivElement>(null);
   const [tip, setTip] = useState<{ top: number; left: number; place: 'top' | 'bottom' } | null>(null);
 
-  // À l'ouverture : on liste les étapes dont la cible est visible et on repart
-  // de la première.
+  // On open: list the steps whose target is visible and start from the first.
   useEffect(() => {
     if (!open) return;
     setSteps(STEP_KEYS.filter((k) => targetOf(k)));
@@ -54,7 +47,6 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
 
   const key = steps[i];
 
-  // Mesure la cible de l'étape courante (et recalcule au resize/scroll).
   const measure = useCallback(() => {
     if (!key) return;
     const el = targetOf(key);
@@ -77,8 +69,7 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
     };
   }, [open, measure]);
 
-  // Positionne la bulle sous la cible si la place suffit, sinon au-dessus, en la
-  // gardant dans le viewport. Recalculé après le rendu (hauteur de bulle connue).
+  // Place the bubble below the target if there's room, else above, kept within the viewport.
   useLayoutEffect(() => {
     if (!rect || !tipRef.current) {
       setTip(null);
@@ -110,7 +101,6 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
 
   const back = useCallback(() => setI((n) => Math.max(0, n - 1)), []);
 
-  // Échap ferme le tour (cohérent avec le reste de l'app).
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -138,8 +128,6 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
       {/* Capte les clics pour bloquer l'UI en dessous (on avance via les boutons) */}
       <div className="absolute inset-0" onClick={(e) => e.stopPropagation()} />
 
-      {/* Projecteur : un trou clair sur la cible, tout le reste assombri via une
-          énorme ombre portée. Sans le trou (cible perdue) : voile plein écran. */}
       {hole ? (
         <div
           className="pointer-events-none absolute rounded-xl ring-2 ring-accent transition-all duration-200"
@@ -176,7 +164,6 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
         </p>
 
         <div className="mt-4 flex flex-col gap-3">
-          {/* Points de progression (le point actif est allongé) */}
           <div className="flex flex-wrap items-center justify-center gap-1.5">
             {steps.map((s, idx) => (
               <span

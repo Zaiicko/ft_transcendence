@@ -40,7 +40,7 @@ interface LibraryResponse {
   syncedAt: string | null;
 }
 
-// Petit blason "G" du Gamerscore Xbox (pendant du trophée PSN).
+// Small Xbox Gamerscore "G" crest (mirror of the PSN trophy).
 function GamerscoreIcon({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
@@ -56,8 +56,7 @@ function GamerscoreIcon({ className = '' }: { className?: string }) {
   );
 }
 
-// `embedded` : rendu dans la page globale « Mes bibliothèques » — on masque le
-// titre h1 (l'onglet porte déjà le nom de la plateforme). Miroir de PsnLibrary.
+// `embedded`: rendered inside the unified "My libraries" page (hides the h1); mirror of PsnLibrary.
 export default function XboxLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -70,27 +69,24 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
 
   useEffect(() => {
     if (!xboxLinked) return;
-    // Chargement par défaut : sert le cache serveur (instantané). La resync
-    // (lente, appel OpenXBL) se déclenche au bouton via ?refresh=true.
+    // Default load: serves the server cache (instant); resync (slow OpenXBL) is triggered via ?refresh=true.
     apiFetch<LibraryResponse>('/xbox/library')
       .then(setLibrary)
       .catch((err: unknown) => {
         setError(err instanceof ApiError ? err.message : t('xbox.loadError'));
       })
       .finally(() => setLoading(false));
-    // t n'est lu que dans le catch : le rajouter referait un fetch à chaque
-    // changement de langue — on charge une seule fois.
+    // t is only read in the catch — adding it would re-fetch on every language change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xboxLinked]);
 
-  // Resynchronise la bibliothèque depuis Xbox (force ?refresh=true) — utile
-  // après avoir joué de nouveaux jeux ou passé son profil en public.
+  // Resync the library from Xbox (?refresh=true) — after playing new games or making the profile public.
   async function refreshLibrary() {
     setSyncing(true);
     try {
       setLibrary(await apiFetch<LibraryResponse>('/xbox/library?refresh=true'));
     } catch {
-      // silencieux : on garde l'affichage courant
+      // silent: keep the current view
     } finally {
       setSyncing(false);
     }
@@ -177,7 +173,6 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
         </p>
       )}
 
-      {/* Résumé : Gamerscore total + nombre de jeux + jeux à 100 % */}
       {summary && (
         <div className="card mb-10 flex flex-wrap items-center gap-x-8 gap-y-3 p-4">
           <div>
@@ -232,7 +227,6 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
                     <p className="p-2 pb-0 text-sm font-medium leading-tight">{game.title}</p>
                   </Link>
                   <div className="flex flex-1 flex-col gap-1 p-2 pt-1">
-                    {/* Progression de succès : nb obtenus + % */}
                     <p className="mt-auto text-xs text-zinc-400">
                       {t('xbox.achievementProgress', {
                         earned: game.achievements.earned,

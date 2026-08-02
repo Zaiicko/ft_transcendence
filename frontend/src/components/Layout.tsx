@@ -12,7 +12,7 @@ import { apiFetch } from '../lib/api';
 import SearchBar from './SearchBar';
 import Tutorial from './Tutorial';
 
-// Icônes filaires fines (trait 1.6, style TiMN) — remplacent les emojis
+// Thin outline icons (1.6 stroke) — replace the emojis.
 function Icon({ children, className = 'h-4 w-4' }: { children: ReactNode; className?: string }) {
   return (
     <svg
@@ -83,8 +83,7 @@ const logoutIcon = (
   </>
 );
 
-// Liens de nav façon TiMN : gris discret, la page active porte un fin
-// soulignement ambre sous la barre
+// Nav links: subtle grey, the active page gets a thin amber underline.
 const navLink = ({ isActive }: { isActive: boolean }) =>
   `relative transition ${
     isActive
@@ -103,35 +102,29 @@ export default function Layout() {
   const [notifPrefsOpen, setNotifPrefsOpen] = useState(false);
   const [languagePickerOpen, setLanguagePickerOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
-  // Empêche le tuto de se relancer tout seul dans la même session après qu'on
-  // l'a fermé (le champ tutorialSeen ne passe true qu'après le POST).
+  // Prevents the tour from auto-restarting in the same session after it's closed (tutorialSeen only turns true after the POST).
   const tourAutoStarted = useRef(false);
 
-  // Referme le menu burger à chaque changement de page — comparé pendant le
-  // rendu plutôt que dans un effet (setState synchrone dans un effet
-  // déclenche un rendu en cascade, voir react-hooks/set-state-in-effect)
+  // Close the burger menu on each page change — compared during render, not in an effect (react-hooks/set-state-in-effect).
   const [lastPathname, setLastPathname] = useState(location.pathname);
   if (location.pathname !== lastPathname) {
     setLastPathname(location.pathname);
     setNavOpen(false);
   }
 
-  // Synchronise la classe .dark de <html> (et localStorage) avec l'état React
+  // Sync <html>'s .dark class (and localStorage) with React state.
   useEffect(() => {
     applyMode(mode);
   }, [mode]);
 
-  // Garde d'onboarding global : un nouvel inscrit qui n'a pas terminé (ni
-  // explicitement passé) le wizard est ramené sur /welcome, y compris à la
-  // réouverture du site sur une page publique (accueil…) — ProtectedRoute ne
-  // couvre que les pages protégées.
+  // Global onboarding guard: a new user who hasn't finished (or skipped) the wizard is sent to /welcome, even on public pages (ProtectedRoute only covers protected ones).
   useEffect(() => {
     if (!loading && user && !user.onboarded && location.pathname !== '/welcome') {
       navigate('/welcome', { replace: true });
     }
   }, [loading, user, location.pathname, navigate]);
 
-  // Échap ferme tout menu / fenêtre ouvert (WCAG 2.1.2 — pas de piège clavier).
+  // Esc closes any open menu/window (WCAG 2.1.2 — no keyboard trap).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
@@ -149,9 +142,7 @@ export default function Layout() {
     navigate('/');
   }
 
-  // Lancement automatique du tour guidé : une fois l'onboarding terminé et tant
-  // que le tuto n'a pas été vu. Une seule fois par session (garde tourAutoStarted),
-  // pas sur le wizard lui-même.
+  // Auto-start the guided tour once onboarding is done and it hasn't been seen; once per session (tourAutoStarted guard), not on the wizard itself.
   useEffect(() => {
     if (loading || !user) return;
     if (user.onboarded && !user.tutorialSeen && !tourAutoStarted.current) {
@@ -160,21 +151,20 @@ export default function Layout() {
     }
   }, [loading, user]);
 
-  // Fin/passage du tour : pose tutorialSeen côté back (idempotent) puis referme.
+  // Finish/skip the tour: set tutorialSeen server-side (idempotent) then close.
   async function handleTutorialClose() {
     setTourOpen(false);
     try {
       await apiFetch('/users/me/tutorial-seen', { method: 'POST' });
       await refreshUser();
     } catch {
-      // Silencieux : au pire le tuto se reproposera plus tard.
+      // Silent: at worst the tour is offered again later.
     }
   }
 
   return (
     <div className="flex min-h-screen flex-col text-zinc-900 dark:text-zinc-100">
-      {/* Skip link (WCAG 2.4.1) : 1er élément tabulable, masqué jusqu'au focus,
-          saute la navigation pour aller droit au contenu. */}
+      {/* Skip link (WCAG 2.4.1): first tabbable element, hidden until focus, jumps past the nav to the content. */}
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:font-medium focus:text-zinc-950"
@@ -183,8 +173,7 @@ export default function Layout() {
       </a>
       <header className="app-header sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/90 px-4 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/90">
         <nav className="mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-3 sm:gap-6">
-          {/* Burger : liens de nav sur petit/moyen écran (la barre inline est
-              masquée < lg — trop chargée en dessous : 5 liens + recherche + icônes) */}
+          {/* Burger: nav links on small/medium screens (the inline bar is hidden < lg). */}
           <div className="relative shrink-0 lg:hidden">
             <button
               type="button"
@@ -265,8 +254,6 @@ export default function Layout() {
               beta
             </span>
           </Link>
-          {/* Le nom du site (à gauche) renvoie déjà à l'accueil — pas de lien
-              "Home" redondant */}
           <div className="hidden items-center gap-7 text-sm lg:flex">
             <NavLink data-tour="catalog" to="/games" className={navLink}>
               {t('nav.catalog')}
@@ -282,7 +269,7 @@ export default function Layout() {
                 <NavLink data-tour="friends" to="/friends" className={navLink}>
                   {t('nav.friends')}
                 </NavLink>
-                <NavLink data-tour="library" to="/steam" className={navLink}>
+                <NavLink data-tour="library" to="/library" className={navLink}>
                   {t('nav.library')}
                 </NavLink>
               </>
@@ -426,8 +413,7 @@ export default function Layout() {
       </header>
 
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] flex-1 px-6 py-8 focus:outline-none">
-        {/* Fallback pendant le téléchargement d'une page lazy (voir App.tsx) :
-            la nav reste affichée, seul le contenu montre le spinner. */}
+        {/* Fallback while a lazy page loads (see App.tsx): nav stays, only the content shows the spinner. */}
         <Suspense
           fallback={
             <div className="flex min-h-[40vh] items-center justify-center" aria-busy="true">
@@ -462,7 +448,6 @@ export default function Layout() {
         </div>
       </footer>
 
-      {/* Fenêtre de préférences de notifications (ouverte depuis le menu rouage) */}
       {notifPrefsOpen && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-zinc-950/40 p-4 pt-20 backdrop-blur-sm"
@@ -496,7 +481,6 @@ export default function Layout() {
         </div>
       )}
 
-      {/* Fenêtre du sélecteur de langue (ouverte depuis le menu rouage) */}
       {languagePickerOpen && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-zinc-950/40 p-4 pt-20 backdrop-blur-sm"
@@ -529,12 +513,10 @@ export default function Layout() {
         </div>
       )}
 
-      {/* Messagerie flottante (bas-droite) — montée uniquement si connecté :
-          sinon l'effet de ChatWidget appelle /chat/conversations → 401. */}
+      {/* Floating chat (bottom-right) — mounted only when signed in (else ChatWidget calls /chat/conversations → 401). */}
       {user && <ChatWidget />}
 
-      {/* Tour guidé « à quoi sert chaque bouton » (auto après onboarding, ou
-          relancé depuis le menu réglages). */}
+      {/* Guided tour (auto after onboarding, or relaunched from settings). */}
       {user && <Tutorial open={tourOpen} onClose={handleTutorialClose} />}
     </div>
   );

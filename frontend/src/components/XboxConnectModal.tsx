@@ -4,10 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { apiFetch, ApiError } from '../lib/api';
 import Modal from './Modal';
 
-// Modale de rattachement Xbox, modèle "juste le gamertag" (comme PSN) :
-// l'utilisateur tape son gamertag public, le backend le résout en XUID via sa
-// clé service OpenXBL. Aucun jeton à coller. Le profil Xbox doit être public
-// pour être trouvé. Au succès on affiche le gamertag puis on rafraîchit.
+// Xbox link modal ("just the gamertag" model): user types their public gamertag, resolved to a XUID via the backend's OpenXBL key.
 export default function XboxConnectModal({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
   const { refreshUser } = useAuth();
@@ -74,7 +71,6 @@ export default function XboxConnectModal({ onClose }: { onClose: () => void }) {
             />
           </div>
 
-          {/* Rappel : le profil doit être public pour être importé */}
           <p className="flex items-start gap-2 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-500 dark:bg-zinc-800/60 dark:text-zinc-400">
             <svg
               viewBox="0 0 24 24"

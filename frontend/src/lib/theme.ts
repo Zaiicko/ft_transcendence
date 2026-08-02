@@ -1,8 +1,4 @@
-// Module couleur : mode jour/nuit + raccord "ambilight" avec l'image vedette.
-// Le fond de page reprend la couleur EXACTE des bords haut et bas du
-// screenshot (moyenne pixel par pixel de la première et de la dernière
-// ligne) ; index.css fabrique le dégradé qui prolonge l'image puis fond
-// vers crème (jour) ou noir (nuit).
+// Color module: day/night mode + "ambilight" match, reusing the screenshot's top/bottom edge color as the page background.
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -22,8 +18,7 @@ export function applyMode(mode: ThemeMode): void {
 export interface EdgeColors {
   top: string;
   bottom: string;
-  // luminance du bord haut : pilote la couleur de texte du header (un texte
-  // sombre sur un bord sombre disparaîtrait, et inversement)
+  // Top-edge luminance drives the header text color (dark-on-dark would vanish).
   topIsDark: boolean;
 }
 
@@ -40,9 +35,7 @@ export function applyEdgeColors(colors: EdgeColors | null): void {
   root.classList.toggle('header-on-light', colors?.topIsDark === false);
 }
 
-// L'image est re-servie par nginx en même origine (cf. /igdb/) : IGDB
-// n'envoie pas de CORS et un canvas cross-origin est illisible ("tainted").
-// Réduite en 32×32, la ligne 0 et la ligne 31 sont moyennées en RGB.
+// Re-served same-origin by nginx (/igdb/) since IGDB sends no CORS; reduced to 32×32, rows 0 and 31 averaged in RGB.
 export async function extractEdgeColors(imageUrl: string): Promise<EdgeColors | null> {
   const url = imageUrl.replace('https://images.igdb.com', '/igdb');
   const img = await loadImage(url).catch(() => null);
@@ -70,9 +63,7 @@ export async function extractEdgeColors(imageUrl: string): Promise<EdgeColors | 
     return [Math.round(r / SIZE), Math.round(g / SIZE), Math.round(b / SIZE)];
   };
 
-  // Marron/brun = orange sombre et terne (teinte 15-50°, saturé mais pas
-  // lumineux) — moche en fond de page : on avance ligne par ligne vers
-  // l'intérieur de l'image jusqu'à une couleur plus franche
+  // Brown = dull dark orange (ugly as a background) → step inward row by row until a clearer color.
   const isBrown = ([r, g, b]: [number, number, number]): boolean => {
     const [h, s, l] = rgbToHsl(r, g, b);
     return h >= 15 && h <= 50 && s >= 0.12 && l >= 0.08 && l <= 0.5;
@@ -83,13 +74,12 @@ export async function extractEdgeColors(imageUrl: string): Promise<EdgeColors | 
       const row = averageRow(start + k * step);
       if (!isBrown(row)) return row;
     }
-    // toute la moitié est brune : c'est la couleur honnête de l'image
     return averageRow(start);
   };
 
   const top = pickEdge(0, 1);
   const bottom = pickEdge(SIZE - 1, -1);
-  // Luminance perceptuelle (Rec. 709) — l'œil voit le vert bien plus clair
+  // Perceptual luminance (Rec. 709) — the eye sees green much brighter.
   const luminance = 0.2126 * top[0] + 0.7152 * top[1] + 0.0722 * top[2];
   return {
     top: `rgb(${top[0]} ${top[1]} ${top[2]})`,
@@ -115,9 +105,7 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
   return [h, s, l];
 }
 
-// Dimensions RÉELLES d'une image : le token t_1080p d'IGDB n'agrandit jamais
-// une source plus petite (un screenshot N64 reste en 640×480) — seule la
-// taille naturelle après chargement fait foi
+// Real image dimensions: IGDB's t_1080p never upscales a smaller source, so natural size after load is authoritative.
 export async function imageSize(url: string): Promise<{ width: number; height: number } | null> {
   const img = await loadImage(url).catch(() => null);
   return img ? { width: img.naturalWidth, height: img.naturalHeight } : null;

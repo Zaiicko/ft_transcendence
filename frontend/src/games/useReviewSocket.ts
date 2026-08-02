@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
-// Temps réel des pages jeu ET studio (docs/reviews-api.md §3). Une page = une
-// room (`game:<id>` ou `company:<id>`). On rejoint au montage ET à chaque
-// `connect` (reconnexion auto). Les payloads de réaction portent les compteurs
-// à jour → setState ciblés, aucun re-fetch.
+// Real-time for game AND studio pages: one room per page, rejoined on mount and each reconnect.
 export interface ReviewSocketHandlers {
   onReviewCreated: (review: unknown) => void;
   onReviewUpdated: (reviewId: number) => void;
@@ -21,9 +18,7 @@ export interface ReviewSocketHandlers {
 
 export type ReviewTargetKind = 'game' | 'company';
 
-// "Latest ref" : la socket s'abonne une fois par (kind, id), mais appelle
-// toujours les handlers les plus frais — pas de ré-abonnement, pas de closure
-// périmée.
+// Latest-ref: subscribes once per (kind, id) but always calls the freshest handlers.
 export function useReviewSocket(
   kind: ReviewTargetKind,
   id: number,

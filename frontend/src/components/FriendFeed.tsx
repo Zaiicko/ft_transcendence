@@ -18,21 +18,21 @@ const PAGE = 12;
 const gameHref = (id: number) => `/game/${id}`;
 const companyHref = (id: number) => `/company/${id}`;
 
-// Logo Xbox (Simple Icons, CC0) — badge vert, aligné sur Steam/PSN
+// Xbox logo (Simple Icons, CC0) — green badge, aligned with Steam/PSN.
 const XBOX_PATH =
   'M4.102 21.033C6.211 22.881 8.977 24 12 24c3.026 0 5.789-1.119 7.902-2.967 1.877-1.912-4.316-8.709-7.902-11.417-3.582 2.708-9.779 9.505-7.898 11.417zm11.16-14.406c2.5 2.961 7.484 10.313 6.076 12.912C23.002 17.48 24 14.861 24 12.004c0-3.34-1.365-6.362-3.57-8.536 0 0-.027-.022-.082-.042-.063-.022-.152-.045-.281-.045-.592 0-1.985.434-4.805 3.246zM3.654 3.426c-.057.02-.082.041-.086.042C1.365 5.642 0 8.664 0 12.004c0 2.854.998 5.473 2.661 7.533-1.401-2.605 3.579-9.951 6.08-12.91-2.82-2.813-4.216-3.245-4.806-3.245-.131 0-.223.021-.281.046v-.002zM12 3.551S9.055 1.828 6.755 1.746c-.903-.033-1.454.295-1.521.339C7.379.646 9.659 0 11.984 0H12c2.334 0 4.605.646 6.766 2.085-.068-.046-.615-.372-1.52-.339C14.946 1.828 12 3.545 12 3.545v.006z';
 
-// Nom d'affichage de la plateforme (nom propre, identique dans toutes les langues)
+// Platform display name (proper noun, identical across all languages).
 const PLATFORM_LABEL: Record<string, string> = {
   steam: 'Steam',
   xbox: 'Xbox',
   psn: 'PlayStation',
 };
 
-// Gras réutilisé dans les phrases <Trans> (nom d'acteur / cible mis en avant)
+// Bold reused in the <Trans> sentences (actor name / highlighted target).
 const strongClass = 'font-semibold text-zinc-900 dark:text-zinc-100';
 
-// Date relative courte (« il y a 3 h », « hier », sinon date), localisée
+// Short relative time ("3h ago", "yesterday", else a date), localized.
 function relativeTime(iso: string): string {
   const t = i18n.t.bind(i18n);
   const diff = Date.now() - new Date(iso).getTime();
@@ -58,7 +58,7 @@ const TAB_KEYS: { key: Filter; labelKey: string }[] = [
   { key: 'achievements', labelKey: 'feed.tabAchievements' },
 ];
 
-// Un item pushé en temps réel correspond-il à l'onglet courant ?
+// Does a real-time-pushed item match the current tab?
 function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
   if (filter === 'all') return true;
   if (filter === 'reviews') return kind === 'review';
@@ -71,9 +71,7 @@ function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
 export default function FriendFeed() {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>('all');
-  // Repère le changement d'onglet pendant le rendu (plutôt qu'un setState
-  // synchrone dans l'effet ci-dessous) pour passer loading à true sans
-  // rendu intermédiaire superflu — voir react-hooks/set-state-in-effect
+  // Detect the tab change during render (not a setState in the effect) to set loading true without an extra intermediate render (react-hooks/set-state-in-effect).
   const [appliedFilter, setAppliedFilter] = useState<Filter>('all');
   const [items, setItems] = useState<FeedItem[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -90,7 +88,7 @@ export default function FriendFeed() {
     (filter !== 'all' ? `&type=${filter}` : '') +
     (cur ? `&cursor=${encodeURIComponent(cur)}` : '');
 
-  // Recharge à chaque changement d'onglet (repart de zéro)
+  // Reload on each tab change (starts fresh).
   useEffect(() => {
     let cancelled = false;
     apiFetch<FeedPage>(query())
@@ -107,8 +105,7 @@ export default function FriendFeed() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
-  // Temps réel : un nouvel item d'un ami s'insère en tête (si l'onglet le
-  // laisse passer, et sans doublon)
+  // Real-time: a friend's new item is inserted at the top (if the tab allows it, no duplicate).
   useFeedSocket((item) => {
     if (!inFilter(item.kind, filter)) return;
     setItems((prev) => (prev.some((i) => i.id === item.id) ? prev : [item, ...prev]));
@@ -119,14 +116,14 @@ export default function FriendFeed() {
     setLoadingMore(true);
     try {
       const page = await apiFetch<FeedPage>(query(cursor));
-      // Dédup au cas où un push temps réel aurait déjà inséré un item
+      // Dedup in case a real-time push already inserted an item.
       setItems((prev) => {
         const seen = new Set(prev.map((i) => i.id));
         return [...prev, ...page.items.filter((i) => !seen.has(i.id))];
       });
       setCursor(page.nextCursor);
     } catch {
-      /* réseau : on garde l'état */
+      /* network: keep the state */
     } finally {
       setLoadingMore(false);
     }
@@ -134,7 +131,6 @@ export default function FriendFeed() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Onglets de filtre */}
       <div className="flex gap-2">
         {TAB_KEYS.map((tab) => (
           <button
@@ -173,7 +169,6 @@ export default function FriendFeed() {
         </EmptyState>
       ) : (
         <div className="flex flex-col gap-4">
-          {/* Timeline : fil vertical + nœud typé à gauche de chaque événement */}
           <div className="relative flex flex-col gap-4">
             <span
               className="pointer-events-none absolute bottom-3 left-[15px] top-3 w-0.5 bg-zinc-200 dark:bg-zinc-800"
@@ -201,7 +196,7 @@ export default function FriendFeed() {
   );
 }
 
-// Rendu d'un événement selon son type (sans key : posée par TimelineRow)
+// Render an event by its type (no key: set by TimelineRow).
 function renderItem(item: FeedItem): ReactNode {
   switch (item.kind) {
     case 'review':
@@ -221,12 +216,11 @@ function renderItem(item: FeedItem): ReactNode {
   }
 }
 
-// Nœud de timeline par type d'événement : cercle bordé (couleur = sens de
-// l'action) posé sur le fil, avec une petite icône filaire au centre.
+// Timeline node per event type: a bordered circle (color = action direction) on the line, with a small outline icon at the center.
 const NODE: Record<FeedItem['kind'], { ring: string; icon: ReactNode }> = {
   review: { ring: 'border-accent text-accent', icon: <NodePencil /> },
   played: { ring: 'border-zinc-300 text-zinc-400 dark:border-zinc-700', icon: <NodePlay /> },
-  // `completed` est résolu par nodeFor (manuel vs plateforme) ; valeur ici = repli.
+  // `completed` is resolved by nodeFor (manual vs platform); value here = fallback.
   completed: { ring: 'border-accent text-accent', icon: <NodeCheck /> },
   'review-like': { ring: 'border-accent text-accent', icon: <NodeHeart /> },
   'comment-like': { ring: 'border-accent text-accent', icon: <NodeHeart /> },
@@ -234,8 +228,7 @@ const NODE: Record<FeedItem['kind'], { ring: string; icon: ReactNode }> = {
   achievement: { ring: 'border-accent text-accent', icon: <NodeTrophy /> },
 };
 
-// Nœud réel d'un item : le « fait » manuel (coche ambre) et le vrai 100 %
-// plateforme (trophée vert) partagent le type `completed` mais se distinguent ici.
+// Actual node of an item: the manual "done" (amber check) and the real platform 100% (green trophy) share the `completed` type but differ here.
 function nodeFor(item: FeedItem): { ring: string; icon: ReactNode } {
   if (item.kind === 'completed') {
     return item.platform === 'manual'
@@ -245,8 +238,7 @@ function nodeFor(item: FeedItem): { ring: string; icon: ReactNode } {
   return NODE[item.kind];
 }
 
-// Enrobe une carte d'événement d'un nœud sur le fil vertical (fond opaque pour
-// « couper » le fil derrière le cercle).
+// Wraps an event card with a node on the vertical line (opaque background to "cut" the line behind the circle).
 function TimelineRow({ item, children }: { item: FeedItem; children: ReactNode }) {
   const n = nodeFor(item);
   return (
@@ -429,8 +421,7 @@ function CommentLikeItem({ item }: { item: Extract<FeedItem, { kind: 'comment-li
   );
 }
 
-// Libellé « X a aimé l'avis/le commentaire de Y » (Y = auteur). L'ordre des mots
-// et la tournure sont portés par la clé de traduction (feed.likedReview/Comment).
+// Label "X liked Y's review/comment" (Y = author). Word order and phrasing come from the translation key (feed.likedReview/Comment).
 function LikeLine({
   actor,
   author,
@@ -459,7 +450,7 @@ function LikeLine({
   );
 }
 
-// Cible (jeu OU studio) → libellé, jaquette et lien deep vers l'avis
+// Target (game OR studio) → label, cover, and deep link to the review.
 function target(
   game: { id: number; title: string; coverUrl: string | null } | null,
   company: { id: number; name: string; logoUrl: string | null } | null,
@@ -484,8 +475,7 @@ function HeartIcon() {
   );
 }
 
-// Libellé « X a noté / a joué à / a complété <cible> ». L'action et l'ordre des
-// mots sont portés par la clé (feed.rated / feed.played / feed.completed).
+// Label "X rated / played / completed <target>". The action and word order come from the key (feed.rated / feed.played / feed.completed).
 const ACTION_KEY: Record<'rated' | 'played' | 'completed' | 'done', string> = {
   rated: 'feed.rated',
   played: 'feed.played',
@@ -526,8 +516,7 @@ function ActorLine({
   );
 }
 
-// Petit badge de la plateforme où le jeu a été complété (réutilise Steam/PSN,
-// Xbox en ligne pour rester cohérent avec les autres écrans).
+// Small badge of the platform where the game was completed (reuses Steam/PSN/Xbox for consistency with the other screens).
 function PlatformMark({ platform }: { platform: string }) {
   if (platform === 'steam') return <SteamBadge />;
   if (platform === 'psn') return <PsnBadge />;
@@ -546,10 +535,9 @@ function PlatformMark({ platform }: { platform: string }) {
   return null;
 }
 
-// Deux cas distincts sous le même type `completed` :
-//   • manuel (platform 'manual') = jeu marqué « fait » à la main → « a terminé »,
-//     simple coche (PAS de « 100 % », qui ne concerne que les plateformes).
-//   • plateforme (steam/xbox/psn) = vrai 100 % → « a complété à 100 % » + trophée.
+// Two distinct cases under the same `completed` type:
+//   • manual (platform 'manual') = game marked "done" by hand → "finished", a plain check (NOT "100%", which only applies to platforms).
+//   • platform (steam/xbox/psn) = real 100% → "completed 100%" + trophy.
 function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }> }) {
   const manual = item.platform === 'manual';
   return (
@@ -567,7 +555,6 @@ function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }
           action={manual ? 'done' : 'completed'}
           strong={item.game.title}
         />
-        {/* Plateforme affichée uniquement pour un vrai 100 % plateforme */}
         {!manual && (
           <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             <PlatformMark platform={item.platform} />
@@ -604,7 +591,7 @@ function TrophyIcon() {
   );
 }
 
-// Libellés de métrique déjà traduits (13 langues) réutilisés de la page Classement.
+// Metric labels already translated (13 languages) reused from the Leaderboard page.
 const RANK_METRIC_LABEL: Record<string, string> = {
   completions: 'leaderboard.metricCompletions',
   played: 'leaderboard.metricPlayed',
@@ -616,8 +603,7 @@ const RANK_MEDAL_COLOR: Record<number, string> = {
   3: 'text-amber-700',
 };
 
-// « X entre dans le top N » d'un classement (global ou entre tes amis). Renvoie
-// vers la page Classement. La médaille prend la teinte du rang atteint.
+// "X enters the top N" of a leaderboard (global or among your friends). Links to the Leaderboard page; the medal takes the reached rank's tint.
 function RankItem({ item }: { item: Extract<FeedItem, { kind: 'rank' }> }) {
   const { t } = useTranslation();
   const category = t(RANK_METRIC_LABEL[item.metric] ?? '');
@@ -649,8 +635,7 @@ function RankItem({ item }: { item: Extract<FeedItem, { kind: 'rank' }> }) {
   );
 }
 
-// « X a débloqué un succès » → renvoie vers le profil de l'acteur (section
-// Succès). L'emoji du succès (pastille teintée par palier) fait l'icône.
+// "X unlocked an achievement" → links to the actor's profile (Achievements section). The achievement emoji (tier-tinted pill) is the icon.
 function AchievementItem({ item }: { item: Extract<FeedItem, { kind: 'achievement' }> }) {
   const { t } = useTranslation();
   const name = t(FAMILY_NAME_KEY[item.family]);
@@ -684,7 +669,7 @@ function AchievementItem({ item }: { item: Extract<FeedItem, { kind: 'achievemen
   );
 }
 
-// Médaille filaire (même tracé que la page Classement) — teinte via currentColor.
+// Outline medal (same path as the Leaderboard page) — tint via currentColor.
 function MedalIcon() {
   return (
     <svg

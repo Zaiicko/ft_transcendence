@@ -2,8 +2,7 @@ import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import type { FeedItem } from '../lib/types';
 
-// Reçoit l'activité des amis en temps réel (event `feed:new`). Latest-ref :
-// abonné une fois tant que `enabled`, appelle toujours le handler le plus récent.
+// Real-time friend activity (`feed:new`); subscribed once while `enabled`, always calls the latest handler.
 export function useFeedSocket(onNew: (item: FeedItem) => void, enabled: boolean): void {
   const ref = useRef(onNew);
 

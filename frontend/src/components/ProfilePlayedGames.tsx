@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import type { ProfilePlayedGame } from '../lib/types';
 
-// Liste complète des jeux faits, affichée dans la modale du profil. Chaque
-// entrée mène à la fiche du jeu ; la date de complétion (si renseignée) est
-// localisée.
+// Full list of completed games shown in the profile modal, each linking to its game page.
 export default function ProfilePlayedGames({ username }: { username: string }) {
   const { t, i18n } = useTranslation();
   const [games, setGames] = useState<ProfilePlayedGame[] | null>(null);

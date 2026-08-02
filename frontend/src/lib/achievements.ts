@@ -1,6 +1,6 @@
 import { AchievementFamily } from './types';
 
-// Clés i18n par famille : nom court + gabarit de description (avec {{count}}).
+// i18n keys per family: short name + description template (with {{count}}).
 export const FAMILY_NAME_KEY: Record<AchievementFamily, string> = {
   completions: 'achievements.fam.completions',
   perfect: 'achievements.fam.perfect',
@@ -33,7 +33,7 @@ export const FAMILY_DESC_KEY: Record<AchievementFamily, string> = {
   veteran: 'achievements.desc.veteran',
 };
 
-// Décompose une clé de succès ('completions_50') en famille + seuil.
+// Break an achievement key ('completions_50') into family + threshold.
 export function parseAchievementKey(key: string): { family: AchievementFamily; threshold: number } {
   const m = key.match(/^(.*)_(\d+)$/);
   return {
@@ -42,7 +42,7 @@ export function parseAchievementKey(key: string): { family: AchievementFamily; t
   };
 }
 
-// Couleur du palier (bronze → diamant) : pastille de l'icône d'un succès débloqué.
+// Tier color (bronze → diamond): pill for an unlocked achievement's icon.
 export function tierClasses(tier: number): string {
   switch (tier) {
     case 1:

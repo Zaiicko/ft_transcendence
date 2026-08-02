@@ -1,6 +1,4 @@
-// Notation 0–10 en 5 étoiles SVG, avec demi-étoiles (remplissage partiel réel,
-// pas un « ½ » texte). Deux couches : étoiles vides grises + étoiles pleines
-// ambre découpées à la largeur = note. Partagé partout (profil, avis…).
+// 0–10 rating as 5 SVG stars with real partial fill (half-stars), not a text "½".
 
 const STAR_PATH = 'M12 2l2.9 6.26 6.6.54-5 4.32 1.5 6.4L12 16.9 5.9 20.1l1.5-6.4-5-4.32 6.6-.54z';
 
@@ -30,7 +28,6 @@ export default function Stars({
     <span className={`inline-flex items-center gap-1.5 ${className}`} title={`${rating}/10`}>
       <span className="relative inline-flex">
         <Row className="text-zinc-300 dark:text-zinc-700" />
-        {/* Couche pleine découpée horizontalement à la valeur */}
         <span className="absolute inset-0 overflow-hidden" style={{ width: `${pct}%` }}>
           <Row className="text-amber-500" />
         </span>
@@ -42,7 +39,7 @@ export default function Stars({
   );
 }
 
-// Étoile pleine unique + valeur (badges compacts : score du catalogue, moyenne)
+// Single filled star + value (compact badges: catalog score, average).
 export function StarIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={`${className} shrink-0 fill-current`} aria-hidden="true">

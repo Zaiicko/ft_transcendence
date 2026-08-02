@@ -7,8 +7,7 @@ interface ChatHandlers {
   onRead: (by: number) => void;
 }
 
-// Une socket dédiée au chat, abonnée une fois (tant que `enabled`), qui appelle
-// toujours les handlers les plus récents (latest-ref) — cf. usePresenceSocket.
+// Chat socket, subscribed once while `enabled`, always calling the latest handlers (latest-ref).
 export function useChatSocket(handlers: ChatHandlers, enabled: boolean): void {
   const handlersRef = useRef(handlers);
 

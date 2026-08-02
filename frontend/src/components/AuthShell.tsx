@@ -2,9 +2,7 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-// Cadre commun des pages Connexion / Inscription : fond ambiant ambre + carte
-// brandée (logo + wordmark Saveboxd) et, en mode normal, un sélecteur segmenté
-// Connexion/Inscription. `active` absent (flux 2FA / Steam) = pas d'onglets.
+// Shared Login/Signup shell: branded card + ambient glow, with a segmented toggle (hidden for 2FA/Steam flows).
 export default function AuthShell({
   active,
   subtitle,
@@ -24,8 +22,6 @@ export default function AuthShell({
 
   return (
     <div className="relative mx-auto flex max-w-md flex-col justify-center py-6">
-      {/* Halos ambiants ambre — sans overflow-hidden pour que le flou se fonde
-          au lieu d'être coupé net au bord (arête droite). */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 -top-8 h-52 w-72 -translate-x-1/2 rounded-full bg-accent/20 blur-[80px]" />
         <div className="absolute -bottom-10 right-2 h-52 w-52 rounded-full bg-accent/10 blur-[80px]" />
@@ -51,7 +47,6 @@ export default function AuthShell({
           </span>
         </div>
 
-        {/* Sélecteur Connexion / Inscription */}
         {active && (
           <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-zinc-900/10 bg-zinc-900/[0.03] p-1 dark:border-zinc-100/10 dark:bg-zinc-100/[0.04]">
             <Link to="/login" className={tab(active === 'login')}>
