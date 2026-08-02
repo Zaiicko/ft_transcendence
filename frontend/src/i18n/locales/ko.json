@@ -1,0 +1,1237 @@
+{
+  "common": {
+    "loading": "로딩 중…",
+    "save": "저장",
+    "saving": "저장 중…",
+    "cancel": "취소",
+    "add": "추가",
+    "back": "뒤로",
+    "close": "닫기",
+    "retry": "다시 시도",
+    "delete": "삭제",
+    "confirm": "확인",
+    "edit": "편집",
+    "skip": "건너뛰기",
+    "error": "문제가 발생했습니다",
+    "yes": "예",
+    "no": "아니요",
+    "unknown": "알 수 없음",
+    "previous": "이전",
+    "next": "다음"
+  },
+  "nav": {
+    "catalog": "카탈로그",
+    "feed": "피드",
+    "leaderboard": "순위표",
+    "friends": "친구",
+    "steam": "Steam",
+    "login": "로그인",
+    "signup": "회원가입",
+    "library": "라이브러리"
+  },
+  "menu": {
+    "notifications": "알림",
+    "settings": "설정",
+    "language": "언어",
+    "lightMode": "라이트 모드",
+    "darkMode": "다크 모드",
+    "logout": "로그아웃",
+    "closeMenu": "메뉴 닫기",
+    "notificationPrefs": "알림 설정",
+    "navigation": "탐색 메뉴",
+    "replayTutorial": "튜토리얼 다시 보기"
+  },
+  "footer": {
+    "tagline": "비디오 게임의 Letterboxd · 42 프로젝트",
+    "privacy": "개인정보 처리방침",
+    "terms": "서비스 약관"
+  },
+  "languagePicker": {
+    "title": "언어"
+  },
+  "oauth": {
+    "continueWithGoogle": "Google로 계속하기",
+    "continueWithFortyTwo": "42로 계속하기",
+    "continueWithSteam": "Steam으로 계속하기",
+    "continueWithDiscord": "Discord로 계속하기",
+    "or": "또는"
+  },
+  "auth": {
+    "login": {
+      "title": "로그인",
+      "emailPlaceholder": "이메일",
+      "passwordPlaceholder": "비밀번호",
+      "submit": "로그인",
+      "submitting": "로그인 중…",
+      "forgotPassword": "비밀번호를 잊으셨나요?",
+      "noAccount": "계정이 없으신가요?",
+      "signupLink": "회원가입",
+      "genericError": "로그인에 실패했습니다",
+      "errorEmailInUse": "이 이메일로 이미 계정이 존재합니다. 대신 비밀번호로 로그인하거나 해당 제공자에 다른 이메일을 사용하세요.",
+      "errorGeneric": "로그인 중 문제가 발생했습니다. 다시 시도해 주세요.",
+      "steamFailed": "Steam 로그인에 실패했습니다. 다시 시도해 주세요",
+      "subtitle": "게임 일지를 멈춘 곳부터 이어가세요."
+    },
+    "twoFactor": {
+      "title": "2단계 인증 코드",
+      "description": "인증 앱에 표시된 6자리 코드를 입력하세요.",
+      "verify": "확인",
+      "verifying": "확인 중…",
+      "invalidCode": "잘못된 코드입니다"
+    },
+    "signup": {
+      "title": "회원가입",
+      "titleSteam": "Steam 가입 완료하기",
+      "steamIntro": "Steam 계정이 확인되었습니다. 이메일을 선택하고 사용자 이름을 확인하여 Saveboxd 계정을 만드세요.",
+      "emailPlaceholder": "이메일",
+      "usernamePlaceholder": "사용자 이름",
+      "usernameHint": "영문, 숫자, 밑줄만 사용 가능합니다",
+      "passwordPlaceholder": "비밀번호 (최소 8자)",
+      "passwordPlaceholderSteam": "비밀번호 (선택 사항)",
+      "passwordHintSteam": "비밀번호를 설정하지 않으면 Steam으로만 로그인할 수 있습니다. 나중에 프로필에서 추가할 수 있습니다.",
+      "submit": "회원가입",
+      "submitSteam": "계정 만들기",
+      "submitting": "계정 생성 중…",
+      "sessionExpired": "세션이 만료되었습니다. Steam으로 다시 로그인해 주세요",
+      "genericError": "회원가입에 실패했습니다",
+      "alreadyHaveAccount": "이미 계정이 있으신가요?",
+      "loginLink": "로그인",
+      "subtitle": "계정을 만들고 게임 일지를 시작하세요."
+    },
+    "forgotPassword": {
+      "title": "비밀번호를 잊으셨나요?",
+      "emailPlaceholder": "이메일",
+      "submit": "재설정 링크 보내기",
+      "submitting": "전송 중…",
+      "checkEmailTitle": "이메일을 확인하세요",
+      "checkEmailBody": "해당 주소가 등록되어 있다면 비밀번호 재설정 링크가 곧 전송됩니다.",
+      "backToLogin": "로그인으로 돌아가기",
+      "genericError": "문제가 발생했습니다"
+    },
+    "resetPassword": {
+      "title": "새 비밀번호 설정",
+      "invalidLinkTitle": "잘못된 링크",
+      "invalidLinkBody": "이 비밀번호 재설정 링크에 토큰이 없습니다.",
+      "requestNewLink": "새 링크 요청하기",
+      "missingToken": "재설정 토큰이 없습니다.",
+      "newPasswordPlaceholder": "새 비밀번호 (최소 8자)",
+      "submit": "비밀번호 재설정",
+      "submitting": "재설정 중…",
+      "genericError": "비밀번호를 재설정할 수 없습니다"
+    },
+    "verifyEmail": {
+      "verifying": "이메일 확인 중…",
+      "successTitle": "이메일이 확인되었습니다",
+      "successBody": "이메일 주소가 확인되었습니다. 모든 준비가 완료되었습니다.",
+      "goToProfile": "프로필로 이동",
+      "failedTitle": "인증에 실패했습니다",
+      "backToProfile": "프로필로 돌아가기",
+      "missingToken": "인증 토큰이 없습니다.",
+      "genericError": "인증에 실패했습니다"
+    }
+  },
+  "settings": {
+    "title": "계정 설정",
+    "welcomeTitle": "Saveboxd에 오신 것을 환영합니다!",
+    "welcomeBody": "사용자 이름으로 {{username}}을(를) 선택했습니다. 원하시면 아래에서 변경하거나 그대로 두세요.",
+    "changeAvatar": "아바타 변경",
+    "uploadingAvatar": "업로드 중…",
+    "avatarError": "업로드에 실패했습니다",
+    "emailVerified": "이메일 인증됨",
+    "emailNotVerified": "이메일 미인증",
+    "resendVerification": "인증 이메일 다시 보내기",
+    "resendSending": "전송 중…",
+    "resendSent": "인증 이메일을 보냈습니다. 받은 편지함을 확인하세요.",
+    "resendError": "인증 이메일을 다시 보낼 수 없습니다",
+    "usernameLabel": "사용자 이름",
+    "bioLabel": "자기소개",
+    "saveProfile": "프로필 저장",
+    "saving": "저장 중…",
+    "skipForNow": "나중에 하기",
+    "profileError": "프로필을 저장할 수 없습니다",
+    "signInVia": "계정에 비밀번호가 설정되어 있지 않습니다. {{provider}}로 로그인하고 있습니다. 비밀번호를 추가하면 이메일로도 로그인할 수 있습니다.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "2단계 인증",
+      "enabledDescription": "사용 중입니다. 비활성화하려면 코드를 입력하세요.",
+      "disable": "비활성화",
+      "disabling": "비활성화 중…",
+      "scanQr": "인증 앱으로 이 QR 코드를 스캔하세요:",
+      "manualKeyPrefix": "또는 이 키를 직접 입력하세요:",
+      "confirm": "확인",
+      "confirming": "확인 중…",
+      "notEnabledDescription": "사용하지 않는 상태입니다. Google Authenticator 같은 앱으로 로그인에 2단계 인증을 추가하세요.",
+      "enable": "2단계 인증 활성화",
+      "starting": "시작 중…",
+      "invalidCode": "잘못된 코드입니다",
+      "startError": "2단계 인증 설정을 시작할 수 없습니다"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "이 Steam 계정은 이미 다른 사용자와 연결되어 있습니다.",
+      "linkedSuccess": "Steam 계정이 연결되었습니다!",
+      "linkedDescription": "연결됨 — Steam으로 로그인하고 게임 라이브러리를 가져올 수 있습니다.",
+      "viewLibrary": "내 Steam 라이브러리 보기",
+      "unlink": "Steam 연결 해제",
+      "unlinking": "연결 해제 중…",
+      "unlinkError": "Steam 연결을 해제할 수 없습니다",
+      "notLinkedDescription": "Steam 계정을 연결하면 Steam으로 로그인하고 라이브러리를 가져오며 Steam 친구를 찾을 수 있습니다.",
+      "linkAccount": "내 Steam 계정 연결하기"
+    },
+    "password": {
+      "changeTitle": "비밀번호 변경",
+      "addTitle": "비밀번호 추가",
+      "currentPasswordPlaceholder": "현재 비밀번호",
+      "newPasswordPlaceholder": "새 비밀번호 (최소 8자)",
+      "save": "비밀번호 변경",
+      "add": "비밀번호 추가",
+      "saving": "저장 중…",
+      "saved": "비밀번호가 저장되었습니다!",
+      "error": "비밀번호를 저장할 수 없습니다",
+      "forgot": "비밀번호를 잊으셨나요?",
+      "forgotSending": "전송 중…",
+      "forgotSent": "재설정 링크를 {{email}}(으)로 보냈습니다.",
+      "forgotError": "재설정 이메일을 보낼 수 없습니다"
+    },
+    "delete": {
+      "title": "계정 삭제",
+      "warning": "이 작업은 계정, 친구 관계, 메시지를 영구적으로 삭제합니다. 리뷰와 댓글은 보존되지만 익명화됩니다(삭제된 사용자로 표시). 되돌릴 수 없습니다.",
+      "button": "계정 삭제",
+      "confirmPasswordPlaceholder": "비밀번호 확인",
+      "confirmButton": "영구 삭제",
+      "deleting": "삭제 중…",
+      "cancel": "취소",
+      "error": "계정을 삭제할 수 없습니다"
+    },
+    "connections": {
+      "title": "연결된 계정",
+      "description": "게임 계정을 연결하면 더 빠르게 로그인하고 친구를 찾을 수 있습니다.",
+      "connected": "연결됨",
+      "link": "연결",
+      "unlink": "연결 해제",
+      "unlinking": "연결 해제 중…",
+      "unlinkError": "이 계정을 연결 해제할 수 없습니다",
+      "comingSoon": "곧 제공",
+      "discordLinked": "Discord 계정이 연결되었습니다!",
+      "discordTaken": "이 Discord 계정은 이미 다른 사용자에 연결되어 있습니다."
+    },
+    "psn": {
+      "title": "PlayStation 연결",
+      "intro": "PlayStation 온라인 ID만 입력하면 공개 프로필을 찾아드립니다. 비밀번호나 토큰이 필요 없습니다.",
+      "idLabel": "내 PSN 온라인 ID",
+      "publicHint": "가져오려면 PlayStation 프로필이 공개(게임과 트로피 표시)되어 있어야 합니다.",
+      "connect": "연결",
+      "connecting": "연결 중…",
+      "connectedAs": "{{onlineId}}(으)로 연결됨",
+      "notFound": "해당 온라인 ID의 공개 PlayStation 계정을 찾을 수 없습니다. 철자와 프로필 공개 여부를 확인하세요.",
+      "alreadyLinked": "이 PlayStation 계정은 이미 다른 프로필에 연결되어 있습니다.",
+      "invalidId": "유효한 PSN 온라인 ID가 아닌 것 같습니다(3–16자 문자, 숫자, - 또는 _).",
+      "notConfigured": "서버에 PlayStation 가져오기가 아직 설정되지 않았습니다. 나중에 다시 시도하세요.",
+      "genericError": "연결에 실패했습니다. 다시 시도하세요.",
+      "viewLibrary": "내 PlayStation 라이브러리 보기"
+    },
+    "adjustAvatar": "조정",
+    "avatarReset": "초기화",
+    "avatarFrameHint": "드래그하여 이동, 슬라이더로 확대",
+    "avatarZoom": "확대",
+    "chooseImage": "이미지 선택",
+    "xbox": {
+      "title": "Xbox 연결하기",
+      "intro": "Xbox 게이머 태그만 입력해 주세요. 저희가 귀하의 공개 프로필을 찾아드립니다. 비밀번호나 토큰은 필요하지 않습니다.",
+      "idLabel": "귀하의 Xbox 게이머 태그",
+      "publicHint": "Xbox 프로필을 가져오려면 해당 프로필이 공개 상태여야 합니다(게임 기록 및 업적 정보 공개).",
+      "connect": "연결",
+      "connecting": "연결 중…",
+      "connectedAs": "{{gamertag}}로 연결됨",
+      "notFound": "해당 게이머 태그에 대한 공개 Xbox 계정이 없습니다. 철자를 다시 확인하고 프로필이 공개 상태인지 확인해 주세요.",
+      "alreadyLinked": "이 Xbox 계정은 이미 다른 프로필에 연결되어 있습니다.",
+      "invalidId": "그건 유효한 Xbox 게이머 태그로 보이지 않네요.",
+      "notConfigured": "서버에서 Xbox 가져오기 기능이 아직 설정되지 않았습니다. 잠시 후 다시 시도해 주세요.",
+      "genericError": "연결에 실패했습니다. 다시 시도해 주세요.",
+      "viewLibrary": "내 Xbox 라이브러리 보기"
+    },
+    "eyebrow": "내 계정",
+    "navProfile": "프로필",
+    "navNotifications": "알림",
+    "navSecurity": "보안",
+    "navConnections": "연결",
+    "navDanger": "위험 구역",
+    "navData": "내 데이터",
+    "export": {
+      "description": "모든 개인 데이터(프로필, 리뷰, 댓글, 게임, 목록, 친구, 메시지 및 알림)의 사본을 구조화된 JSON 파일로 다운로드하세요.",
+      "button": "내 데이터 다운로드",
+      "downloading": "준비 중…",
+      "error": "데이터를 내보낼 수 없습니다"
+    }
+  },
+  "friends": {
+    "title": "친구",
+    "addPlaceholder": "추가할 사용자 이름",
+    "add": "추가",
+    "enterUsernameError": "사용자 이름을 입력하세요",
+    "sendError": "요청을 보낼 수 없습니다",
+    "loadError": "친구 목록을 불러올 수 없습니다",
+    "pendingRequests": "대기 중인 요청",
+    "sentRequests": "보낸 요청",
+    "suggestedFriends": "추천 친구",
+    "yourFriends": "내 친구",
+    "pending": "대기 중",
+    "online": "온라인",
+    "offline": "오프라인",
+    "noFriendsTitle": "아직 친구가 없습니다",
+    "noFriendsDescription": "위에서 사용자 이름으로 친구를 추가하거나 추천 목록을 확인하세요.",
+    "accept": "수락",
+    "decline": "거절",
+    "cancelRequest": "요청 취소",
+    "removeFriend": "친구 삭제",
+    "eyebrow": "내 서클",
+    "statFriends": "친구",
+    "statOnline": "온라인",
+    "statPending": "대기 중",
+    "eyeRequests": "확인 필요",
+    "eyeSent": "보낸 요청",
+    "eyeSuggested": "둘러보기",
+    "eyeFriends": "접속 및 오프라인",
+    "sentYouRequest": "님이 요청을 보냈습니다",
+    "viaSteam": "Steam 통해",
+    "via42": "42 통해",
+    "viaPsn": "PSN 통해"
+  },
+  "notifications": {
+    "title": "알림",
+    "markAllRead": "모두 읽음으로 표시",
+    "empty": "알림이 없습니다.",
+    "prefsDescription": "받고 싶은 알림 종류를 선택하세요 (알림 벨 + 실시간).",
+    "someone": "누군가",
+    "reviewLike": "<b>{{who}}</b>님이 회원님의 리뷰를 좋아합니다",
+    "reviewLikeTitled": "<b>{{who}}</b>님이 회원님의 리뷰 \"{{title}}\"을(를) 좋아합니다",
+    "reviewComment": "<b>{{who}}</b>님이 회원님의 리뷰에 댓글을 남겼습니다",
+    "reviewCommentTitled": "<b>{{who}}</b>님이 회원님의 리뷰 \"{{title}}\"에 댓글을 남겼습니다",
+    "commentReply": "<b>{{who}}</b>님이 회원님의 댓글에 답글을 남겼습니다",
+    "friendRequest": "<b>{{who}}</b>님이 친구 요청을 보냈습니다",
+    "friendAccept": "<b>{{who}}</b>님이 친구 요청을 수락했습니다",
+    "newMessage": "<b>{{who}}</b>님이 메시지를 보냈습니다",
+    "friendJoined": "<b>{{who}}</b>님({{via}})이 Saveboxd에 가입했습니다",
+    "prefFriendRequest": "친구 요청",
+    "prefFriendRequestHint": "누군가 요청을 보낼 때",
+    "prefFriendAccept": "수락된 요청",
+    "prefFriendAcceptHint": "내 요청이 수락될 때",
+    "prefReviewLike": "내 리뷰의 좋아요",
+    "prefReviewLikeHint": "내 리뷰가 좋아요를 받을 때",
+    "prefReviewComment": "내 리뷰의 댓글",
+    "prefReviewCommentHint": "누군가 내 리뷰에 댓글을 달 때",
+    "prefCommentReply": "내 댓글의 답글",
+    "prefCommentReplyHint": "누군가 내 댓글에 답글을 달 때",
+    "prefFriendJoined": "지인이 가입",
+    "prefFriendJoinedHint": "Steam/42 지인이 가입할 때",
+    "achievement": "업적 달성: <b>{{name}}</b>",
+    "prefAchievement": "업적",
+    "prefAchievementHint": "업적을 달성했을 때",
+    "clear": "지우기"
+  },
+  "home": {
+    "featuredBadge": "추천 게임",
+    "writeReview": "리뷰 작성",
+    "popularNow": "지금 인기 있는",
+    "showMorePopular": "인기 게임 더 보기",
+    "showLessPopular": "인기 게임 적게 보기",
+    "popularReviews": "인기 리뷰",
+    "noReviewsTitle": "아직 리뷰가 없습니다",
+    "noReviewsDescription": "가장 먼저 게임을 평가해 보세요. 훌륭한 리뷰가 여기에 표시됩니다.",
+    "showMoreReviews": "리뷰 더 보기",
+    "showLessReviews": "리뷰 적게 보기",
+    "deletedUser": "[삭제된 사용자]",
+    "viewGame": "{{title}} 보기",
+    "recommendedForYou": "맞춤 추천",
+    "showMoreRecommended": "추천 더 보기",
+    "showLessRecommended": "추천 적게 보기",
+    "recoEyebrow": "친구들이 좋아했기 때문에",
+    "popularEyebrow": "지금",
+    "activityEyebrow": "친구들",
+    "reviewsEyebrow": "커뮤니티의 목소리",
+    "statsEyebrow": "당신의 게임 한 해",
+    "statsHeading": "한눈에 보는 {{year}}",
+    "seeProfile": "프로필 보기",
+    "statDone": "완료",
+    "statDoneCaption": "완료로 표시한 게임",
+    "statPerfect": "100%",
+    "statPerfectCaption": "플래티넘 & 전체 도전과제",
+    "statReviews": "리뷰",
+    "statAvg": "평균 {{value}}",
+    "statNoReviews": "아직 리뷰 없음",
+    "statRank": "글로벌 순위",
+    "statRankCaption": "완료 순위표",
+    "statUnranked": "순위 없음",
+    "statAchievements": "도전과제",
+    "activityTitle": "실시간",
+    "activityEmpty": "아직 없습니다.",
+    "activitySeeAll": "전체 피드 보기",
+    "landing": {
+      "eyebrow": "게임계의 Letterboxd",
+      "title": "당신의 라이브러리. 평가하고, 리뷰하고, 공유하세요.",
+      "subtitle": "Steam·PlayStation·Xbox 라이브러리를 동기화하고, 게임을 평가하고, 업적을 해제하며 글로벌 랭킹에 도전하세요.",
+      "ctaPrimary": "계정 만들기",
+      "ctaSecondary": "로그인",
+      "feature1Title": "라이브러리 동기화",
+      "feature1Desc": "Steam·PlayStation·Xbox 게임과 트로피를 자동으로 가져옵니다.",
+      "feature2Title": "평가 & 리뷰",
+      "feature2Desc": "게임에 점수를 매기고, 리뷰를 쓰고, 다른 사람의 리뷰에 반응하고 댓글을 달아보세요.",
+      "feature3Title": "해제 & 경쟁",
+      "feature3Desc": "업적을 획득하고 글로벌 랭킹에 올라보세요.",
+      "previewEyebrow": "실시간 미리보기",
+      "previewTitle": "지금 인기",
+      "allTitle": "할 수 있는 모든 것",
+      "feat1": "수천 개의 게임 카탈로그 탐색",
+      "feat2": "플레이한 모든 게임을 평가하고 리뷰",
+      "feat3": "나만의 게임 목록을 만들고 공유",
+      "feat4": "Steam·PlayStation·Xbox 라이브러리 동기화",
+      "feat5": "친구 추가, 채팅, 활동 팔로우",
+      "feat6": "플레이하며 업적 해제",
+      "feat7": "글로벌 랭킹에 도전",
+      "feat8": "진행 상황 추적: 완료한 게임, 100%, 연간 통계",
+      "statsGamesLabel": "게임",
+      "statsReviewsLabel": "리뷰",
+      "statsPlayersLabel": "플레이어",
+      "topEyebrow": "최고의 플레이어",
+      "topTitle": "지금 최고의 플레이어",
+      "topCaption": "게임 100% 완료",
+      "platformsEyebrow": "내 계정",
+      "platformsTitle": "라이브러리를 통째로",
+      "platformsSubtitle": "Steam·PlayStation·Xbox 연동 — 게임과 트로피가 자동 동기화됩니다.",
+      "achEyebrow": "자체 업적",
+      "achTitle": "해제할 수 있는 수십 개의 배지",
+      "achSubtitle": "게임 완료, 리뷰 작성, 목록 생성, 친구 추가로 배지를 획득하세요.",
+      "feat9": "당신에게 딱 맞는 게임 추천 받기"
+    },
+    "recoBecauseGame": "「{{title}}」을(를) 좋아해서",
+    "recoBecauseGenre": "{{genre}}을(를) 좋아해서",
+    "recoBecausePlayed": "「{{title}}」을(를) 플레이해서",
+    "recoBecauseStudio": "{{studio}}의 게임을 좋아해서"
+  },
+  "feed": {
+    "title": "친구 활동",
+    "subtitle": "친구의 최신 리뷰와 완료한 게임을 실시간으로.",
+    "tabAll": "전체",
+    "tabReviews": "리뷰",
+    "tabPlayed": "게임",
+    "tabLikes": "좋아요",
+    "emptyTitle": "친구의 새로운 소식이 없습니다",
+    "emptyTitleTab": "이 탭에는 아무것도 없습니다",
+    "emptyDescription": "친구를 추가하고 여기에서 최신 리뷰, 완료한 게임, 좋아요를 확인하세요.",
+    "findFriends": "친구 찾기",
+    "loadMore": "더 보기",
+    "loading": "불러오는 중…",
+    "rated": "<a>{{user}}</a>님이 <s>{{game}}</s>을(를) 평가했습니다",
+    "played": "<a>{{user}}</a>님이 <s>{{game}}</s>을(를) 플레이했습니다",
+    "likedReview": "<a>{{actor}}</a>님이 <s>{{author}}</s>님의 리뷰를 좋아합니다",
+    "likedComment": "<a>{{actor}}</a>님이 <s>{{author}}</s>님의 댓글을 좋아합니다",
+    "on": "{{target}}에서",
+    "gameCompleted": "완료한 게임",
+    "deletedUser": "[삭제된 사용자]",
+    "deletedShort": "[삭제됨]",
+    "timeNow": "방금",
+    "timeMinutes": "{{count}}분 전",
+    "timeHours": "{{count}}시간 전",
+    "timeYesterday": "어제",
+    "timeDays": "{{count}}일 전",
+    "tabCompleted": "완료 건수",
+    "completed": "<a>{{user}}</a> 완료 <s>{{game}}</s> 100%",
+    "completedBadge": "100% 완료",
+    "rankLine": "<a>{{user}}</a>님이 <s>top {{rank}}</s>에 진입 — {{category}}",
+    "rankScopeGlobal": "글로벌 순위",
+    "rankScopeFriends": "친구들 중에서",
+    "achievementLine": "<a>{{user}}</a>님이 <s>{{name}}</s>을(를) 달성했습니다",
+    "tabAchievements": "업적",
+    "eyebrow": "내 서클, 실시간",
+    "live": "실시간",
+    "done": "<a>{{user}}</a>님이 <s>{{game}}</s>을(를) 클리어했습니다"
+  },
+  "leaderboard": {
+    "title": "순위표",
+    "subtitle": "누가 순위표 정상에 있는지 확인하세요 — 완료, 플레이한 게임, 리뷰.",
+    "metricCompletions": "완료",
+    "metricPlayed": "플레이한 게임",
+    "metricReviews": "리뷰",
+    "scopeFriends": "친구",
+    "scopeGlobal": "전체",
+    "windowAll": "전체 기간",
+    "windowMonth": "이번 달",
+    "yourRank": "내 순위",
+    "rankLabel": "{{rank}}위",
+    "badgeTitle": "글로벌 상위 3위",
+    "badgeAria": "리더보드 순위 배지",
+    "emptyTitle": "아직 순위가 없습니다",
+    "emptyFriends": "친구를 추가하고 게임을 완료하고 플레이를 기록하고 리뷰를 작성하여 함께 순위를 올려보세요.",
+    "emptyGlobal": "순위표의 첫 번째 주인공이 되어보세요 — 게임을 완료하고 플레이를 기록하고 리뷰를 작성하세요.",
+    "findFriends": "친구 찾기",
+    "eyebrow": "최고의 플레이어",
+    "you": "나"
+  },
+  "reviews": {
+    "sortPopular": "인기",
+    "sortRecent": "최신",
+    "sortDiscussed": "화제",
+    "heading": "리뷰",
+    "loginToReview": "리뷰를 작성하려면 로그인하세요.",
+    "emptyTitle": "아직 리뷰가 없습니다",
+    "emptyDescGame": "이 게임에 대한 의견을 가장 먼저 남겨보세요.",
+    "emptyDescCompany": "이 스튜디오에 대한 의견을 가장 먼저 남겨보세요.",
+    "emptyDescGameGuest": "로그인하고 이 게임을 가장 먼저 평가해보세요.",
+    "emptyDescCompanyGuest": "로그인하고 이 스튜디오를 가장 먼저 평가해보세요.",
+    "deletedUser": "[삭제된 사용자]",
+    "edit": "수정",
+    "delete": "삭제",
+    "loading": "불러오는 중…",
+    "loadMore": "더 보기",
+    "shareReview": "이 리뷰를 친구에게 공유",
+    "ratingLabel": "평점:",
+    "ratingAria": "{{n}}/10",
+    "titlePlaceholder": "리뷰 제목",
+    "textPlaceholder": "리뷰 (스포일러 없이…)",
+    "publish": "리뷰 게시",
+    "chooseRating": "평점을 선택하세요.",
+    "alreadyReviewedGame": "이미 이 게임을 리뷰했습니다.",
+    "alreadyReviewedCompany": "이미 이 스튜디오를 리뷰했습니다.",
+    "unexpectedError": "예기치 않은 오류입니다.",
+    "titleTextRequired": "제목과 내용은 필수입니다.",
+    "cancel": "취소",
+    "save": "저장",
+    "translate": "번역",
+    "showOriginal": "원문 보기",
+    "translating": "번역 중…",
+    "showTranslation": "번역 보기",
+    "eyebrow": "커뮤니티의 목소리"
+  },
+  "comments": {
+    "sortTop": "인기순",
+    "sortRecent": "최신순",
+    "loading": "불러오는 중…",
+    "empty": "댓글이 없습니다 — 대화를 시작하세요.",
+    "deletedComment": "[삭제된 댓글]",
+    "deletedUser": "[삭제된 사용자]",
+    "save": "저장",
+    "cancel": "취소",
+    "reply": "답글",
+    "edit": "수정",
+    "delete": "삭제",
+    "viewReplies": "답글 보기 ({{count}})",
+    "replyPlaceholder": "답글…",
+    "addPlaceholder": "댓글 추가…",
+    "submit": "댓글",
+    "loginToComment": "댓글을 작성하려면 로그인하세요"
+  },
+  "profile": {
+    "recentReviews": "최근 리뷰",
+    "noReviewsTitle": "아직 리뷰가 없습니다",
+    "noReviewsDesc": "이 플레이어는 아직 게임을 리뷰하지 않았습니다.",
+    "calNoDates": "아직 완료 날짜가 없습니다",
+    "calNoDatesDesc": "완료로 표시한 게임이 이 연간 달력을 채웁니다.",
+    "calHint": "색이 있는 날에 마우스를 올리거나 탭하면 그날 완료한 게임이 표시됩니다.",
+    "friends": "친구",
+    "requestPending": "요청 대기 중",
+    "respondRequest": "요청에 응답",
+    "couldNotSend": "요청을 보낼 수 없습니다",
+    "sending": "보내는 중…",
+    "addFriend": "친구 추가",
+    "couldNotLoad": "프로필을 불러올 수 없습니다",
+    "notFound": "프로필을 찾을 수 없습니다",
+    "shareProfile": "이 프로필을 친구에게 공유",
+    "editProfile": "프로필 편집",
+    "topRated": "평점 높은 게임",
+    "completionCalendar": "완료 달력",
+    "memberSince": "{{date}}부터 가입",
+    "reviewOne": "리뷰 {{count}}개",
+    "reviewMany": "리뷰 {{count}}개",
+    "playedGameOne": "플레이한 게임 {{count}}개",
+    "playedGameMany": "플레이한 게임 {{count}}개",
+    "calLess": "적음",
+    "calMore": "많음",
+    "calCompletedLabel": "완료",
+    "calPlayedLabel": "플레이함",
+    "calViewPlayed": "플레이",
+    "calViewCompleted": "완료",
+    "calDoneLabel": "완료",
+    "calPerfectLabel": "100%",
+    "calDoneLegend": "완료",
+    "calPerfectLegend": "100%",
+    "tabReviews": "리뷰",
+    "tabGames": "게임",
+    "tabLists": "리스트",
+    "tabAchievements": "도전과제",
+    "tabOverview": "개요",
+    "recentReviewsTitle": "최신 리뷰",
+    "seeAllReviews": "모든 리뷰 보기",
+    "bioAdd": "소개 추가",
+    "bioPlaceholder": "자신을 소개해 보세요…",
+    "eyeTopRated": "최애",
+    "eyeActivity": "활동",
+    "eyeReviews": "그의 평가",
+    "eyeLists": "컬렉션",
+    "eyeAchievements": "도전과제",
+    "calNewerYears": "더 최근 연도",
+    "calOlderYears": "더 이전 연도"
+  },
+  "lists": {
+    "heading": "목록",
+    "newList": "새 목록",
+    "emptyOwn": "아직 목록이 없습니다. 하나 만들어 보세요(예: \"Best competitive\", \"To-do\").",
+    "emptyPublic": "공개 목록이 없습니다.",
+    "namePlaceholder": "목록 이름",
+    "creating": "만드는 중…",
+    "create": "만들기",
+    "cancel": "취소",
+    "error": "오류",
+    "private": "비공개",
+    "public": "공개",
+    "privateHint": "나만 볼 수 있음",
+    "publicHint": "프로필에 표시됨",
+    "viewGames": "게임 보기",
+    "empty": "비어 있음",
+    "gameOne": "게임 {{count}}개",
+    "gameMany": "게임 {{count}}개",
+    "editList": "목록 편집",
+    "save": "저장",
+    "delete": "삭제",
+    "confirmDelete": "\"{{name}}\" 목록을 삭제할까요?",
+    "loading": "불러오는 중…",
+    "listEmpty": "빈 목록 — 각 게임 페이지에서 추가하세요.",
+    "removeGame": "{{title}} 제거",
+    "addToList": "목록에 추가",
+    "menuEmpty": "목록이 없습니다 — 아래에서 만들어 보세요.",
+    "privateShort": "비공개",
+    "quickPlaceholder": "새 목록 + 이 게임",
+    "createAria": "목록 만들기",
+    "validate": "확인",
+    "gameReviews": "{{title}} 리뷰",
+    "noReview": "리뷰 없음",
+    "undoRemove": "취소",
+    "viewCompact": "간략히",
+    "viewDetailed": "자세히",
+    "addGamePlaceholder": "게임 추가…",
+    "alreadyIn": "추가됨",
+    "limitReached": "목록 가득 참 — 최대 {{max}}",
+    "dragToReorder": "드래그하여 순서 변경",
+    "noCover": "커버 없음",
+    "addCover": "커버 추가",
+    "changeCover": "커버 변경",
+    "removeCover": "커버 제거"
+  },
+  "catalog": {
+    "title": "카탈로그",
+    "searchPlaceholder": "게임 검색…",
+    "searchAria": "게임 검색",
+    "sortLabel": "정렬",
+    "platformLabel": "플랫폼",
+    "studioLabel": "스튜디오",
+    "sortRating": "평점순",
+    "sortMostPlayed": "플레이 많은순",
+    "sortRecent": "최신",
+    "sortPopular": "인기",
+    "allPlatforms": "모든 플랫폼",
+    "allStudios": "모든 스튜디오",
+    "noResults": "이 필터에 맞는 게임이 없습니다.",
+    "loading": "불러오는 중…",
+    "loadMore": "더 보기",
+    "searchNav": "검색",
+    "randomGame": "랜덤 게임",
+    "noneInCatalog": "카탈로그에 \"{{query}}\" 게임이 없습니다.",
+    "importIgdb": "IGDB에서 추가",
+    "importing": "IGDB에서 가져오는 중…",
+    "studios": "스튜디오",
+    "eyebrow": "라이브러리",
+    "subtitle": "전체 게임 라이브러리를 둘러보고 장르·플랫폼·스튜디오로 필터링하며 커뮤니티 기준으로 정렬하세요.",
+    "unit": "게임",
+    "activeFilters": "적용된 필터",
+    "clearAll": "모두 지우기",
+    "removeFilter": "{{name}} 제거",
+    "viewGame": "자세히 보기",
+    "showLess": "간략히 보기",
+    "sortRatingAsc": "평점 낮은순",
+    "sortMostPlayedAsc": "적게 플레이",
+    "sortRecentAsc": "오래된순",
+    "sortPopularAsc": "덜 알려진"
+  },
+  "game": {
+    "markedTitle": "완료 — 클릭하여 해제",
+    "markTitle": "플레이했습니다",
+    "unmarkAria": "\"완료\" 표시 해제",
+    "markAria": "완료로 표시",
+    "playedOne": "{{count}}명이 이 게임을 플레이했습니다",
+    "playedMany": "{{count}}명이 이 게임을 플레이했습니다",
+    "notFound": "게임을 찾을 수 없습니다.",
+    "shareGame": "이 게임을 친구에게 공유",
+    "dlcHeading": "확장팩 및 DLC ({{count}})",
+    "chooseDlcLabel": "DLC 선택",
+    "chooseDlcPlaceholder": "DLC 선택…",
+    "dlcExpansion": "확장팩",
+    "dlcStandalone": "독립 실행형",
+    "dlcGeneric": "DLC",
+    "rate": "평가",
+    "completeTitle": "완료로 표시",
+    "completedTitle": "완료",
+    "completeAria": "이 게임을 완료로 표시",
+    "uncompleteAria": "완료 표시 제거",
+    "completedCountOne": "{{count}}명의 플레이어가 이 게임을 완료했습니다",
+    "completedCountMany": "{{count}}명의 플레이어가 이 게임을 완료했습니다",
+    "markDateTitle": "언제 플레이했나요?",
+    "completeDateTitle": "언제 완료했나요?",
+    "markDateHint": "가입 전에 했다면 과거 날짜를 선택하세요.",
+    "distributionTitle": "평점 분포",
+    "reviewCountOne": "플레이어 리뷰 {{count}}개",
+    "reviewCountMany": "플레이어 리뷰 {{count}}개",
+    "eyeDistribution": "커뮤니티 평점",
+    "eyeDlc": "추가 콘텐츠",
+    "eyeAbout": "소개",
+    "aboutTitle": "게임",
+    "rating": {
+      "globalTitle": "종합 평점",
+      "players": "플레이어",
+      "votesOne": "투표 {{count}}개",
+      "votesMany": "투표 {{count}}개"
+    },
+    "dateTypeLabel": "또는 날짜 입력",
+    "datePartYear": "년",
+    "datePartMonth": "월",
+    "datePartDay": "일"
+  },
+  "share": {
+    "defaultTitle": "친구에게 공유",
+    "shareTo": "공유 대상…",
+    "loading": "불러오는 중…",
+    "noFriends": "친구를 추가하여 공유하세요.",
+    "sent": "전송됨 ✓",
+    "send": "보내기"
+  },
+  "chat": {
+    "open": "메시지 열기",
+    "close": "메시지 닫기",
+    "title": "메시지",
+    "closeAria": "닫기",
+    "noConversations": "친구를 추가하여 여기에서 대화하세요.",
+    "back": "뒤로",
+    "placeholder": "메시지 입력…",
+    "send": "보내기",
+    "read": "읽음",
+    "shareGame": "게임",
+    "shareReview": "리뷰",
+    "shareProfile": "프로필",
+    "noMessage": "메시지 없음",
+    "sharedGame": "공유된 게임",
+    "sharedReview": "공유된 리뷰",
+    "sharedProfile": "공유된 프로필"
+  },
+  "company": {
+    "notFound": "스튜디오를 찾을 수 없습니다.",
+    "label": "스튜디오",
+    "games": "스튜디오 게임",
+    "seeMore": "게임 더 보기 ({{count}})"
+  },
+  "steam": {
+    "neverPlayed": "플레이 안 함",
+    "playMinutes": "{{count}}분",
+    "playHours": "{{count}}시간",
+    "loadError": "Steam 라이브러리를 불러올 수 없습니다",
+    "friendRequestError": "친구 요청을 보낼 수 없습니다",
+    "title": "Steam 라이브러리",
+    "linkPrompt": "Steam 계정을 연결하여 게임 라이브러리를 가져오고 Steam 친구를 찾으세요.",
+    "linkCta": "내 Steam 계정 연결",
+    "friendsHeading": "Saveboxd의 Steam 친구",
+    "friendsPrivate": "Steam 친구 목록이 비공개라 친구를 추천할 수 없습니다.",
+    "noFriendsTitle": "아직 Steam 친구가 없습니다",
+    "noFriendsDesc": "아직 Steam 친구 중 Saveboxd에 있는 사람이 없습니다 — 초대하세요!",
+    "requestSent": "요청 전송됨",
+    "addFriend": "친구 추가",
+    "yourGames": "내 게임",
+    "gamesPrivate": "Steam 게임 세부 정보가 비공개입니다. Steam에서 <s>프로필 → 개인정보 설정 → 게임 세부 정보</s>를 공개로 설정한 후 이 페이지를 새로고침하세요.",
+    "owned": "Steam에 {{totalOwned}}개 보유 — 그중 {{matched}}개가 카탈로그에 있습니다.",
+    "ownedUnmatched": "Steam에 {{totalOwned}}개 보유 — 그중 {{matched}}개가 카탈로그에 있고, {{unmatched}}개는 등록되지 않았습니다.",
+    "statusPlaying": "플레이 중",
+    "statusBacklog": "할 예정",
+    "reviewWritten": "리뷰 작성됨 — 보기/편집",
+    "writeReview": "리뷰 작성",
+    "viewReviewOf": "{{title}} 리뷰 보기",
+    "writeReviewOf": "{{title}} 리뷰 작성",
+    "noMatchedTitle": "아직 일치하는 게임이 없습니다",
+    "noMatchedDesc": "현재 카탈로그에 있는 Steam 게임이 없습니다.",
+    "manageLink": "Steam 연결은 <l>프로필</l>에서 관리하세요.",
+    "achievementsTitle": "도전 과제",
+    "achievementsSub": "{{games}}개 게임 · {{perfect}}개 100%",
+    "achPerGame": "{{unlocked}}/{{total}} 도전 과제",
+    "achievementsNone": "아직 동기화된 도전 과제가 없습니다 — Steam 프로필이 비공개일 수 있습니다.",
+    "syncAchievements": "새로고침",
+    "syncing": "동기화 중…"
+  },
+  "genres": {
+    "Adventure": "어드벤처",
+    "Arcade": "아케이드",
+    "Card & Board Game": "카드 & 보드게임",
+    "Fighting": "격투",
+    "Hack and slash/Beat 'em up": "핵 앤 슬래시/벨트스크롤",
+    "Indie": "인디",
+    "MOBA": "MOBA",
+    "Music": "음악",
+    "Pinball": "핀볼",
+    "Platform": "플랫폼",
+    "Point-and-click": "포인트 앤 클릭",
+    "Puzzle": "퍼즐",
+    "Quiz/Trivia": "퀴즈",
+    "Racing": "레이싱",
+    "Real Time Strategy (RTS)": "실시간 전략 (RTS)",
+    "Role-playing (RPG)": "롤플레잉 (RPG)",
+    "Shooter": "슈팅",
+    "Simulator": "시뮬레이션",
+    "Sport": "스포츠",
+    "Strategy": "전략",
+    "Tactical": "택티컬",
+    "Turn-based strategy (TBS)": "턴제 전략 (TBS)",
+    "Visual Novel": "비주얼 노벨"
+  },
+  "legal": {
+    "privacy": {
+      "title": "개인정보 처리방침",
+      "lastUpdated": "최종 업데이트: 2026년 7월 22일",
+      "intro": "Saveboxd는 42 커리큘럼의 일환으로 제작된 학생 프로젝트로, 친구, 메시지, 목록 등 소셜 기능을 갖춘 비디오 게임 카탈로그 및 리뷰 사이트입니다. 본 방침은 사이트 이용 시 수집되는 데이터, 그 이유, 그리고 귀하의 권리에 대해 설명합니다.",
+      "sections": {
+        "dataCollected": {
+          "title": "수집하는 데이터",
+          "body": [
+            "저희는 사이트 운영에 필요한 데이터만 수집합니다:",
+            "• 일반 가입 시: 이메일 주소, 사용자 이름, 비밀번호(해시 형태로 저장되며 평문으로 저장되지 않음).",
+            "• Google, 42(Intra), Discord 또는 Steam을 통해 로그인하는 경우: 해당 서비스가 제공하는 식별자, 제공자가 전달하는 경우의 이메일 주소(Steam은 이메일 주소를 전달하지 않음), 표시 이름, 프로필 사진.",
+            "• 귀하가 자발적으로 입력하는 프로필 정보: 자기소개, 아바타, 선호 언어.",
+            "• 사이트에서의 활동: 게임 리뷰 및 평점, 플레이한 것으로 표시한 게임, 맞춤 게임 목록, 친구 관계, 친구와 주고받은 메시지, 좋아요 및 댓글.",
+            "• 인증에 필요한 기술적 쿠키(쿠키 섹션 참조).",
+            "• 거의 모든 웹사이트와 마찬가지로 자동으로 생성되는 표준 서버 기술 로그(IP 주소, 타임스탬프, 요청된 페이지).",
+            "저희는 은행 또는 결제 데이터, 정확한 위치 데이터를 일절 수집하지 않으며, 어떠한 사용자 분석 도구나 광고 도구도 사용하지 않습니다."
+          ]
+        },
+        "purposes": {
+          "title": "이 데이터를 사용하는 이유",
+          "body": [
+            "귀하의 데이터는 오직 다음의 목적으로만 사용됩니다:",
+            "• 계정 생성 및 관리;",
+            "• 사용자 인증 및 세션 보안(쿠키, 토큰, 활성화된 경우 2단계 인증);",
+            "• 프로필 및 통계 표시(플레이한 게임, 리뷰, 목록);",
+            "• 소셜 기능 지원(친구 요청, Steam 또는 42를 통한 친구 추천, 메시지, 알림);",
+            "• 계정 운영과 엄격히 관련된 이메일 발송(이메일 인증, 비밀번호 재설정);",
+            "• 서비스 보안 확보 및 남용 방지.",
+            "저희는 상업적 또는 광고 목적으로 귀하의 데이터를 판매, 대여 또는 공유하지 않습니다."
+          ]
+        },
+        "discord": {
+          "title": "Discord 로그인 및 계정 연동",
+          "body": [
+            "Saveboxd는 Discord(OAuth2)를 통한 로그인 또는 계정 연동을 지원합니다. 이 경우 Discord는 다음 정보를 저희에게 전달합니다: Discord ID, 사용자 이름, Discord 계정에서 제공하는 경우 연결된 이메일 주소, Discord 아바타의 URL.",
+            "이 정보는 오직 Saveboxd 계정을 생성하거나 기존 계정을 귀하의 Discord 신원과 연결하고, 프로필에 Discord 배지를 표시하는 데에만 사용됩니다. 저희는 귀하의 Discord 비밀번호를 절대 수신하지 않으며, 계정의 다른 어떤 데이터(서버, 메시지, 연락처)에도 접근하지 않습니다.",
+            "유일한 로그인 수단이 아닌 한, 언제든지 설정에서 Discord 계정 연동을 해제할 수 있습니다."
+          ]
+        },
+        "retention": {
+          "title": "데이터 보존 기간",
+          "body": [
+            "귀하의 데이터는 계정이 존재하는 동안 보존됩니다.",
+            "설정에서 계정을 삭제하는 경우:",
+            "• 계정, 아바타, 친구 관계, 플레이한 것으로 표시한 게임, 목록, 알림, 메시지(보낸 것과 받은 것 모두)가 영구적으로 삭제됩니다;",
+            "• 기존 리뷰와 댓글은 보존되지만 익명화되어 표시됩니다(“삭제된 사용자”로부터 온 것으로 표시), 이는 다른 사용자의 토론 내용을 손상시키지 않기 위함입니다;",
+            "• 일부 데이터는 자동 삭제되기 전까지 기술적 백업이나 서버 로그에 일시적으로 남아 있을 수 있습니다.",
+            "저희는 사이트 운영 또는 서비스 보안에 필요한 범위를 초과하여 데이터를 보존하지 않습니다."
+          ]
+        },
+        "rights": {
+          "title": "귀하의 권리",
+          "body": [
+            "일반 데이터 보호 규정(GDPR)에 따라 귀하는 개인 데이터에 대해 다음과 같은 권리를 가집니다:",
+            "• 개인 데이터에 대한 접근권 — 설정에서 언제든지 전체 사본을 다운로드할 수 있습니다;",
+            "• 부정확한 데이터의 정정권(대부분의 항목은 설정에서 직접 수정 가능);",
+            "• 삭제권: 언제든지 설정에서 계정을 삭제할 권리;",
+            "• 특정 경우 처리 제한을 요청할 권리;",
+            "• 예를 들어 알림 환경설정을 통해 특정 처리에 반대할 권리;",
+            "• 데이터 이동권: 설정에서 구조화되고 기계가 읽을 수 있는 형식(JSON)으로 데이터를 직접 내보낼 수 있습니다;",
+            "• 처리가 동의에 근거하는 경우(예: 제3자 제공자를 통한 로그인) 언제든지 동의를 철회할 권리;",
+            "• 관할 데이터 보호 당국(프랑스의 경우 CNIL — cnil.fr)에 이의를 제기할 권리.",
+            "이러한 권리를 행사하려면 “연락처” 섹션에 명시된 주소로 문의해 주십시오."
+          ]
+        },
+        "cookies": {
+          "title": "쿠키 및 로컬 저장소",
+          "body": [
+            "Saveboxd는 사이트 운영에 엄격히 필요한 쿠키만 사용하며, 모두 기술적 용도이며 광고 목적으로는 사용되지 않습니다:",
+            "• 인증 쿠키(로그인 세션, 세션 갱신, 2단계 인증 단계, 제3자 계정 연동), 모두 httpOnly이며 유효 기간이 제한됩니다.",
+            "광고 추적이나 사용자 분석을 위한 쿠키는 사용하지 않습니다.",
+            "또한 언어 선택 및 밝은/어두운 테마라는 두 가지 표시 환경설정을 기억하기 위해 브라우저의 로컬 저장소(localStorage)를 사용합니다. 이 정보는 귀하의 기기에만 남아 있으며 당사 서버로 전송되지 않습니다.",
+            "이러한 쿠키는 서비스 운영에 엄격히 필요하므로, ePrivacy 규정에 따라 사전 동의가 필요하지 않습니다."
+          ]
+        },
+        "thirdParties": {
+          "title": "제3자 서비스",
+          "body": [
+            "Saveboxd는 운영을 위해 다음의 제3자 서비스를 이용합니다:",
+            "• IGDB(Internet Game Database): 공개된 비디오 게임 정보를 위한 것으로, 귀하에 관한 어떠한 개인 데이터도 전달되지 않습니다;",
+            "• Steam(Valve): 계정을 연동하기로 선택한 경우, 신원 확인 및 닉네임, 아바타, 게임 라이브러리, Steam 친구 목록을 가져오기 위한 것입니다(이미 Saveboxd에 있는 친구를 추천하는 용도로만 사용되며, 저장되지 않습니다);",
+            "• Google, 42(Intra) 및 Discord: 이들 제공자 중 하나를 통해 로그인하기로 선택한 경우;",
+            "• Brevo: 이메일 인증 및 비밀번호 재설정 메일에만 사용되는 거래 이메일 발송 제공업체입니다.",
+            "저희는 어떠한 사용자 분석, 광고 또는 제3자 추적 도구도 사용하지 않습니다.",
+            "호스팅: 본 프로젝트는 42 커리큘럼의 일환으로 개발 및 평가됩니다. 사이트가 향후 공개적으로 배포될 경우, 본 섹션에는 호스팅 제공업체의 이름이 추가되어야 합니다."
+          ]
+        },
+        "contact": {
+          "title": "연락처",
+          "body": [
+            "본 개인정보 처리방침에 관한 문의사항이 있으시거나 개인 데이터에 대한 권리를 행사하고자 하는 경우, 다음 주소로 문의해 주십시오: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "이용약관",
+      "lastUpdated": "최종 업데이트: 2026년 7월 22일",
+      "intro": "본 약관은 42 커리큘럼의 일환으로 제작된 학생 프로젝트인 Saveboxd 사이트에 대한 접근 및 이용을 규율합니다. 계정을 생성하거나 사이트를 이용함으로써 귀하는 아래에 설명된 약관에 동의하는 것으로 간주됩니다.",
+      "sections": {
+        "purpose": {
+          "title": "서비스의 목적",
+          "body": [
+            "Saveboxd는 비디오 게임을 분류, 평가, 리뷰하고, 플레이한 게임을 추적하며, 맞춤 목록을 만들고, 다른 사용자와 소통(친구, 메시지, 리뷰, 댓글)할 수 있는 커뮤니티 플랫폼입니다.",
+            "본 사이트는 42 커리큘럼의 일환으로 교육 목적으로 제작된 학생 프로젝트이며, 상업 서비스가 아닙니다."
+          ]
+        },
+        "account": {
+          "title": "접근 및 계정 생성",
+          "body": [
+            "대부분의 기능에 접근하려면 일반 가입(이메일, 사용자 이름, 비밀번호) 또는 제3자 인증 제공자(Google, 42, Discord, Steam)를 통해 계정을 생성해야 합니다.",
+            "가입 시 정확한 정보를 제공해야 하며, 타인의 동의 없이 그 사람을 대신하여 계정을 생성하거나 정지 조치를 회피하기 위해 여러 개의 계정을 생성해서는 안 됩니다."
+          ]
+        },
+        "credentials": {
+          "title": "인증 정보에 대한 책임",
+          "body": [
+            "귀하는 비밀번호의 기밀성 및 귀하의 계정에서 이루어지는 모든 활동에 대해 책임을 집니다.",
+            "계정에 대한 무단 접근이 의심되는 경우, 즉시 비밀번호를 변경하고 저희에게 문의해 주십시오.",
+            "계정 보안을 강화하기 위해 설정에서 이용 가능한 2단계 인증(2FA)을 활성화할 것을 권장합니다."
+          ]
+        },
+        "acceptableUse": {
+          "title": "사이트의 허용되는 이용",
+          "body": [
+            "Saveboxd를 이용함으로써 귀하는 다음 사항에 동의합니다:",
+            "• 타인을 존중하는 리뷰, 댓글, 메시지만 게시할 것;",
+            "• 다른 개인이나 단체를 사칭하지 않을 것;",
+            "• 사이트를 불법적인 목적이나 다른 사용자에게 해를 끼치기 위한 목적으로 이용하지 않을 것;",
+            "• 사이트의 기술적 운영을 방해하려 하지 않을 것(과부하, 취약점 악용, 요청 제한 우회 등)."
+          ]
+        },
+        "abuse": {
+          "title": "금지된 행위",
+          "body": [
+            "특히 다음 행위는 금지됩니다:",
+            "• 다른 사용자에 대한 괴롭힘, 모욕, 협박 또는 기타 악의적인 행위;",
+            "• 스팸(반복적이거나 홍보성이거나 주제와 무관한 메시지 또는 리뷰);",
+            "• 불법적이거나, 혐오를 조장하거나, 차별적이거나, 노골적으로 성적인 콘텐츠의 게시;",
+            "• 다른 계정이나 사이트 시스템에 대한 무단 접근 시도."
+          ]
+        },
+        "interactions": {
+          "title": "사용자 간 상호작용",
+          "body": [
+            "Saveboxd는 친구 요청, 개인 메시지, 대화 내 게임/리뷰/프로필 공유, Steam 네트워크나 42 커뮤니티 소속 여부에 기반한 친구 추천 등의 소셜 기능을 제공합니다.",
+            "귀하는 자신의 메시지와 게시물 내용에 대해 단독으로 책임을 집니다. 친구와 주고받은 개인 메시지는 두 계정 중 하나가 삭제되면 양측 모두에서 영구적으로 삭제됩니다."
+          ]
+        },
+        "moderation": {
+          "title": "관리(모더레이션) 및 신고",
+          "body": [
+            "본 사이트는 현재 리뷰나 메시지에 대한 내장된 신고 시스템을 갖추고 있지 않습니다.",
+            "남용, 괴롭힘 또는 부적절한 콘텐츠를 경험한 경우, “연락처” 섹션에 명시된 주소로 직접 문의하실 수 있으며, 이 경우 관리(모더레이션)는 프로젝트 팀이 수동으로 처리합니다."
+          ]
+        },
+        "suspension": {
+          "title": "계정 정지 또는 삭제",
+          "body": [
+            "본 약관을 준수하지 않을 경우(남용, 괴롭힘, 스팸, 불법 콘텐츠 등), 전담 관리팀이 없는 학생 프로젝트로서 합리적으로 가능한 범위 내에서 저희 재량에 따라 계정을 정지하거나 삭제할 권리를 보유합니다.",
+            "귀하는 언제든지 설정에서 직접 자신의 계정을 삭제할 수 있습니다."
+          ]
+        },
+        "userContent": {
+          "title": "사용자 생성 콘텐츠",
+          "body": [
+            "귀하는 게시하는 콘텐츠(리뷰, 댓글, 목록, 자기소개, 아바타)에 대한 소유권을 유지합니다. 이를 Saveboxd에 게시함으로써, 귀하는 사이트의 정상적인 운영의 일환으로 저희가 이를 표시하고 저장하는 것을 허용합니다.",
+            "귀하는 게시하는 모든 콘텐츠, 특히 제3자 인증 제공자가 제공한 사진을 사용하지 않는 경우 프로필 사진에 대해 필요한 권리를 보유하고 있음을 보증합니다."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "지적 재산권",
+          "body": [
+            "코드, 디자인 및 “Saveboxd” 브랜드는 42 커리큘럼 학생 프로젝트의 일환으로 제작되었으며 상업적 이용을 목적으로 하지 않습니다.",
+            "비디오 게임과 관련된 정보 및 시각 자료(제목, 커버 이미지, 설명)는 제3자 공개 데이터베이스(IGDB)에서 제공되며, 각 발행사 및 권리 보유자에게 귀속됩니다. Saveboxd는 이러한 콘텐츠에 대해 어떠한 소유권도 주장하지 않으며, 비상업적이고 교육적인 맥락에서 설명 및 정보 제공 목적으로만 이를 표시합니다."
+          ]
+        },
+        "gameContent": {
+          "title": "비디오 게임 관련 콘텐츠",
+          "body": [
+            "Saveboxd에 표시되는 커버 이미지, 설명 및 게임 정보는 IGDB에서 자동으로 가져오며, 계정을 연동한 경우 개인 라이브러리와 관련된 데이터는 Steam에서 가져옵니다. 이 정보는 각 권리 보유자의 소유로 유지됩니다."
+          ]
+        },
+        "availability": {
+          "title": "서비스 가용성",
+          "body": [
+            "Saveboxd는 지속적인 가용성을 보장하지 않고 “있는 그대로” 제공되는 학생 프로젝트입니다. 본 서비스는 특히 평가 또는 유지보수 과정에서 사전 통지 없이 언제든지 중단, 수정 또는 종료될 수 있습니다."
+          ]
+        },
+        "liability": {
+          "title": "책임의 제한",
+          "body": [
+            "Saveboxd는 교육 목적으로 제공되며, 명시적이든 묵시적이든 어떠한 형태의 보증도 제공하지 않습니다. 법률이 허용하는 범위 내에서, 프로젝트 팀은 사이트의 이용 또는 이용 불가로 인해 발생하는 직접적 또는 간접적 손해에 대해 책임을 지지 않습니다.",
+            "이 제한은 법률 자문을 구성하지 않으며, 적용 법률에 따라 계약으로 배제할 수 없는 강행 규정상의 권리를 사용자로부터 박탈하지 않습니다."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "제3자 서비스 및 인증",
+          "body": [
+            "Saveboxd는 제3자 제공자(Google, 42, Discord, Steam)를 통한 로그인을 지원합니다. 이러한 제공자의 이용은 Saveboxd가 전혀 통제할 수 없는 각 제공자 자체의 이용약관의 적용도 받습니다."
+          ]
+        },
+        "changes": {
+          "title": "본 약관의 변경",
+          "body": [
+            "본 약관은 특히 사이트 기능의 발전을 반영하기 위해 언제든지 변경될 수 있습니다. 최종 업데이트 날짜는 이 페이지 상단에 표시됩니다. 중대한 변경이 있는 경우, 합리적인 방법으로 귀하에게 알리기 위해 노력할 것입니다."
+          ]
+        },
+        "law": {
+          "title": "준거법 및 관할권",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — 별도의 명시가 없는 한, 본 약관은 학생 프로젝트의 일환으로 참고용으로 제공되며 공식적인 상업 계약을 구성하지 않습니다."
+          ]
+        },
+        "contact": {
+          "title": "연락처",
+          "body": [
+            "본 이용약관에 관한 문의사항이 있으시면 다음 주소로 문의해 주십시오: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "PlayStation 계정을 연결해 게임, 트로피, 친구를 가져오세요.",
+    "linkCta": "설정으로 이동",
+    "loadError": "PlayStation 데이터를 불러오지 못했습니다.",
+    "friendsHeading": "Saveboxd의 PlayStation 친구",
+    "friendsPrivate": "PlayStation 친구 목록이 비공개입니다.",
+    "noFriendsTitle": "추천할 친구가 없습니다",
+    "noFriendsDesc": "PlayStation 친구 중 아직 Saveboxd에 있는 사람이 없습니다.",
+    "requestSent": "요청 보냄",
+    "addFriend": "추가",
+    "friendRequestError": "친구 요청을 보내지 못했습니다.",
+    "yourGames": "내 게임",
+    "gamesPrivate": "PlayStation 게임이 비공개입니다.",
+    "played": "{{totalPlayed}}개 게임 플레이 · {{matched}}개가 카탈로그에 있음",
+    "playedUnmatched": "{{totalPlayed}}개 게임 플레이 · {{matched}}개 일치 · {{unmatched}}개는 카탈로그에 없음",
+    "noMatchedTitle": "일치하는 게임 없음",
+    "noMatchedDesc": "내 PlayStation 게임이 아직 카탈로그에 없습니다.",
+    "trophyLevel": "트로피 레벨",
+    "trophiesEarned": "획득 트로피",
+    "trophyProgress": "{{earned}}/{{total}} 트로피 · {{progress}}%",
+    "statusPlaying": "플레이 중",
+    "statusBacklog": "백로그",
+    "reviewWritten": "리뷰 작성됨",
+    "writeReview": "리뷰 작성",
+    "viewReviewOf": "{{title}}에 대한 내 리뷰 보기",
+    "writeReviewOf": "{{title}} 리뷰 작성",
+    "refresh": "새로 고침",
+    "syncing": "상쾌하네요…",
+    "syncedAt": "최종 업데이트: {{time}}"
+  },
+  "library": {
+    "title": "내 라이브러리",
+    "noneLinkedTitle": "연결된 계정 없음",
+    "noneLinkedDesc": "설정에서 Steam 또는 PlayStation 계정을 연결하면 여기에서 게임과 트로피를 볼 수 있습니다.",
+    "goSettings": "설정으로 이동",
+    "notLinked": "연결 안 됨",
+    "eyebrow": "내 게임",
+    "subtitle": "연결된 계정에서 가져온 타이틀입니다.",
+    "linked": "연결됨",
+    "link": "연결"
+  },
+  "errors": {
+    "notFound": {
+      "title": "페이지를 찾을 수 없습니다",
+      "body": "이 페이지는 존재하지 않거나 이동되었습니다.",
+      "home": "홈으로 돌아가기"
+    },
+    "boundary": {
+      "title": "문제가 발생했습니다",
+      "body": "예기치 않은 오류가 발생했습니다. 페이지를 새로 고쳐 보세요.",
+      "retry": "새로고침"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Xbox 계정을 연동하여 게임과 업적을 가져오세요.",
+    "linkCta": "설정으로 이동",
+    "loadError": "Xbox 데이터를 불러올 수 없습니다.",
+    "yourGames": "여러분의 게임",
+    "gamesPrivate": "Xbox 게임 기록은 비공개로 처리됩니다.",
+    "gamerscore": "게이머 스코어",
+    "gamesPlayed": "경기 수",
+    "perfectGames": "100% 완료",
+    "refresh": "새로 고침",
+    "syncing": "상쾌하네요…",
+    "syncedAt": "최종 업데이트: {{time}}",
+    "played": "{{totalPlayed}} 경기 수 · 당사 카탈로그에서 일치하는 항목{{matched}}개",
+    "playedUnmatched": "{{totalPlayed}} 플레이한 게임 · {{matched}}에서 일치하는 항목 · {{unmatched}}는 당사 카탈로그에 없습니다",
+    "noMatchedTitle": "일치하는 게임이 없습니다",
+    "noMatchedDesc": "현재 귀하의 Xbox 게임 중 저희 카탈로그에 등록된 게임은 없습니다.",
+    "achievementProgress": "{{earned}} 성과 · {{progress}} %",
+    "statusPlaying": "재생 중",
+    "statusBacklog": "미처리 건",
+    "reviewWritten": "작성된 리뷰",
+    "writeReview": "리뷰 작성하기",
+    "viewReviewOf": "{{title}}에 대한 리뷰 보기",
+    "writeReviewOf": "{{title}}에 대한 리뷰를 작성해 주세요."
+  },
+  "onboarding": {
+    "welcome": "환영합니다!",
+    "subtitle": "몇 단계만 거치면 프로필을 설정할 수 있습니다.",
+    "skip": "지금은 건너뛰기",
+    "next": "계속",
+    "back": "뒤로",
+    "finish": "완료",
+    "genericError": "문제가 발생했습니다. 다시 시도해 주세요.",
+    "username": {
+      "title": "사용자 이름을 선택하세요",
+      "subtitle": "가입 시 등록하신 계좌 정보를 미리 입력해 두었습니다. 원하시면 변경하실 수 있습니다.",
+      "hint": "3~24자: 영문자, 숫자 및 밑줄만 사용할 수 있습니다."
+    },
+    "avatar": {
+      "title": "프로필 사진 추가하기",
+      "subtitle": "귀하의 계정에 있는 사진을 가져왔습니다. 다른 사진을 업로드한 다음, 확대/축소하고 드래그하여 구도를 잡으세요.",
+      "skip": "이 단계를 건너뛰기"
+    },
+    "services": {
+      "title": "게임 계정 연동하기",
+      "subtitle": "플랫폼을 연결하여 게임과 통계를 가져오세요.",
+      "laterHint": "서두르실 필요는 없습니다. 나중에 계정 설정에서 계정을 연동하실 수도 있습니다.",
+      "connected": "연결됨",
+      "connect": "연결",
+      "publicNotice": "Steam, PlayStation 및 Xbox 프로필을 ‘공개’로 설정해야 합니다. 그렇지 않으면 게임, 친구 및/또는 업적을 가져올 수 없습니다.",
+      "steam": {
+        "perks": [
+          "플레이한 게임 목록을 사이트로 가져오기",
+          "업적 및 100% 클리어한 게임",
+          "이미 여기 있는 스팀 친구 찾기"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "PlayStation 게임 라이브러리를 이 사이트로 가져오기",
+          "트로피 진행 상황 및 타이틀별 100% 클리어 게임",
+          "이미 가입한 PlayStation 친구들을 찾아보세요"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Xbox 게임 라이브러리를 사이트로 가져오기",
+          "게이머 스코어, 업적 및 100% 클리어한 게임"
+        ]
+      }
+    }
+  },
+  "a11y": {
+    "skipToContent": "본문으로 건너뛰기"
+  },
+  "achievements": {
+    "sectionTitle": "업적",
+    "done": "달성",
+    "unlockedOn": "{{date}}에 달성",
+    "fam": {
+      "completions": "완료한 게임",
+      "played": "플레이한 게임",
+      "perfect": "100%",
+      "reviews": "리뷰",
+      "lists": "목록",
+      "friends": "친구",
+      "genres": "탐험가",
+      "studio": "스튜디오 팬",
+      "linked": "연결된 계정",
+      "popular": "인기",
+      "supporter": "서포터",
+      "favorite": "열혈팬",
+      "harsh": "냉정한 평론가",
+      "veteran": "베테랑"
+    },
+    "desc": {
+      "completions": "게임 {{count}}개 완료",
+      "played": "게임 {{count}}개 기록",
+      "perfect": "게임 {{count}}개 100% 완료",
+      "reviews": "리뷰 {{count}}개 작성",
+      "lists": "목록 {{count}}개 생성",
+      "friends": "친구 {{count}}명 달성",
+      "genres": "{{count}}개 장르의 게임 완료",
+      "studio": "같은 스튜디오 게임 {{count}}개 평가",
+      "linked": "게임 계정 {{count}}개 연결",
+      "popular": "리뷰에서 좋아요 {{count}}개 받기",
+      "supporter": "리뷰에 좋아요 {{count}}개 주기",
+      "favorite": "게임 {{count}}개에 10점 주기",
+      "harsh": "게임 {{count}}개에 0점 주기",
+      "veteran": "가입 {{count}}개월"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} 단계",
+    "concernedGames": "해당 게임"
+  },
+  "tutorial": {
+    "eyebrow": "가이드",
+    "skip": "건너뛰기",
+    "back": "이전",
+    "next": "다음",
+    "done": "확인",
+    "steps": {
+      "home": {
+        "title": "홈",
+        "body": "Saveboxd 로고를 클릭하면 언제든 홈으로 돌아갈 수 있습니다."
+      },
+      "search": {
+        "title": "검색",
+        "body": "검색창에서 게임, 스튜디오, 플레이어를 찾을 수 있습니다."
+      },
+      "catalog": {
+        "title": "카탈로그",
+        "body": "전체 게임 카탈로그를 둘러보고 새로운 게임을 찾아보세요."
+      },
+      "feed": {
+        "title": "피드",
+        "body": "친구들이 무엇을 플레이하고 완료하고 리뷰하는지 확인하세요."
+      },
+      "leaderboard": {
+        "title": "랭킹",
+        "body": "최고의 플레이어를 확인하고 자신의 순위도 추적하세요."
+      },
+      "friends": {
+        "title": "친구",
+        "body": "친구를 추가하고 요청을 수락하며 온라인 상태를 확인하세요."
+      },
+      "library": {
+        "title": "라이브러리",
+        "body": "Steam·PlayStation·Xbox 게임과 트로피를 동기화하세요."
+      },
+      "notifications": {
+        "title": "알림",
+        "body": "좋아요, 댓글, 친구 요청, 업적이 여기에 표시됩니다."
+      },
+      "profile": {
+        "title": "내 프로필",
+        "body": "내 게임, 리뷰, 통계, 배지가 여기에 모여 있습니다."
+      },
+      "chat": {
+        "title": "채팅",
+        "body": "오른쪽 아래 버블에서 친구와 실시간으로 대화하세요."
+      },
+      "menu": {
+        "title": "설정",
+        "body": "여기서 설정을 열 수 있습니다: 프로필, 알림, 테마, 언어."
+      }
+    }
+  }
+}

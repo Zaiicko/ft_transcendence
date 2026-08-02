@@ -1,0 +1,1237 @@
+{
+  "common": {
+    "loading": "Laden…",
+    "save": "Opslaan",
+    "saving": "Bezig met opslaan…",
+    "cancel": "Annuleren",
+    "add": "Toevoegen",
+    "back": "Terug",
+    "close": "Sluiten",
+    "retry": "Opnieuw proberen",
+    "delete": "Verwijderen",
+    "confirm": "Bevestigen",
+    "edit": "Bewerken",
+    "skip": "Overslaan",
+    "error": "Er is iets misgegaan",
+    "yes": "Ja",
+    "no": "Nee",
+    "unknown": "Onbekend",
+    "previous": "Vorige",
+    "next": "Volgende"
+  },
+  "nav": {
+    "catalog": "Catalogus",
+    "feed": "Feed",
+    "leaderboard": "Ranglijst",
+    "friends": "Vrienden",
+    "steam": "Steam",
+    "login": "Inloggen",
+    "signup": "Registreren",
+    "library": "Bibliotheken"
+  },
+  "menu": {
+    "notifications": "Meldingen",
+    "settings": "Instellingen",
+    "language": "Taal",
+    "lightMode": "Lichte modus",
+    "darkMode": "Donkere modus",
+    "logout": "Uitloggen",
+    "closeMenu": "Menu sluiten",
+    "notificationPrefs": "Meldingsvoorkeuren",
+    "navigation": "Navigatiemenu",
+    "replayTutorial": "Rondleiding opnieuw"
+  },
+  "footer": {
+    "tagline": "De Letterboxd van videogames · 42-project",
+    "privacy": "Privacybeleid",
+    "terms": "Servicevoorwaarden"
+  },
+  "languagePicker": {
+    "title": "Taal"
+  },
+  "oauth": {
+    "continueWithGoogle": "Doorgaan met Google",
+    "continueWithFortyTwo": "Doorgaan met 42",
+    "continueWithSteam": "Doorgaan met Steam",
+    "continueWithDiscord": "Doorgaan met Discord",
+    "or": "of"
+  },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "emailPlaceholder": "E-mail",
+      "passwordPlaceholder": "Wachtwoord",
+      "submit": "Inloggen",
+      "submitting": "Bezig met inloggen…",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "noAccount": "Nog geen account?",
+      "signupLink": "Registreren",
+      "genericError": "Inloggen mislukt",
+      "errorEmailInUse": "Er bestaat al een account met dit e-mailadres. Log in met je wachtwoord, of gebruik een ander e-mailadres voor die provider.",
+      "errorGeneric": "Er ging iets mis bij het inloggen — probeer het opnieuw.",
+      "steamFailed": "Inloggen met Steam mislukt — probeer het opnieuw",
+      "subtitle": "Pak je speeldagboek weer op waar je gebleven was."
+    },
+    "twoFactor": {
+      "title": "Tweestapsverificatiecode",
+      "description": "Voer de 6-cijferige code van je authenticator-app in.",
+      "verify": "Verifiëren",
+      "verifying": "Bezig met verifiëren…",
+      "invalidCode": "Ongeldige code"
+    },
+    "signup": {
+      "title": "Registreren",
+      "titleSteam": "Rond je Steam-registratie af",
+      "steamIntro": "Je Steam-account is geverifieerd — kies een e-mailadres en bevestig je gebruikersnaam om je Saveboxd-account aan te maken.",
+      "emailPlaceholder": "E-mail",
+      "usernamePlaceholder": "Gebruikersnaam",
+      "usernameHint": "Alleen letters, cijfers en underscores",
+      "passwordPlaceholder": "Wachtwoord (min. 8 tekens)",
+      "passwordPlaceholderSteam": "Wachtwoord (optioneel)",
+      "passwordHintSteam": "Zonder wachtwoord kun je alleen inloggen met Steam. Je kunt er later een toevoegen via je profiel.",
+      "submit": "Registreren",
+      "submitSteam": "Account aanmaken",
+      "submitting": "Account wordt aangemaakt…",
+      "sessionExpired": "Sessie verlopen — log opnieuw in via Steam",
+      "genericError": "Registreren mislukt",
+      "alreadyHaveAccount": "Heb je al een account?",
+      "loginLink": "Inloggen",
+      "subtitle": "Maak je account aan en begin je speeldagboek."
+    },
+    "forgotPassword": {
+      "title": "Wachtwoord vergeten?",
+      "emailPlaceholder": "E-mail",
+      "submit": "Resetlink versturen",
+      "submitting": "Bezig met versturen…",
+      "checkEmailTitle": "Controleer je e-mail",
+      "checkEmailBody": "Als dat adres geregistreerd is, is er een link onderweg om je wachtwoord opnieuw in te stellen.",
+      "backToLogin": "Terug naar inloggen",
+      "genericError": "Er is iets misgegaan"
+    },
+    "resetPassword": {
+      "title": "Kies een nieuw wachtwoord",
+      "invalidLinkTitle": "Ongeldige link",
+      "invalidLinkBody": "Deze link om je wachtwoord opnieuw in te stellen mist een token.",
+      "requestNewLink": "Vraag een nieuwe aan",
+      "missingToken": "Reset-token ontbreekt.",
+      "newPasswordPlaceholder": "Nieuw wachtwoord (min. 8 tekens)",
+      "submit": "Wachtwoord opnieuw instellen",
+      "submitting": "Bezig met opnieuw instellen…",
+      "genericError": "Kon wachtwoord niet opnieuw instellen"
+    },
+    "verifyEmail": {
+      "verifying": "Je e-mail wordt geverifieerd…",
+      "successTitle": "E-mail geverifieerd",
+      "successBody": "Je adres is bevestigd — je bent klaar.",
+      "goToProfile": "Ga naar je profiel",
+      "failedTitle": "Verificatie mislukt",
+      "backToProfile": "Terug naar je profiel",
+      "missingToken": "Verificatietoken ontbreekt.",
+      "genericError": "Verificatie mislukt"
+    }
+  },
+  "settings": {
+    "title": "Accountinstellingen",
+    "welcomeTitle": "Welkom bij Saveboxd!",
+    "welcomeBody": "We hebben {{username}} als gebruikersnaam gekozen — pas dit hieronder aan als je wilt, of laat het zo.",
+    "changeAvatar": "Avatar wijzigen",
+    "uploadingAvatar": "Bezig met uploaden…",
+    "avatarError": "Uploaden mislukt",
+    "emailVerified": "E-mail geverifieerd",
+    "emailNotVerified": "E-mail niet geverifieerd",
+    "resendVerification": "Verificatie-e-mail opnieuw versturen",
+    "resendSending": "Bezig met versturen…",
+    "resendSent": "Verificatie-e-mail verstuurd — controleer je inbox.",
+    "resendError": "Kon verificatie-e-mail niet opnieuw versturen",
+    "usernameLabel": "Gebruikersnaam",
+    "bioLabel": "Bio",
+    "saveProfile": "Profiel opslaan",
+    "saving": "Bezig met opslaan…",
+    "skipForNow": "Voorlopig overslaan",
+    "profileError": "Kon profiel niet opslaan",
+    "signInVia": "Je account heeft geen wachtwoord — je logt in via {{provider}}. Voeg er een toe om ook met je e-mail te kunnen inloggen.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "Tweestapsverificatie",
+      "enabledDescription": "Ingeschakeld. Voer een code in om het uit te schakelen.",
+      "disable": "Uitschakelen",
+      "disabling": "Bezig met uitschakelen…",
+      "scanQr": "Scan deze QR-code met je authenticator-app:",
+      "manualKeyPrefix": "Of voer deze sleutel handmatig in:",
+      "confirm": "Bevestigen",
+      "confirming": "Bezig met bevestigen…",
+      "notEnabledDescription": "Niet ingeschakeld. Voeg een extra stap toe bij het inloggen met een app zoals Google Authenticator.",
+      "enable": "2FA inschakelen",
+      "starting": "Bezig met starten…",
+      "invalidCode": "Ongeldige code",
+      "startError": "Kon 2FA-instelling niet starten"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "Dit Steam-account is al gekoppeld aan een andere gebruiker.",
+      "linkedSuccess": "Steam-account gekoppeld!",
+      "linkedDescription": "Gekoppeld — je kunt inloggen met Steam en je gamebibliotheek importeren.",
+      "viewLibrary": "Bekijk mijn Steam-bibliotheek",
+      "unlink": "Steam ontkoppelen",
+      "unlinking": "Bezig met ontkoppelen…",
+      "unlinkError": "Kon Steam niet ontkoppelen",
+      "notLinkedDescription": "Koppel je Steam-account om in te loggen met Steam, je bibliotheek te importeren en je Steam-vrienden te vinden.",
+      "linkAccount": "Koppel mijn Steam-account"
+    },
+    "password": {
+      "changeTitle": "Wachtwoord wijzigen",
+      "addTitle": "Wachtwoord toevoegen",
+      "currentPasswordPlaceholder": "Huidig wachtwoord",
+      "newPasswordPlaceholder": "Nieuw wachtwoord (min. 8 tekens)",
+      "save": "Wachtwoord wijzigen",
+      "add": "Wachtwoord toevoegen",
+      "saving": "Bezig met opslaan…",
+      "saved": "Wachtwoord opgeslagen!",
+      "error": "Kon wachtwoord niet opslaan",
+      "forgot": "Wachtwoord vergeten?",
+      "forgotSending": "Verzenden…",
+      "forgotSent": "Er is een resetlink verstuurd naar {{email}}.",
+      "forgotError": "Kon de reset-e-mail niet verzenden"
+    },
+    "delete": {
+      "title": "Account verwijderen",
+      "warning": "Dit verwijdert je account, vriendschappen en berichten permanent. Je recensies en reacties blijven bewaard maar worden geanonimiseerd (weergegeven als van een verwijderde gebruiker). Dit kan niet ongedaan worden gemaakt.",
+      "button": "Account verwijderen",
+      "confirmPasswordPlaceholder": "Bevestig je wachtwoord",
+      "confirmButton": "Definitief verwijderen",
+      "deleting": "Bezig met verwijderen…",
+      "cancel": "Annuleren",
+      "error": "Kon account niet verwijderen"
+    },
+    "connections": {
+      "title": "Gekoppelde accounts",
+      "description": "Koppel je game-accounts om sneller in te loggen en je vrienden te vinden.",
+      "connected": "Verbonden",
+      "link": "Koppelen",
+      "unlink": "Ontkoppelen",
+      "unlinking": "Ontkoppelen…",
+      "unlinkError": "Kon dit account niet ontkoppelen",
+      "comingSoon": "Binnenkort",
+      "discordLinked": "Discord-account gekoppeld!",
+      "discordTaken": "Dit Discord-account is al aan een andere gebruiker gekoppeld."
+    },
+    "psn": {
+      "title": "PlayStation koppelen",
+      "intro": "Voer gewoon je PlayStation Online ID in — we vinden je openbare profiel. Geen wachtwoord of token nodig.",
+      "idLabel": "Je PSN Online ID",
+      "publicHint": "Je PlayStation-profiel moet openbaar zijn (games en trofeeën zichtbaar) om het te kunnen importeren.",
+      "connect": "Koppelen",
+      "connecting": "Koppelen…",
+      "connectedAs": "Gekoppeld als {{onlineId}}",
+      "notFound": "Geen openbaar PlayStation-account gevonden voor die Online ID. Controleer de spelling en of je profiel openbaar is.",
+      "alreadyLinked": "Dit PlayStation-account is al aan een ander profiel gekoppeld.",
+      "invalidId": "Dat lijkt geen geldige PSN Online ID (3–16 letters, cijfers, - of _).",
+      "notConfigured": "PlayStation-import is nog niet ingesteld op de server. Probeer het later opnieuw.",
+      "genericError": "Koppelen mislukt. Probeer het opnieuw.",
+      "viewLibrary": "Mijn PlayStation-bibliotheek bekijken"
+    },
+    "adjustAvatar": "Aanpassen",
+    "avatarReset": "Herstellen",
+    "avatarFrameHint": "Sleep om te verplaatsen, schuif om te zoomen",
+    "avatarZoom": "Zoom",
+    "chooseImage": "Kies een afbeelding",
+    "xbox": {
+      "title": "Xbox verbinden",
+      "intro": "Voer gewoon je Xbox-gamertag in — dan zoeken wij je openbare profiel op. Je hebt geen wachtwoord of token nodig.",
+      "idLabel": "Je Xbox-gamertag",
+      "publicHint": "Je Xbox-profiel moet openbaar zijn (spelgeschiedenis en prestaties moeten zichtbaar zijn) zodat wij het kunnen importeren.",
+      "connect": "Verbinden",
+      "connecting": "Wordt verbonden…",
+      "connectedAs": "Aangemeld als {{gamertag}}",
+      "notFound": "Er is geen openbaar Xbox-account gevonden voor die gamertag. Controleer of je de naam goed hebt gespeld en of je profiel openbaar is.",
+      "alreadyLinked": "Dit Xbox-account is al aan een ander profiel gekoppeld.",
+      "invalidId": "Dat lijkt geen geldige Xbox-gamertag te zijn.",
+      "notConfigured": "De Xbox-import is nog niet ingesteld op de server. Probeer het later nog eens.",
+      "genericError": "De verbinding is mislukt. Probeer het nog eens.",
+      "viewLibrary": "Mijn Xbox-bibliotheek bekijken"
+    },
+    "eyebrow": "Je account",
+    "navProfile": "Profiel",
+    "navNotifications": "Meldingen",
+    "navSecurity": "Beveiliging",
+    "navConnections": "Koppelingen",
+    "navDanger": "Gevarenzone",
+    "navData": "Jouw gegevens",
+    "export": {
+      "description": "Download een kopie van al je persoonlijke gegevens (profiel, recensies, reacties, games, lijsten, vrienden, berichten en meldingen) als een gestructureerd JSON-bestand.",
+      "button": "Mijn gegevens downloaden",
+      "downloading": "Voorbereiden…",
+      "error": "Kon je gegevens niet exporteren"
+    }
+  },
+  "friends": {
+    "title": "Vrienden",
+    "addPlaceholder": "Gebruikersnaam om toe te voegen",
+    "add": "Toevoegen",
+    "enterUsernameError": "Voer een gebruikersnaam in",
+    "sendError": "Kon verzoek niet versturen",
+    "loadError": "Kon vrienden niet laden",
+    "pendingRequests": "Openstaande verzoeken",
+    "sentRequests": "Verzonden verzoeken",
+    "suggestedFriends": "Voorgestelde vrienden",
+    "yourFriends": "Jouw vrienden",
+    "pending": "In behandeling",
+    "online": "Online",
+    "offline": "Offline",
+    "noFriendsTitle": "Nog geen vrienden",
+    "noFriendsDescription": "Voeg iemand toe via gebruikersnaam hierboven, of bekijk de suggesties.",
+    "accept": "Accepteren",
+    "decline": "Weigeren",
+    "cancelRequest": "Verzoek annuleren",
+    "removeFriend": "Vriend verwijderen",
+    "eyebrow": "Jouw kring",
+    "statFriends": "vrienden",
+    "statOnline": "online",
+    "statPending": "in behandeling",
+    "eyeRequests": "Te bevestigen",
+    "eyeSent": "Verzonden",
+    "eyeSuggested": "Ontdekken",
+    "eyeFriends": "Actief & offline",
+    "sentYouRequest": "stuurde je een verzoek",
+    "viaSteam": "via Steam",
+    "via42": "via 42",
+    "viaPsn": "via PSN"
+  },
+  "notifications": {
+    "title": "Meldingen",
+    "markAllRead": "Alles als gelezen markeren",
+    "empty": "Geen meldingen.",
+    "prefsDescription": "Kies welke meldingen je wilt ontvangen (bel + realtime).",
+    "someone": "Iemand",
+    "reviewLike": "<b>{{who}}</b> vindt je recensie leuk",
+    "reviewLikeTitled": "<b>{{who}}</b> vindt je recensie \"{{title}}\" leuk",
+    "reviewComment": "<b>{{who}}</b> heeft op je recensie gereageerd",
+    "reviewCommentTitled": "<b>{{who}}</b> heeft op je recensie \"{{title}}\" gereageerd",
+    "commentReply": "<b>{{who}}</b> heeft op je reactie geantwoord",
+    "friendRequest": "<b>{{who}}</b> heeft je een vriendschapsverzoek gestuurd",
+    "friendAccept": "<b>{{who}}</b> heeft je vriendschapsverzoek geaccepteerd",
+    "newMessage": "<b>{{who}}</b> heeft je een bericht gestuurd",
+    "friendJoined": "<b>{{who}}</b> ({{via}}) is lid geworden van Saveboxd",
+    "prefFriendRequest": "Vriendschapsverzoeken",
+    "prefFriendRequestHint": "Wanneer iemand je een verzoek stuurt",
+    "prefFriendAccept": "Geaccepteerde verzoeken",
+    "prefFriendAcceptHint": "Wanneer je verzoek wordt geaccepteerd",
+    "prefReviewLike": "Likes op mijn recensies",
+    "prefReviewLikeHint": "Wanneer een van je recensies wordt geliket",
+    "prefReviewComment": "Reacties op mijn recensies",
+    "prefReviewCommentHint": "Wanneer iemand op je recensie reageert",
+    "prefCommentReply": "Antwoorden op mijn reacties",
+    "prefCommentReplyHint": "Wanneer iemand op je reactie antwoordt",
+    "prefFriendJoined": "Een contact wordt lid",
+    "prefFriendJoinedHint": "Wanneer een Steam/42-contact zich aanmeldt",
+    "achievement": "Prestatie ontgrendeld: <b>{{name}}</b>",
+    "prefAchievement": "Prestaties",
+    "prefAchievementHint": "Wanneer je een prestatie ontgrendelt",
+    "clear": "Wissen"
+  },
+  "home": {
+    "featuredBadge": "Uitgelichte game",
+    "writeReview": "Schrijf een recensie",
+    "popularNow": "Nu populair",
+    "showMorePopular": "Meer populaire games tonen",
+    "showLessPopular": "Minder populaire games tonen",
+    "popularReviews": "Populaire recensies",
+    "noReviewsTitle": "Nog geen recensies",
+    "noReviewsDescription": "Wees de eerste die een game beoordeelt — de beste recensies verschijnen hier.",
+    "showMoreReviews": "Meer recensies tonen",
+    "showLessReviews": "Minder recensies tonen",
+    "deletedUser": "[verwijderde gebruiker]",
+    "viewGame": "Bekijk {{title}}",
+    "recommendedForYou": "Aanbevolen voor jou",
+    "showMoreRecommended": "Meer aanbevelingen tonen",
+    "showLessRecommended": "Minder aanbevelingen tonen",
+    "recoEyebrow": "Omdat je vrienden ze geweldig vonden",
+    "popularEyebrow": "Nu",
+    "activityEyebrow": "Je vrienden",
+    "reviewsEyebrow": "De community laat van zich horen",
+    "statsEyebrow": "Jouw jaar in games",
+    "statsHeading": "{{year}} in één oogopslag",
+    "seeProfile": "Profiel bekijken",
+    "statDone": "Klaar",
+    "statDoneCaption": "Als klaar gemarkeerde games",
+    "statPerfect": "100%",
+    "statPerfectCaption": "Platina's en volledige prestaties",
+    "statReviews": "Recensies",
+    "statAvg": "Gem. {{value}}",
+    "statNoReviews": "Nog geen recensies",
+    "statRank": "Globale rang",
+    "statRankCaption": "Ranglijst voltooiingen",
+    "statUnranked": "Niet gerangschikt",
+    "statAchievements": "Prestaties",
+    "activityTitle": "Live",
+    "activityEmpty": "Nog niets.",
+    "activitySeeAll": "Hele feed bekijken",
+    "landing": {
+      "eyebrow": "De Letterboxd van videogames",
+      "title": "Jouw bibliotheek. Beoordeeld, gerecenseerd, gedeeld.",
+      "subtitle": "Synchroniseer je Steam-, PlayStation- en Xbox-bibliotheken, beoordeel je games, ontgrendel prestaties en klim in de globale ranglijst.",
+      "ctaPrimary": "Account aanmaken",
+      "ctaSecondary": "Inloggen",
+      "feature1Title": "Synchroniseer je bibliotheek",
+      "feature1Desc": "Importeer automatisch je Steam-, PlayStation- en Xbox-games en trofeeën.",
+      "feature2Title": "Beoordeel & recenseer",
+      "feature2Desc": "Geef cijfers, schrijf recensies, reageer op en becommentarieer die van anderen.",
+      "feature3Title": "Ontgrendel & wedijver",
+      "feature3Desc": "Verdien prestaties en klim in de globale ranglijst.",
+      "previewEyebrow": "Live voorbeeld",
+      "previewTitle": "Nu populair",
+      "allTitle": "Alles wat je kunt doen",
+      "feat1": "Ontdek een catalogus met duizenden games",
+      "feat2": "Beoordeel en recenseer elke game die je speelt",
+      "feat3": "Maak en deel je eigen gamelijsten",
+      "feat4": "Synchroniseer je Steam-, PlayStation- en Xbox-bibliotheken",
+      "feat5": "Voeg vrienden toe, chat en volg hun activiteit",
+      "feat6": "Ontgrendel prestaties terwijl je speelt",
+      "feat7": "Klim in de globale ranglijst",
+      "feat8": "Volg je voortgang: voltooide games, 100% en jaarstatistieken",
+      "statsGamesLabel": "Games",
+      "statsReviewsLabel": "Recensies",
+      "statsPlayersLabel": "Spelers",
+      "topEyebrow": "De beste spelers",
+      "topTitle": "Topspelers van dit moment",
+      "topCaption": "games voor 100% voltooid",
+      "platformsEyebrow": "Jouw accounts",
+      "platformsTitle": "Neem je hele bibliotheek mee",
+      "platformsSubtitle": "Koppel Steam, PlayStation en Xbox — je games en trofeeën synchroniseren automatisch.",
+      "achEyebrow": "Eigen prestaties",
+      "achTitle": "Tientallen badges om te ontgrendelen",
+      "achSubtitle": "Verdien badges door games te voltooien, recensies te schrijven, lijsten te maken en vrienden toe te voegen.",
+      "feat9": "Ontvang game-aanbevelingen speciaal voor jou"
+    },
+    "recoBecauseGame": "Omdat je {{title}} leuk vond",
+    "recoBecauseGenre": "Omdat je van {{genre}} houdt",
+    "recoBecausePlayed": "Omdat je {{title}} hebt gespeeld",
+    "recoBecauseStudio": "Omdat je van games van {{studio}} houdt"
+  },
+  "feed": {
+    "title": "Activiteit van je vrienden",
+    "subtitle": "De nieuwste recensies en voltooide games van je vrienden, live.",
+    "tabAll": "Alles",
+    "tabReviews": "Recensies",
+    "tabPlayed": "Games",
+    "tabLikes": "Likes",
+    "emptyTitle": "Niets nieuws van je vrienden",
+    "emptyTitleTab": "Niets in dit tabblad",
+    "emptyDescription": "Voeg vrienden toe en volg hier hun nieuwste recensies, voltooide games en likes.",
+    "findFriends": "Vrienden zoeken",
+    "loadMore": "Meer laden",
+    "loading": "Laden…",
+    "rated": "<a>{{user}}</a> heeft <s>{{game}}</s> beoordeeld",
+    "played": "<a>{{user}}</a> heeft <s>{{game}}</s> gespeeld",
+    "likedReview": "<a>{{actor}}</a> vindt de recensie van <s>{{author}}</s> leuk",
+    "likedComment": "<a>{{actor}}</a> vindt de reactie van <s>{{author}}</s> leuk",
+    "on": "op {{target}}",
+    "gameCompleted": "Game voltooid",
+    "deletedUser": "[verwijderde gebruiker]",
+    "deletedShort": "[verwijderd]",
+    "timeNow": "zojuist",
+    "timeMinutes": "{{count}} min geleden",
+    "timeHours": "{{count}} u geleden",
+    "timeYesterday": "gisteren",
+    "timeDays": "{{count}} d geleden",
+    "tabCompleted": "Voltooiingen",
+    "completed": "<a>{{user}}</a> voltooid <s>{{game}}</s> 100%",
+    "completedBadge": "100% voltooid",
+    "rankLine": "<a>{{user}}</a> staat in de <s>top {{rank}}</s> — {{category}}",
+    "rankScopeGlobal": "Wereldwijde ranglijst",
+    "rankScopeFriends": "Onder je vrienden",
+    "achievementLine": "<a>{{user}}</a> ontgrendelde <s>{{name}}</s>",
+    "tabAchievements": "Prestaties",
+    "eyebrow": "Jouw kring, live",
+    "live": "Live",
+    "done": "<a>{{user}}</a> heeft <s>{{game}}</s> uitgespeeld"
+  },
+  "leaderboard": {
+    "title": "Ranglijst",
+    "subtitle": "Ontdek wie bovenaan de ranglijst staat — voltooiingen, gespeelde games en reviews.",
+    "metricCompletions": "Voltooiingen",
+    "metricPlayed": "Gespeelde games",
+    "metricReviews": "Reviews",
+    "scopeFriends": "Vrienden",
+    "scopeGlobal": "Globaal",
+    "windowAll": "Aller tijden",
+    "windowMonth": "Deze maand",
+    "yourRank": "Jouw positie",
+    "rankLabel": "Positie {{rank}}",
+    "badgeTitle": "Wereldwijde top 3",
+    "badgeAria": "Ranglijst-onderscheidingen",
+    "emptyTitle": "Nog niets om te ranken",
+    "emptyFriends": "Voeg vrienden toe en begin met het voltooien van games, het bijhouden van gespeelde games en het schrijven van reviews om samen te stijgen.",
+    "emptyGlobal": "Wees de eerste op de ranglijst — voltooi games, houd gespeelde games bij en schrijf reviews.",
+    "findFriends": "Vrienden zoeken",
+    "eyebrow": "De beste spelers",
+    "you": "jij"
+  },
+  "reviews": {
+    "sortPopular": "Populair",
+    "sortRecent": "Recent",
+    "sortDiscussed": "Besproken",
+    "heading": "Recensies",
+    "loginToReview": "Log in om een recensie te schrijven.",
+    "emptyTitle": "Nog geen recensies",
+    "emptyDescGame": "Wees de eerste die zijn mening over deze game deelt.",
+    "emptyDescCompany": "Wees de eerste die zijn mening over deze studio deelt.",
+    "emptyDescGameGuest": "Log in om deze game als eerste te beoordelen.",
+    "emptyDescCompanyGuest": "Log in om deze studio als eerste te beoordelen.",
+    "deletedUser": "[verwijderde gebruiker]",
+    "edit": "Bewerken",
+    "delete": "Verwijderen",
+    "loading": "Laden…",
+    "loadMore": "Meer laden",
+    "shareReview": "Deze recensie met een vriend delen",
+    "ratingLabel": "Beoordeling:",
+    "ratingAria": "{{n}}/10",
+    "titlePlaceholder": "Titel van je recensie",
+    "textPlaceholder": "Je recensie (geen spoilers…)",
+    "publish": "Recensie plaatsen",
+    "chooseRating": "Kies een beoordeling.",
+    "alreadyReviewedGame": "Je hebt deze game al beoordeeld.",
+    "alreadyReviewedCompany": "Je hebt deze studio al beoordeeld.",
+    "unexpectedError": "Onverwachte fout.",
+    "titleTextRequired": "Titel en tekst zijn verplicht.",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "translate": "Vertalen",
+    "showOriginal": "Origineel tonen",
+    "translating": "Vertalen…",
+    "showTranslation": "Vertaling tonen",
+    "eyebrow": "De community laat van zich horen"
+  },
+  "comments": {
+    "sortTop": "Top",
+    "sortRecent": "Recent",
+    "loading": "Laden…",
+    "empty": "Geen reacties — start de discussie.",
+    "deletedComment": "[verwijderde reactie]",
+    "deletedUser": "[verwijderde gebruiker]",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "reply": "Reageren",
+    "edit": "Bewerken",
+    "delete": "Verwijderen",
+    "viewReplies": "Reacties bekijken ({{count}})",
+    "replyPlaceholder": "Reageren…",
+    "addPlaceholder": "Een reactie toevoegen…",
+    "submit": "Reageren",
+    "loginToComment": "Log in om te reageren"
+  },
+  "profile": {
+    "recentReviews": "Recente recensies",
+    "noReviewsTitle": "Nog geen recensies",
+    "noReviewsDesc": "Deze speler heeft nog geen game beoordeeld.",
+    "calNoDates": "Nog geen voltooiingsdatums",
+    "calNoDatesDesc": "Games die als klaar zijn gemarkeerd, vullen deze jaarkalender.",
+    "calHint": "Beweeg over of tik op een gekleurde dag om te zien welke games toen zijn voltooid.",
+    "friends": "Vrienden",
+    "requestPending": "Verzoek in behandeling",
+    "respondRequest": "Reageer op hun verzoek",
+    "couldNotSend": "Kon verzoek niet verzenden",
+    "sending": "Verzenden…",
+    "addFriend": "Vriend toevoegen",
+    "couldNotLoad": "Kon profiel niet laden",
+    "notFound": "Profiel niet gevonden",
+    "shareProfile": "Dit profiel met een vriend delen",
+    "editProfile": "Profiel bewerken",
+    "topRated": "Best beoordeelde games",
+    "completionCalendar": "Voltooiingskalender",
+    "memberSince": "Lid sinds {{date}}",
+    "reviewOne": "{{count}} recensie",
+    "reviewMany": "{{count}} recensies",
+    "playedGameOne": "{{count}} game gespeeld",
+    "playedGameMany": "{{count}} games gespeeld",
+    "calLess": "Minder",
+    "calMore": "Meer",
+    "calCompletedLabel": "voltooid",
+    "calPlayedLabel": "gespeeld",
+    "calViewPlayed": "Gespeeld",
+    "calViewCompleted": "Voltooid",
+    "calDoneLabel": "gedaan",
+    "calPerfectLabel": "op 100%",
+    "calDoneLegend": "Gedaan",
+    "calPerfectLegend": "100%",
+    "tabReviews": "Recensies",
+    "tabGames": "Games",
+    "tabLists": "Lijsten",
+    "tabAchievements": "Prestaties",
+    "tabOverview": "Overzicht",
+    "recentReviewsTitle": "Nieuwste recensies",
+    "seeAllReviews": "Alle recensies bekijken",
+    "bioAdd": "Bio toevoegen",
+    "bioPlaceholder": "Vertel iets over jezelf…",
+    "eyeTopRated": "Favorieten",
+    "eyeActivity": "Activiteit",
+    "eyeReviews": "Hun mening",
+    "eyeLists": "Collecties",
+    "eyeAchievements": "Prestaties",
+    "calNewerYears": "Recentere jaren",
+    "calOlderYears": "Oudere jaren"
+  },
+  "lists": {
+    "heading": "Lijsten",
+    "newList": "Nieuwe lijst",
+    "emptyOwn": "Nog geen lijsten. Maak er een (bijv. \"Best competitive\", \"To-do\").",
+    "emptyPublic": "Geen openbare lijsten.",
+    "namePlaceholder": "Lijstnaam",
+    "creating": "Aanmaken…",
+    "create": "Aanmaken",
+    "cancel": "Annuleren",
+    "error": "Fout",
+    "private": "Privé",
+    "public": "Openbaar",
+    "privateHint": "Alleen voor jou zichtbaar",
+    "publicHint": "Zichtbaar op je profiel",
+    "viewGames": "Games bekijken",
+    "empty": "leeg",
+    "gameOne": "{{count}} game",
+    "gameMany": "{{count}} games",
+    "editList": "Lijst bewerken",
+    "save": "Opslaan",
+    "delete": "Verwijderen",
+    "confirmDelete": "Lijst \"{{name}}\" verwijderen?",
+    "loading": "Laden…",
+    "listEmpty": "Lege lijst — voeg games toe vanaf hun pagina.",
+    "removeGame": "{{title}} verwijderen",
+    "addToList": "Aan een lijst toevoegen",
+    "menuEmpty": "Geen lijsten — maak er hieronder een.",
+    "privateShort": "privé",
+    "quickPlaceholder": "Nieuwe lijst + deze game",
+    "createAria": "Lijst aanmaken",
+    "validate": "Bevestigen",
+    "gameReviews": "Reviews van {{title}}",
+    "noReview": "Geen review",
+    "undoRemove": "Ongedaan maken",
+    "viewCompact": "Compact",
+    "viewDetailed": "Gedetailleerd",
+    "addGamePlaceholder": "Een spel toevoegen…",
+    "alreadyIn": "Toegevoegd",
+    "limitReached": "Lijst vol — max. {{max}}",
+    "dragToReorder": "Sleep om te herordenen",
+    "noCover": "Geen omslag",
+    "addCover": "Omslag toevoegen",
+    "changeCover": "Omslag wijzigen",
+    "removeCover": "Omslag verwijderen"
+  },
+  "catalog": {
+    "title": "Catalogus",
+    "searchPlaceholder": "Zoek een game…",
+    "searchAria": "Zoek een game",
+    "sortLabel": "Sorteren",
+    "platformLabel": "Platform",
+    "studioLabel": "Studio",
+    "sortRating": "Best beoordeeld",
+    "sortMostPlayed": "Meest gespeeld",
+    "sortRecent": "Recent",
+    "sortPopular": "Populair",
+    "allPlatforms": "Alle platforms",
+    "allStudios": "Alle studio's",
+    "noResults": "Geen game komt overeen met deze filters.",
+    "loading": "Laden…",
+    "loadMore": "Meer laden",
+    "searchNav": "Zoeken",
+    "randomGame": "Willekeurige game",
+    "noneInCatalog": "Geen game \"{{query}}\" in de catalogus.",
+    "importIgdb": "Toevoegen vanaf IGDB",
+    "importing": "Importeren vanaf IGDB…",
+    "studios": "Studio's",
+    "eyebrow": "Bibliotheek",
+    "subtitle": "Blader door de volledige spellenbibliotheek — filter op genre, platform of studio en sorteer op community.",
+    "unit": "games",
+    "activeFilters": "Actieve filters",
+    "clearAll": "Alles wissen",
+    "removeFilter": "{{name}} verwijderen",
+    "viewGame": "Bekijken",
+    "showLess": "Minder tonen",
+    "sortRatingAsc": "Laagst beoordeeld",
+    "sortMostPlayedAsc": "Minst gespeeld",
+    "sortRecentAsc": "Oudste",
+    "sortPopularAsc": "Minst bekend"
+  },
+  "game": {
+    "markedTitle": "Klaar — klik om te verwijderen",
+    "markTitle": "Ik heb het gespeeld",
+    "unmarkAria": "Markering \"klaar\" verwijderen",
+    "markAria": "Markeren als klaar",
+    "playedOne": "{{count}} speler heeft deze game gespeeld",
+    "playedMany": "{{count}} spelers hebben deze game gespeeld",
+    "notFound": "Game niet gevonden.",
+    "shareGame": "Deze game met een vriend delen",
+    "dlcHeading": "Uitbreidingen & DLC ({{count}})",
+    "chooseDlcLabel": "Kies een DLC",
+    "chooseDlcPlaceholder": "Kies een DLC…",
+    "dlcExpansion": "Uitbreiding",
+    "dlcStandalone": "Standalone",
+    "dlcGeneric": "DLC",
+    "rate": "Beoordelen",
+    "completeTitle": "Markeren als voltooid",
+    "completedTitle": "Voltooid",
+    "completeAria": "Dit spel als voltooid markeren",
+    "uncompleteAria": "Voltooid-markering verwijderen",
+    "completedCountOne": "{{count}} speler heeft dit spel voltooid",
+    "completedCountMany": "{{count}} spelers hebben dit spel voltooid",
+    "markDateTitle": "Wanneer heb je het gespeeld?",
+    "completeDateTitle": "Wanneer heb je het uitgespeeld?",
+    "markDateHint": "Kies een datum in het verleden als je het vóór je aanmelding speelde.",
+    "distributionTitle": "Verdeling van beoordelingen",
+    "reviewCountOne": "{{count}} spelersrecensie",
+    "reviewCountMany": "{{count}} spelersrecensies",
+    "eyeDistribution": "Communityscore",
+    "eyeDlc": "Extra content",
+    "eyeAbout": "Over",
+    "aboutTitle": "De game",
+    "rating": {
+      "globalTitle": "Totaalscore",
+      "players": "Spelers",
+      "votesOne": "{{count}} stem",
+      "votesMany": "{{count}} stemmen"
+    },
+    "dateTypeLabel": "Of typ een datum",
+    "datePartYear": "JJJJ",
+    "datePartMonth": "MM",
+    "datePartDay": "DD"
+  },
+  "share": {
+    "defaultTitle": "Delen met een vriend",
+    "shareTo": "Delen met…",
+    "loading": "Laden…",
+    "noFriends": "Voeg vrienden toe om met hen te delen.",
+    "sent": "Verzonden ✓",
+    "send": "Verzenden"
+  },
+  "chat": {
+    "open": "Berichten openen",
+    "close": "Berichten sluiten",
+    "title": "Berichten",
+    "closeAria": "Sluiten",
+    "noConversations": "Voeg vrienden toe om hier met hen te chatten.",
+    "back": "Terug",
+    "placeholder": "Schrijf een bericht…",
+    "send": "Verzenden",
+    "read": "Gelezen",
+    "shareGame": "Game",
+    "shareReview": "Recensie",
+    "shareProfile": "Profiel",
+    "noMessage": "Geen bericht",
+    "sharedGame": "Gedeelde game",
+    "sharedReview": "Gedeelde recensie",
+    "sharedProfile": "Gedeeld profiel"
+  },
+  "company": {
+    "notFound": "Studio niet gevonden.",
+    "label": "Studio",
+    "games": "Games van de studio",
+    "seeMore": "Meer games bekijken ({{count}})"
+  },
+  "steam": {
+    "neverPlayed": "Nooit gespeeld",
+    "playMinutes": "{{count}} min",
+    "playHours": "{{count}} u",
+    "loadError": "Kon je Steam-bibliotheek niet laden",
+    "friendRequestError": "Kon vriendschapsverzoek niet verzenden",
+    "title": "Steam-bibliotheek",
+    "linkPrompt": "Koppel je Steam-account om je gamebibliotheek te importeren en je Steam-vrienden te vinden.",
+    "linkCta": "Mijn Steam-account koppelen",
+    "friendsHeading": "Steam-vrienden op Saveboxd",
+    "friendsPrivate": "Je Steam-vriendenlijst is privé, dus we kunnen geen vrienden voorstellen.",
+    "noFriendsTitle": "Nog geen Steam-vrienden hier",
+    "noFriendsDesc": "Geen van je Steam-vrienden zit al op Saveboxd — nodig ze uit!",
+    "requestSent": "Verzoek verzonden",
+    "addFriend": "Vriend toevoegen",
+    "yourGames": "Jouw games",
+    "gamesPrivate": "De details van je Steam-games zijn privé. Zet <s>Profiel → Privacy-instellingen → Gamedetails</s> op Openbaar in Steam en herlaad deze pagina.",
+    "owned": "{{totalOwned}} games in bezit op Steam — {{matched}} in onze catalogus.",
+    "ownedUnmatched": "{{totalOwned}} games in bezit op Steam — {{matched}} in onze catalogus, {{unmatched}} niet vermeld.",
+    "statusPlaying": "bezig",
+    "statusBacklog": "te doen",
+    "reviewWritten": "Recensie geschreven — bekijken/bewerken",
+    "writeReview": "Een recensie schrijven",
+    "viewReviewOf": "Bekijk je recensie van {{title}}",
+    "writeReviewOf": "Schrijf een recensie van {{title}}",
+    "noMatchedTitle": "Nog geen overeenkomende games",
+    "noMatchedDesc": "Geen van je Steam-games staat momenteel in onze catalogus.",
+    "manageLink": "Beheer je Steam-koppeling vanuit je <l>profiel</l>.",
+    "achievementsTitle": "Prestaties",
+    "achievementsSub": "{{games}} games · {{perfect}} op 100%",
+    "achPerGame": "{{unlocked}}/{{total}} prestaties",
+    "achievementsNone": "Nog geen prestaties gesynchroniseerd — je Steam-profiel is mogelijk privé.",
+    "syncAchievements": "Vernieuwen",
+    "syncing": "Synchroniseren…"
+  },
+  "genres": {
+    "Adventure": "Avontuur",
+    "Arcade": "Arcade",
+    "Card & Board Game": "Kaart- & bordspel",
+    "Fighting": "Vechten",
+    "Hack and slash/Beat 'em up": "Hack and slash/Beat 'em up",
+    "Indie": "Indie",
+    "MOBA": "MOBA",
+    "Music": "Muziek",
+    "Pinball": "Flipperkast",
+    "Platform": "Platform",
+    "Point-and-click": "Point-and-click",
+    "Puzzle": "Puzzel",
+    "Quiz/Trivia": "Quiz/Trivia",
+    "Racing": "Racen",
+    "Real Time Strategy (RTS)": "Realtime strategie (RTS)",
+    "Role-playing (RPG)": "Rollenspel (RPG)",
+    "Shooter": "Shooter",
+    "Simulator": "Simulatie",
+    "Sport": "Sport",
+    "Strategy": "Strategie",
+    "Tactical": "Tactisch",
+    "Turn-based strategy (TBS)": "Turn-based strategie (TBS)",
+    "Visual Novel": "Visual novel"
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacybeleid",
+      "lastUpdated": "Laatst bijgewerkt: 22 juli 2026",
+      "intro": "Saveboxd is een studentenproject in het kader van het 42-curriculum: een catalogus- en recensiesite voor videogames met sociale functies (vrienden, berichten, lijsten). Dit beleid legt uit welke gegevens worden verzameld wanneer u de site gebruikt, waarom, en wat uw rechten zijn.",
+      "sections": {
+        "dataCollected": {
+          "title": "Verzamelde gegevens",
+          "body": [
+            "Wij verzamelen alleen de gegevens die nodig zijn voor de werking van de site:",
+            "• Bij de klassieke registratie: uw e-mailadres, een gebruikersnaam en een wachtwoord (opgeslagen als hash, nooit in platte tekst).",
+            "• Als u inlogt via Google, 42 (Intra), Discord of Steam: een door die dienst verstrekte identificatiecode, uw e-mailadres indien de aanbieder dit doorgeeft (Steam geeft nooit een e-mailadres door), uw weergavenaam en uw profielfoto.",
+            "• De profielinformatie die u kiest in te vullen: biografie, avatar, voorkeurstaal.",
+            "• Uw activiteit op de site: recensies en beoordelingen van games, games gemarkeerd als gespeeld, aangepaste gamelijsten, vriendschappen, berichten uitgewisseld met uw vrienden, likes en reacties.",
+            "• Technische cookies die nodig zijn voor authenticatie (zie de sectie Cookies).",
+            "• Standaard technische serverlogs (IP-adres, tijdstempel, opgevraagde pagina), automatisch gegenereerd, zoals op vrijwel elke website.",
+            "Wij verzamelen geen bank- of betaalgegevens, geen precieze locatiegegevens, en gebruiken geen enkele tool voor publieksanalyse of reclame."
+          ]
+        },
+        "purposes": {
+          "title": "Waarom wij deze gegevens gebruiken",
+          "body": [
+            "Uw gegevens worden uitsluitend gebruikt om:",
+            "• uw account aan te maken en te beheren;",
+            "• u te authenticeren en uw sessie te beveiligen (cookies, tokens, tweefactorauthenticatie indien ingeschakeld);",
+            "• uw profiel en statistieken weer te geven (gespeelde games, recensies, lijsten);",
+            "• sociale functies mogelijk te maken (vriendschapsverzoeken, vriendensuggesties via Steam of 42, berichten, meldingen);",
+            "• u e-mails te sturen die strikt verband houden met de werking van uw account (e-mailverificatie, wachtwoordherstel);",
+            "• de veiligheid van de dienst te waarborgen en misbruik te voorkomen.",
+            "Wij verkopen, verhuren of delen uw gegevens nooit voor commerciële of reclamedoeleinden."
+          ]
+        },
+        "discord": {
+          "title": "Inloggen en koppelen met Discord",
+          "body": [
+            "Saveboxd biedt de mogelijkheid om in te loggen of uw account te koppelen via Discord (OAuth2). Discord geeft ons dan door: uw Discord-ID, uw gebruikersnaam, uw gekoppelde e-mailadres indien uw Discord-account dit beschikbaar stelt, en de URL van uw Discord-avatar.",
+            "Deze informatie wordt alleen gebruikt om uw Saveboxd-account aan te maken of een bestaand account aan uw Discord-identiteit te koppelen, en om een Discord-badge op uw profiel weer te geven. Wij ontvangen nooit uw Discord-wachtwoord en hebben geen toegang tot andere gegevens van uw account (servers, berichten, contacten).",
+            "U kunt uw Discord-account op elk moment ontkoppelen via uw instellingen, tenzij dit uw enige manier is om in te loggen."
+          ]
+        },
+        "retention": {
+          "title": "Bewaartermijn",
+          "body": [
+            "Uw gegevens worden bewaard zolang uw account bestaat.",
+            "Wanneer u uw account verwijdert via uw instellingen:",
+            "• worden uw account, avatar, vriendschappen, als gespeeld gemarkeerde games, lijsten, meldingen en berichten (verzonden en ontvangen) definitief verwijderd;",
+            "• blijven uw bestaande recensies en reacties bewaard maar worden geanonimiseerd (weergegeven als afkomstig van een «verwijderde gebruiker»), zodat de discussies van andere gebruikers niet worden verstoord;",
+            "• kunnen sommige gegevens tijdelijk aanwezig blijven in technische back-ups of serverlogs, voordat ze automatisch worden verwijderd.",
+            "Wij bewaren geen gegevens langer dan nodig is voor de werking van de site of de veiligheid van de dienst."
+          ]
+        },
+        "rights": {
+          "title": "Uw rechten",
+          "body": [
+            "Overeenkomstig de Algemene Verordening Gegevensbescherming (AVG) heeft u de volgende rechten:",
+            "• recht op inzage in uw persoonsgegevens — u kunt op elk moment een volledige kopie downloaden in uw instellingen;",
+            "• recht op rectificatie van onjuiste gegevens (rechtstreeks aanpasbaar via uw instellingen);",
+            "• recht op wissing: verwijder uw account op elk moment via uw instellingen;",
+            "• recht op beperking van de verwerking in bepaalde gevallen;",
+            "• recht op bezwaar tegen bepaalde verwerkingen, bijvoorbeeld via uw meldingsvoorkeuren;",
+            "• recht op overdraagbaarheid: exporteer uw gegevens in een gestructureerd, machineleesbaar formaat (JSON) rechtstreeks vanuit uw instellingen;",
+            "• recht om uw toestemming op elk moment in te trekken wanneer de verwerking daarop berust (bijvoorbeeld inloggen via een externe aanbieder);",
+            "• recht om een klacht in te dienen bij de bevoegde gegevensbeschermingsautoriteit (in Frankrijk de CNIL — cnil.fr).",
+            "Om een van deze rechten uit te oefenen, kunt u contact met ons opnemen via het adres vermeld in de sectie Contact."
+          ]
+        },
+        "cookies": {
+          "title": "Cookies en lokale opslag",
+          "body": [
+            "Saveboxd gebruikt uitsluitend cookies die strikt noodzakelijk zijn voor de werking van de site, allemaal technisch en nooit voor reclame:",
+            "• authenticatiecookies (inlogsessie, sessievernieuwing, tweefactorauthenticatiestap, koppeling van een extern account), allemaal httpOnly en met beperkte levensduur.",
+            "Er wordt geen enkele reclame- of trackingcookie gebruikt.",
+            "Wij gebruiken ook de lokale opslag (localStorage) van uw browser om twee weergavevoorkeuren te onthouden: de gekozen taal en het lichte/donkere thema. Deze informatie blijft op uw apparaat en wordt nooit naar onze servers verzonden.",
+            "Aangezien deze cookies strikt noodzakelijk zijn voor de werking van de dienst, vereisen ze geen voorafgaande toestemming onder de ePrivacy-verordening."
+          ]
+        },
+        "thirdParties": {
+          "title": "Diensten van derden",
+          "body": [
+            "Om te functioneren, maakt Saveboxd gebruik van de volgende diensten van derden:",
+            "• IGDB (Internet Game Database), voor openbare informatie over videogames — er worden geen persoonsgegevens van u aan hen doorgegeven;",
+            "• Steam (Valve), als u ervoor kiest uw account te koppelen, om uw identiteit te verifiëren en uw gebruikersnaam, avatar, gamebibliotheek en Steam-vriendenlijst op te halen (alleen gebruikt om u vrienden voor te stellen die al op Saveboxd aanwezig zijn, nooit opgeslagen);",
+            "• Google, 42 (Intra) en Discord, als u ervoor kiest in te loggen via een van deze aanbieders;",
+            "• Brevo, onze aanbieder voor het versturen van transactionele e-mails, alleen gebruikt voor e-mailverificatie en wachtwoordherstel.",
+            "Wij gebruiken geen enkele tool voor publieksanalyse, reclame of tracking door derden.",
+            "Hosting: dit project wordt ontwikkeld en geëvalueerd in het kader van het 42-curriculum. Mocht de site openbaar worden ingezet, dan moet deze sectie worden aangevuld met de naam van de hostingprovider."
+          ]
+        },
+        "contact": {
+          "title": "Contact",
+          "body": [
+            "Voor vragen over dit privacybeleid, of om uw rechten met betrekking tot uw persoonsgegevens uit te oefenen, kunt u contact met ons opnemen via: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Gebruiksvoorwaarden",
+      "lastUpdated": "Laatst bijgewerkt: 22 juli 2026",
+      "intro": "Deze voorwaarden regelen de toegang tot en het gebruik van de Saveboxd-site, een studentenproject in het kader van het 42-curriculum. Door een account aan te maken of de site te gebruiken, aanvaardt u de hieronder beschreven voorwaarden.",
+      "sections": {
+        "purpose": {
+          "title": "Doel van de dienst",
+          "body": [
+            "Saveboxd is een communityplatform waarmee u videogames kunt catalogiseren, beoordelen en recenseren, games kunt bijhouden waaraan u heeft gespeeld, aangepaste lijsten kunt maken en kunt communiceren met andere gebruikers (vrienden, berichten, recensies, reacties).",
+            "De site is een studentenproject ontwikkeld voor educatieve doeleinden in het kader van het 42-curriculum, en geen commerciële dienst."
+          ]
+        },
+        "account": {
+          "title": "Toegang en accountaanmaak",
+          "body": [
+            "Toegang tot de meeste functies vereist het aanmaken van een account, hetzij via klassieke registratie (e-mail, gebruikersnaam, wachtwoord), hetzij via een externe authenticatieaanbieder (Google, 42, Discord, Steam).",
+            "U moet nauwkeurige informatie verstrekken bij registratie, en u mag geen account aanmaken namens iemand anders zonder diens toestemming, noch meerdere accounts aanmaken om een schorsing te omzeilen."
+          ]
+        },
+        "credentials": {
+          "title": "Verantwoordelijkheid voor uw inloggegevens",
+          "body": [
+            "U bent verantwoordelijk voor de vertrouwelijkheid van uw wachtwoord en voor alle activiteiten die vanaf uw account worden uitgevoerd.",
+            "Als u vermoedt dat er ongeoorloofd toegang is verkregen tot uw account, wijzig dan onmiddellijk uw wachtwoord en neem contact met ons op.",
+            "Wij raden u aan tweefactorauthenticatie (2FA) in te schakelen, beschikbaar in uw instellingen, om de beveiliging van uw account te versterken."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Aanvaardbaar gebruik van de site",
+          "body": [
+            "Door Saveboxd te gebruiken, verbindt u zich ertoe:",
+            "• alleen recensies, reacties en berichten te plaatsen die respectvol zijn tegenover anderen;",
+            "• zich niet voor te doen als een andere persoon of entiteit;",
+            "• de site niet te gebruiken voor illegale doeleinden of om andere gebruikers te schaden;",
+            "• niet te proberen de technische werking van de site te verstoren (overbelasting, misbruik van kwetsbaarheden, omzeilen van aanvraaglimieten)."
+          ]
+        },
+        "abuse": {
+          "title": "Verboden gedrag",
+          "body": [
+            "Met name verboden zijn:",
+            "• intimidatie, beledigingen, bedreigingen of enig kwaadwillig gedrag tegenover een andere gebruiker;",
+            "• spam (herhaaldelijke, promotionele of niet-terzake doende berichten of recensies);",
+            "• het plaatsen van illegale, hatelijke, discriminerende of seksueel expliciete inhoud;",
+            "• elke poging tot ongeoorloofde toegang tot een ander account of de systemen van de site."
+          ]
+        },
+        "interactions": {
+          "title": "Interacties tussen gebruikers",
+          "body": [
+            "Saveboxd biedt sociale functies: vriendschapsverzoeken, privéberichten, het delen van games/recensies/profielen in gesprekken, en vriendensuggesties op basis van uw Steam-netwerk of uw lidmaatschap van de 42-gemeenschap.",
+            "U blijft als enige verantwoordelijk voor de inhoud van uw berichten en publicaties. Privéberichten die met een vriend zijn uitgewisseld, worden definitief verwijderd, voor beide partijen, als een van de twee accounts wordt verwijderd."
+          ]
+        },
+        "moderation": {
+          "title": "Moderatie en meldingen",
+          "body": [
+            "De site beschikt momenteel niet over een ingebouwd meldsysteem voor recensies of berichten.",
+            "Bij misbruik, intimidatie of ongepaste inhoud kunt u rechtstreeks contact met ons opnemen via het adres vermeld in de sectie Contact; de moderatie wordt dan handmatig door het projectteam behandeld."
+          ]
+        },
+        "suspension": {
+          "title": "Schorsing of verwijdering van een account",
+          "body": [
+            "Bij niet-naleving van deze voorwaarden (misbruik, intimidatie, spam, illegale inhoud) behouden wij ons het recht voor om een account naar eigen goeddunken te schorsen of te verwijderen, voor zover redelijkerwijs mogelijk voor een studentenproject zonder toegewijd moderatieteam.",
+            "U kunt uw eigen account op elk moment verwijderen via uw instellingen."
+          ]
+        },
+        "userContent": {
+          "title": "Door gebruikers gegenereerde inhoud",
+          "body": [
+            "U behoudt de eigendom van de inhoud die u plaatst (recensies, reacties, lijsten, biografie, avatar). Door deze op Saveboxd te plaatsen, staat u ons toe deze weer te geven en op te slaan als onderdeel van de normale werking van de site.",
+            "U garandeert dat u over de nodige rechten beschikt op alle inhoud die u plaatst, met name uw profielfoto indien u niet degene gebruikt die door een externe authenticatieaanbieder wordt verstrekt."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Intellectueel eigendom",
+          "body": [
+            "De code, het ontwerp en het merk «Saveboxd» worden ontwikkeld in het kader van een studentenproject van het 42-curriculum en zijn niet bestemd voor commerciële exploitatie.",
+            "Informatie en visuele elementen met betrekking tot videogames (titels, covers, beschrijvingen) zijn afkomstig van openbare databases van derden (IGDB) en behoren toe aan hun respectieve uitgevers en rechthebbenden. Saveboxd claimt geen enkele eigendom over deze inhoud en toont deze uitsluitend ter illustratie en informatie, in een niet-commerciële, educatieve context."
+          ]
+        },
+        "gameContent": {
+          "title": "Inhoud met betrekking tot videogames",
+          "body": [
+            "Covers, beschrijvingen en gameinformatie die op Saveboxd worden weergegeven, worden automatisch geïmporteerd van IGDB, en van Steam voor gegevens met betrekking tot uw persoonlijke bibliotheek als u uw account koppelt. Deze informatie blijft eigendom van de respectieve rechthebbenden."
+          ]
+        },
+        "availability": {
+          "title": "Beschikbaarheid van de dienst",
+          "body": [
+            "Saveboxd is een studentenproject dat «as-is» wordt aangeboden, zonder garantie van continue beschikbaarheid. De dienst kan op elk moment worden onderbroken, gewijzigd of stopgezet, met name in het kader van de evaluatie of het onderhoud ervan, zonder voorafgaande kennisgeving."
+          ]
+        },
+        "liability": {
+          "title": "Beperking van aansprakelijkheid",
+          "body": [
+            "Saveboxd wordt aangeboden voor educatieve doeleinden, zonder enige garantie, expliciet of impliciet. Voor zover wettelijk toegestaan, kan het projectteam niet aansprakelijk worden gesteld voor directe of indirecte schade die voortvloeit uit het gebruik of de onmogelijkheid om de site te gebruiken.",
+            "Deze beperking vormt geen juridisch advies en ontneemt gebruikers geen dwingende rechten die contractueel niet kunnen worden uitgesloten onder het toepasselijke recht."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Diensten van derden en authenticatie",
+          "body": [
+            "Saveboxd biedt de mogelijkheid om in te loggen via externe aanbieders (Google, 42, Discord, Steam). Het gebruik van deze aanbieders is ook onderworpen aan hun eigen respectieve gebruiksvoorwaarden, waarover Saveboxd geen controle heeft."
+          ]
+        },
+        "changes": {
+          "title": "Wijziging van deze voorwaarden",
+          "body": [
+            "Deze voorwaarden kunnen op elk moment worden gewijzigd, met name om de ontwikkeling van de functies van de site weer te geven. De datum van laatste bijwerking staat bovenaan deze pagina. Bij een substantiële wijziging zullen wij redelijke inspanningen leveren om u te informeren."
+          ]
+        },
+        "law": {
+          "title": "Toepasselijk recht en bevoegde rechtbank",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — tenzij anders vermeld, worden deze voorwaarden ter informatie verstrekt in het kader van een studentenproject en vormen zij geen formeel commercieel contract."
+          ]
+        },
+        "contact": {
+          "title": "Contact",
+          "body": [
+            "Voor vragen over deze gebruiksvoorwaarden kunt u contact met ons opnemen via: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Koppel je PlayStation-account om je games, trofeeën en vrienden te importeren.",
+    "linkCta": "Naar instellingen",
+    "loadError": "Je PlayStation-gegevens konden niet worden geladen.",
+    "friendsHeading": "PlayStation-vrienden op Saveboxd",
+    "friendsPrivate": "Je PlayStation-vriendenlijst is privé.",
+    "noFriendsTitle": "Geen vrienden om voor te stellen",
+    "noFriendsDesc": "Nog geen van je PlayStation-vrienden staat op Saveboxd.",
+    "requestSent": "Verzoek verzonden",
+    "addFriend": "Toevoegen",
+    "friendRequestError": "Het vriendschapsverzoek kon niet worden verzonden.",
+    "yourGames": "Je games",
+    "gamesPrivate": "Je PlayStation-games zijn privé.",
+    "played": "{{totalPlayed}} games gespeeld · {{matched}} gevonden in onze catalogus",
+    "playedUnmatched": "{{totalPlayed}} games gespeeld · {{matched}} gevonden · {{unmatched}} niet in onze catalogus",
+    "noMatchedTitle": "Geen overeenkomende games",
+    "noMatchedDesc": "Nog geen van je PlayStation-games staat in onze catalogus.",
+    "trophyLevel": "Trofeeniveau",
+    "trophiesEarned": "Verdiende trofeeën",
+    "trophyProgress": "{{earned}}/{{total}} trofeeën · {{progress}} %",
+    "statusPlaying": "Bezig",
+    "statusBacklog": "Backlog",
+    "reviewWritten": "Recensie geschreven",
+    "writeReview": "Recensie schrijven",
+    "viewReviewOf": "Bekijk je recensie van {{title}}",
+    "writeReviewOf": "Schrijf een recensie van {{title}}",
+    "refresh": "Vernieuwen",
+    "syncing": "Verfrissend…",
+    "syncedAt": "Laatst bijgewerkt{{time}}"
+  },
+  "library": {
+    "title": "Mijn bibliotheken",
+    "noneLinkedTitle": "Geen account gekoppeld",
+    "noneLinkedDesc": "Koppel een Steam- of PlayStation-account in je instellingen om hier je games en trofeeën te zien.",
+    "goSettings": "Naar instellingen",
+    "notLinked": "Niet gekoppeld",
+    "eyebrow": "Jouw games",
+    "subtitle": "Je titels geïmporteerd uit je gekoppelde accounts.",
+    "linked": "Gekoppeld",
+    "link": "Koppelen"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Pagina niet gevonden",
+      "body": "Deze pagina bestaat niet of is verplaatst.",
+      "home": "Terug naar home"
+    },
+    "boundary": {
+      "title": "Er ging iets mis",
+      "body": "Er is een onverwachte fout opgetreden. Probeer de pagina opnieuw te laden.",
+      "retry": "Opnieuw laden"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Koppel je Xbox-account om je games en prestaties te importeren.",
+    "linkCta": "Ga naar instellingen",
+    "loadError": "Je Xbox-gegevens konden niet worden geladen.",
+    "yourGames": "Jouw spellen",
+    "gamesPrivate": "Je Xbox-spelgeschiedenis is privé.",
+    "gamerscore": "Gamerscore",
+    "gamesPlayed": "Gespeelde wedstrijden",
+    "perfectGames": "100% voltooid",
+    "refresh": "Vernieuwen",
+    "syncing": "Verfrissend…",
+    "syncedAt": "Laatst bijgewerkt{{time}}",
+    "played": "{{totalPlayed}} gespeelde spellen · {{matched}} gevonden in onze catalogus",
+    "playedUnmatched": "{{totalPlayed}} gespeelde spellen · {{matched}} gevonden · {{unmatched}} staat niet in onze catalogus",
+    "noMatchedTitle": "Geen overeenkomende spellen",
+    "noMatchedDesc": "Geen van je Xbox-games staat nog in onze catalogus.",
+    "achievementProgress": "{{earned}} prestaties · {{progress}} %",
+    "statusPlaying": "Spelen",
+    "statusBacklog": "Achterstand",
+    "reviewWritten": "Recensie geschreven",
+    "writeReview": "Schrijf een recensie",
+    "viewReviewOf": "Bekijk je recensie van {{title}}",
+    "writeReviewOf": "Schrijf een recensie over {{title}}"
+  },
+  "onboarding": {
+    "welcome": "Welkom!",
+    "subtitle": "Laten we je profiel in een paar stappen aanmaken.",
+    "skip": "Voorlopig overslaan",
+    "next": "Doorgaan",
+    "back": "Terug",
+    "finish": "Einde",
+    "genericError": "Er is een fout opgetreden. Probeer het nog eens.",
+    "username": {
+      "title": "Kies je gebruikersnaam",
+      "subtitle": "We hebben het automatisch aangevuld met de gegevens van de rekening waarmee je je hebt aangemeld — je kunt dit desgewenst wijzigen.",
+      "hint": "3–24 tekens: uitsluitend letters, cijfers en onderstrepingstekens."
+    },
+    "avatar": {
+      "title": "Een profielfoto toevoegen",
+      "subtitle": "We hebben de foto uit je account opgehaald. Upload nog een foto, zoom vervolgens in en sleep om het beeld te kaderen.",
+      "skip": "Sla deze stap over"
+    },
+    "services": {
+      "title": "Koppel je game-accounts",
+      "subtitle": "Koppel je platforms om je games en statistieken te importeren.",
+      "laterHint": "Geen haast — je kunt je accounts ook later koppelen via je accountinstellingen.",
+      "connected": "Verbonden",
+      "connect": "Verbinden",
+      "publicNotice": "Je Steam-, PlayStation- en Xbox-profielen moeten op ‘openbaar’ staan — anders kunnen we je games, vrienden en/of prestaties niet importeren.",
+      "steam": {
+        "perks": [
+          "Importeer je bibliotheek met gespeelde spellen naar de site",
+          "Prestaties en 100% uitgespeelde spellen",
+          "Vind hier je Steam-vrienden"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "Importeer je PlayStation-spelbibliotheek naar de site",
+          "Voortgang bij het behalen van trofeeën en spellen die voor 100% zijn uitgespeeld per titel",
+          "Zoek hier nu al PlayStation-vrienden"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Importeer je Xbox-spelbibliotheek naar de site",
+          "Gamerscore, prestaties en games die voor 100% zijn uitgespeeld"
+        ]
+      }
+    }
+  },
+  "a11y": {
+    "skipToContent": "Ga naar hoofdinhoud"
+  },
+  "achievements": {
+    "sectionTitle": "Prestaties",
+    "done": "Ontgrendeld",
+    "unlockedOn": "Ontgrendeld op {{date}}",
+    "fam": {
+      "completions": "Voltooide games",
+      "played": "Gespeelde games",
+      "perfect": "100%",
+      "reviews": "Reviews",
+      "lists": "Lijsten",
+      "friends": "Vrienden",
+      "genres": "Ontdekker",
+      "studio": "Studiofan",
+      "linked": "Gekoppelde accounts",
+      "popular": "Populair",
+      "supporter": "Supporter",
+      "favorite": "Liefhebber",
+      "harsh": "Strenge criticus",
+      "veteran": "Veteraan"
+    },
+    "desc": {
+      "completions": "Voltooi {{count}} games",
+      "played": "Registreer {{count}} games",
+      "perfect": "Voltooi {{count}} games op 100%",
+      "reviews": "Schrijf {{count}} reviews",
+      "lists": "Maak {{count}} lijsten",
+      "friends": "Bereik {{count}} vrienden",
+      "genres": "Voltooi games in {{count}} genres",
+      "studio": "Beoordeel {{count}} games van één studio",
+      "linked": "Koppel {{count}} game-accounts",
+      "popular": "Ontvang {{count}} likes op je reviews",
+      "supporter": "Geef {{count}} likes aan reviews",
+      "favorite": "Beoordeel {{count}} games met 10/10",
+      "harsh": "Beoordeel {{count}} games met 0",
+      "veteran": "Lid sinds {{count}} maanden"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} niveaus",
+    "concernedGames": "Betrokken games"
+  },
+  "tutorial": {
+    "eyebrow": "Gids",
+    "skip": "Overslaan",
+    "back": "Terug",
+    "next": "Volgende",
+    "done": "Begrepen",
+    "steps": {
+      "home": {
+        "title": "Home",
+        "body": "Klik op het Saveboxd-logo om altijd terug te keren naar de startpagina."
+      },
+      "search": {
+        "title": "Zoeken",
+        "body": "Vind elke game, studio of speler via de zoekbalk."
+      },
+      "catalog": {
+        "title": "Catalogus",
+        "body": "Blader door de volledige gamecatalogus en ontdek nieuwe games."
+      },
+      "feed": {
+        "title": "Feed",
+        "body": "Zie wat je vrienden spelen, uitspelen en recenseren."
+      },
+      "leaderboard": {
+        "title": "Ranglijst",
+        "body": "Bekijk de topspelers en volg je eigen positie."
+      },
+      "friends": {
+        "title": "Vrienden",
+        "body": "Voeg vrienden toe, accepteer verzoeken en zie wie online is."
+      },
+      "library": {
+        "title": "Bibliotheek",
+        "body": "Synchroniseer je Steam-, PlayStation- en Xbox-games en -trofeeën."
+      },
+      "notifications": {
+        "title": "Meldingen",
+        "body": "Likes, reacties, vriendschapsverzoeken en prestaties verschijnen hier."
+      },
+      "profile": {
+        "title": "Jouw profiel",
+        "body": "Je games, recensies, statistieken en badges staan hier."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Chat in realtime met je vrienden via de bel rechtsonder."
+      },
+      "menu": {
+        "title": "Instellingen",
+        "body": "Open hier je instellingen: profiel, meldingen, thema en taal."
+      }
+    }
+  }
+}

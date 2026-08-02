@@ -1,0 +1,1237 @@
+{
+  "common": {
+    "loading": "Yükleniyor…",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "cancel": "İptal",
+    "add": "Ekle",
+    "back": "Geri",
+    "close": "Kapat",
+    "retry": "Tekrar dene",
+    "delete": "Sil",
+    "confirm": "Onayla",
+    "edit": "Düzenle",
+    "skip": "Atla",
+    "error": "Bir şeyler ters gitti",
+    "yes": "Evet",
+    "no": "Hayır",
+    "unknown": "Bilinmiyor",
+    "previous": "Önceki",
+    "next": "Sonraki"
+  },
+  "nav": {
+    "catalog": "Katalog",
+    "feed": "Akış",
+    "leaderboard": "Sıralama",
+    "friends": "Arkadaşlar",
+    "steam": "Steam",
+    "login": "Giriş yap",
+    "signup": "Kaydol",
+    "library": "Kütüphaneler"
+  },
+  "menu": {
+    "notifications": "Bildirimler",
+    "settings": "Ayarlar",
+    "language": "Dil",
+    "lightMode": "Açık mod",
+    "darkMode": "Koyu mod",
+    "logout": "Çıkış yap",
+    "closeMenu": "Menüyü kapat",
+    "notificationPrefs": "Bildirim tercihleri",
+    "navigation": "Gezinme menüsü",
+    "replayTutorial": "Turu tekrar izle"
+  },
+  "footer": {
+    "tagline": "Video oyunlarının Letterboxd'u · 42 projesi",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Hizmet Şartları"
+  },
+  "languagePicker": {
+    "title": "Dil"
+  },
+  "oauth": {
+    "continueWithGoogle": "Google ile devam et",
+    "continueWithFortyTwo": "42 ile devam et",
+    "continueWithSteam": "Steam ile devam et",
+    "continueWithDiscord": "Discord ile devam et",
+    "or": "veya"
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş yap",
+      "emailPlaceholder": "E-posta",
+      "passwordPlaceholder": "Şifre",
+      "submit": "Giriş yap",
+      "submitting": "Giriş yapılıyor…",
+      "forgotPassword": "Şifreni mi unuttun?",
+      "noAccount": "Hesabın yok mu?",
+      "signupLink": "Kaydol",
+      "genericError": "Giriş başarısız oldu",
+      "errorEmailInUse": "Bu e-posta ile zaten bir hesap var. Şifrenle giriş yap ya da bu sağlayıcı için farklı bir e-posta kullan.",
+      "errorGeneric": "Giriş yapılırken bir şeyler ters gitti — lütfen tekrar dene.",
+      "steamFailed": "Steam ile giriş başarısız oldu — lütfen tekrar dene",
+      "subtitle": "Oyun günlüğüne kaldığın yerden devam et."
+    },
+    "twoFactor": {
+      "title": "İki faktörlü kod",
+      "description": "Kimlik doğrulama uygulamandaki 6 haneli kodu gir.",
+      "verify": "Doğrula",
+      "verifying": "Doğrulanıyor…",
+      "invalidCode": "Geçersiz kod"
+    },
+    "signup": {
+      "title": "Kaydol",
+      "titleSteam": "Steam kaydını tamamla",
+      "steamIntro": "Steam hesabın doğrulandı — Saveboxd hesabını oluşturmak için bir e-posta seç ve kullanıcı adını onayla.",
+      "emailPlaceholder": "E-posta",
+      "usernamePlaceholder": "Kullanıcı adı",
+      "usernameHint": "Sadece harf, rakam ve alt çizgi",
+      "passwordPlaceholder": "Şifre (en az 8 karakter)",
+      "passwordPlaceholderSteam": "Şifre (isteğe bağlı)",
+      "passwordHintSteam": "Şifre olmadan yalnızca Steam ile giriş yaparsın. Daha sonra profilinden bir şifre ekleyebilirsin.",
+      "submit": "Kaydol",
+      "submitSteam": "Hesap oluştur",
+      "submitting": "Hesap oluşturuluyor…",
+      "sessionExpired": "Oturum süresi doldu — Steam ile tekrar giriş yap",
+      "genericError": "Kayıt başarısız oldu",
+      "alreadyHaveAccount": "Zaten hesabın var mı?",
+      "loginLink": "Giriş yap",
+      "subtitle": "Hesabını oluştur ve oyun günlüğüne başla."
+    },
+    "forgotPassword": {
+      "title": "Şifreni mi unuttun?",
+      "emailPlaceholder": "E-posta",
+      "submit": "Sıfırlama bağlantısı gönder",
+      "submitting": "Gönderiliyor…",
+      "checkEmailTitle": "E-postanı kontrol et",
+      "checkEmailBody": "Bu adres kayıtlıysa, bir şifre sıfırlama bağlantısı yolda.",
+      "backToLogin": "Girişe dön",
+      "genericError": "Bir şeyler ters gitti"
+    },
+    "resetPassword": {
+      "title": "Yeni bir şifre seç",
+      "invalidLinkTitle": "Geçersiz bağlantı",
+      "invalidLinkBody": "Bu şifre sıfırlama bağlantısında jeton eksik.",
+      "requestNewLink": "Yeni bir tane iste",
+      "missingToken": "Sıfırlama jetonu eksik.",
+      "newPasswordPlaceholder": "Yeni şifre (en az 8 karakter)",
+      "submit": "Şifreyi sıfırla",
+      "submitting": "Sıfırlanıyor…",
+      "genericError": "Şifre sıfırlanamadı"
+    },
+    "verifyEmail": {
+      "verifying": "E-postan doğrulanıyor…",
+      "successTitle": "E-posta doğrulandı",
+      "successBody": "Adresin onaylandı — her şey hazır.",
+      "goToProfile": "Profiline git",
+      "failedTitle": "Doğrulama başarısız oldu",
+      "backToProfile": "Profiline dön",
+      "missingToken": "Doğrulama jetonu eksik.",
+      "genericError": "Doğrulama başarısız oldu"
+    }
+  },
+  "settings": {
+    "title": "Hesap ayarları",
+    "welcomeTitle": "Saveboxd'a hoş geldin!",
+    "welcomeBody": "Kullanıcı adın olarak {{username}} seçtik — istersen aşağıdan değiştir, ya da olduğu gibi bırak.",
+    "changeAvatar": "Avatarı değiştir",
+    "uploadingAvatar": "Yükleniyor…",
+    "avatarError": "Yükleme başarısız oldu",
+    "emailVerified": "E-posta doğrulandı",
+    "emailNotVerified": "E-posta doğrulanmadı",
+    "resendVerification": "Doğrulama e-postasını yeniden gönder",
+    "resendSending": "Gönderiliyor…",
+    "resendSent": "Doğrulama e-postası gönderildi — gelen kutunu kontrol et.",
+    "resendError": "Doğrulama e-postası yeniden gönderilemedi",
+    "usernameLabel": "Kullanıcı adı",
+    "bioLabel": "Biyografi",
+    "saveProfile": "Profili kaydet",
+    "saving": "Kaydediliyor…",
+    "skipForNow": "Şimdilik atla",
+    "profileError": "Profil kaydedilemedi",
+    "signInVia": "Hesabının şifresi yok — {{provider}} ile giriş yapıyorsun. E-postanla da giriş yapabilmek için bir şifre ekle.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "İki faktörlü kimlik doğrulama",
+      "enabledDescription": "Etkin. Devre dışı bırakmak için bir kod gir.",
+      "disable": "Devre dışı bırak",
+      "disabling": "Devre dışı bırakılıyor…",
+      "scanQr": "Bu QR kodunu kimlik doğrulama uygulamanla tara:",
+      "manualKeyPrefix": "Ya da bu anahtarı elle gir:",
+      "confirm": "Onayla",
+      "confirming": "Onaylanıyor…",
+      "notEnabledDescription": "Etkin değil. Google Authenticator gibi bir uygulama kullanarak girişe ikinci bir adım ekle.",
+      "enable": "2FA'yı etkinleştir",
+      "starting": "Başlatılıyor…",
+      "invalidCode": "Geçersiz kod",
+      "startError": "2FA kurulumu başlatılamadı"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "Bu Steam hesabı zaten başka bir kullanıcıya bağlı.",
+      "linkedSuccess": "Steam hesabı bağlandı!",
+      "linkedDescription": "Bağlandı — Steam ile giriş yapabilir ve oyun kütüphaneni içe aktarabilirsin.",
+      "viewLibrary": "Steam kütüphanemi görüntüle",
+      "unlink": "Steam bağlantısını kaldır",
+      "unlinking": "Bağlantı kaldırılıyor…",
+      "unlinkError": "Steam bağlantısı kaldırılamadı",
+      "notLinkedDescription": "Steam ile giriş yapmak, kütüphaneni içe aktarmak ve Steam arkadaşlarını bulmak için Steam hesabını bağla.",
+      "linkAccount": "Steam hesabımı bağla"
+    },
+    "password": {
+      "changeTitle": "Şifreyi değiştir",
+      "addTitle": "Şifre ekle",
+      "currentPasswordPlaceholder": "Mevcut şifre",
+      "newPasswordPlaceholder": "Yeni şifre (en az 8 karakter)",
+      "save": "Şifreyi değiştir",
+      "add": "Şifre ekle",
+      "saving": "Kaydediliyor…",
+      "saved": "Şifre kaydedildi!",
+      "error": "Şifre kaydedilemedi",
+      "forgot": "Şifreni mi unuttun?",
+      "forgotSending": "Gönderiliyor…",
+      "forgotSent": "{{email}} adresine sıfırlama bağlantısı gönderildi.",
+      "forgotError": "Sıfırlama e-postası gönderilemedi"
+    },
+    "delete": {
+      "title": "Hesabı sil",
+      "warning": "Bu işlem hesabını, arkadaşlıklarını ve mesajlarını kalıcı olarak siler. İncelemelerin ve yorumların saklanır ancak anonimleştirilir (silinmiş bir kullanıcıdan geliyormuş gibi gösterilir). Bu işlem geri alınamaz.",
+      "button": "Hesabı sil",
+      "confirmPasswordPlaceholder": "Şifreni onayla",
+      "confirmButton": "Kalıcı olarak sil",
+      "deleting": "Siliniyor…",
+      "cancel": "İptal",
+      "error": "Hesap silinemedi"
+    },
+    "connections": {
+      "title": "Bağlı hesaplar",
+      "description": "Daha hızlı giriş yapmak ve arkadaşlarını bulmak için oyun hesaplarını bağla.",
+      "connected": "Bağlı",
+      "link": "Bağla",
+      "unlink": "Bağlantıyı kaldır",
+      "unlinking": "Bağlantı kaldırılıyor…",
+      "unlinkError": "Bu hesabın bağlantısı kaldırılamadı",
+      "comingSoon": "Yakında",
+      "discordLinked": "Discord hesabı bağlandı!",
+      "discordTaken": "Bu Discord hesabı zaten başka bir kullanıcıya bağlı."
+    },
+    "psn": {
+      "title": "PlayStation'ı bağla",
+      "intro": "Sadece PlayStation Online ID'ni gir — herkese açık profilini buluruz. Şifre veya jeton gerekmez.",
+      "idLabel": "PSN Online ID'n",
+      "publicHint": "İçe aktarabilmemiz için PlayStation profilinin herkese açık olması gerekir (oyunlar ve kupalar görünür).",
+      "connect": "Bağla",
+      "connecting": "Bağlanıyor…",
+      "connectedAs": "{{onlineId}} olarak bağlandı",
+      "notFound": "Bu Online ID için herkese açık bir PlayStation hesabı bulunamadı. Yazımını ve profilinin herkese açık olduğunu kontrol et.",
+      "alreadyLinked": "Bu PlayStation hesabı zaten başka bir profile bağlı.",
+      "invalidId": "Bu geçerli bir PSN Online ID'ye benzemiyor (3–16 harf, rakam, - veya _).",
+      "notConfigured": "PlayStation içe aktarımı sunucuda henüz ayarlanmadı. Daha sonra tekrar dene.",
+      "genericError": "Bağlantı başarısız oldu. Lütfen tekrar dene.",
+      "viewLibrary": "PlayStation kütüphanemi gör"
+    },
+    "adjustAvatar": "Ayarla",
+    "avatarReset": "Sıfırla",
+    "avatarFrameHint": "Taşımak için sürükle, yakınlaştırmak için kaydırıcı",
+    "avatarZoom": "Yakınlaştırma",
+    "chooseImage": "Bir görsel seç",
+    "xbox": {
+      "title": "Xbox'ı Bağla",
+      "intro": "Xbox gamertag'inizi girmeniz yeterlidir — biz de herkese açık profilinizi buluruz. Şifre veya jeton gerekmez.",
+      "idLabel": "Xbox oyun kullanıcı adın",
+      "publicHint": "Profilinizi içe aktarabilmemiz için Xbox profilinizin herkese açık olması (oyun geçmişi ve başarıların görünür olması) gerekir.",
+      "connect": "Bağlan",
+      "connecting": "Bağlanıyor…",
+      "connectedAs": "{{gamertag}} olarak bağlandı",
+      "notFound": "Bu gamertag için herkese açık bir Xbox hesabı bulunamadı. Yazımını kontrol et ve profilinin herkese açık olduğundan emin ol.",
+      "alreadyLinked": "Bu Xbox hesabı halihazırda başka bir profile bağlı.",
+      "invalidId": "Bu, geçerli bir Xbox gamertag'ına benzemiyor.",
+      "notConfigured": "Xbox içe aktarma özelliği sunucuda henüz kurulmamıştır. Lütfen daha sonra tekrar deneyin.",
+      "genericError": "Bağlantı kurulamadı. Lütfen tekrar deneyin.",
+      "viewLibrary": "Xbox kütüphanemi görüntüle"
+    },
+    "eyebrow": "Hesabın",
+    "navProfile": "Profil",
+    "navNotifications": "Bildirimler",
+    "navSecurity": "Güvenlik",
+    "navConnections": "Bağlantılar",
+    "navDanger": "Tehlike bölgesi",
+    "navData": "Verileriniz",
+    "export": {
+      "description": "Tüm kişisel verilerinizin (profil, incelemeler, yorumlar, oyunlar, listeler, arkadaşlar, mesajlar ve bildirimler) bir kopyasını yapılandırılmış bir JSON dosyası olarak indirin.",
+      "button": "Verilerimi indir",
+      "downloading": "Hazırlanıyor…",
+      "error": "Verileriniz dışa aktarılamadı"
+    }
+  },
+  "friends": {
+    "title": "Arkadaşlar",
+    "addPlaceholder": "Eklenecek kullanıcı adı",
+    "add": "Ekle",
+    "enterUsernameError": "Bir kullanıcı adı gir",
+    "sendError": "İstek gönderilemedi",
+    "loadError": "Arkadaşlar yüklenemedi",
+    "pendingRequests": "Bekleyen istekler",
+    "sentRequests": "Gönderilen istekler",
+    "suggestedFriends": "Önerilen arkadaşlar",
+    "yourFriends": "Arkadaşların",
+    "pending": "Beklemede",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "noFriendsTitle": "Henüz arkadaşın yok",
+    "noFriendsDescription": "Yukarıdan kullanıcı adıyla birini ekle, ya da önerilere göz at.",
+    "accept": "Kabul et",
+    "decline": "Reddet",
+    "cancelRequest": "İsteği iptal et",
+    "removeFriend": "Arkadaşlıktan çıkar",
+    "eyebrow": "Çevren",
+    "statFriends": "arkadaş",
+    "statOnline": "çevrimiçi",
+    "statPending": "beklemede",
+    "eyeRequests": "Onay bekliyor",
+    "eyeSent": "Gönderilen",
+    "eyeSuggested": "Keşfet",
+    "eyeFriends": "Aktif ve çevrimdışı",
+    "sentYouRequest": "sana istek gönderdi",
+    "viaSteam": "Steam üzerinden",
+    "via42": "42 üzerinden",
+    "viaPsn": "PSN üzerinden"
+  },
+  "notifications": {
+    "title": "Bildirimler",
+    "markAllRead": "Tümünü okundu işaretle",
+    "empty": "Bildirim yok.",
+    "prefsDescription": "Almak istediğin bildirimleri seç (zil + gerçek zamanlı).",
+    "someone": "Biri",
+    "reviewLike": "<b>{{who}}</b> incelemeni beğendi",
+    "reviewLikeTitled": "<b>{{who}}</b> \"{{title}}\" incelemeni beğendi",
+    "reviewComment": "<b>{{who}}</b> incelemene yorum yaptı",
+    "reviewCommentTitled": "<b>{{who}}</b> \"{{title}}\" incelemene yorum yaptı",
+    "commentReply": "<b>{{who}}</b> yorumuna yanıt verdi",
+    "friendRequest": "<b>{{who}}</b> sana arkadaşlık isteği gönderdi",
+    "friendAccept": "<b>{{who}}</b> arkadaşlık isteğini kabul etti",
+    "newMessage": "<b>{{who}}</b> sana bir mesaj gönderdi",
+    "friendJoined": "<b>{{who}}</b> ({{via}}) Saveboxd'a katıldı",
+    "prefFriendRequest": "Arkadaşlık istekleri",
+    "prefFriendRequestHint": "Biri sana istek gönderdiğinde",
+    "prefFriendAccept": "Kabul edilen istekler",
+    "prefFriendAcceptHint": "İsteğin kabul edildiğinde",
+    "prefReviewLike": "İncelemelerime beğeniler",
+    "prefReviewLikeHint": "İncelemelerinden biri beğenildiğinde",
+    "prefReviewComment": "İncelemelerime yorumlar",
+    "prefReviewCommentHint": "Biri incelemene yorum yaptığında",
+    "prefCommentReply": "Yorumlarıma yanıtlar",
+    "prefCommentReplyHint": "Biri yorumuna yanıt verdiğinde",
+    "prefFriendJoined": "Bir kişi katılıyor",
+    "prefFriendJoinedHint": "Bir Steam/42 kişisi kaydolduğunda",
+    "achievement": "Başarım açıldı: <b>{{name}}</b>",
+    "prefAchievement": "Başarımlar",
+    "prefAchievementHint": "Bir başarım açtığında",
+    "clear": "Temizle"
+  },
+  "home": {
+    "featuredBadge": "Öne çıkan oyun",
+    "writeReview": "İnceleme yaz",
+    "popularNow": "Şu anda popüler",
+    "showMorePopular": "Daha fazla popüler oyun göster",
+    "showLessPopular": "Daha az popüler oyun göster",
+    "popularReviews": "Popüler incelemeler",
+    "noReviewsTitle": "Henüz inceleme yok",
+    "noReviewsDescription": "Bir oyunu ilk değerlendiren sen ol — en iyi incelemeler burada görünecek.",
+    "showMoreReviews": "Daha fazla inceleme göster",
+    "showLessReviews": "Daha az inceleme göster",
+    "deletedUser": "[silinmiş kullanıcı]",
+    "viewGame": "{{title}} oyununu görüntüle",
+    "recommendedForYou": "Senin için önerilen",
+    "showMoreRecommended": "Daha fazla öneri göster",
+    "showLessRecommended": "Daha az öneri göster",
+    "recoEyebrow": "Arkadaşların bunları çok sevdi",
+    "popularEyebrow": "Şu anda",
+    "activityEyebrow": "Arkadaşların",
+    "reviewsEyebrow": "Topluluk söz alıyor",
+    "statsEyebrow": "Oyun yılın",
+    "statsHeading": "Bir bakışta {{year}}",
+    "seeProfile": "Profili gör",
+    "statDone": "Bitenler",
+    "statDoneCaption": "Bitti olarak işaretlenen oyunlar",
+    "statPerfect": "%100",
+    "statPerfectCaption": "Platinler ve tam başarımlar",
+    "statReviews": "İncelemeler",
+    "statAvg": "Ort. {{value}}",
+    "statNoReviews": "Henüz inceleme yok",
+    "statRank": "Global sıra",
+    "statRankCaption": "Tamamlama sıralaması",
+    "statUnranked": "Sıralanmadı",
+    "statAchievements": "Başarımlar",
+    "activityTitle": "Canlı",
+    "activityEmpty": "Henüz bir şey yok.",
+    "activitySeeAll": "Tüm akışı gör",
+    "landing": {
+      "eyebrow": "Video oyunlarının Letterboxd'u",
+      "title": "Kütüphanen. Puanlandı, incelendi, paylaşıldı.",
+      "subtitle": "Steam, PlayStation ve Xbox kütüphanelerini senkronize et, oyunlarını puanla, başarımların kilidini aç ve global sıralamada yüksel.",
+      "ctaPrimary": "Hesabımı oluştur",
+      "ctaSecondary": "Giriş yap",
+      "feature1Title": "Kütüphaneni senkronize et",
+      "feature1Desc": "Steam, PlayStation ve Xbox oyunlarını ve kupalarını otomatik olarak içe aktar.",
+      "feature2Title": "Puanla ve incele",
+      "feature2Desc": "Oyunlara puan ver, inceleme yaz, başkalarınınkine tepki ver ve yorum yap.",
+      "feature3Title": "Kilidi aç ve yarış",
+      "feature3Desc": "Başarımlar kazan ve global sıralamada yüksel.",
+      "previewEyebrow": "Canlı önizleme",
+      "previewTitle": "Şu anda gözde",
+      "allTitle": "Yapabileceğin her şey",
+      "feat1": "Binlerce oyunluk bir kataloğu keşfet",
+      "feat2": "Oynadığın her oyunu puanla ve incele",
+      "feat3": "Kendi oyun listelerini oluştur ve paylaş",
+      "feat4": "Steam, PlayStation ve Xbox kütüphanelerini senkronize et",
+      "feat5": "Arkadaş ekle, sohbet et ve etkinliklerini takip et",
+      "feat6": "Oynadıkça başarımların kilidini aç",
+      "feat7": "Global sıralamada yüksel",
+      "feat8": "İlerlemeni takip et: bitirilen oyunlar, %100 ve yıllık istatistikler",
+      "statsGamesLabel": "Oyunlar",
+      "statsReviewsLabel": "İncelemeler",
+      "statsPlayersLabel": "Oyuncular",
+      "topEyebrow": "En iyi oyuncular",
+      "topTitle": "Şu anki en iyi oyuncular",
+      "topCaption": "oyun %100 tamamlandı",
+      "platformsEyebrow": "Hesapların",
+      "platformsTitle": "Tüm kütüphaneni getir",
+      "platformsSubtitle": "Steam, PlayStation ve Xbox'ı bağla — oyunların ve kupaların otomatik senkronize olur.",
+      "achEyebrow": "Özgün başarımlar",
+      "achTitle": "Açılacak onlarca rozet",
+      "achSubtitle": "Oyunları tamamlayarak, inceleme yazarak, listeler oluşturarak ve arkadaş ekleyerek rozetler kazan.",
+      "feat9": "Sana özel oyun önerileri al"
+    },
+    "recoBecauseGame": "{{title}} hoşuna gittiği için",
+    "recoBecauseGenre": "{{genre}} sevdiğin için",
+    "recoBecausePlayed": "{{title}} oynadığın için",
+    "recoBecauseStudio": "{{studio}} oyunlarını sevdiğin için"
+  },
+  "feed": {
+    "title": "Arkadaşlarının etkinliği",
+    "subtitle": "Arkadaşlarının en yeni incelemeleri ve bitirdiği oyunlar, canlı.",
+    "tabAll": "Tümü",
+    "tabReviews": "İncelemeler",
+    "tabPlayed": "Oyunlar",
+    "tabLikes": "Beğeniler",
+    "emptyTitle": "Arkadaşlarından yeni bir şey yok",
+    "emptyTitleTab": "Bu sekmede bir şey yok",
+    "emptyDescription": "Arkadaş ekle ve onların en yeni incelemelerini, bitirdiği oyunları ve beğenilerini burada takip et.",
+    "findFriends": "Arkadaş bul",
+    "loadMore": "Daha fazla yükle",
+    "loading": "Yükleniyor…",
+    "rated": "<a>{{user}}</a>, <s>{{game}}</s> oyununu değerlendirdi",
+    "played": "<a>{{user}}</a>, <s>{{game}}</s> oyununu oynadı",
+    "likedReview": "<a>{{actor}}</a>, <s>{{author}}</s> kullanıcısının incelemesini beğendi",
+    "likedComment": "<a>{{actor}}</a>, <s>{{author}}</s> kullanıcısının yorumunu beğendi",
+    "on": "{{target}} için",
+    "gameCompleted": "Oyun bitirildi",
+    "deletedUser": "[silinmiş kullanıcı]",
+    "deletedShort": "[silinmiş]",
+    "timeNow": "az önce",
+    "timeMinutes": "{{count}} dk önce",
+    "timeHours": "{{count}} sa önce",
+    "timeYesterday": "dün",
+    "timeDays": "{{count}} g önce",
+    "tabCompleted": "Tamamlananlar",
+    "completed": "<a>{{user}}</a> tamamlandı <s>{{game}}</s> %100",
+    "completedBadge": "%100 tamamlandı",
+    "rankLine": "<a>{{user}}</a> <s>ilk {{rank}}</s> arasına girdi — {{category}}",
+    "rankScopeGlobal": "Küresel sıralama",
+    "rankScopeFriends": "Arkadaşların arasında",
+    "achievementLine": "<a>{{user}}</a>, <s>{{name}}</s> başarımını açtı",
+    "tabAchievements": "Başarımlar",
+    "eyebrow": "Çevren, canlı",
+    "live": "Canlı",
+    "done": "<a>{{user}}</a> <s>{{game}}</s> oyununu bitirdi"
+  },
+  "leaderboard": {
+    "title": "Sıralama",
+    "subtitle": "Sıralamada kimin başı çektiğini gör — tamamlamalar, oynanan oyunlar ve incelemeler.",
+    "metricCompletions": "Tamamlamalar",
+    "metricPlayed": "Oynanan oyunlar",
+    "metricReviews": "İncelemeler",
+    "scopeFriends": "Arkadaşlar",
+    "scopeGlobal": "Küresel",
+    "windowAll": "Tüm zamanlar",
+    "windowMonth": "Bu ay",
+    "yourRank": "Sıralamadaki yerin",
+    "rankLabel": "Sıra {{rank}}",
+    "badgeTitle": "Küresel ilk 3",
+    "badgeAria": "Sıralama ödülleri",
+    "emptyTitle": "Henüz sıralanacak bir şey yok",
+    "emptyFriends": "Arkadaş ekle; birlikte yükselmek için oyunları tamamlamaya, oynadıklarını kaydetmeye ve inceleme yazmaya başla.",
+    "emptyGlobal": "Sıralamada ilk sen ol — oyunları tamamla, oynadıklarını kaydet ve inceleme yaz.",
+    "findFriends": "Arkadaş bul",
+    "eyebrow": "En iyi oyuncular",
+    "you": "sen"
+  },
+  "reviews": {
+    "sortPopular": "Popüler",
+    "sortRecent": "En yeni",
+    "sortDiscussed": "Tartışılan",
+    "heading": "İncelemeler",
+    "loginToReview": "İnceleme yazmak için giriş yap.",
+    "emptyTitle": "Henüz inceleme yok",
+    "emptyDescGame": "Bu oyun hakkında görüşünü ilk paylaşan sen ol.",
+    "emptyDescCompany": "Bu stüdyo hakkında görüşünü ilk paylaşan sen ol.",
+    "emptyDescGameGuest": "Bu oyunu ilk değerlendiren olmak için giriş yap.",
+    "emptyDescCompanyGuest": "Bu stüdyoyu ilk değerlendiren olmak için giriş yap.",
+    "deletedUser": "[silinmiş kullanıcı]",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "loading": "Yükleniyor…",
+    "loadMore": "Daha fazla yükle",
+    "shareReview": "Bu incelemeyi bir arkadaşınla paylaş",
+    "ratingLabel": "Puan:",
+    "ratingAria": "{{n}}/10",
+    "titlePlaceholder": "İnceleme başlığı",
+    "textPlaceholder": "İncelemen (spoiler yok…)",
+    "publish": "İncelemeyi yayınla",
+    "chooseRating": "Bir puan seç.",
+    "alreadyReviewedGame": "Bu oyunu zaten değerlendirdin.",
+    "alreadyReviewedCompany": "Bu stüdyoyu zaten değerlendirdin.",
+    "unexpectedError": "Beklenmeyen hata.",
+    "titleTextRequired": "Başlık ve metin gerekli.",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "translate": "Çevir",
+    "showOriginal": "Orijinali gör",
+    "translating": "Çevriliyor…",
+    "showTranslation": "Çeviriyi gör",
+    "eyebrow": "Topluluk söz alıyor"
+  },
+  "comments": {
+    "sortTop": "En iyiler",
+    "sortRecent": "En yeni",
+    "loading": "Yükleniyor…",
+    "empty": "Yorum yok — tartışmayı başlat.",
+    "deletedComment": "[silinmiş yorum]",
+    "deletedUser": "[silinmiş kullanıcı]",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "reply": "Yanıtla",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "viewReplies": "Yanıtları gör ({{count}})",
+    "replyPlaceholder": "Yanıtla…",
+    "addPlaceholder": "Yorum ekle…",
+    "submit": "Yorum yap",
+    "loginToComment": "Yorum yapmak için giriş yapın"
+  },
+  "profile": {
+    "recentReviews": "Son incelemeler",
+    "noReviewsTitle": "Henüz inceleme yok",
+    "noReviewsDesc": "Bu oyuncu henüz hiçbir oyunu değerlendirmedi.",
+    "calNoDates": "Henüz bitirme tarihi yok",
+    "calNoDatesDesc": "Bitti olarak işaretlenen oyunlar bu yıllık takvimi dolduracak.",
+    "calHint": "O gün bitirilen oyunları görmek için renkli bir güne gel veya dokun.",
+    "friends": "Arkadaşlar",
+    "requestPending": "İstek beklemede",
+    "respondRequest": "İsteğine yanıt ver",
+    "couldNotSend": "İstek gönderilemedi",
+    "sending": "Gönderiliyor…",
+    "addFriend": "Arkadaş ekle",
+    "couldNotLoad": "Profil yüklenemedi",
+    "notFound": "Profil bulunamadı",
+    "shareProfile": "Bu profili bir arkadaşınla paylaş",
+    "editProfile": "Profili düzenle",
+    "topRated": "En yüksek puanlı oyunlar",
+    "completionCalendar": "Bitirme takvimi",
+    "memberSince": "{{date}} tarihinden beri üye",
+    "reviewOne": "{{count}} inceleme",
+    "reviewMany": "{{count}} inceleme",
+    "playedGameOne": "{{count}} oyun oynandı",
+    "playedGameMany": "{{count}} oyun oynandı",
+    "calLess": "Az",
+    "calMore": "Çok",
+    "calCompletedLabel": "tamamlandı",
+    "calPlayedLabel": "oynandı",
+    "calViewPlayed": "Oynanan",
+    "calViewCompleted": "Tamamlanan",
+    "calDoneLabel": "yapıldı",
+    "calPerfectLabel": "%100",
+    "calDoneLegend": "Yapıldı",
+    "calPerfectLegend": "%100",
+    "tabReviews": "İncelemeler",
+    "tabGames": "Oyunlar",
+    "tabLists": "Listeler",
+    "tabAchievements": "Başarımlar",
+    "tabOverview": "Genel bakış",
+    "recentReviewsTitle": "Son incelemeler",
+    "seeAllReviews": "Tüm incelemeleri gör",
+    "bioAdd": "Bio ekle",
+    "bioPlaceholder": "Kendinden biraz bahset…",
+    "eyeTopRated": "Favoriler",
+    "eyeActivity": "Etkinlik",
+    "eyeReviews": "Görüşleri",
+    "eyeLists": "Koleksiyonlar",
+    "eyeAchievements": "Başarımlar",
+    "calNewerYears": "Daha yeni yıllar",
+    "calOlderYears": "Daha eski yıllar"
+  },
+  "lists": {
+    "heading": "Listeler",
+    "newList": "Yeni liste",
+    "emptyOwn": "Henüz liste yok. Bir tane oluştur (ör. \"Best competitive\", \"To-do\").",
+    "emptyPublic": "Herkese açık liste yok.",
+    "namePlaceholder": "Liste adı",
+    "creating": "Oluşturuluyor…",
+    "create": "Oluştur",
+    "cancel": "İptal",
+    "error": "Hata",
+    "private": "Özel",
+    "public": "Herkese açık",
+    "privateHint": "Yalnızca sana görünür",
+    "publicHint": "Profilinde gösterilir",
+    "viewGames": "Oyunları gör",
+    "empty": "boş",
+    "gameOne": "{{count}} oyun",
+    "gameMany": "{{count}} oyun",
+    "editList": "Listeyi düzenle",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "confirmDelete": "\"{{name}}\" listesi silinsin mi?",
+    "loading": "Yükleniyor…",
+    "listEmpty": "Boş liste — oyunları kendi sayfalarından ekle.",
+    "removeGame": "{{title}} kaldır",
+    "addToList": "Bir listeye ekle",
+    "menuEmpty": "Liste yok — aşağıdan bir tane oluştur.",
+    "privateShort": "özel",
+    "quickPlaceholder": "Yeni liste + bu oyun",
+    "createAria": "Liste oluştur",
+    "validate": "Onayla",
+    "gameReviews": "{{title}} yorumları",
+    "noReview": "Değerlendirme yok",
+    "undoRemove": "Geri al",
+    "viewCompact": "Kompakt",
+    "viewDetailed": "Ayrıntılı",
+    "addGamePlaceholder": "Oyun ekle…",
+    "alreadyIn": "Eklendi",
+    "limitReached": "Liste dolu — en fazla {{max}}",
+    "dragToReorder": "Sıralamak için sürükle",
+    "noCover": "Kapak yok",
+    "addCover": "Kapak ekle",
+    "changeCover": "Kapağı değiştir",
+    "removeCover": "Kapağı kaldır"
+  },
+  "catalog": {
+    "title": "Katalog",
+    "searchPlaceholder": "Oyun ara…",
+    "searchAria": "Oyun ara",
+    "sortLabel": "Sırala",
+    "platformLabel": "Platform",
+    "studioLabel": "Stüdyo",
+    "sortRating": "En yüksek puanlı",
+    "sortMostPlayed": "En çok oynanan",
+    "sortRecent": "En yeni",
+    "sortPopular": "Popüler",
+    "allPlatforms": "Tüm platformlar",
+    "allStudios": "Tüm stüdyolar",
+    "noResults": "Bu filtrelerle eşleşen oyun yok.",
+    "loading": "Yükleniyor…",
+    "loadMore": "Daha fazla yükle",
+    "searchNav": "Ara",
+    "randomGame": "Rastgele oyun",
+    "noneInCatalog": "Katalogda \"{{query}}\" adlı oyun yok.",
+    "importIgdb": "IGDB'den ekle",
+    "importing": "IGDB'den içe aktarılıyor…",
+    "studios": "Stüdyolar",
+    "eyebrow": "Kütüphane",
+    "subtitle": "Tüm oyun kütüphanesine göz at — türe, platforma veya stüdyoya göre filtrele ve topluluğa göre sırala.",
+    "unit": "oyun",
+    "activeFilters": "Etkin filtreler",
+    "clearAll": "Tümünü temizle",
+    "removeFilter": "{{name}} kaldır",
+    "viewGame": "Görüntüle",
+    "showLess": "Daha az göster",
+    "sortRatingAsc": "En düşük puanlı",
+    "sortMostPlayedAsc": "En az oynanan",
+    "sortRecentAsc": "En eski",
+    "sortPopularAsc": "En az bilinen"
+  },
+  "game": {
+    "markedTitle": "Bitti — kaldırmak için tıkla",
+    "markTitle": "Oynadım",
+    "unmarkAria": "\"Bitti\" işaretini kaldır",
+    "markAria": "Bitti olarak işaretle",
+    "playedOne": "{{count}} oyuncu bu oyunu oynadı",
+    "playedMany": "{{count}} oyuncu bu oyunu oynadı",
+    "notFound": "Oyun bulunamadı.",
+    "shareGame": "Bu oyunu bir arkadaşınla paylaş",
+    "dlcHeading": "Ek Paketler ve DLC ({{count}})",
+    "chooseDlcLabel": "Bir DLC seç",
+    "chooseDlcPlaceholder": "Bir DLC seç…",
+    "dlcExpansion": "Ek Paket",
+    "dlcStandalone": "Bağımsız",
+    "dlcGeneric": "DLC",
+    "rate": "Değerlendir",
+    "completeTitle": "Tamamlandı olarak işaretle",
+    "completedTitle": "Tamamlandı",
+    "completeAria": "Bu oyunu tamamlandı olarak işaretle",
+    "uncompleteAria": "Tamamlandı işaretini kaldır",
+    "completedCountOne": "{{count}} oyuncu bu oyunu tamamladı",
+    "completedCountMany": "{{count}} oyuncu bu oyunu tamamladı",
+    "markDateTitle": "Ne zaman oynadın?",
+    "completeDateTitle": "Ne zaman bitirdin?",
+    "markDateHint": "Kaydolmadan önce oynadıysan geçmiş bir tarih seç.",
+    "distributionTitle": "Puan dağılımı",
+    "reviewCountOne": "{{count}} oyuncu incelemesi",
+    "reviewCountMany": "{{count}} oyuncu incelemesi",
+    "eyeDistribution": "Topluluk puanı",
+    "eyeDlc": "Ek içerik",
+    "eyeAbout": "Hakkında",
+    "aboutTitle": "Oyun",
+    "rating": {
+      "globalTitle": "Genel puan",
+      "players": "Oyuncular",
+      "votesOne": "{{count}} oy",
+      "votesMany": "{{count}} oy"
+    },
+    "dateTypeLabel": "Ya da bir tarih yazın",
+    "datePartYear": "YYYY",
+    "datePartMonth": "AA",
+    "datePartDay": "GG"
+  },
+  "share": {
+    "defaultTitle": "Bir arkadaşınla paylaş",
+    "shareTo": "Şununla paylaş…",
+    "loading": "Yükleniyor…",
+    "noFriends": "Paylaşmak için arkadaş ekle.",
+    "sent": "Gönderildi ✓",
+    "send": "Gönder"
+  },
+  "chat": {
+    "open": "Mesajları aç",
+    "close": "Mesajları kapat",
+    "title": "Mesajlar",
+    "closeAria": "Kapat",
+    "noConversations": "Burada sohbet etmek için arkadaş ekle.",
+    "back": "Geri",
+    "placeholder": "Bir mesaj yaz…",
+    "send": "Gönder",
+    "read": "Okundu",
+    "shareGame": "Oyun",
+    "shareReview": "İnceleme",
+    "shareProfile": "Profil",
+    "noMessage": "Mesaj yok",
+    "sharedGame": "Paylaşılan oyun",
+    "sharedReview": "Paylaşılan inceleme",
+    "sharedProfile": "Paylaşılan profil"
+  },
+  "company": {
+    "notFound": "Stüdyo bulunamadı.",
+    "label": "Stüdyo",
+    "games": "Stüdyo oyunları",
+    "seeMore": "Daha fazla oyun gör ({{count}})"
+  },
+  "steam": {
+    "neverPlayed": "Hiç oynanmadı",
+    "playMinutes": "{{count}} dk",
+    "playHours": "{{count}} sa",
+    "loadError": "Steam kütüphanen yüklenemedi",
+    "friendRequestError": "Arkadaşlık isteği gönderilemedi",
+    "title": "Steam kütüphanesi",
+    "linkPrompt": "Oyun kütüphaneni içe aktarmak ve Steam arkadaşlarını bulmak için Steam hesabını bağla.",
+    "linkCta": "Steam hesabımı bağla",
+    "friendsHeading": "Saveboxd'daki Steam arkadaşları",
+    "friendsPrivate": "Steam arkadaş listen gizli olduğundan arkadaş öneremiyoruz.",
+    "noFriendsTitle": "Henüz Steam arkadaşı yok",
+    "noFriendsDesc": "Steam arkadaşlarından hiçbiri henüz Saveboxd'da değil — onları davet et!",
+    "requestSent": "İstek gönderildi",
+    "addFriend": "Arkadaş ekle",
+    "yourGames": "Oyunların",
+    "gamesPrivate": "Steam oyun ayrıntıların gizli. Steam'de <s>Profil → Gizlilik Ayarları → Oyun ayrıntıları</s> seçeneğini Herkese Açık yap ve bu sayfayı yeniden yükle.",
+    "owned": "Steam'de {{totalOwned}} oyun — {{matched}} tanesi kataloğumuzda.",
+    "ownedUnmatched": "Steam'de {{totalOwned}} oyun — {{matched}} tanesi kataloğumuzda, {{unmatched}} tanesi yok.",
+    "statusPlaying": "oynuyor",
+    "statusBacklog": "yapılacak",
+    "reviewWritten": "İnceleme yazıldı — gör/düzenle",
+    "writeReview": "Bir inceleme yaz",
+    "viewReviewOf": "{{title}} incelemeni gör",
+    "writeReviewOf": "{{title}} için inceleme yaz",
+    "noMatchedTitle": "Henüz eşleşen oyun yok",
+    "noMatchedDesc": "Steam oyunlarından hiçbiri şu an kataloğumuzda değil.",
+    "manageLink": "Steam bağlantını <l>profilinden</l> yönet.",
+    "achievementsTitle": "Başarımlar",
+    "achievementsSub": "{{games}} oyun · {{perfect}} %100",
+    "achPerGame": "{{unlocked}}/{{total}} başarım",
+    "achievementsNone": "Henüz senkronize edilmiş başarım yok — Steam profilin gizli olabilir.",
+    "syncAchievements": "Yenile",
+    "syncing": "Senkronize ediliyor…"
+  },
+  "genres": {
+    "Adventure": "Macera",
+    "Arcade": "Arcade",
+    "Card & Board Game": "Kart ve Masa Oyunu",
+    "Fighting": "Dövüş",
+    "Hack and slash/Beat 'em up": "Hack and slash/Beat 'em up",
+    "Indie": "Bağımsız",
+    "MOBA": "MOBA",
+    "Music": "Müzik",
+    "Pinball": "Tilt",
+    "Platform": "Platform",
+    "Point-and-click": "Point-and-click",
+    "Puzzle": "Bulmaca",
+    "Quiz/Trivia": "Bilgi Yarışması",
+    "Racing": "Yarış",
+    "Real Time Strategy (RTS)": "Gerçek Zamanlı Strateji (RTS)",
+    "Role-playing (RPG)": "Rol Yapma (RPG)",
+    "Shooter": "Nişancı",
+    "Simulator": "Simülasyon",
+    "Sport": "Spor",
+    "Strategy": "Strateji",
+    "Tactical": "Taktik",
+    "Turn-based strategy (TBS)": "Sıra Tabanlı Strateji (TBS)",
+    "Visual Novel": "Görsel Roman"
+  },
+  "legal": {
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "lastUpdated": "Son güncelleme: 22 Temmuz 2026",
+      "intro": "Saveboxd, 42 müfredatı kapsamında geliştirilen bir öğrenci projesidir: sosyal özellikler (arkadaşlar, mesajlaşma, listeler) içeren bir video oyunu kataloğu ve inceleme sitesi. Bu politika, siteyi kullandığınızda hangi verilerin toplandığını, neden toplandığını ve haklarınızın neler olduğunu açıklar.",
+      "sections": {
+        "dataCollected": {
+          "title": "Topladığımız veriler",
+          "body": [
+            "Yalnızca sitenin çalışması için gerekli verileri topluyoruz:",
+            "• Klasik kayıt sırasında: e-posta adresiniz, bir kullanıcı adı ve bir parola (hash'lenmiş olarak saklanır, asla düz metin olarak değil).",
+            "• Google, 42 (Intra), Discord veya Steam üzerinden giriş yaparsanız: o hizmet tarafından sağlanan bir kimlik, sağlayıcı paylaşırsa e-posta adresiniz (Steam hiçbir zaman e-posta adresi paylaşmaz), görünen adınız ve profil fotoğrafınız.",
+            "• Doldurmayı tercih ettiğiniz profil bilgileri: biyografi, avatar, tercih edilen dil.",
+            "• Sitedeki etkinliğiniz: oyun incelemeleri ve puanları, oynandı olarak işaretlenen oyunlar, özel oyun listeleri, arkadaşlıklar, arkadaşlarınızla değişilen mesajlar, beğeniler ve yorumlar.",
+            "• Kimlik doğrulama için gerekli teknik çerezler (bkz. Çerezler bölümü).",
+            "• Neredeyse her web sitesinde olduğu gibi otomatik olarak oluşturulan standart teknik sunucu günlükleri (IP adresi, zaman damgası, istenen sayfa).",
+            "Herhangi bir banka veya ödeme verisi, hassas konum verisi toplamıyoruz ve herhangi bir kitle analitiği veya reklam aracı kullanmıyoruz."
+          ]
+        },
+        "purposes": {
+          "title": "Bu verileri neden kullanıyoruz",
+          "body": [
+            "Verileriniz yalnızca şu amaçlarla kullanılır:",
+            "• hesabınızı oluşturmak ve yönetmek;",
+            "• sizi doğrulamak ve oturumunuzu güvence altına almak (çerezler, token'lar, etkinleştirilmişse iki faktörlü kimlik doğrulama);",
+            "• profilinizi ve istatistiklerinizi görüntülemek (oynanan oyunlar, incelemeler, listeler);",
+            "• sosyal özellikleri çalıştırmak (arkadaşlık istekleri, Steam veya 42 üzerinden arkadaş önerileri, mesajlaşma, bildirimler);",
+            "• size yalnızca hesap işlemleriyle ilgili e-postalar göndermek (e-posta doğrulama, parola sıfırlama);",
+            "• hizmetin güvenliğini sağlamak ve kötüye kullanımı önlemek.",
+            "Verilerinizi asla ticari veya reklam amacıyla satmıyor, kiralamıyor veya paylaşmıyoruz."
+          ]
+        },
+        "discord": {
+          "title": "Discord ile giriş ve hesap bağlama",
+          "body": [
+            "Saveboxd, Discord (OAuth2) üzerinden giriş yapmanıza veya hesabınızı bağlamanıza olanak tanır. Discord bize şunları iletir: Discord kimliğiniz, kullanıcı adınız, Discord hesabınız mevcutsa ilişkili e-posta adresiniz ve Discord avatarınızın URL'si.",
+            "Bu bilgiler yalnızca Saveboxd hesabınızı oluşturmak veya mevcut bir hesabı Discord kimliğinizle ilişkilendirmek ve profilinizde bir Discord rozeti göstermek için kullanılır. Discord parolanızı asla almayız ve hesabınızın başka hiçbir verisine (sunucular, mesajlar, kişiler) erişmeyiz.",
+            "Tek giriş yönteminiz olmadığı sürece Discord hesabınızın bağlantısını istediğiniz zaman ayarlarınızdan kaldırabilirsiniz."
+          ]
+        },
+        "retention": {
+          "title": "Veri saklama süresi",
+          "body": [
+            "Verileriniz, hesabınız var olduğu sürece saklanır.",
+            "Hesabınızı ayarlarınızdan sildiğinizde:",
+            "• hesabınız, avatarınız, arkadaşlıklarınız, oynandı olarak işaretlenen oyunlarınız, listeleriniz, bildirimleriniz ve mesajlarınız (gönderilen ve alınan) kalıcı olarak silinir;",
+            "• mevcut incelemeleriniz ve yorumlarınız korunur ancak anonimleştirilir (\"silinmiş kullanıcı\"dan geliyormuş gibi gösterilir), böylece diğer kullanıcıların tartışma başlıkları bozulmaz;",
+            "• bazı veriler, otomatik olarak silinmeden önce teknik yedeklerde veya sunucu günlüklerinde kısa süreliğine kalabilir.",
+            "Sitenin çalışması veya hizmetin güvenliği için gerekli olandan fazla hiçbir veriyi saklamıyoruz."
+          ]
+        },
+        "rights": {
+          "title": "Haklarınız",
+          "body": [
+            "Genel Veri Koruma Yönetmeliği (GDPR) uyarınca kişisel verileriniz üzerinde aşağıdaki haklara sahipsiniz:",
+            "• kişisel verilerinize erişim hakkı — ayarlarınızdan istediğiniz zaman tam bir kopya indirebilirsiniz;",
+            "• yanlış verilerin düzeltilmesi hakkı (çoğu alan doğrudan ayarlarınızdan düzenlenebilir);",
+            "• silme hakkı: hesabınızı istediğiniz zaman ayarlarınızdan silme;",
+            "• belirli durumlarda işlemenin kısıtlanması hakkı;",
+            "• örneğin bildirim tercihleriniz aracılığıyla belirli işlemelere itiraz etme hakkı;",
+            "• taşınabilirlik hakkı: verilerinizi yapılandırılmış, makine tarafından okunabilir bir biçimde (JSON) doğrudan ayarlarınızdan dışa aktarın;",
+            "• işleme buna dayandığında (örneğin üçüncü taraf bir sağlayıcı üzerinden giriş yapmak) rızanızı istediğiniz zaman geri çekme hakkı;",
+            "• yetkili veri koruma otoritesine (Fransa'da CNIL — cnil.fr) şikayette bulunma hakkı.",
+            "Bu haklardan herhangi birini kullanmak için İletişim bölümünde belirtilen adresten bizimle iletişime geçin."
+          ]
+        },
+        "cookies": {
+          "title": "Çerezler ve yerel depolama",
+          "body": [
+            "Saveboxd yalnızca sitenin çalışması için kesinlikle gerekli olan, tamamı teknik ve asla reklam amaçlı olmayan çerezleri kullanır:",
+            "• kimlik doğrulama çerezleri (oturum açma oturumu, oturum yenileme, iki faktörlü kimlik doğrulama adımı, üçüncü taraf hesap bağlama), tümü httpOnly ve süreli.",
+            "Hiçbir reklam veya izleme çerezi kullanılmaz.",
+            "Ayrıca, iki görüntüleme tercihini hatırlamak için tarayıcınızın yerel depolamasını (localStorage) kullanıyoruz: seçilen dil ve açık/koyu tema. Bu bilgiler cihazınızda kalır ve asla sunucularımıza gönderilmez.",
+            "Bu çerezler hizmetin çalışması için kesinlikle gerekli olduğundan, ePrivacy yönetmeliği kapsamında önceden onay gerektirmezler."
+          ]
+        },
+        "thirdParties": {
+          "title": "Üçüncü taraf hizmetler",
+          "body": [
+            "Çalışmak için Saveboxd aşağıdaki üçüncü taraf hizmetlerden yararlanır:",
+            "• genel video oyunu bilgileri için IGDB (Internet Game Database) — sizinle ilgili hiçbir kişisel veri onlara iletilmez;",
+            "• hesabınızı bağlamayı seçerseniz, kimliğinizi doğrulamak ve kullanıcı adınızı, avatarınızı, oyun kütüphanenizi ve Steam arkadaş listenizi almak için Steam (Valve) (yalnızca Saveboxd'de zaten bulunan arkadaşları önermek için kullanılır, asla saklanmaz);",
+            "• bu sağlayıcılardan biriyle giriş yapmayı seçerseniz Google, 42 (Intra) ve Discord;",
+            "• yalnızca e-posta doğrulama ve parola sıfırlama e-postaları için kullanılan işlemsel e-posta sağlayıcımız Brevo.",
+            "Hiçbir kitle analitiği, reklam veya üçüncü taraf izleme aracı kullanmıyoruz.",
+            "Barındırma: bu proje 42 müfredatı kapsamında geliştirilmekte ve değerlendirilmektedir. Site herkese açık olarak dağıtılırsa, bu bölüm barındırma sağlayıcısının adıyla tamamlanmalıdır."
+          ]
+        },
+        "contact": {
+          "title": "İletişim",
+          "body": [
+            "Bu gizlilik politikasıyla ilgili herhangi bir sorunuz varsa veya kişisel verileriniz üzerindeki haklarınızı kullanmak isterseniz, bizimle şu adresten iletişime geçin: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Kullanım Koşulları",
+      "lastUpdated": "Son güncelleme: 22 Temmuz 2026",
+      "intro": "Bu koşullar, 42 müfredatı kapsamında geliştirilen bir öğrenci projesi olan Saveboxd sitesine erişimi ve kullanımını düzenler. Bir hesap oluşturarak veya siteyi kullanarak, aşağıda açıklanan koşulları kabul etmiş olursunuz.",
+      "sections": {
+        "purpose": {
+          "title": "Hizmetin amacı",
+          "body": [
+            "Saveboxd; video oyunlarını kataloglamayı, puanlamayı ve incelemeyi, oynadığınız oyunları takip etmeyi, özel listeler oluşturmayı ve diğer kullanıcılarla etkileşim kurmayı (arkadaşlar, mesajlaşma, incelemeler, yorumlar) sağlayan bir topluluk platformudur.",
+            "Site, 42 müfredatı kapsamında eğitim amacıyla geliştirilen bir öğrenci projesidir, ticari bir hizmet değildir."
+          ]
+        },
+        "account": {
+          "title": "Erişim ve hesap oluşturma",
+          "body": [
+            "Çoğu özelliğe erişim, klasik kayıt (e-posta, kullanıcı adı, parola) veya üçüncü taraf bir kimlik doğrulama sağlayıcısı (Google, 42, Discord, Steam) aracılığıyla bir hesap oluşturmayı gerektirir.",
+            "Kayıt olurken doğru bilgiler vermelisiniz ve başka birinin rızası olmadan onun adına hesap oluşturamaz, bir askıya almayı atlatmak için birden fazla hesap oluşturamazsınız."
+          ]
+        },
+        "credentials": {
+          "title": "Kimlik bilgileriniz için sorumluluk",
+          "body": [
+            "Parolanızın gizliliğinden ve hesabınızdan gerçekleştirilen tüm etkinliklerden siz sorumlusunuz.",
+            "Hesabınıza yetkisiz erişim olduğundan şüpheleniyorsanız, parolanızı hemen değiştirin ve bizimle iletişime geçin.",
+            "Hesabınızın güvenliğini artırmak için ayarlarınızda bulunan iki faktörlü kimlik doğrulamayı (2FA) etkinleştirmenizi öneririz."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Sitenin kabul edilebilir kullanımı",
+          "body": [
+            "Saveboxd'i kullanarak şunları kabul edersiniz:",
+            "• yalnızca başkalarına saygılı incelemeler, yorumlar ve mesajlar yayınlamak;",
+            "• başka bir kişi veya kuruluşun kimliğine bürünmemek;",
+            "• siteyi yasa dışı amaçlarla veya diğer kullanıcılara zarar vermek için kullanmamak;",
+            "• sitenin teknik işleyişini bozmaya çalışmamak (aşırı yükleme, güvenlik açıklarından yararlanma, istek sınırlarını atlatma)."
+          ]
+        },
+        "abuse": {
+          "title": "Yasaklanmış davranışlar",
+          "body": [
+            "Özellikle şunlar yasaktır:",
+            "• başka bir kullanıcıya yönelik taciz, hakaret, tehdit veya herhangi bir kötü niyetli davranış;",
+            "• spam (tekrarlayan, tanıtım amaçlı veya konu dışı mesajlar veya incelemeler);",
+            "• yasa dışı, nefret dolu, ayrımcı veya cinsel içerikli materyal yayınlama;",
+            "• başka bir hesaba veya sitenin sistemlerine yetkisiz erişim girişimi."
+          ]
+        },
+        "interactions": {
+          "title": "Kullanıcılar arası etkileşimler",
+          "body": [
+            "Saveboxd, arkadaşlık istekleri, özel mesajlaşma, konuşmalarda oyun/inceleme/profil paylaşımı ve Steam ağınıza veya 42 topluluğuna üyeliğinize dayalı arkadaş önerileri gibi sosyal özellikler sunar.",
+            "Mesajlarınızın ve gönderilerinizin içeriğinden yalnızca siz sorumlusunuz. Bir arkadaşla değiştirilen özel mesajlar, hesaplardan biri silinirse her iki taraf için de kalıcı olarak silinir."
+          ]
+        },
+        "moderation": {
+          "title": "Moderasyon ve şikayetler",
+          "body": [
+            "Site şu anda incelemeler veya mesajlar için yerleşik bir şikayet sistemine sahip değildir.",
+            "Taciz, kötüye kullanım veya uygunsuz içerikle karşılaşırsanız, İletişim bölümünde belirtilen adresten doğrudan bizimle iletişime geçebilirsiniz; moderasyon bu durumda proje ekibi tarafından manuel olarak gerçekleştirilir."
+          ]
+        },
+        "suspension": {
+          "title": "Hesap askıya alma veya silme",
+          "body": [
+            "Bu koşullara uyulmaması durumunda (kötüye kullanım, taciz, spam, yasa dışı içerik), kendi takdirimize bağlı olarak bir hesabı askıya alma veya silme hakkımızı, özel bir moderasyon ekibi olmayan bir öğrenci projesi için makul ölçüde saklı tutarız.",
+            "Kendi hesabınızı istediğiniz zaman ayarlarınızdan silebilirsiniz."
+          ]
+        },
+        "userContent": {
+          "title": "Kullanıcı tarafından oluşturulan içerik",
+          "body": [
+            "Yayınladığınız içeriğin (incelemeler, yorumlar, listeler, biyografi, avatar) mülkiyetini elinizde tutarsınız. Bunu Saveboxd'de yayınlayarak, sitenin normal işleyişinin bir parçası olarak bunu görüntülememize ve saklamamıza izin verirsiniz.",
+            "Yayınladığınız herhangi bir içerik üzerinde, özellikle üçüncü taraf bir kimlik doğrulama sağlayıcısı tarafından sağlanan fotoğrafı kullanmıyorsanız profil fotoğrafınız üzerinde gerekli haklara sahip olduğunuzu garanti edersiniz."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Fikri mülkiyet",
+          "body": [
+            "Kod, tasarım ve \"Saveboxd\" markası, 42 müfredatı öğrenci projesi kapsamında oluşturulmuştur ve ticari kullanım amaçlı değildir.",
+            "Video oyunlarıyla ilgili bilgiler ve görseller (başlıklar, kapak görselleri, açıklamalar) üçüncü taraf genel veritabanlarından (IGDB) gelir ve ilgili yayıncılarına ve hak sahiplerine aittir. Saveboxd bu içerikler üzerinde hiçbir mülkiyet hakkı iddia etmez ve bunları yalnızca gösterim ve bilgilendirme amacıyla, ticari olmayan, eğitimsel bir bağlamda görüntüler."
+          ]
+        },
+        "gameContent": {
+          "title": "Video oyunu içeriği",
+          "body": [
+            "Saveboxd'de görüntülenen kapak görselleri, açıklamalar ve oyun bilgileri otomatik olarak IGDB'den ve hesabınızı bağlarsanız kişisel kütüphanenizle ilgili veriler için Steam'den içe aktarılır. Bu bilgiler ilgili hak sahiplerinin mülkiyetinde kalır."
+          ]
+        },
+        "availability": {
+          "title": "Hizmetin kullanılabilirliği",
+          "body": [
+            "Saveboxd, sürekli kullanılabilirlik garantisi olmadan \"olduğu gibi\" sunulan bir öğrenci projesidir. Hizmet, özellikle değerlendirmesi veya bakımı kapsamında, önceden bildirimde bulunulmaksızın herhangi bir zamanda kesintiye uğrayabilir, değiştirilebilir veya durdurulabilir."
+          ]
+        },
+        "liability": {
+          "title": "Sorumluluğun sınırlandırılması",
+          "body": [
+            "Saveboxd, açık veya zımni hiçbir garanti olmaksızın eğitim amacıyla sunulmaktadır. Yasaların izin verdiği ölçüde, proje ekibi, sitenin kullanımından veya kullanılamamasından kaynaklanan doğrudan veya dolaylı hiçbir zarardan sorumlu tutulamaz.",
+            "Bu sınırlama hukuki tavsiye teşkil etmez ve kullanıcıları, geçerli hukuk uyarınca sözleşmeyle hariç tutulamayacak zorunlu haklarından mahrum bırakmaz."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Üçüncü taraf hizmetler ve kimlik doğrulama",
+          "body": [
+            "Saveboxd, üçüncü taraf sağlayıcılar (Google, 42, Discord, Steam) aracılığıyla giriş yapmanıza olanak tanır. Bu sağlayıcıların kullanımı, Saveboxd'in hiçbir kontrolü olmadığı kendi kullanım koşullarına da tabidir."
+          ]
+        },
+        "changes": {
+          "title": "Bu koşullardaki değişiklikler",
+          "body": [
+            "Bu koşullar, özellikle sitenin özelliklerindeki gelişmeleri yansıtmak için herhangi bir zamanda değiştirilebilir. Son güncelleme tarihi bu sayfanın üst kısmında görünür. Önemli bir değişiklik durumunda, sizi makul bir şekilde bilgilendirmek için elimizden geleni yapacağız."
+          ]
+        },
+        "law": {
+          "title": "Uygulanacak hukuk ve yargı yetkisi",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — aksi belirtilmedikçe, bu koşullar bir öğrenci projesi kapsamında bilgilendirme amacıyla sunulmaktadır ve resmi bir ticari sözleşme teşkil etmez."
+          ]
+        },
+        "contact": {
+          "title": "İletişim",
+          "body": [
+            "Bu kullanım koşullarıyla ilgili herhangi bir sorunuz varsa, bizimle şu adresten iletişime geçin: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Oyunlarını, kupalarını ve arkadaşlarını içe aktarmak için PlayStation hesabını bağla.",
+    "linkCta": "Ayarlara git",
+    "loadError": "PlayStation verilerin yüklenemedi.",
+    "friendsHeading": "Saveboxd'daki PlayStation arkadaşları",
+    "friendsPrivate": "PlayStation arkadaş listen gizli.",
+    "noFriendsTitle": "Önerilecek arkadaş yok",
+    "noFriendsDesc": "PlayStation arkadaşlarının hiçbiri henüz Saveboxd'da değil.",
+    "requestSent": "İstek gönderildi",
+    "addFriend": "Ekle",
+    "friendRequestError": "Arkadaşlık isteği gönderilemedi.",
+    "yourGames": "Oyunların",
+    "gamesPrivate": "PlayStation oyunların gizli.",
+    "played": "{{totalPlayed}} oyun oynandı · {{matched}} kataloğumuzda bulundu",
+    "playedUnmatched": "{{totalPlayed}} oyun oynandı · {{matched}} bulundu · {{unmatched}} katalogda yok",
+    "noMatchedTitle": "Eşleşen oyun yok",
+    "noMatchedDesc": "PlayStation oyunlarının hiçbiri henüz kataloğumuzda değil.",
+    "trophyLevel": "Kupa seviyesi",
+    "trophiesEarned": "Kazanılan kupalar",
+    "trophyProgress": "{{earned}}/{{total}} kupa · %{{progress}}",
+    "statusPlaying": "Oynanıyor",
+    "statusBacklog": "Bekleyen",
+    "reviewWritten": "İnceleme yazıldı",
+    "writeReview": "İnceleme yaz",
+    "viewReviewOf": "{{title}} incelemene bak",
+    "writeReviewOf": "{{title}} için inceleme yaz",
+    "refresh": "Yenile",
+    "syncing": "Canlandırıcı…",
+    "syncedAt": "Son güncelleme tarihi{{time}}"
+  },
+  "library": {
+    "title": "Kütüphanelerim",
+    "noneLinkedTitle": "Bağlı hesap yok",
+    "noneLinkedDesc": "Oyunlarını ve kupalarını burada görmek için ayarlardan bir Steam veya PlayStation hesabı bağla.",
+    "goSettings": "Ayarlara git",
+    "notLinked": "Bağlı değil",
+    "eyebrow": "Oyunların",
+    "subtitle": "Bağlı hesaplarından içe aktarılan oyunların.",
+    "linked": "Bağlı",
+    "link": "Bağla"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Sayfa bulunamadı",
+      "body": "Bu sayfa mevcut değil veya taşınmış.",
+      "home": "Ana sayfaya dön"
+    },
+    "boundary": {
+      "title": "Bir şeyler ters gitti",
+      "body": "Beklenmeyen bir hata oluştu. Sayfayı yeniden yüklemeyi deneyin.",
+      "retry": "Yeniden yükle"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Xbox hesabınızı bağlayarak oyunlarınızı ve başarılarınızı içe aktarın.",
+    "linkCta": "Ayarlar'a git",
+    "loadError": "Xbox verilerinizi yükleyemedik.",
+    "yourGames": "Oyunlarınız",
+    "gamesPrivate": "Xbox oyun geçmişiniz gizlidir.",
+    "gamerscore": "Oyun Puanı",
+    "gamesPlayed": "Oynanan maçlar",
+    "perfectGames": "%100 tamamlandı",
+    "refresh": "Yenile",
+    "syncing": "Canlandırıcı…",
+    "syncedAt": "Son güncelleme tarihi{{time}}",
+    "played": "{{totalPlayed}} oynanmış oyunlar · kataloğumuzda {{matched}} eşleşmesi bulundu",
+    "playedUnmatched": "{{totalPlayed}} oynanmış oyunlar · {{matched}} eşleşenler · {{unmatched}} kataloğumuzda yok",
+    "noMatchedTitle": "Eşleşen oyun yok",
+    "noMatchedDesc": "Xbox oyunlarınızın hiçbiri henüz kataloğumuzda yer almıyor.",
+    "achievementProgress": "{{earned}} başarılar · {{progress}} %",
+    "statusPlaying": "Oynama",
+    "statusBacklog": "Birikmiş işler",
+    "reviewWritten": "Yazılan yorum",
+    "writeReview": "Bir yorum yazın",
+    "viewReviewOf": "{{title}} hakkındaki yorumunuzu görüntüleyin",
+    "writeReviewOf": "\"{{title}}\" hakkında bir yorum yazın"
+  },
+  "onboarding": {
+    "welcome": "Hoş geldiniz!",
+    "subtitle": "Birkaç adımda profilinizi oluşturalım.",
+    "skip": "Şimdilik atla",
+    "next": "Devam et",
+    "back": "Geri",
+    "finish": "Bitir",
+    "genericError": "Bir hata oluştu. Lütfen tekrar deneyin.",
+    "username": {
+      "title": "Kullanıcı adınızı seçin",
+      "subtitle": "Kayıt olduğunuz hesaptan bilgileri önceden doldurduk — isterseniz değiştirebilirsiniz.",
+      "hint": "3–24 karakter: Yalnızca harfler, rakamlar ve alt çizgiler."
+    },
+    "avatar": {
+      "title": "Profil resmi ekle",
+      "subtitle": "Hesabınızdaki fotoğrafı aldık. Başka bir fotoğraf yükleyin, ardından yakınlaştırıp sürükleyerek kadrajlayın.",
+      "skip": "Bu adımı atla"
+    },
+    "services": {
+      "title": "Oyun hesaplarınızı birbirine bağlayın",
+      "subtitle": "Platformlarınızı bağlayarak oyunlarınızı ve istatistiklerinizi içe aktarın.",
+      "laterHint": "Acele etmeyin — hesap ayarlarınızda daha sonra da hesaplarınızı birbirine bağlayabilirsiniz.",
+      "connected": "Bağlı",
+      "connect": "Bağlan",
+      "publicNotice": "Steam, PlayStation ve Xbox profilleriniz herkese açık olarak ayarlanmış olmalıdır — aksi takdirde oyunlarınızı, arkadaşlarınızı ve/veya başarılarınızı içe aktaramayız.",
+      "steam": {
+        "perks": [
+          "Oynadığınız oyun kütüphanenizi siteye aktarın",
+          "Başarılar ve %100 tamamlanmış oyunlar",
+          "Burada bulunan Steam arkadaşlarını bul"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "PlayStation oyun koleksiyonunuzu siteye aktarın",
+          "Kupa ilerlemesi ve her oyun için %100 tamamlama oranı",
+          "Burada bulunan PlayStation arkadaşlarını bul"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Xbox oyun koleksiyonunuzu siteye aktarın",
+          "Oyun Puanı, başarılar ve %100 tamamlanmış oyunlar"
+        ]
+      }
+    }
+  },
+  "a11y": {
+    "skipToContent": "Ana içeriğe geç"
+  },
+  "achievements": {
+    "sectionTitle": "Başarımlar",
+    "done": "Açıldı",
+    "unlockedOn": "{{date}} tarihinde açıldı",
+    "fam": {
+      "completions": "Bitirilen oyunlar",
+      "played": "Oynanan oyunlar",
+      "perfect": "100%",
+      "reviews": "İncelemeler",
+      "lists": "Listeler",
+      "friends": "Arkadaşlar",
+      "genres": "Kâşif",
+      "studio": "Stüdyo hayranı",
+      "linked": "Bağlı hesaplar",
+      "popular": "Popüler",
+      "supporter": "Destekçi",
+      "favorite": "Meraklı",
+      "harsh": "Sert eleştirmen",
+      "veteran": "Emektar"
+    },
+    "desc": {
+      "completions": "{{count}} oyun bitir",
+      "played": "{{count}} oyun kaydet",
+      "perfect": "{{count}} oyunu %100 tamamla",
+      "reviews": "{{count}} inceleme yaz",
+      "lists": "{{count}} liste oluştur",
+      "friends": "{{count}} arkadaşa ulaş",
+      "genres": "{{count}} türde oyun bitir",
+      "studio": "Aynı stüdyodan {{count}} oyun değerlendir",
+      "linked": "{{count}} oyun hesabı bağla",
+      "popular": "İncelemelerine {{count}} beğeni al",
+      "supporter": "İncelemelere {{count}} beğeni ver",
+      "favorite": "{{count}} oyunu 10/10 puanla",
+      "harsh": "{{count}} oyunu 0 puanla",
+      "veteran": "{{count}} aydır üye"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} kademe",
+    "concernedGames": "İlgili oyunlar"
+  },
+  "tutorial": {
+    "eyebrow": "Rehber",
+    "skip": "Atla",
+    "back": "Geri",
+    "next": "İleri",
+    "done": "Anladım",
+    "steps": {
+      "home": {
+        "title": "Ana sayfa",
+        "body": "İstediğin an ana sayfaya dönmek için Saveboxd logosuna tıkla."
+      },
+      "search": {
+        "title": "Arama",
+        "body": "Arama çubuğundan herhangi bir oyunu, stüdyoyu veya oyuncuyu bul."
+      },
+      "catalog": {
+        "title": "Katalog",
+        "body": "Tüm oyun kataloğuna göz at ve yenilerini keşfet."
+      },
+      "feed": {
+        "title": "Akış",
+        "body": "Arkadaşlarının ne oynadığını, bitirdiğini ve incelediğini gör."
+      },
+      "leaderboard": {
+        "title": "Sıralama",
+        "body": "En iyi oyuncuları gör ve kendi sıranı takip et."
+      },
+      "friends": {
+        "title": "Arkadaşlar",
+        "body": "Arkadaş ekle, istekleri kabul et ve kimin çevrimiçi olduğunu gör."
+      },
+      "library": {
+        "title": "Kütüphane",
+        "body": "Steam, PlayStation ve Xbox oyunlarını ve kupalarını senkronize et."
+      },
+      "notifications": {
+        "title": "Bildirimler",
+        "body": "Beğeniler, yorumlar, arkadaşlık istekleri ve başarımlar burada görünür."
+      },
+      "profile": {
+        "title": "Profilin",
+        "body": "Oyunların, incelemelerin, istatistiklerin ve rozetlerin burada."
+      },
+      "chat": {
+        "title": "Sohbet",
+        "body": "Sağ alttaki baloncuktan arkadaşlarınla gerçek zamanlı sohbet et."
+      },
+      "menu": {
+        "title": "Ayarlar",
+        "body": "Ayarlarını buradan aç: profil, bildirimler, tema ve dil."
+      }
+    }
+  }
+}

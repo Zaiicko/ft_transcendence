@@ -1,0 +1,243 @@
+@import 'tailwindcss';
+
+/* Tailwind v4 : la variante dark: suit la classe .dark posée sur <html>
+   (toggle jour/nuit) au lieu de la préférence système seule */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design "TiMN" : toute l'app parle en zinc-* — on redéfinit la gamme ici
+   (gris chauds, quasi-noir chaud) et le site entier bascule sans toucher
+   aux pages. Les rôles restent monotones (950 le plus sombre → 50 le plus
+   clair) pour que jour/nuit gardent leurs contrastes. */
+@theme {
+  --color-zinc-50: #faf9f7;
+  --color-zinc-100: #f2f1ee;
+  --color-zinc-200: #e4e1db;
+  --color-zinc-300: #c9c5be;
+  /* 400/500 = gris "atténués" (texte secondaire) sans variante dark: dans le
+     code. Valeurs JOUR ici (plus foncées, lisibles sur blanc) ; les valeurs
+     NUIT sont restaurées sous .dark plus bas. */
+  --color-zinc-400: #74706a;
+  --color-zinc-500: #5f5b54;
+  --color-zinc-600: #4a4844;
+  --color-zinc-700: #3a3a40;
+  --color-zinc-800: #1e1e22;
+  --color-zinc-900: #131316;
+  --color-zinc-950: #0c0c0e;
+
+  /* Coins doux façon TiMN : `rounded` nu (boutons/inputs) suit --radius */
+  --radius: 0.625rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+
+  /* Accent ambre/or — signature du design (brand, CTA, hovers) */
+  --color-accent: #e0a355;
+
+  /* Fonte display self-hostée (Sora) : titres + nom du site. Le texte
+     courant reste en fonte système. La classe `font-display` en découle. */
+  --font-display: 'Sora Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Breakpoints ultra-larges (au-delà du 2xl=1536px de Tailwind) : sur les
+     écrans QHD/4K/8K le contenu plafonné à max-w-6xl paraissait perdu au centre
+     avec d'immenses marges vides. On élargit le conteneur (et on densifie les
+     grilles) à partir de ces paliers. 120rem=1920, 160rem=2560, 240rem=3840. */
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 160rem;
+  --breakpoint-5xl: 240rem;
+}
+
+/* La bannière pleine largeur (w-screen) compte la scrollbar : sans ceci,
+   un défilement horizontal fantôme de quelques pixels apparaît */
+html {
+  overflow-x: hidden;
+}
+
+/* Header « verre dépoli » : le flou (backdrop-filter) n'est pas supporté partout
+   (certains Linux, anciennes versions Firefox/Chrome, ou GPU désactivé). Sans lui,
+   le fond semi-transparent laisse voir le contenu qui défile → le header paraît
+   transparent. Repli : fond OPAQUE quand le backdrop-filter est indisponible. */
+@supports not ((backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px))) {
+  .app-header {
+    background-color: var(--color-zinc-50);
+  }
+  .dark .app-header {
+    background-color: var(--color-zinc-950);
+  }
+}
+/* Navigateurs sans color-mix (Chrome < 111, Firefox < 128) : les utilitaires
+   d'opacité Tailwind (bg-zinc-950/90…) sont cassés → le header paraît
+   transparent. On force un fond opaque. */
+@supports not (background: color-mix(in oklab, red, blue)) {
+  .app-header {
+    background-color: var(--color-zinc-50);
+  }
+  .dark .app-header {
+    background-color: var(--color-zinc-950);
+  }
+}
+
+/* Accessibilité clavier : anneau de focus ambre visible uniquement au clavier
+   (navigation Tab), jamais au clic souris — grâce à :focus-visible. Règle hors
+   @layer pour l'emporter sur les `focus:outline-none` des champs/boutons. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Titres en fonte display partout, sans toucher chaque page (le texte
+   courant garde la fonte système) */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+/* Fond TiMN : uni quasi-noir chaud (nuit) / blanc cassé chaud (jour), avec
+   un léger halo ambre en haut à droite. Remplace l'ancien raccord "ambilight"
+   (dégradé tiré des bords de la cover vedette) — le code d'extraction reste
+   dans lib/theme.ts si on veut le rebrancher. */
+body {
+  background:
+    radial-gradient(75rem 38rem at 78% -8%, rgba(224, 163, 85, 0.07), transparent 60%),
+    #faf9f7;
+}
+
+.dark body {
+  background:
+    radial-gradient(75rem 38rem at 78% -8%, rgba(224, 163, 85, 0.1), transparent 60%),
+    #0e0e10;
+}
+
+/* Valeurs NUIT des gris atténués : plus claires que le jour, pour rester
+   lisibles sur fond sombre (le jour, plus foncé, est défini dans @theme). */
+.dark {
+  --color-zinc-400: #a6a29b;
+  --color-zinc-500: #807c75;
+  --color-zinc-600: #55534e;
+}
+
+/* Panneau unifié TiMN : bordure fine + fond + coins doux, un seul style pour
+   toutes les cartes (reviews, amis, suggestions, biblio…). Dans @layer
+   components pour que les utilitaires (hover:border-*, p-*) gardent la main.
+   Le padding reste au cas par cas — les cartes n'ont pas la même densité. */
+@layer components {
+  .card {
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-zinc-200);
+    /* Jour : léger voile sombre plutôt que du blanc — la carte recule sur la
+       page crème au lieu de « briller » en blanc éclatant. Fallback rgba AVANT
+       color-mix : sur Chrome<111 / Firefox<128 (pas de color-mix), on garde le
+       fallback au lieu d'une couleur cassée. */
+    background-color: rgba(19, 19, 22, 0.04);
+    background-color: color-mix(in oklab, var(--color-zinc-900) 4%, transparent);
+  }
+  .dark .card {
+    /* Sans fallback, un color-mix invalide laisse la bordure claire de `.card`
+       (zinc-200) → contour BLANC autour des cartes en sombre sur vieux navigateurs. */
+    border-color: rgba(242, 241, 238, 0.1);
+    border-color: color-mix(in oklab, var(--color-zinc-100) 10%, transparent);
+    background-color: var(--color-zinc-900);
+  }
+
+  /* Champ de saisie unifié (style « pill fantôme » de la recherche Friends) :
+     quasi transparent au repos, bordure ambre au focus. Corrige aussi le mode
+     jour (les anciens champs étaient en bg-zinc-900 sombre codé en dur). */
+  .field {
+    border-radius: 9999px;
+    /* Fallbacks rgba avant color-mix (cf. .card) pour les vieux navigateurs. */
+    border: 1px solid rgba(116, 112, 106, 0.4);
+    border: 1px solid color-mix(in oklab, var(--color-zinc-400) 40%, transparent);
+    background-color: rgba(19, 19, 22, 0.05);
+    background-color: color-mix(in oklab, var(--color-zinc-900) 5%, transparent);
+    font-size: 0.875rem; /* text-sm — tous les champs à la même taille */
+  }
+  .field::placeholder {
+    color: var(--color-zinc-500);
+  }
+  .dark .field {
+    border-color: rgba(242, 241, 238, 0.1);
+    border-color: color-mix(in oklab, var(--color-zinc-100) 10%, transparent);
+    background-color: rgba(242, 241, 238, 0.05);
+    background-color: color-mix(in oklab, var(--color-zinc-100) 5%, transparent);
+  }
+  .field:focus {
+    border-color: var(--color-accent);
+    outline: none;
+  }
+  /* Menus déroulants natifs (tri catalogue, DLC…) : sans ça la liste d'options
+     s'ouvre en blanc car le fond du select est quasi transparent. color-scheme
+     pilote le rendu natif de la popup ; on force aussi un fond opaque + couleur
+     de texte sur les <option> pour Chrome/Firefox. */
+  select.field {
+    color-scheme: light;
+  }
+  select.field option {
+    background-color: var(--color-zinc-50);
+    color: var(--color-zinc-900);
+  }
+  .dark select.field {
+    color-scheme: dark;
+  }
+  .dark select.field option {
+    background-color: var(--color-zinc-900);
+    color: var(--color-zinc-100);
+  }
+}
+
+/* Menu déroulant (recherche) : petit slide + fondu à l'ouverture */
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-dropdown {
+  animation: dropdown-in 0.15s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-dropdown {
+    animation: none;
+  }
+}
+
+/* Ticker de fonctionnalités (accueil anonyme) : la phrase courante entre depuis
+   le bas pendant que la précédente sort vers le haut, les deux EN MÊME TEMPS
+   (crossfade qui se chevauche) → transition continue et douce, sans instant vide. */
+@keyframes feat-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.55rem) scale(0.94);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+@keyframes feat-leave {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+.feat-enter {
+  animation: feat-enter 0.62s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+.feat-leave {
+  animation: feat-leave 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .feat-enter,
+  .feat-leave {
+    animation: none;
+  }
+}

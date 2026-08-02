@@ -1,0 +1,1237 @@
+{
+  "common": {
+    "loading": "読み込み中…",
+    "save": "保存",
+    "saving": "保存中…",
+    "cancel": "キャンセル",
+    "add": "追加",
+    "back": "戻る",
+    "close": "閉じる",
+    "retry": "再試行",
+    "delete": "削除",
+    "confirm": "確認",
+    "edit": "編集",
+    "skip": "スキップ",
+    "error": "エラーが発生しました",
+    "yes": "はい",
+    "no": "いいえ",
+    "unknown": "不明",
+    "previous": "前へ",
+    "next": "次へ"
+  },
+  "nav": {
+    "catalog": "カタログ",
+    "feed": "フィード",
+    "leaderboard": "ランキング",
+    "friends": "フレンド",
+    "steam": "Steam",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "library": "ライブラリ"
+  },
+  "menu": {
+    "notifications": "通知",
+    "settings": "設定",
+    "language": "言語",
+    "lightMode": "ライトモード",
+    "darkMode": "ダークモード",
+    "logout": "ログアウト",
+    "closeMenu": "メニューを閉じる",
+    "notificationPrefs": "通知設定",
+    "navigation": "ナビゲーションメニュー",
+    "replayTutorial": "チュートリアルをもう一度"
+  },
+  "footer": {
+    "tagline": "ビデオゲーム版 Letterboxd ・ 42 プロジェクト",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約"
+  },
+  "languagePicker": {
+    "title": "言語"
+  },
+  "oauth": {
+    "continueWithGoogle": "Google で続ける",
+    "continueWithFortyTwo": "42 で続ける",
+    "continueWithSteam": "Steam で続ける",
+    "continueWithDiscord": "Discord で続ける",
+    "or": "または"
+  },
+  "auth": {
+    "login": {
+      "title": "ログイン",
+      "emailPlaceholder": "メールアドレス",
+      "passwordPlaceholder": "パスワード",
+      "submit": "ログイン",
+      "submitting": "ログイン中…",
+      "forgotPassword": "パスワードをお忘れですか？",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "signupLink": "新規登録",
+      "genericError": "ログインに失敗しました",
+      "errorEmailInUse": "このメールアドレスは既に登録されています。パスワードでログインするか、別のメールアドレスをご利用ください。",
+      "errorGeneric": "サインイン中に問題が発生しました。もう一度お試しください。",
+      "steamFailed": "Steam でのサインインに失敗しました。もう一度お試しください",
+      "subtitle": "ゲーム日記を続きから再開しよう。"
+    },
+    "twoFactor": {
+      "title": "二段階認証コード",
+      "description": "認証アプリに表示されている6桁のコードを入力してください。",
+      "verify": "確認",
+      "verifying": "確認中…",
+      "invalidCode": "コードが無効です"
+    },
+    "signup": {
+      "title": "新規登録",
+      "titleSteam": "Steam 登録を完了する",
+      "steamIntro": "Steam アカウントの確認が完了しました。メールアドレスを選び、ユーザー名を確認して Saveboxd アカウントを作成してください。",
+      "emailPlaceholder": "メールアドレス",
+      "usernamePlaceholder": "ユーザー名",
+      "usernameHint": "英字・数字・アンダースコアのみ使用できます",
+      "passwordPlaceholder": "パスワード（8文字以上）",
+      "passwordPlaceholderSteam": "パスワード（任意）",
+      "passwordHintSteam": "パスワードを設定しない場合、Steam でのみサインインできます。後でプロフィールから追加できます。",
+      "submit": "新規登録",
+      "submitSteam": "アカウントを作成",
+      "submitting": "アカウントを作成中…",
+      "sessionExpired": "セッションの有効期限が切れました。もう一度 Steam でサインインしてください",
+      "genericError": "登録に失敗しました",
+      "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "ログイン",
+      "subtitle": "アカウントを作成してゲーム日記を始めよう。"
+    },
+    "forgotPassword": {
+      "title": "パスワードをお忘れですか？",
+      "emailPlaceholder": "メールアドレス",
+      "submit": "リセットリンクを送信",
+      "submitting": "送信中…",
+      "checkEmailTitle": "メールをご確認ください",
+      "checkEmailBody": "そのアドレスが登録されている場合、パスワードリセットリンクをお送りします。",
+      "backToLogin": "ログインに戻る",
+      "genericError": "エラーが発生しました"
+    },
+    "resetPassword": {
+      "title": "新しいパスワードを設定",
+      "invalidLinkTitle": "無効なリンク",
+      "invalidLinkBody": "このパスワードリセットリンクにはトークンが含まれていません。",
+      "requestNewLink": "新しいリンクをリクエスト",
+      "missingToken": "リセットトークンがありません。",
+      "newPasswordPlaceholder": "新しいパスワード（8文字以上）",
+      "submit": "パスワードをリセット",
+      "submitting": "リセット中…",
+      "genericError": "パスワードをリセットできませんでした"
+    },
+    "verifyEmail": {
+      "verifying": "メールアドレスを確認中…",
+      "successTitle": "メールアドレスが確認されました",
+      "successBody": "メールアドレスの確認が完了しました。準備は万端です。",
+      "goToProfile": "プロフィールへ移動",
+      "failedTitle": "確認に失敗しました",
+      "backToProfile": "プロフィールに戻る",
+      "missingToken": "確認トークンがありません。",
+      "genericError": "確認に失敗しました"
+    }
+  },
+  "settings": {
+    "title": "アカウント設定",
+    "welcomeTitle": "Saveboxd へようこそ！",
+    "welcomeBody": "ユーザー名として {{username}} を選びました。変更したい場合は下記で変更できます。そのままでも構いません。",
+    "changeAvatar": "アバターを変更",
+    "uploadingAvatar": "アップロード中…",
+    "avatarError": "アップロードに失敗しました",
+    "emailVerified": "メールアドレス確認済み",
+    "emailNotVerified": "メールアドレス未確認",
+    "resendVerification": "確認メールを再送信",
+    "resendSending": "送信中…",
+    "resendSent": "確認メールを送信しました。受信トレイをご確認ください。",
+    "resendError": "確認メールを再送信できませんでした",
+    "usernameLabel": "ユーザー名",
+    "bioLabel": "自己紹介",
+    "saveProfile": "プロフィールを保存",
+    "saving": "保存中…",
+    "skipForNow": "後で行う",
+    "profileError": "プロフィールを保存できませんでした",
+    "signInVia": "このアカウントにはパスワードが設定されていません。{{provider}} でサインインしています。パスワードを追加するとメールアドレスでもログインできます。",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "二段階認証",
+      "enabledDescription": "有効になっています。無効にするにはコードを入力してください。",
+      "disable": "無効にする",
+      "disabling": "無効にしています…",
+      "scanQr": "認証アプリでこの QR コードをスキャンしてください：",
+      "manualKeyPrefix": "または、このキーを手動で入力してください：",
+      "confirm": "確認",
+      "confirming": "確認中…",
+      "notEnabledDescription": "無効になっています。Google Authenticator などのアプリでログイン時の第2段階を追加できます。",
+      "enable": "2段階認証を有効にする",
+      "starting": "開始しています…",
+      "invalidCode": "コードが無効です",
+      "startError": "2段階認証の設定を開始できませんでした"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "この Steam アカウントは既に別のユーザーに連携されています。",
+      "linkedSuccess": "Steam アカウントを連携しました！",
+      "linkedDescription": "連携済みです。Steam でサインインし、ゲームライブラリをインポートできます。",
+      "viewLibrary": "自分の Steam ライブラリを見る",
+      "unlink": "Steam の連携を解除",
+      "unlinking": "連携を解除中…",
+      "unlinkError": "Steam の連携を解除できませんでした",
+      "notLinkedDescription": "Steam アカウントを連携すると、Steam でサインインしたり、ライブラリをインポートしたり、Steam フレンドを見つけたりできます。",
+      "linkAccount": "自分の Steam アカウントを連携する"
+    },
+    "password": {
+      "changeTitle": "パスワードを変更",
+      "addTitle": "パスワードを追加",
+      "currentPasswordPlaceholder": "現在のパスワード",
+      "newPasswordPlaceholder": "新しいパスワード（8文字以上）",
+      "save": "パスワードを変更",
+      "add": "パスワードを追加",
+      "saving": "保存中…",
+      "saved": "パスワードを保存しました！",
+      "error": "パスワードを保存できませんでした",
+      "forgot": "パスワードをお忘れですか？",
+      "forgotSending": "送信中…",
+      "forgotSent": "リセットリンクを {{email}} に送信しました。",
+      "forgotError": "リセットメールを送信できませんでした"
+    },
+    "delete": {
+      "title": "アカウントを削除",
+      "warning": "この操作を行うと、アカウント、フレンド関係、メッセージが完全に削除されます。レビューとコメントは保持されますが匿名化されます（「削除されたユーザー」として表示）。元に戻すことはできません。",
+      "button": "アカウントを削除",
+      "confirmPasswordPlaceholder": "パスワードを確認",
+      "confirmButton": "完全に削除する",
+      "deleting": "削除中…",
+      "cancel": "キャンセル",
+      "error": "アカウントを削除できませんでした"
+    },
+    "connections": {
+      "title": "連携アカウント",
+      "description": "ゲームアカウントを連携すると、素早くログインでき、友達を見つけられます。",
+      "connected": "連携済み",
+      "link": "連携する",
+      "unlink": "連携解除",
+      "unlinking": "連携解除中…",
+      "unlinkError": "このアカウントの連携を解除できませんでした",
+      "comingSoon": "近日公開",
+      "discordLinked": "Discord アカウントを連携しました！",
+      "discordTaken": "この Discord アカウントは既に別のユーザーに連携されています。"
+    },
+    "psn": {
+      "title": "PlayStation を連携",
+      "intro": "PlayStation のオンライン ID を入力するだけで、公開プロフィールを見つけます。パスワードやトークンは不要です。",
+      "idLabel": "あなたの PSN オンライン ID",
+      "publicHint": "インポートするには、PlayStation のプロフィールが公開（ゲームとトロフィーが表示）されている必要があります。",
+      "connect": "連携する",
+      "connecting": "接続中…",
+      "connectedAs": "{{onlineId}} として連携しました",
+      "notFound": "そのオンライン ID の公開 PlayStation アカウントが見つかりませんでした。スペルとプロフィールが公開されているか確認してください。",
+      "alreadyLinked": "この PlayStation アカウントは別のプロフィールにすでに連携されています。",
+      "invalidId": "有効な PSN オンライン ID ではないようです（3〜16 文字の英数字、-、_）。",
+      "notConfigured": "PlayStation インポートはサーバーでまだ設定されていません。後でもう一度お試しください。",
+      "genericError": "接続に失敗しました。もう一度お試しください。",
+      "viewLibrary": "PlayStation ライブラリを見る"
+    },
+    "adjustAvatar": "調整",
+    "avatarReset": "リセット",
+    "avatarFrameHint": "ドラッグで移動、スライダーでズーム",
+    "avatarZoom": "ズーム",
+    "chooseImage": "画像を選択",
+    "xbox": {
+      "title": "Xboxを接続する",
+      "intro": "Xboxのゲーマータグを入力するだけで、公開プロフィールを検索します。パスワードやトークンは必要ありません。",
+      "idLabel": "あなたのXboxゲーマータグ",
+      "publicHint": "Xboxプロファイルをインポートするには、そのプロファイルが「公開」設定（ゲーム履歴と実績が表示される状態）になっている必要があります。",
+      "connect": "接続",
+      "connecting": "接続中…",
+      "connectedAs": "{{gamertag}} として接続中",
+      "notFound": "そのゲーマータグに対応する公開Xboxアカウントが見つかりませんでした。スペルを確認し、プロフィールが公開設定になっているかご確認ください。",
+      "alreadyLinked": "このXboxアカウントは、すでに別のプロフィールに紐付けられています。",
+      "invalidId": "それは有効なXboxのゲーマータグには見えません。",
+      "notConfigured": "Xboxのインポート機能は、サーバー上でまだ設定されていません。後ほどもう一度お試しください。",
+      "genericError": "接続に失敗しました。もう一度お試しください。",
+      "viewLibrary": "Xboxライブラリを表示する"
+    },
+    "eyebrow": "アカウント",
+    "navProfile": "プロフィール",
+    "navNotifications": "通知",
+    "navSecurity": "セキュリティ",
+    "navConnections": "連携",
+    "navDanger": "危険ゾーン",
+    "navData": "あなたのデータ",
+    "export": {
+      "description": "すべての個人データ（プロフィール、レビュー、コメント、ゲーム、リスト、フレンド、メッセージ、通知）のコピーを、構造化された JSON ファイルとしてダウンロードします。",
+      "button": "データをダウンロード",
+      "downloading": "準備中…",
+      "error": "データをエクスポートできませんでした"
+    }
+  },
+  "friends": {
+    "title": "フレンド",
+    "addPlaceholder": "追加するユーザー名",
+    "add": "追加",
+    "enterUsernameError": "ユーザー名を入力してください",
+    "sendError": "リクエストを送信できませんでした",
+    "loadError": "フレンドを読み込めませんでした",
+    "pendingRequests": "保留中のリクエスト",
+    "sentRequests": "送信済みリクエスト",
+    "suggestedFriends": "おすすめのフレンド",
+    "yourFriends": "自分のフレンド",
+    "pending": "保留中",
+    "online": "オンライン",
+    "offline": "オフライン",
+    "noFriendsTitle": "まだフレンドがいません",
+    "noFriendsDescription": "上のユーザー名からフレンドを追加するか、おすすめをご確認ください。",
+    "accept": "承認",
+    "decline": "拒否",
+    "cancelRequest": "リクエストを取り消す",
+    "removeFriend": "フレンドを削除",
+    "eyebrow": "あなたのサークル",
+    "statFriends": "フレンド",
+    "statOnline": "オンライン",
+    "statPending": "保留中",
+    "eyeRequests": "承認待ち",
+    "eyeSent": "送信済み",
+    "eyeSuggested": "見つける",
+    "eyeFriends": "オンラインとオフライン",
+    "sentYouRequest": "あなたにリクエストを送りました",
+    "viaSteam": "Steam経由",
+    "via42": "42経由",
+    "viaPsn": "PSN経由"
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "すべて既読にする",
+    "empty": "通知はありません。",
+    "prefsDescription": "受け取りたい通知の種類を選んでください（ベル通知＋リアルタイム）。",
+    "someone": "誰か",
+    "reviewLike": "<b>{{who}}</b> があなたのレビューにいいねしました",
+    "reviewLikeTitled": "<b>{{who}}</b> があなたのレビュー「{{title}}」にいいねしました",
+    "reviewComment": "<b>{{who}}</b> があなたのレビューにコメントしました",
+    "reviewCommentTitled": "<b>{{who}}</b> があなたのレビュー「{{title}}」にコメントしました",
+    "commentReply": "<b>{{who}}</b> があなたのコメントに返信しました",
+    "friendRequest": "<b>{{who}}</b> からフレンド申請が届きました",
+    "friendAccept": "<b>{{who}}</b> がフレンド申請を承認しました",
+    "newMessage": "<b>{{who}}</b> からメッセージが届きました",
+    "friendJoined": "<b>{{who}}</b>（{{via}}）が Saveboxd に参加しました",
+    "prefFriendRequest": "フレンド申請",
+    "prefFriendRequestHint": "誰かが申請を送ったとき",
+    "prefFriendAccept": "承認された申請",
+    "prefFriendAcceptHint": "申請が承認されたとき",
+    "prefReviewLike": "自分のレビューへのいいね",
+    "prefReviewLikeHint": "自分のレビューがいいねされたとき",
+    "prefReviewComment": "自分のレビューへのコメント",
+    "prefReviewCommentHint": "自分のレビューにコメントがついたとき",
+    "prefCommentReply": "自分のコメントへの返信",
+    "prefCommentReplyHint": "自分のコメントに返信があったとき",
+    "prefFriendJoined": "知り合いが参加",
+    "prefFriendJoinedHint": "Steam/42 の知り合いが登録したとき",
+    "achievement": "実績を解除：<b>{{name}}</b>",
+    "prefAchievement": "実績",
+    "prefAchievementHint": "実績を解除したとき",
+    "clear": "クリア"
+  },
+  "home": {
+    "featuredBadge": "注目のゲーム",
+    "writeReview": "レビューを書く",
+    "popularNow": "今人気",
+    "showMorePopular": "人気のゲームをもっと見る",
+    "showLessPopular": "人気ゲームを少なく表示",
+    "popularReviews": "人気のレビュー",
+    "noReviewsTitle": "まだレビューがありません",
+    "noReviewsDescription": "最初にゲームを評価してみましょう。優れたレビューはここに表示されます。",
+    "showMoreReviews": "レビューをもっと見る",
+    "showLessReviews": "レビューを減らす",
+    "deletedUser": "[削除されたユーザー]",
+    "viewGame": "{{title}} を見る",
+    "recommendedForYou": "あなたへのおすすめ",
+    "showMoreRecommended": "おすすめをもっと見る",
+    "showLessRecommended": "おすすめを少なく表示",
+    "recoEyebrow": "友だちが絶賛したから",
+    "popularEyebrow": "いま人気",
+    "activityEyebrow": "友だち",
+    "reviewsEyebrow": "コミュニティの声",
+    "statsEyebrow": "あなたのゲームの1年",
+    "statsHeading": "{{year}}をひと目で",
+    "seeProfile": "プロフィールを見る",
+    "statDone": "クリア",
+    "statDoneCaption": "クリア済みにしたゲーム",
+    "statPerfect": "100%",
+    "statPerfectCaption": "プラチナ・全実績",
+    "statReviews": "レビュー",
+    "statAvg": "平均 {{value}}",
+    "statNoReviews": "レビューなし",
+    "statRank": "グローバルランク",
+    "statRankCaption": "クリア数ランキング",
+    "statUnranked": "ランク外",
+    "statAchievements": "実績",
+    "activityTitle": "ライブ",
+    "activityEmpty": "まだ何もありません。",
+    "activitySeeAll": "フィードをすべて見る",
+    "landing": {
+      "eyebrow": "ゲームのLetterboxd",
+      "title": "あなたのライブラリを、評価し、レビューし、共有。",
+      "subtitle": "Steam・PlayStation・Xboxのライブラリを同期し、ゲームを評価し、実績を解除してグローバルランキングを駆け上がろう。",
+      "ctaPrimary": "アカウントを作成",
+      "ctaSecondary": "ログイン",
+      "feature1Title": "ライブラリを同期",
+      "feature1Desc": "Steam・PlayStation・Xboxのゲームとトロフィーを自動でインポート。",
+      "feature2Title": "評価＆レビュー",
+      "feature2Desc": "ゲームを採点し、レビューを書き、他の人のレビューにリアクションやコメント。",
+      "feature3Title": "解除して競う",
+      "feature3Desc": "実績を獲得し、グローバルランキングを駆け上がろう。",
+      "previewEyebrow": "ライブプレビュー",
+      "previewTitle": "今話題の作品",
+      "allTitle": "できることすべて",
+      "feat1": "何千ものゲームのカタログを探索",
+      "feat2": "プレイしたゲームを評価・レビュー",
+      "feat3": "自分だけのゲームリストを作成・共有",
+      "feat4": "Steam・PlayStation・Xboxのライブラリを同期",
+      "feat5": "友達を追加し、チャットして活動をフォロー",
+      "feat6": "プレイしながら実績を解除",
+      "feat7": "グローバルランキングを駆け上がる",
+      "feat8": "進捗を記録：クリア作品、100%、年間統計",
+      "statsGamesLabel": "ゲーム",
+      "statsReviewsLabel": "レビュー",
+      "statsPlayersLabel": "プレイヤー",
+      "topEyebrow": "トッププレイヤー",
+      "topTitle": "今のトッププレイヤー",
+      "topCaption": "作品を100%クリア",
+      "platformsEyebrow": "アカウント連携",
+      "platformsTitle": "ライブラリをまるごと",
+      "platformsSubtitle": "Steam・PlayStation・Xboxを連携 — ゲームとトロフィーが自動で同期。",
+      "achEyebrow": "オリジナル実績",
+      "achTitle": "解除できるバッジは数十種類",
+      "achSubtitle": "ゲームのクリア、レビュー投稿、リスト作成、フレンド追加でバッジを獲得。",
+      "feat9": "あなた向けのゲームのおすすめを受け取る"
+    },
+    "recoBecauseGame": "「{{title}}」が気に入ったから",
+    "recoBecauseGenre": "{{genre}}が好きだから",
+    "recoBecausePlayed": "「{{title}}」をプレイしたから",
+    "recoBecauseStudio": "{{studio}}のゲームが好きだから"
+  },
+  "feed": {
+    "title": "フレンドのアクティビティ",
+    "subtitle": "フレンドの最新レビューとクリアしたゲームをリアルタイムで。",
+    "tabAll": "すべて",
+    "tabReviews": "レビュー",
+    "tabPlayed": "ゲーム",
+    "tabLikes": "いいね",
+    "emptyTitle": "フレンドの新着はありません",
+    "emptyTitleTab": "このタブには何もありません",
+    "emptyDescription": "フレンドを追加すると、最新のレビュー・クリアしたゲーム・いいねをここで追えます。",
+    "findFriends": "フレンドを探す",
+    "loadMore": "もっと見る",
+    "loading": "読み込み中…",
+    "rated": "<a>{{user}}</a> が <s>{{game}}</s> を評価しました",
+    "played": "<a>{{user}}</a> が <s>{{game}}</s> をプレイしました",
+    "likedReview": "<a>{{actor}}</a> が <s>{{author}}</s> のレビューにいいねしました",
+    "likedComment": "<a>{{actor}}</a> が <s>{{author}}</s> のコメントにいいねしました",
+    "on": "対象: {{target}}",
+    "gameCompleted": "クリア済み",
+    "deletedUser": "[削除されたユーザー]",
+    "deletedShort": "[削除済み]",
+    "timeNow": "たった今",
+    "timeMinutes": "{{count}} 分前",
+    "timeHours": "{{count}} 時間前",
+    "timeYesterday": "昨日",
+    "timeDays": "{{count}} 日前",
+    "tabCompleted": "完了件数",
+    "completed": "<a>{{user}}</a> 完了 <s>{{game}}</s> 100%",
+    "completedBadge": "100%完了",
+    "rankLine": "<a>{{user}}</a> が<s>トップ{{rank}}</s>入り — {{category}}",
+    "rankScopeGlobal": "グローバルランキング",
+    "rankScopeFriends": "友達の中で",
+    "achievementLine": "<a>{{user}}</a> が <s>{{name}}</s> を解除しました",
+    "tabAchievements": "実績",
+    "eyebrow": "サークルの動き",
+    "live": "リアルタイム",
+    "done": "<a>{{user}}</a> が <s>{{game}}</s> をクリアしました"
+  },
+  "leaderboard": {
+    "title": "ランキング",
+    "subtitle": "ランキングの首位は誰か——コンプリート、プレイしたゲーム、レビューで競おう。",
+    "metricCompletions": "コンプリート",
+    "metricPlayed": "プレイしたゲーム",
+    "metricReviews": "レビュー",
+    "scopeFriends": "フレンド",
+    "scopeGlobal": "全体",
+    "windowAll": "全期間",
+    "windowMonth": "今月",
+    "yourRank": "あなたの順位",
+    "rankLabel": "{{rank}} 位",
+    "badgeTitle": "グローバルトップ3",
+    "badgeAria": "ランキングの実績",
+    "emptyTitle": "まだランキングがありません",
+    "emptyFriends": "フレンドを追加し、ゲームをコンプリートしたりプレイを記録したりレビューを書いたりして、一緒に順位を上げましょう。",
+    "emptyGlobal": "ランキングの先頭に立とう——ゲームをコンプリートし、プレイを記録し、レビューを書こう。",
+    "findFriends": "フレンドを探す",
+    "eyebrow": "トッププレイヤー",
+    "you": "あなた"
+  },
+  "reviews": {
+    "sortPopular": "人気",
+    "sortRecent": "新着",
+    "sortDiscussed": "話題",
+    "heading": "レビュー",
+    "loginToReview": "レビューを書くにはログインしてください。",
+    "emptyTitle": "まだレビューがありません",
+    "emptyDescGame": "このゲームについて最初に感想を投稿しましょう。",
+    "emptyDescCompany": "このスタジオについて最初に感想を投稿しましょう。",
+    "emptyDescGameGuest": "ログインして、このゲームを最初に評価しましょう。",
+    "emptyDescCompanyGuest": "ログインして、このスタジオを最初に評価しましょう。",
+    "deletedUser": "[削除されたユーザー]",
+    "edit": "編集",
+    "delete": "削除",
+    "loading": "読み込み中…",
+    "loadMore": "もっと見る",
+    "shareReview": "このレビューを友達に共有",
+    "ratingLabel": "評価：",
+    "ratingAria": "{{n}}/10",
+    "titlePlaceholder": "レビューのタイトル",
+    "textPlaceholder": "あなたのレビュー（ネタバレなし…）",
+    "publish": "レビューを公開",
+    "chooseRating": "評価を選んでください。",
+    "alreadyReviewedGame": "このゲームはすでにレビュー済みです。",
+    "alreadyReviewedCompany": "このスタジオはすでにレビュー済みです。",
+    "unexpectedError": "予期しないエラーが発生しました。",
+    "titleTextRequired": "タイトルと本文は必須です。",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "translate": "翻訳",
+    "showOriginal": "原文を表示",
+    "translating": "翻訳中…",
+    "showTranslation": "翻訳を表示",
+    "eyebrow": "コミュニティの声"
+  },
+  "comments": {
+    "sortTop": "トップ",
+    "sortRecent": "新着",
+    "loading": "読み込み中…",
+    "empty": "コメントはありません — 話を始めましょう。",
+    "deletedComment": "[削除されたコメント]",
+    "deletedUser": "[削除されたユーザー]",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "reply": "返信",
+    "edit": "編集",
+    "delete": "削除",
+    "viewReplies": "返信を表示 ({{count}})",
+    "replyPlaceholder": "返信…",
+    "addPlaceholder": "コメントを追加…",
+    "submit": "コメント",
+    "loginToComment": "コメントするにはログインしてください"
+  },
+  "profile": {
+    "recentReviews": "最近のレビュー",
+    "noReviewsTitle": "まだレビューがありません",
+    "noReviewsDesc": "このプレイヤーはまだゲームをレビューしていません。",
+    "calNoDates": "まだクリア日がありません",
+    "calNoDatesDesc": "クリア済みにしたゲームがこの年間カレンダーに表示されます。",
+    "calHint": "色の付いた日にカーソルを合わせるかタップすると、その日にクリアしたゲームが表示されます。",
+    "friends": "フレンド",
+    "requestPending": "申請中",
+    "respondRequest": "申請に返答",
+    "couldNotSend": "申請を送信できませんでした",
+    "sending": "送信中…",
+    "addFriend": "フレンドに追加",
+    "couldNotLoad": "プロフィールを読み込めませんでした",
+    "notFound": "プロフィールが見つかりません",
+    "shareProfile": "このプロフィールを友達に共有",
+    "editProfile": "プロフィールを編集",
+    "topRated": "高評価のゲーム",
+    "completionCalendar": "クリアカレンダー",
+    "memberSince": "{{date}} から登録",
+    "reviewOne": "レビュー {{count}} 件",
+    "reviewMany": "レビュー {{count}} 件",
+    "playedGameOne": "プレイ済み {{count}} 本",
+    "playedGameMany": "プレイ済み {{count}} 本",
+    "calLess": "少",
+    "calMore": "多",
+    "calCompletedLabel": "完了",
+    "calPlayedLabel": "プレイ済み",
+    "calViewPlayed": "プレイ",
+    "calViewCompleted": "完了",
+    "calDoneLabel": "済み",
+    "calPerfectLabel": "100%",
+    "calDoneLegend": "済み",
+    "calPerfectLegend": "100%",
+    "tabReviews": "レビュー",
+    "tabGames": "ゲーム",
+    "tabLists": "リスト",
+    "tabAchievements": "実績",
+    "tabOverview": "概要",
+    "recentReviewsTitle": "最新のレビュー",
+    "seeAllReviews": "すべてのレビューを見る",
+    "bioAdd": "自己紹介を追加",
+    "bioPlaceholder": "自己紹介を書こう…",
+    "eyeTopRated": "お気に入り",
+    "eyeActivity": "アクティビティ",
+    "eyeReviews": "彼の評価",
+    "eyeLists": "コレクション",
+    "eyeAchievements": "実績",
+    "calNewerYears": "より新しい年",
+    "calOlderYears": "より古い年"
+  },
+  "lists": {
+    "heading": "リスト",
+    "newList": "新しいリスト",
+    "emptyOwn": "まだリストがありません。作成しましょう（例：「Best competitive」「To-do」）。",
+    "emptyPublic": "公開リストはありません。",
+    "namePlaceholder": "リスト名",
+    "creating": "作成中…",
+    "create": "作成",
+    "cancel": "キャンセル",
+    "error": "エラー",
+    "private": "非公開",
+    "public": "公開",
+    "privateHint": "自分だけに表示",
+    "publicHint": "プロフィールに表示",
+    "viewGames": "ゲームを見る",
+    "empty": "空",
+    "gameOne": "{{count}} 本",
+    "gameMany": "{{count}} 本",
+    "editList": "リストを編集",
+    "save": "保存",
+    "delete": "削除",
+    "confirmDelete": "リスト「{{name}}」を削除しますか？",
+    "loading": "読み込み中…",
+    "listEmpty": "空のリスト — 各ゲームのページから追加できます。",
+    "removeGame": "{{title}} を削除",
+    "addToList": "リストに追加",
+    "menuEmpty": "リストがありません — 下で作成しましょう。",
+    "privateShort": "非公開",
+    "quickPlaceholder": "新しいリスト + このゲーム",
+    "createAria": "リストを作成",
+    "validate": "確定",
+    "gameReviews": "{{title}} のレビュー",
+    "noReview": "レビューなし",
+    "undoRemove": "取り消し",
+    "viewCompact": "コンパクト",
+    "viewDetailed": "詳細",
+    "addGamePlaceholder": "ゲームを追加…",
+    "alreadyIn": "追加済み",
+    "limitReached": "リスト満杯 — 最大 {{max}}",
+    "dragToReorder": "ドラッグして並べ替え",
+    "noCover": "カバーなし",
+    "addCover": "カバーを追加",
+    "changeCover": "カバーを変更",
+    "removeCover": "カバーを削除"
+  },
+  "catalog": {
+    "title": "カタログ",
+    "searchPlaceholder": "ゲームを検索…",
+    "searchAria": "ゲームを検索",
+    "sortLabel": "並べ替え",
+    "platformLabel": "プラットフォーム",
+    "studioLabel": "スタジオ",
+    "sortRating": "高評価",
+    "sortMostPlayed": "プレイ数順",
+    "sortRecent": "新着",
+    "sortPopular": "人気",
+    "allPlatforms": "すべてのプラットフォーム",
+    "allStudios": "すべてのスタジオ",
+    "noResults": "この条件に一致するゲームはありません。",
+    "loading": "読み込み中…",
+    "loadMore": "もっと見る",
+    "searchNav": "検索",
+    "randomGame": "ランダムなゲーム",
+    "noneInCatalog": "カタログに「{{query}}」というゲームはありません。",
+    "importIgdb": "IGDB から追加",
+    "importing": "IGDB からインポート中…",
+    "studios": "スタジオ",
+    "eyebrow": "ライブラリ",
+    "subtitle": "ゲームライブラリ全体を閲覧し、ジャンル・プラットフォーム・スタジオで絞り込み、コミュニティ順に並べ替え。",
+    "unit": "タイトル",
+    "activeFilters": "適用中のフィルター",
+    "clearAll": "すべて解除",
+    "removeFilter": "{{name}} を外す",
+    "viewGame": "詳細を見る",
+    "showLess": "表示を減らす",
+    "sortRatingAsc": "評価が低い順",
+    "sortMostPlayedAsc": "プレイ数が少ない順",
+    "sortRecentAsc": "古い順",
+    "sortPopularAsc": "知名度が低い順"
+  },
+  "game": {
+    "markedTitle": "クリア済み — クリックで解除",
+    "markTitle": "プレイした",
+    "unmarkAria": "「クリア済み」を解除",
+    "markAria": "クリア済みにする",
+    "playedOne": "{{count}} 人がこのゲームをプレイしました",
+    "playedMany": "{{count}} 人がこのゲームをプレイしました",
+    "notFound": "ゲームが見つかりません。",
+    "shareGame": "このゲームを友達に共有",
+    "dlcHeading": "拡張と DLC ({{count}})",
+    "chooseDlcLabel": "DLC を選択",
+    "chooseDlcPlaceholder": "DLC を選択…",
+    "dlcExpansion": "拡張",
+    "dlcStandalone": "スタンドアロン",
+    "dlcGeneric": "DLC",
+    "rate": "評価する",
+    "completeTitle": "完了としてマーク",
+    "completedTitle": "完了",
+    "completeAria": "このゲームを完了としてマーク",
+    "uncompleteAria": "完了マークを外す",
+    "completedCountOne": "{{count}} 人のプレイヤーがこのゲームを完了しました",
+    "completedCountMany": "{{count}} 人のプレイヤーがこのゲームを完了しました",
+    "markDateTitle": "いつプレイしましたか？",
+    "completeDateTitle": "いつクリアしましたか？",
+    "markDateHint": "登録前にプレイした場合は過去の日付を選んでください。",
+    "distributionTitle": "評価の分布",
+    "reviewCountOne": "プレイヤーレビュー{{count}}件",
+    "reviewCountMany": "プレイヤーレビュー{{count}}件",
+    "eyeDistribution": "コミュニティ評価",
+    "eyeDlc": "追加コンテンツ",
+    "eyeAbout": "概要",
+    "aboutTitle": "このゲーム",
+    "rating": {
+      "globalTitle": "総合評価",
+      "players": "プレイヤー",
+      "votesOne": "{{count}} 票",
+      "votesMany": "{{count}} 票"
+    },
+    "dateTypeLabel": "または日付を入力",
+    "datePartYear": "年",
+    "datePartMonth": "月",
+    "datePartDay": "日"
+  },
+  "share": {
+    "defaultTitle": "友達に共有",
+    "shareTo": "共有先…",
+    "loading": "読み込み中…",
+    "noFriends": "友達を追加して共有しましょう。",
+    "sent": "送信済み ✓",
+    "send": "送信"
+  },
+  "chat": {
+    "open": "メッセージを開く",
+    "close": "メッセージを閉じる",
+    "title": "メッセージ",
+    "closeAria": "閉じる",
+    "noConversations": "友達を追加して、ここでチャットしましょう。",
+    "back": "戻る",
+    "placeholder": "メッセージを入力…",
+    "send": "送信",
+    "read": "既読",
+    "shareGame": "ゲーム",
+    "shareReview": "レビュー",
+    "shareProfile": "プロフィール",
+    "noMessage": "メッセージなし",
+    "sharedGame": "共有されたゲーム",
+    "sharedReview": "共有されたレビュー",
+    "sharedProfile": "共有されたプロフィール"
+  },
+  "company": {
+    "notFound": "スタジオが見つかりません。",
+    "label": "スタジオ",
+    "games": "スタジオのゲーム",
+    "seeMore": "もっとゲームを見る ({{count}})"
+  },
+  "steam": {
+    "neverPlayed": "未プレイ",
+    "playMinutes": "{{count}} 分",
+    "playHours": "{{count}} 時間",
+    "loadError": "Steam ライブラリを読み込めませんでした",
+    "friendRequestError": "フレンド申請を送信できませんでした",
+    "title": "Steam ライブラリ",
+    "linkPrompt": "Steam アカウントを連携して、ゲームライブラリをインポートし、Steam フレンドを見つけましょう。",
+    "linkCta": "Steam アカウントを連携",
+    "friendsHeading": "Saveboxd 上の Steam フレンド",
+    "friendsPrivate": "Steam のフレンドリストが非公開のため、フレンドを提案できません。",
+    "noFriendsTitle": "まだ Steam フレンドがいません",
+    "noFriendsDesc": "Steam フレンドはまだ誰も Saveboxd にいません — 招待しましょう！",
+    "requestSent": "申請を送信しました",
+    "addFriend": "フレンドに追加",
+    "yourGames": "あなたのゲーム",
+    "gamesPrivate": "Steam のゲーム詳細が非公開です。Steam で <s>プロフィール → プライバシー設定 → ゲームの詳細</s> を公開にして、このページを再読み込みしてください。",
+    "owned": "Steam に {{totalOwned}} 本所有 — うち {{matched}} 本がカタログにあります。",
+    "ownedUnmatched": "Steam に {{totalOwned}} 本所有 — うち {{matched}} 本がカタログにあり、{{unmatched}} 本は未収録です。",
+    "statusPlaying": "プレイ中",
+    "statusBacklog": "積みゲー",
+    "reviewWritten": "レビュー済み — 表示/編集",
+    "writeReview": "レビューを書く",
+    "viewReviewOf": "{{title}} のレビューを見る",
+    "writeReviewOf": "{{title}} のレビューを書く",
+    "noMatchedTitle": "一致するゲームはまだありません",
+    "noMatchedDesc": "現在、あなたの Steam ゲームはカタログにありません。",
+    "manageLink": "Steam 連携は<l>プロフィール</l>から管理できます。",
+    "achievementsTitle": "実績",
+    "achievementsSub": "{{games}} 本 · {{perfect}} 本が100%",
+    "achPerGame": "{{unlocked}}/{{total}} 実績",
+    "achievementsNone": "実績がまだ同期されていません。Steam プロフィールが非公開の可能性があります。",
+    "syncAchievements": "更新",
+    "syncing": "同期中…"
+  },
+  "genres": {
+    "Adventure": "アドベンチャー",
+    "Arcade": "アーケード",
+    "Card & Board Game": "カード＆ボードゲーム",
+    "Fighting": "格闘",
+    "Hack and slash/Beat 'em up": "ハクスラ／ベルトアクション",
+    "Indie": "インディー",
+    "MOBA": "MOBA",
+    "Music": "音楽",
+    "Pinball": "ピンボール",
+    "Platform": "プラットフォーム",
+    "Point-and-click": "ポイント＆クリック",
+    "Puzzle": "パズル",
+    "Quiz/Trivia": "クイズ",
+    "Racing": "レース",
+    "Real Time Strategy (RTS)": "リアルタイムストラテジー (RTS)",
+    "Role-playing (RPG)": "ロールプレイング (RPG)",
+    "Shooter": "シューティング",
+    "Simulator": "シミュレーション",
+    "Sport": "スポーツ",
+    "Strategy": "ストラテジー",
+    "Tactical": "タクティカル",
+    "Turn-based strategy (TBS)": "ターン制ストラテジー (TBS)",
+    "Visual Novel": "ビジュアルノベル"
+  },
+  "legal": {
+    "privacy": {
+      "title": "プライバシーポリシー",
+      "lastUpdated": "最終更新日：2026年7月22日",
+      "intro": "Saveboxdは42カリキュラムの一環として制作された学生プロジェクトであり、ソーシャル機能（フレンド、メッセージ、リスト）を備えたビデオゲームのカタログ・レビューサイトです。本ポリシーは、サイトをご利用いただく際に収集されるデータの内容、収集理由、そしてお客様の権利について説明します。",
+      "sections": {
+        "dataCollected": {
+          "title": "収集するデータ",
+          "body": [
+            "サイトの運営に必要なデータのみを収集します：",
+            "• 通常の登録時：メールアドレス、ユーザー名、パスワード（ハッシュ化して保存し、平文では保存しません）。",
+            "• Google、42（Intra）、Discord、Steamでログインする場合：各サービスから提供される識別子、提供元がメールアドレスを共有する場合はそのメールアドレス（Steamはメールアドレスを共有しません）、表示名、プロフィール画像。",
+            "• お客様が任意で入力するプロフィール情報：自己紹介、アバター、優先言語。",
+            "• サイト上での活動：ゲームのレビューと評価、プレイ済みとしてマークしたゲーム、カスタムゲームリスト、フレンド関係、フレンドとやり取りしたメッセージ、いいねやコメント。",
+            "• 認証に必要な技術的Cookie（Cookieのセクションを参照）。",
+            "• 自動的に生成される標準的なサーバー技術ログ（IPアドレス、タイムスタンプ、リクエストされたページ）。ほぼすべてのウェブサイトと同様です。",
+            "銀行情報や決済情報、正確な位置情報は一切収集せず、オーディエンス分析ツールや広告ツールも一切使用していません。"
+          ]
+        },
+        "purposes": {
+          "title": "これらのデータを利用する理由",
+          "body": [
+            "お客様のデータは、以下の目的にのみ使用されます：",
+            "• アカウントの作成および管理；",
+            "• 認証およびセッションの保護（Cookie、トークン、有効化されている場合は二要素認証）；",
+            "• プロフィールおよび統計情報（プレイしたゲーム、レビュー、リスト）の表示；",
+            "• ソーシャル機能（フレンドリクエスト、SteamまたはEcole 42経由のフレンド提案、メッセージ、通知）の提供；",
+            "• アカウントの運営に厳密に関連するメール（メール認証、パスワードリセット）の送信；",
+            "• サービスの安全性の確保および不正利用の防止。",
+            "お客様のデータを商業目的や広告目的で販売、貸与、共有することは一切ありません。"
+          ]
+        },
+        "discord": {
+          "title": "Discordでのログインおよびアカウント連携",
+          "body": [
+            "SaveboxdではDiscord（OAuth2）を通じてログインまたはアカウントの連携が可能です。その際、DiscordからDiscord ID、ユーザー名、Discordアカウントで利用可能な場合は関連付けられたメールアドレス、Discordアバターの画像URLが提供されます。",
+            "この情報は、Saveboxdアカウントの作成または既存アカウントとDiscordアイデンティティの連携、およびプロフィール上にDiscordバッジを表示するためだけに使用されます。Discordのパスワードを受け取ることは一切なく、アカウントの他のデータ（サーバー、メッセージ、連絡先）にアクセスすることもありません。",
+            "唯一のログイン手段である場合を除き、いつでも設定からDiscordアカウントの連携を解除できます。"
+          ]
+        },
+        "retention": {
+          "title": "データの保存期間",
+          "body": [
+            "お客様のデータは、アカウントが存在する限り保存されます。",
+            "設定からアカウントを削除すると：",
+            "• アカウント、アバター、フレンド関係、プレイ済みとしてマークしたゲーム、リスト、通知、メッセージ（送受信分）は完全に削除されます；",
+            "• 既存のレビューやコメントは保持されますが、匿名化されます（「削除されたユーザー」からの投稿として表示されます）。これは他のユーザーのディスカッションを損なわないようにするためです；",
+            "• 一部のデータは、自動削除される前に技術的バックアップやサーバーログに一時的に残る場合があります。",
+            "サイトの運営またはサービスの安全性に必要な範囲を超えてデータを保持することはありません。"
+          ]
+        },
+        "rights": {
+          "title": "お客様の権利",
+          "body": [
+            "一般データ保護規則（GDPR）に基づき、お客様は個人データに関して以下の権利を有します：",
+            "• 個人データへのアクセス権 — 設定からいつでも完全なコピーをダウンロードできます；",
+            "• 不正確なデータの訂正権（ほとんどの項目は設定から直接編集可能です）；",
+            "• 消去権：いつでも設定からアカウントを削除できます；",
+            "• 特定の場合における処理の制限を求める権利；",
+            "• 例えば通知設定を通じて特定の処理に異議を唱える権利；",
+            "• データポータビリティの権利：設定から、構造化された機械可読形式（JSON）でデータをエクスポートできます；",
+            "• 処理が同意に基づく場合（例：第三者プロバイダー経由のログイン）、いつでも同意を撤回する権利；",
+            "• 管轄のデータ保護当局（フランスの場合はCNIL — cnil.fr）に苦情を申し立てる権利。",
+            "これらの権利を行使するには、「お問い合わせ」セクションに記載されたアドレスまでご連絡ください。"
+          ]
+        },
+        "cookies": {
+          "title": "Cookieとローカルストレージ",
+          "body": [
+            "Saveboxdはサイトの運営に厳密に必要なCookieのみを使用しており、いずれも技術的なものであり、広告目的のCookieは一切使用していません：",
+            "• 認証用Cookie（ログインセッション、セッションの更新、二要素認証ステップ、第三者アカウントの連携）。いずれもhttpOnlyかつ有効期限付きです。",
+            "広告トラッキングやオーディエンス分析のためのCookieは使用していません。",
+            "また、2つの表示設定（選択した言語およびライト/ダークテーマ）を記憶するために、お使いのブラウザのローカルストレージ（localStorage）も使用しています。この情報はお使いの端末内に留まり、当社サーバーへ送信されることはありません。",
+            "これらのCookieはサービスの機能上厳密に必要なものであるため、ePrivacy規則に基づき事前の同意は不要です。"
+          ]
+        },
+        "thirdParties": {
+          "title": "第三者サービス",
+          "body": [
+            "Saveboxdは運営のために以下の第三者サービスを利用しています：",
+            "• IGDB（Internet Game Database）：ビデオゲームに関する公開情報のため — お客様の個人データが提供されることはありません；",
+            "• Steam（Valve）：アカウントを連携する場合、本人確認およびユーザー名、アバター、ゲームライブラリ、Steamフレンドリストの取得のため（Saveboxdに既に登録済みのフレンドを提案する目的のみで使用し、保存はされません）；",
+            "• Google、42（Intra）、Discord：これらのいずれかのプロバイダー経由でログインする場合；",
+            "• Brevo：当社のトランザクションメール送信サービスであり、メール認証およびパスワードリセットメールにのみ使用されます。",
+            "オーディエンス分析、広告、または第三者トラッキングツールは一切使用していません。",
+            "ホスティング：本プロジェクトは42カリキュラムの一環として開発・評価されています。本サイトが一般公開される場合、このセクションにはホスティングプロバイダーの名称を追記する必要があります。"
+          ]
+        },
+        "contact": {
+          "title": "お問い合わせ",
+          "body": [
+            "本プライバシーポリシーに関するご質問、または個人データに関する権利の行使をご希望の場合は、以下までご連絡ください：saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "利用規約",
+      "lastUpdated": "最終更新日：2026年7月22日",
+      "intro": "本規約は、42カリキュラムの一環として制作された学生プロジェクトであるSaveboxdサイトへのアクセスおよび利用を規定するものです。アカウントを作成またはサイトを利用することにより、以下に記載する規約に同意したものとみなされます。",
+      "sections": {
+        "purpose": {
+          "title": "サービスの目的",
+          "body": [
+            "Saveboxdは、ビデオゲームの分類、評価、レビュー、プレイしたゲームの記録、カスタムリストの作成、そして他のユーザーとの交流（フレンド、メッセージ、レビュー、コメント）を可能にするコミュニティプラットフォームです。",
+            "本サイトは42カリキュラムの一環として教育目的で制作された学生プロジェクトであり、商業サービスではありません。"
+          ]
+        },
+        "account": {
+          "title": "アクセスおよびアカウントの作成",
+          "body": [
+            "ほとんどの機能へのアクセスには、通常の登録（メール、ユーザー名、パスワード）または第三者認証プロバイダー（Google、42、Discord、Steam）経由でのアカウント作成が必要です。",
+            "登録の際は正確な情報を提供する必要があり、他人の同意なくその人の代わりにアカウントを作成すること、または利用停止を回避するために複数のアカウントを作成することは認められません。"
+          ]
+        },
+        "credentials": {
+          "title": "認証情報に関する責任",
+          "body": [
+            "お客様は、パスワードの機密性、および自身のアカウントから行われるすべての活動について責任を負います。",
+            "アカウントへの不正アクセスが疑われる場合は、直ちにパスワードを変更し、当社までご連絡ください。",
+            "アカウントのセキュリティを強化するため、設定で利用可能な二要素認証（2FA）の有効化を推奨します。"
+          ]
+        },
+        "acceptableUse": {
+          "title": "サイトの許容される利用",
+          "body": [
+            "Saveboxdを利用することにより、以下に同意するものとします：",
+            "• 他者に敬意を払ったレビュー、コメント、メッセージのみを投稿すること；",
+            "• 他人や団体になりすまさないこと；",
+            "• 違法な目的または他のユーザーに害を及ぼす目的でサイトを利用しないこと；",
+            "• サイトの技術的な運営を妨害しようとしないこと（過負荷、脆弱性の悪用、リクエスト制限の回避など）。"
+          ]
+        },
+        "abuse": {
+          "title": "禁止行為",
+          "body": [
+            "特に以下の行為は禁止されています：",
+            "• 他のユーザーに対する嫌がらせ、侮辱、脅迫、その他の悪意ある行為；",
+            "• スパム（繰り返しの、宣伝目的の、または話題と無関係なメッセージやレビュー）；",
+            "• 違法、ヘイト、差別的、または性的に露骨なコンテンツの投稿；",
+            "• 他人のアカウントやサイトのシステムへの不正アクセスの試み。"
+          ]
+        },
+        "interactions": {
+          "title": "ユーザー間のやり取り",
+          "body": [
+            "Saveboxdは、フレンドリクエスト、プライベートメッセージ、会話内でのゲーム/レビュー/プロフィールの共有、Steamのネットワークまたは42コミュニティへの所属に基づくフレンド提案などのソーシャル機能を提供しています。",
+            "お客様は自身のメッセージや投稿内容について単独で責任を負います。フレンドと交換したプライベートメッセージは、いずれかのアカウントが削除された場合、双方において完全に削除されます。"
+          ]
+        },
+        "moderation": {
+          "title": "モデレーションおよび通報",
+          "body": [
+            "本サイトには現在、レビューやメッセージに対する組み込みの通報機能はありません。",
+            "不正利用、嫌がらせ、または不適切なコンテンツに遭遇した場合は、「お問い合わせ」セクションに記載されたアドレスまで直接ご連絡ください。この場合、モデレーションはプロジェクトチームが手動で対応します。"
+          ]
+        },
+        "suspension": {
+          "title": "アカウントの停止または削除",
+          "body": [
+            "本規約に違反した場合（不正利用、嫌がらせ、スパム、違法コンテンツなど）、専任のモデレーションチームを持たない学生プロジェクトとして合理的に可能な範囲で、当社の裁量によりアカウントを停止または削除する権利を留保します。",
+            "お客様はいつでも設定から自身のアカウントを削除することができます。"
+          ]
+        },
+        "userContent": {
+          "title": "ユーザー生成コンテンツ",
+          "body": [
+            "お客様は投稿するコンテンツ（レビュー、コメント、リスト、自己紹介、アバター）の所有権を保持します。Saveboxdに投稿することにより、サイトの通常運営の一環として当社がそれを表示・保存することを許可するものとします。",
+            "お客様は、投稿するあらゆるコンテンツ（特に第三者認証プロバイダーから提供されたものを使用していない場合のプロフィール画像）について、必要な権利を有していることを保証するものとします。"
+          ]
+        },
+        "intellectualProperty": {
+          "title": "知的財産権",
+          "body": [
+            "コード、デザイン、および「Saveboxd」ブランドは42カリキュラムの学生プロジェクトの一環として制作されたものであり、商業的利用を意図したものではありません。",
+            "ビデオゲームに関する情報およびビジュアル素材（タイトル、パッケージ画像、説明文）は第三者の公開データベース（IGDB）に由来し、それぞれの発行元および権利者に帰属します。Saveboxdはこれらのコンテンツに対する所有権を一切主張せず、非商業的・教育的な文脈において、説明および情報提供の目的のみで表示しています。"
+          ]
+        },
+        "gameContent": {
+          "title": "ビデオゲームに関するコンテンツ",
+          "body": [
+            "Saveboxdに表示されるパッケージ画像、説明文、ゲーム情報はIGDBから自動的にインポートされ、アカウントを連携している場合は個人のライブラリに関するデータがSteamからインポートされます。これらの情報は、それぞれの権利者の所有物のままです。"
+          ]
+        },
+        "availability": {
+          "title": "サービスの可用性",
+          "body": [
+            "Saveboxdは「現状のまま」提供される学生プロジェクトであり、継続的な可用性を保証するものではありません。本サービスは、特に評価またはメンテナンスの一環として、予告なくいつでも中断、変更、または停止される場合があります。"
+          ]
+        },
+        "liability": {
+          "title": "責任の制限",
+          "body": [
+            "Saveboxdは教育目的で提供されるものであり、明示または黙示を問わずいかなる保証も行いません。法律で許容される範囲において、プロジェクトチームは本サイトの利用または利用不能に起因する直接的または間接的損害について責任を負いません。",
+            "本制限は法的助言を構成するものではなく、適用法の下で契約により排除できない強行規定に基づくユーザーの権利を奪うものでもありません。"
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "第三者サービスおよび認証",
+          "body": [
+            "Saveboxdは第三者プロバイダー（Google、42、Discord、Steam）経由でのログインを可能にしています。これらのプロバイダーの利用は、Saveboxdが一切管理していないそれぞれ独自の利用規約にも従うものとします。"
+          ]
+        },
+        "changes": {
+          "title": "本規約の変更",
+          "body": [
+            "本規約は、特にサイトの機能の変化を反映するために、いつでも変更される場合があります。最終更新日は本ページ上部に表示されます。重大な変更がある場合は、合理的な方法でお客様にお知らせするよう努めます。"
+          ]
+        },
+        "law": {
+          "title": "準拠法および管轄",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — 特段の定めがない限り、本規約は学生プロジェクトの一環として参考情報として提供されるものであり、正式な商業契約を構成するものではありません。"
+          ]
+        },
+        "contact": {
+          "title": "お問い合わせ",
+          "body": [
+            "本利用規約に関するご質問がある場合は、以下までご連絡ください：saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "PlayStation アカウントを連携して、ゲーム・トロフィー・フレンドをインポートします。",
+    "linkCta": "設定へ",
+    "loadError": "PlayStation のデータを読み込めませんでした。",
+    "friendsHeading": "Saveboxd の PlayStation フレンド",
+    "friendsPrivate": "PlayStation のフレンドリストは非公開です。",
+    "noFriendsTitle": "提案できるフレンドがいません",
+    "noFriendsDesc": "PlayStation のフレンドはまだ誰も Saveboxd にいません。",
+    "requestSent": "リクエスト送信済み",
+    "addFriend": "追加",
+    "friendRequestError": "フレンドリクエストを送信できませんでした。",
+    "yourGames": "あなたのゲーム",
+    "gamesPrivate": "PlayStation のゲームは非公開です。",
+    "played": "{{totalPlayed}} 本プレイ · {{matched}} 本がカタログに一致",
+    "playedUnmatched": "{{totalPlayed}} 本プレイ · {{matched}} 本一致 · {{unmatched}} 本はカタログにありません",
+    "noMatchedTitle": "一致するゲームがありません",
+    "noMatchedDesc": "あなたの PlayStation のゲームはまだカタログにありません。",
+    "trophyLevel": "トロフィーレベル",
+    "trophiesEarned": "獲得トロフィー",
+    "trophyProgress": "{{earned}}/{{total}} トロフィー · {{progress}}%",
+    "statusPlaying": "プレイ中",
+    "statusBacklog": "積みゲー",
+    "reviewWritten": "レビュー済み",
+    "writeReview": "レビューを書く",
+    "viewReviewOf": "{{title}} のあなたのレビューを見る",
+    "writeReviewOf": "{{title}} のレビューを書く",
+    "refresh": "更新",
+    "syncing": "爽やか……",
+    "syncedAt": "最終更新日：{{time}}"
+  },
+  "library": {
+    "title": "マイライブラリ",
+    "noneLinkedTitle": "連携済みのアカウントがありません",
+    "noneLinkedDesc": "設定で Steam または PlayStation アカウントを連携すると、ここにゲームとトロフィーが表示されます。",
+    "goSettings": "設定へ",
+    "notLinked": "未連携",
+    "eyebrow": "あなたのゲーム",
+    "subtitle": "連携アカウントから取り込んだタイトル。",
+    "linked": "連携済み",
+    "link": "連携"
+  },
+  "errors": {
+    "notFound": {
+      "title": "ページが見つかりません",
+      "body": "このページは存在しないか、移動されました。",
+      "home": "ホームに戻る"
+    },
+    "boundary": {
+      "title": "問題が発生しました",
+      "body": "予期しないエラーが発生しました。ページを再読み込みしてください。",
+      "retry": "再読み込み"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Xboxアカウントを連携して、ゲームや実績をインポートしましょう。",
+    "linkCta": "設定へ移動",
+    "loadError": "Xboxのデータを読み込めませんでした。",
+    "yourGames": "あなたのゲーム",
+    "gamesPrivate": "Xboxのゲーム履歴は非公開です。",
+    "gamerscore": "ゲーマースコア",
+    "gamesPlayed": "試合数",
+    "perfectGames": "100%完了",
+    "refresh": "更新",
+    "syncing": "爽やか……",
+    "syncedAt": "最終更新日：{{time}}",
+    "played": "{{totalPlayed}} 試合数 · 当サイトのカタログで{{matched}}と一致する結果",
+    "playedUnmatched": "{{totalPlayed}} プレイしたゲーム · {{matched}} 一致したゲーム · {{unmatched}} 当サイトのカタログには掲載されていません",
+    "noMatchedTitle": "一致するゲームはありません",
+    "noMatchedDesc": "お客様のXboxゲームは、現時点では当社のカタログに掲載されていません。",
+    "achievementProgress": "{{earned}} 実績 · {{progress}} %",
+    "statusPlaying": "再生中",
+    "statusBacklog": "未処理案件",
+    "reviewWritten": "レビューが投稿されました",
+    "writeReview": "レビューを書く",
+    "viewReviewOf": "『{{title}}』のレビューを見る",
+    "writeReviewOf": "『{{title}}』のレビューを書いてください"
+  },
+  "onboarding": {
+    "welcome": "ようこそ！",
+    "subtitle": "いくつかの手順で、あなたのプロフィールを設定しましょう。",
+    "skip": "ひとまずスキップする",
+    "next": "続きを読む",
+    "back": "戻る",
+    "finish": "終了",
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "username": {
+      "title": "ユーザー名を選んでください",
+      "subtitle": "ご登録いただいたアカウントから事前に情報を入力しておきました。必要に応じて変更してください。",
+      "hint": "3～24文字：英字、数字、アンダースコアのみ。"
+    },
+    "avatar": {
+      "title": "プロフィール写真を追加する",
+      "subtitle": "お客様のアカウントからその画像を取得しました。別の画像をアップロードし、ズームしてドラッグして構図を調整してください。",
+      "skip": "この手順をスキップする"
+    },
+    "services": {
+      "title": "ゲームアカウントを連携する",
+      "subtitle": "各プラットフォームを連携させて、ゲームや統計データをインポートしましょう。",
+      "laterHint": "急ぐ必要はありません。アカウント設定から、後でアカウントを連携することも可能です。",
+      "connected": "接続済み",
+      "connect": "接続",
+      "publicNotice": "Steam、PlayStation、Xboxのプロフィールは「公開」に設定されている必要があります。そうしないと、ゲーム、フレンド、および実績をインポートできません。",
+      "steam": {
+        "perks": [
+          "プレイ済みのゲームライブラリをこのサイトにインポートする",
+          "実績と100％クリアしたゲーム",
+          "すでに登録されているSteamフレンドを探す"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "PlayStationのゲームライブラリをこのサイトにインポートする",
+          "トロフィーの達成状況と、各タイトルの100％クリア状況",
+          "すでに登録されているPlayStationのフレンドを探す"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Xboxのゲームライブラリをこのサイトにインポートする",
+          "ゲーマースコア、実績、および100％クリアしたゲーム"
+        ]
+      }
+    }
+  },
+  "a11y": {
+    "skipToContent": "メインコンテンツにスキップ"
+  },
+  "achievements": {
+    "sectionTitle": "実績",
+    "done": "解除済み",
+    "unlockedOn": "{{date}}に解除",
+    "fam": {
+      "completions": "クリアしたゲーム",
+      "played": "プレイしたゲーム",
+      "perfect": "100%",
+      "reviews": "レビュー",
+      "lists": "リスト",
+      "friends": "フレンド",
+      "genres": "エクスプローラー",
+      "studio": "スタジオファン",
+      "linked": "連携アカウント",
+      "popular": "人気",
+      "supporter": "サポーター",
+      "favorite": "熱狂ファン",
+      "harsh": "辛口批評家",
+      "veteran": "ベテラン"
+    },
+    "desc": {
+      "completions": "{{count}}本のゲームをクリア",
+      "played": "{{count}}本のゲームを記録",
+      "perfect": "{{count}}本のゲームを100%達成",
+      "reviews": "{{count}}件のレビューを書く",
+      "lists": "{{count}}個のリストを作成",
+      "friends": "フレンドを{{count}}人にする",
+      "genres": "{{count}}ジャンルのゲームをクリア",
+      "studio": "同じスタジオのゲームを{{count}}本評価",
+      "linked": "ゲームアカウントを{{count}}件連携",
+      "popular": "レビューで{{count}}件のいいねを獲得",
+      "supporter": "レビューに{{count}}件いいねする",
+      "favorite": "{{count}}本のゲームを10点評価",
+      "harsh": "{{count}}本のゲームを0点評価",
+      "veteran": "登録から{{count}}か月"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} 段階",
+    "concernedGames": "対象のゲーム"
+  },
+  "tutorial": {
+    "eyebrow": "ガイド",
+    "skip": "スキップ",
+    "back": "戻る",
+    "next": "次へ",
+    "done": "OK",
+    "steps": {
+      "home": {
+        "title": "ホーム",
+        "body": "Saveboxdのロゴをクリックすると、いつでもホームに戻れます。"
+      },
+      "search": {
+        "title": "検索",
+        "body": "検索バーから、あらゆるゲーム・スタジオ・プレイヤーを探せます。"
+      },
+      "catalog": {
+        "title": "カタログ",
+        "body": "ゲームカタログ全体を見て、新しい作品を見つけましょう。"
+      },
+      "feed": {
+        "title": "フィード",
+        "body": "友達が今プレイ・クリア・レビューしている内容が見られます。"
+      },
+      "leaderboard": {
+        "title": "ランキング",
+        "body": "トッププレイヤーを見て、自分の順位も確認できます。"
+      },
+      "friends": {
+        "title": "フレンド",
+        "body": "フレンドを追加し、申請を承認し、オンラインの人を確認できます。"
+      },
+      "library": {
+        "title": "ライブラリ",
+        "body": "Steam・PlayStation・Xboxのゲームとトロフィーを同期します。"
+      },
+      "notifications": {
+        "title": "通知",
+        "body": "いいね、コメント、フレンド申請、実績がここに表示されます。"
+      },
+      "profile": {
+        "title": "プロフィール",
+        "body": "あなたのゲーム、レビュー、統計、バッジがここに集まります。"
+      },
+      "chat": {
+        "title": "チャット",
+        "body": "右下のバブルから、友達とリアルタイムでメッセージのやり取りができます。"
+      },
+      "menu": {
+        "title": "設定",
+        "body": "ここから設定を開けます：プロフィール、通知、テーマ、言語。"
+      }
+    }
+  }
+}

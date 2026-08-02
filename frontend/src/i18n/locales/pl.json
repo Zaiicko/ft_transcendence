@@ -1,0 +1,1237 @@
+{
+  "common": {
+    "loading": "Wczytywanie…",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "cancel": "Anuluj",
+    "add": "Dodaj",
+    "back": "Wstecz",
+    "close": "Zamknij",
+    "retry": "Spróbuj ponownie",
+    "delete": "Usuń",
+    "confirm": "Potwierdź",
+    "edit": "Edytuj",
+    "skip": "Pomiń",
+    "error": "Coś poszło nie tak",
+    "yes": "Tak",
+    "no": "Nie",
+    "unknown": "Nieznane",
+    "previous": "Poprzedni",
+    "next": "Następny"
+  },
+  "nav": {
+    "catalog": "Katalog",
+    "feed": "Feed",
+    "leaderboard": "Ranking",
+    "friends": "Znajomi",
+    "steam": "Steam",
+    "login": "Zaloguj się",
+    "signup": "Zarejestruj się",
+    "library": "Biblioteki"
+  },
+  "menu": {
+    "notifications": "Powiadomienia",
+    "settings": "Ustawienia",
+    "language": "Język",
+    "lightMode": "Jasny motyw",
+    "darkMode": "Ciemny motyw",
+    "logout": "Wyloguj się",
+    "closeMenu": "Zamknij menu",
+    "notificationPrefs": "Preferencje powiadomień",
+    "navigation": "Menu nawigacji",
+    "replayTutorial": "Powtórz samouczek"
+  },
+  "footer": {
+    "tagline": "Letterboxd dla gier wideo · projekt 42",
+    "privacy": "Polityka prywatności",
+    "terms": "Warunki korzystania"
+  },
+  "languagePicker": {
+    "title": "Język"
+  },
+  "oauth": {
+    "continueWithGoogle": "Kontynuuj z Google",
+    "continueWithFortyTwo": "Kontynuuj z 42",
+    "continueWithSteam": "Kontynuuj ze Steam",
+    "continueWithDiscord": "Kontynuuj z Discordem",
+    "or": "lub"
+  },
+  "auth": {
+    "login": {
+      "title": "Zaloguj się",
+      "emailPlaceholder": "E-mail",
+      "passwordPlaceholder": "Hasło",
+      "submit": "Zaloguj się",
+      "submitting": "Logowanie…",
+      "forgotPassword": "Nie pamiętasz hasła?",
+      "noAccount": "Nie masz konta?",
+      "signupLink": "Zarejestruj się",
+      "genericError": "Logowanie nie powiodło się",
+      "errorEmailInUse": "Konto z tym adresem e-mail już istnieje. Zaloguj się hasłem albo użyj innego adresu e-mail dla tego dostawcy.",
+      "errorGeneric": "Coś poszło nie tak podczas logowania — spróbuj ponownie.",
+      "steamFailed": "Logowanie przez Steam nie powiodło się — spróbuj ponownie",
+      "subtitle": "Wróć do swojego dziennika gier tam, gdzie skończyłeś."
+    },
+    "twoFactor": {
+      "title": "Kod dwuskładnikowy",
+      "description": "Wpisz 6-cyfrowy kod z aplikacji uwierzytelniającej.",
+      "verify": "Zweryfikuj",
+      "verifying": "Weryfikowanie…",
+      "invalidCode": "Nieprawidłowy kod"
+    },
+    "signup": {
+      "title": "Zarejestruj się",
+      "titleSteam": "Dokończ rejestrację przez Steam",
+      "steamIntro": "Twoje konto Steam zostało zweryfikowane — wybierz e-mail i potwierdź nazwę użytkownika, aby utworzyć konto Saveboxd.",
+      "emailPlaceholder": "E-mail",
+      "usernamePlaceholder": "Nazwa użytkownika",
+      "usernameHint": "Tylko litery, cyfry i podkreślenia",
+      "passwordPlaceholder": "Hasło (min. 8 znaków)",
+      "passwordPlaceholderSteam": "Hasło (opcjonalnie)",
+      "passwordHintSteam": "Bez hasła logowanie będzie możliwe tylko przez Steam. Hasło będzie można dodać później w profilu.",
+      "submit": "Zarejestruj się",
+      "submitSteam": "Utwórz konto",
+      "submitting": "Tworzenie konta…",
+      "sessionExpired": "Sesja wygasła — zaloguj się ponownie przez Steam",
+      "genericError": "Rejestracja nie powiodła się",
+      "alreadyHaveAccount": "Masz już konto?",
+      "loginLink": "Zaloguj się",
+      "subtitle": "Załóż konto i rozpocznij swój dziennik gier."
+    },
+    "forgotPassword": {
+      "title": "Nie pamiętasz hasła?",
+      "emailPlaceholder": "E-mail",
+      "submit": "Wyślij link resetujący",
+      "submitting": "Wysyłanie…",
+      "checkEmailTitle": "Sprawdź swoją skrzynkę e-mail",
+      "checkEmailBody": "Jeśli ten adres jest zarejestrowany, link do zresetowania hasła już do Ciebie zmierza.",
+      "backToLogin": "Powrót do logowania",
+      "genericError": "Coś poszło nie tak"
+    },
+    "resetPassword": {
+      "title": "Wybierz nowe hasło",
+      "invalidLinkTitle": "Nieprawidłowy link",
+      "invalidLinkBody": "W tym linku do resetowania hasła brakuje tokenu.",
+      "requestNewLink": "Poproś o nowy",
+      "missingToken": "Brak tokenu resetującego.",
+      "newPasswordPlaceholder": "Nowe hasło (min. 8 znaków)",
+      "submit": "Zresetuj hasło",
+      "submitting": "Resetowanie…",
+      "genericError": "Nie udało się zresetować hasła"
+    },
+    "verifyEmail": {
+      "verifying": "Weryfikowanie adresu e-mail…",
+      "successTitle": "E-mail zweryfikowany",
+      "successBody": "Twój adres został potwierdzony — wszystko gotowe.",
+      "goToProfile": "Przejdź do profilu",
+      "failedTitle": "Weryfikacja nie powiodła się",
+      "backToProfile": "Powrót do profilu",
+      "missingToken": "Brak tokenu weryfikacyjnego.",
+      "genericError": "Weryfikacja nie powiodła się"
+    }
+  },
+  "settings": {
+    "title": "Ustawienia konta",
+    "welcomeTitle": "Witaj w Saveboxd!",
+    "welcomeBody": "Wybraliśmy dla Ciebie nazwę użytkownika {{username}} — zmień ją poniżej, jeśli chcesz, albo zostaw bez zmian.",
+    "changeAvatar": "Zmień awatar",
+    "uploadingAvatar": "Przesyłanie…",
+    "avatarError": "Przesyłanie nie powiodło się",
+    "emailVerified": "E-mail zweryfikowany",
+    "emailNotVerified": "E-mail niezweryfikowany",
+    "resendVerification": "Wyślij ponownie e-mail weryfikacyjny",
+    "resendSending": "Wysyłanie…",
+    "resendSent": "Wysłano e-mail weryfikacyjny — sprawdź swoją skrzynkę odbiorczą.",
+    "resendError": "Nie udało się ponownie wysłać e-maila weryfikacyjnego",
+    "usernameLabel": "Nazwa użytkownika",
+    "bioLabel": "Opis profilu",
+    "saveProfile": "Zapisz profil",
+    "saving": "Zapisywanie…",
+    "skipForNow": "Pomiń na razie",
+    "profileError": "Nie udało się zapisać profilu",
+    "signInVia": "Twoje konto nie ma hasła — logujesz się przez {{provider}}. Dodaj hasło, aby móc logować się też e-mailem.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "Uwierzytelnianie dwuskładnikowe",
+      "enabledDescription": "Włączone. Wpisz kod, aby je wyłączyć.",
+      "disable": "Wyłącz",
+      "disabling": "Wyłączanie…",
+      "scanQr": "Zeskanuj ten kod QR aplikacją uwierzytelniającą:",
+      "manualKeyPrefix": "Albo wpisz ten klucz ręcznie:",
+      "confirm": "Potwierdź",
+      "confirming": "Potwierdzanie…",
+      "notEnabledDescription": "Nieaktywne. Dodaj dodatkowy krok logowania za pomocą aplikacji takiej jak Google Authenticator.",
+      "enable": "Włącz 2FA",
+      "starting": "Uruchamianie…",
+      "invalidCode": "Nieprawidłowy kod",
+      "startError": "Nie udało się rozpocząć konfiguracji 2FA"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "To konto Steam jest już połączone z innym użytkownikiem.",
+      "linkedSuccess": "Konto Steam połączone!",
+      "linkedDescription": "Połączone — możesz logować się przez Steam i importować swoją bibliotekę gier.",
+      "viewLibrary": "Zobacz moją bibliotekę Steam",
+      "unlink": "Odłącz Steam",
+      "unlinking": "Odłączanie…",
+      "unlinkError": "Nie udało się odłączyć Steam",
+      "notLinkedDescription": "Połącz swoje konto Steam, aby logować się przez Steam, importować bibliotekę i znaleźć znajomych ze Steam.",
+      "linkAccount": "Połącz moje konto Steam"
+    },
+    "password": {
+      "changeTitle": "Zmień hasło",
+      "addTitle": "Dodaj hasło",
+      "currentPasswordPlaceholder": "Obecne hasło",
+      "newPasswordPlaceholder": "Nowe hasło (min. 8 znaków)",
+      "save": "Zmień hasło",
+      "add": "Dodaj hasło",
+      "saving": "Zapisywanie…",
+      "saved": "Hasło zapisane!",
+      "error": "Nie udało się zapisać hasła",
+      "forgot": "Nie pamiętasz hasła?",
+      "forgotSending": "Wysyłanie…",
+      "forgotSent": "Link do resetowania został wysłany na {{email}}.",
+      "forgotError": "Nie udało się wysłać e-maila resetującego"
+    },
+    "delete": {
+      "title": "Usuń konto",
+      "warning": "To trwale usunie Twoje konto, znajomości i wiadomości. Twoje recenzje i komentarze zostaną zachowane, ale zanonimizowane (wyświetlane jako od usuniętego użytkownika). Tej operacji nie można cofnąć.",
+      "button": "Usuń konto",
+      "confirmPasswordPlaceholder": "Potwierdź swoje hasło",
+      "confirmButton": "Usuń na stałe",
+      "deleting": "Usuwanie…",
+      "cancel": "Anuluj",
+      "error": "Nie udało się usunąć konta"
+    },
+    "connections": {
+      "title": "Połączone konta",
+      "description": "Połącz swoje konta do gier, aby szybciej się logować i znajdować znajomych.",
+      "connected": "Połączono",
+      "link": "Połącz",
+      "unlink": "Odłącz",
+      "unlinking": "Odłączanie…",
+      "unlinkError": "Nie udało się odłączyć tego konta",
+      "comingSoon": "Wkrótce",
+      "discordLinked": "Konto Discord połączone!",
+      "discordTaken": "To konto Discord jest już połączone z innym użytkownikiem."
+    },
+    "psn": {
+      "title": "Połącz PlayStation",
+      "intro": "Po prostu podaj swój identyfikator online PlayStation — znajdziemy twój publiczny profil. Nie potrzebujesz hasła ani tokena.",
+      "idLabel": "Twój identyfikator online PSN",
+      "publicHint": "Twój profil PlayStation musi być publiczny (widoczne gry i trofea), abyśmy mogli go zaimportować.",
+      "connect": "Połącz",
+      "connecting": "Łączenie…",
+      "connectedAs": "Połączono jako {{onlineId}}",
+      "notFound": "Nie znaleziono publicznego konta PlayStation dla tego identyfikatora. Sprawdź pisownię i czy twój profil jest publiczny.",
+      "alreadyLinked": "To konto PlayStation jest już połączone z innym profilem.",
+      "invalidId": "To nie wygląda na prawidłowy identyfikator online PSN (3–16 liter, cyfr, - lub _).",
+      "notConfigured": "Import PlayStation nie jest jeszcze skonfigurowany na serwerze. Spróbuj później.",
+      "genericError": "Połączenie nie powiodło się. Spróbuj ponownie.",
+      "viewLibrary": "Zobacz moją bibliotekę PlayStation"
+    },
+    "adjustAvatar": "Dostosuj",
+    "avatarReset": "Resetuj",
+    "avatarFrameHint": "Przeciągnij, aby przesunąć, suwak do przybliżania",
+    "avatarZoom": "Powiększenie",
+    "chooseImage": "Wybierz obraz",
+    "xbox": {
+      "title": "Połącz konsolę Xbox",
+      "intro": "Wystarczy wpisać swój tag gracza Xbox — znajdziemy Twój publiczny profil. Nie potrzebujesz hasła ani tokenu.",
+      "idLabel": "Twój tag gracza na Xboxie",
+      "publicHint": "Abyśmy mogli zaimportować Twój profil Xbox, musi on być publiczny (historia gier i osiągnięcia muszą być widoczne).",
+      "connect": "Połącz się",
+      "connecting": "Łączenie…",
+      "connectedAs": "Zalogowany jako {{gamertag}}",
+      "notFound": "Nie znaleziono publicznego konta Xbox o tym tagu gracza. Sprawdź pisownię i upewnij się, że Twój profil jest publiczny.",
+      "alreadyLinked": "To konto Xbox jest już powiązane z innym profilem.",
+      "invalidId": "To nie wygląda na prawidłowy tag gracza na Xboxie.",
+      "notConfigured": "Import z Xboxa nie został jeszcze skonfigurowany na serwerze. Spróbuj ponownie później.",
+      "genericError": "Połączenie nie powiodło się. Spróbuj ponownie.",
+      "viewLibrary": "Wyświetl moją bibliotekę Xbox"
+    },
+    "eyebrow": "Twoje konto",
+    "navProfile": "Profil",
+    "navNotifications": "Powiadomienia",
+    "navSecurity": "Bezpieczeństwo",
+    "navConnections": "Połączenia",
+    "navDanger": "Strefa zagrożenia",
+    "navData": "Twoje dane",
+    "export": {
+      "description": "Pobierz kopię wszystkich swoich danych osobowych (profil, recenzje, komentarze, gry, listy, znajomi, wiadomości i powiadomienia) w postaci ustrukturyzowanego pliku JSON.",
+      "button": "Pobierz moje dane",
+      "downloading": "Przygotowywanie…",
+      "error": "Nie udało się wyeksportować Twoich danych"
+    }
+  },
+  "friends": {
+    "title": "Znajomi",
+    "addPlaceholder": "Nazwa użytkownika do dodania",
+    "add": "Dodaj",
+    "enterUsernameError": "Wpisz nazwę użytkownika",
+    "sendError": "Nie udało się wysłać zaproszenia",
+    "loadError": "Nie udało się wczytać znajomych",
+    "pendingRequests": "Oczekujące zaproszenia",
+    "sentRequests": "Wysłane zaproszenia",
+    "suggestedFriends": "Sugerowani znajomi",
+    "yourFriends": "Twoi znajomi",
+    "pending": "Oczekujące",
+    "online": "Online",
+    "offline": "Offline",
+    "noFriendsTitle": "Jeszcze brak znajomych",
+    "noFriendsDescription": "Dodaj kogoś, wpisując nazwę użytkownika powyżej, albo sprawdź sugestie.",
+    "accept": "Akceptuj",
+    "decline": "Odrzuć",
+    "cancelRequest": "Anuluj zaproszenie",
+    "removeFriend": "Usuń znajomego",
+    "eyebrow": "Twój krąg",
+    "statFriends": "znajomi",
+    "statOnline": "online",
+    "statPending": "oczekujące",
+    "eyeRequests": "Do zatwierdzenia",
+    "eyeSent": "Wysłane",
+    "eyeSuggested": "Odkryj",
+    "eyeFriends": "Aktywni i offline",
+    "sentYouRequest": "wysłał(a) Ci zaproszenie",
+    "viaSteam": "przez Steam",
+    "via42": "przez 42",
+    "viaPsn": "przez PSN"
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "empty": "Brak powiadomień.",
+    "prefsDescription": "Wybierz, jakie powiadomienia chcesz otrzymywać (dzwonek + na żywo).",
+    "someone": "Ktoś",
+    "reviewLike": "<b>{{who}}</b> polubił(a) Twoją recenzję",
+    "reviewLikeTitled": "<b>{{who}}</b> polubił(a) Twoją recenzję „{{title}}”",
+    "reviewComment": "<b>{{who}}</b> skomentował(a) Twoją recenzję",
+    "reviewCommentTitled": "<b>{{who}}</b> skomentował(a) Twoją recenzję „{{title}}”",
+    "commentReply": "<b>{{who}}</b> odpowiedział(a) na Twój komentarz",
+    "friendRequest": "<b>{{who}}</b> wysłał(a) Ci zaproszenie do znajomych",
+    "friendAccept": "<b>{{who}}</b> zaakceptował(a) Twoje zaproszenie do znajomych",
+    "newMessage": "<b>{{who}}</b> wysłał(a) Ci wiadomość",
+    "friendJoined": "<b>{{who}}</b> ({{via}}) dołączył(a) do Saveboxd",
+    "prefFriendRequest": "Zaproszenia do znajomych",
+    "prefFriendRequestHint": "Gdy ktoś wysyła Ci zaproszenie",
+    "prefFriendAccept": "Zaakceptowane zaproszenia",
+    "prefFriendAcceptHint": "Gdy Twoje zaproszenie zostaje zaakceptowane",
+    "prefReviewLike": "Polubienia moich recenzji",
+    "prefReviewLikeHint": "Gdy ktoś polubi Twoją recenzję",
+    "prefReviewComment": "Komentarze do moich recenzji",
+    "prefReviewCommentHint": "Gdy ktoś skomentuje Twoją recenzję",
+    "prefCommentReply": "Odpowiedzi na moje komentarze",
+    "prefCommentReplyHint": "Gdy ktoś odpowie na Twój komentarz",
+    "prefFriendJoined": "Kontakt dołącza",
+    "prefFriendJoinedHint": "Gdy kontakt ze Steam/42 się rejestruje",
+    "achievement": "Odblokowano osiągnięcie: <b>{{name}}</b>",
+    "prefAchievement": "Osiągnięcia",
+    "prefAchievementHint": "Gdy odblokujesz osiągnięcie",
+    "clear": "Wyczyść"
+  },
+  "home": {
+    "featuredBadge": "Polecana gra",
+    "writeReview": "Napisz recenzję",
+    "popularNow": "Popularne teraz",
+    "showMorePopular": "Pokaż więcej popularnych gier",
+    "showLessPopular": "Pokaż mniej popularnych gier",
+    "popularReviews": "Popularne recenzje",
+    "noReviewsTitle": "Jeszcze brak recenzji",
+    "noReviewsDescription": "Bądź pierwszą osobą, która oceni grę — najlepsze recenzje pojawią się tutaj.",
+    "showMoreReviews": "Pokaż więcej recenzji",
+    "showLessReviews": "Pokaż mniej recenzji",
+    "deletedUser": "[usunięty użytkownik]",
+    "viewGame": "Zobacz {{title}}",
+    "recommendedForYou": "Polecane dla Ciebie",
+    "showMoreRecommended": "Pokaż więcej rekomendacji",
+    "showLessRecommended": "Pokaż mniej rekomendacji",
+    "recoEyebrow": "Bo twoi znajomi je pokochali",
+    "popularEyebrow": "Teraz",
+    "activityEyebrow": "Twoi znajomi",
+    "reviewsEyebrow": "Społeczność ma głos",
+    "statsEyebrow": "Twój rok w grach",
+    "statsHeading": "{{year}} w skrócie",
+    "seeProfile": "Zobacz profil",
+    "statDone": "Ukończone",
+    "statDoneCaption": "Gry oznaczone jako ukończone",
+    "statPerfect": "100%",
+    "statPerfectCaption": "Platyny i pełne osiągnięcia",
+    "statReviews": "Recenzje",
+    "statAvg": "Śr. {{value}}",
+    "statNoReviews": "Brak recenzji",
+    "statRank": "Ranking globalny",
+    "statRankCaption": "Ranking ukończeń",
+    "statUnranked": "Bez pozycji",
+    "statAchievements": "Osiągnięcia",
+    "activityTitle": "Na żywo",
+    "activityEmpty": "Jeszcze nic.",
+    "activitySeeAll": "Zobacz cały kanał",
+    "landing": {
+      "eyebrow": "Letterboxd gier wideo",
+      "title": "Twoja biblioteka. Oceniona, zrecenzowana, udostępniona.",
+      "subtitle": "Zsynchronizuj biblioteki Steam, PlayStation i Xbox, oceniaj gry, zdobywaj osiągnięcia i wspinaj się w globalnym rankingu.",
+      "ctaPrimary": "Załóż konto",
+      "ctaSecondary": "Zaloguj się",
+      "feature1Title": "Zsynchronizuj bibliotekę",
+      "feature1Desc": "Automatycznie importuj gry i trofea ze Steam, PlayStation i Xbox.",
+      "feature2Title": "Oceniaj i recenzuj",
+      "feature2Desc": "Wystawiaj oceny, pisz recenzje, reaguj i komentuj recenzje innych.",
+      "feature3Title": "Zdobywaj i rywalizuj",
+      "feature3Desc": "Zdobywaj osiągnięcia i wspinaj się w globalnym rankingu.",
+      "previewEyebrow": "Podgląd na żywo",
+      "previewTitle": "Teraz na czasie",
+      "allTitle": "Wszystko, co możesz robić",
+      "feat1": "Przeglądaj katalog tysięcy gier",
+      "feat2": "Oceniaj i recenzuj każdą graną grę",
+      "feat3": "Twórz i udostępniaj własne listy gier",
+      "feat4": "Synchronizuj biblioteki Steam, PlayStation i Xbox",
+      "feat5": "Dodawaj znajomych, czatuj i śledź ich aktywność",
+      "feat6": "Zdobywaj osiągnięcia podczas grania",
+      "feat7": "Wspinaj się w globalnym rankingu",
+      "feat8": "Śledź swoje postępy: ukończone gry, 100% i statystyki roczne",
+      "statsGamesLabel": "Gry",
+      "statsReviewsLabel": "Recenzje",
+      "statsPlayersLabel": "Gracze",
+      "topEyebrow": "Najlepsi gracze",
+      "topTitle": "Najlepsi gracze teraz",
+      "topCaption": "gry ukończone w 100%",
+      "platformsEyebrow": "Twoje konta",
+      "platformsTitle": "Przenieś całą swoją bibliotekę",
+      "platformsSubtitle": "Połącz Steam, PlayStation i Xbox — twoje gry i trofea synchronizują się automatycznie.",
+      "achEyebrow": "Własne osiągnięcia",
+      "achTitle": "Dziesiątki odznak do zdobycia",
+      "achSubtitle": "Zdobywaj odznaki, kończąc gry, pisząc recenzje, tworząc listy i dodając znajomych.",
+      "feat9": "Otrzymuj rekomendacje gier tylko dla ciebie"
+    },
+    "recoBecauseGame": "Bo spodobało ci się {{title}}",
+    "recoBecauseGenre": "Bo lubisz {{genre}}",
+    "recoBecausePlayed": "Bo grałeś w {{title}}",
+    "recoBecauseStudio": "Bo lubisz gry od {{studio}}"
+  },
+  "feed": {
+    "title": "Aktywność znajomych",
+    "subtitle": "Najnowsze recenzje i ukończone gry twoich znajomych, na żywo.",
+    "tabAll": "Wszystko",
+    "tabReviews": "Recenzje",
+    "tabPlayed": "Gry",
+    "tabLikes": "Polubienia",
+    "emptyTitle": "Nic nowego od znajomych",
+    "emptyTitleTab": "Nic w tej zakładce",
+    "emptyDescription": "Dodaj znajomych i śledź tutaj ich najnowsze recenzje, ukończone gry i polubienia.",
+    "findFriends": "Znajdź znajomych",
+    "loadMore": "Załaduj więcej",
+    "loading": "Ładowanie…",
+    "rated": "<a>{{user}}</a> ocenił(a) <s>{{game}}</s>",
+    "played": "<a>{{user}}</a> zagrał(a) w <s>{{game}}</s>",
+    "likedReview": "<a>{{actor}}</a> polubił(a) recenzję <s>{{author}}</s>",
+    "likedComment": "<a>{{actor}}</a> polubił(a) komentarz <s>{{author}}</s>",
+    "on": "do {{target}}",
+    "gameCompleted": "Gra ukończona",
+    "deletedUser": "[usunięty użytkownik]",
+    "deletedShort": "[usunięty]",
+    "timeNow": "przed chwilą",
+    "timeMinutes": "{{count}} min temu",
+    "timeHours": "{{count}} godz. temu",
+    "timeYesterday": "wczoraj",
+    "timeDays": "{{count}} dni temu",
+    "tabCompleted": "Zakończenia",
+    "completed": "<a>{{user}}</a> zakończono <s>{{game}}</s> 100%",
+    "completedBadge": "Zrealizowano w 100%",
+    "rankLine": "<a>{{user}}</a> wszedł do <s>top {{rank}}</s> — {{category}}",
+    "rankScopeGlobal": "Ranking globalny",
+    "rankScopeFriends": "Wśród Twoich znajomych",
+    "achievementLine": "<a>{{user}}</a> odblokował(a) <s>{{name}}</s>",
+    "tabAchievements": "Osiągnięcia",
+    "eyebrow": "Twój krąg na żywo",
+    "live": "Na żywo",
+    "done": "<a>{{user}}</a> ukończył(a) <s>{{game}}</s>"
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "subtitle": "Zobacz, kto jest na szczycie rankingu — ukończenia, zagrane gry i recenzje.",
+    "metricCompletions": "Ukończenia",
+    "metricPlayed": "Zagrane gry",
+    "metricReviews": "Recenzje",
+    "scopeFriends": "Znajomi",
+    "scopeGlobal": "Globalnie",
+    "windowAll": "Od zawsze",
+    "windowMonth": "Ten miesiąc",
+    "yourRank": "Twoja pozycja",
+    "rankLabel": "Pozycja {{rank}}",
+    "badgeTitle": "Światowy top 3",
+    "badgeAria": "Wyróżnienia w rankingu",
+    "emptyTitle": "Nie ma jeszcze nic do sklasyfikowania",
+    "emptyFriends": "Dodaj znajomych i zacznij ukańczać gry, zapisywać rozgrywki i pisać recenzje, aby wspólnie piąć się w rankingu.",
+    "emptyGlobal": "Bądź pierwszy w rankingu — ukańczaj gry, zapisuj rozgrywki i pisz recenzje.",
+    "findFriends": "Znajdź znajomych",
+    "eyebrow": "Najlepsi gracze",
+    "you": "ty"
+  },
+  "reviews": {
+    "sortPopular": "Popularne",
+    "sortRecent": "Najnowsze",
+    "sortDiscussed": "Komentowane",
+    "heading": "Recenzje",
+    "loginToReview": "Zaloguj się, aby napisać recenzję.",
+    "emptyTitle": "Brak recenzji",
+    "emptyDescGame": "Podziel się jako pierwszy opinią o tej grze.",
+    "emptyDescCompany": "Podziel się jako pierwszy opinią o tym studiu.",
+    "emptyDescGameGuest": "Zaloguj się, aby jako pierwszy ocenić tę grę.",
+    "emptyDescCompanyGuest": "Zaloguj się, aby jako pierwszy ocenić to studio.",
+    "deletedUser": "[usunięty użytkownik]",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "loading": "Ładowanie…",
+    "loadMore": "Załaduj więcej",
+    "shareReview": "Udostępnij tę recenzję znajomemu",
+    "ratingLabel": "Ocena:",
+    "ratingAria": "{{n}}/10",
+    "titlePlaceholder": "Tytuł recenzji",
+    "textPlaceholder": "Twoja recenzja (bez spoilerów…)",
+    "publish": "Opublikuj recenzję",
+    "chooseRating": "Wybierz ocenę.",
+    "alreadyReviewedGame": "Już oceniłeś tę grę.",
+    "alreadyReviewedCompany": "Już oceniłeś to studio.",
+    "unexpectedError": "Nieoczekiwany błąd.",
+    "titleTextRequired": "Tytuł i tekst są wymagane.",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "translate": "Przetłumacz",
+    "showOriginal": "Pokaż oryginał",
+    "translating": "Tłumaczenie…",
+    "showTranslation": "Pokaż tłumaczenie",
+    "eyebrow": "Społeczność ma głos"
+  },
+  "comments": {
+    "sortTop": "Najlepsze",
+    "sortRecent": "Najnowsze",
+    "loading": "Ładowanie…",
+    "empty": "Brak komentarzy — rozpocznij dyskusję.",
+    "deletedComment": "[usunięty komentarz]",
+    "deletedUser": "[usunięty użytkownik]",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "reply": "Odpowiedz",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "viewReplies": "Zobacz odpowiedzi ({{count}})",
+    "replyPlaceholder": "Odpowiedz…",
+    "addPlaceholder": "Dodaj komentarz…",
+    "submit": "Skomentuj",
+    "loginToComment": "Zaloguj się, aby skomentować"
+  },
+  "profile": {
+    "recentReviews": "Najnowsze recenzje",
+    "noReviewsTitle": "Brak recenzji",
+    "noReviewsDesc": "Ten gracz nie ocenił jeszcze żadnej gry.",
+    "calNoDates": "Brak dat ukończenia",
+    "calNoDatesDesc": "Gry oznaczone jako ukończone wypełnią ten roczny kalendarz.",
+    "calHint": "Najedź lub dotknij kolorowy dzień, aby zobaczyć gry ukończone tego dnia.",
+    "friends": "Znajomi",
+    "requestPending": "Zaproszenie oczekujące",
+    "respondRequest": "Odpowiedz na jego zaproszenie",
+    "couldNotSend": "Nie udało się wysłać zaproszenia",
+    "sending": "Wysyłanie…",
+    "addFriend": "Dodaj znajomego",
+    "couldNotLoad": "Nie udało się załadować profilu",
+    "notFound": "Nie znaleziono profilu",
+    "shareProfile": "Udostępnij ten profil znajomemu",
+    "editProfile": "Edytuj profil",
+    "topRated": "Najwyżej oceniane gry",
+    "completionCalendar": "Kalendarz ukończeń",
+    "memberSince": "Członek od {{date}}",
+    "reviewOne": "{{count}} recenzja",
+    "reviewMany": "{{count}} recenzji",
+    "playedGameOne": "{{count}} zagrana gra",
+    "playedGameMany": "{{count}} zagranych gier",
+    "calLess": "Mniej",
+    "calMore": "Więcej",
+    "calCompletedLabel": "ukończone",
+    "calPlayedLabel": "zagrane",
+    "calViewPlayed": "Zagrane",
+    "calViewCompleted": "Ukończone",
+    "calDoneLabel": "zrobione",
+    "calPerfectLabel": "w 100%",
+    "calDoneLegend": "Zrobione",
+    "calPerfectLegend": "100%",
+    "tabReviews": "Recenzje",
+    "tabGames": "Gry",
+    "tabLists": "Listy",
+    "tabAchievements": "Osiągnięcia",
+    "tabOverview": "Przegląd",
+    "recentReviewsTitle": "Najnowsze recenzje",
+    "seeAllReviews": "Zobacz wszystkie recenzje",
+    "bioAdd": "Dodaj bio",
+    "bioPlaceholder": "Napisz coś o sobie…",
+    "eyeTopRated": "Ulubione",
+    "eyeActivity": "Aktywność",
+    "eyeReviews": "Jego opinie",
+    "eyeLists": "Kolekcje",
+    "eyeAchievements": "Osiągnięcia",
+    "calNewerYears": "Nowsze lata",
+    "calOlderYears": "Starsze lata"
+  },
+  "lists": {
+    "heading": "Listy",
+    "newList": "Nowa lista",
+    "emptyOwn": "Brak list. Utwórz jedną (np. „Best competitive”, „To-do”).",
+    "emptyPublic": "Brak publicznych list.",
+    "namePlaceholder": "Nazwa listy",
+    "creating": "Tworzenie…",
+    "create": "Utwórz",
+    "cancel": "Anuluj",
+    "error": "Błąd",
+    "private": "Prywatna",
+    "public": "Publiczna",
+    "privateHint": "Widoczna tylko dla Ciebie",
+    "publicHint": "Widoczna na Twoim profilu",
+    "viewGames": "Zobacz gry",
+    "empty": "pusta",
+    "gameOne": "{{count}} gra",
+    "gameMany": "{{count}} gry",
+    "editList": "Edytuj listę",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "confirmDelete": "Usunąć listę „{{name}}”?",
+    "loading": "Ładowanie…",
+    "listEmpty": "Pusta lista — dodaj gry z ich stron.",
+    "removeGame": "Usuń {{title}}",
+    "addToList": "Dodaj do listy",
+    "menuEmpty": "Brak list — utwórz jedną poniżej.",
+    "privateShort": "prywatna",
+    "quickPlaceholder": "Nowa lista + ta gra",
+    "createAria": "Utwórz listę",
+    "validate": "Zatwierdź",
+    "gameReviews": "Recenzje {{title}}",
+    "noReview": "Brak recenzji",
+    "undoRemove": "Cofnij",
+    "viewCompact": "Kompaktowy",
+    "viewDetailed": "Szczegółowy",
+    "addGamePlaceholder": "Dodaj grę…",
+    "alreadyIn": "Dodano",
+    "limitReached": "Lista pełna — maks. {{max}}",
+    "dragToReorder": "Przeciągnij, aby zmienić kolejność",
+    "noCover": "Brak okładki",
+    "addCover": "Dodaj okładkę",
+    "changeCover": "Zmień okładkę",
+    "removeCover": "Usuń okładkę"
+  },
+  "catalog": {
+    "title": "Katalog",
+    "searchPlaceholder": "Szukaj gry…",
+    "searchAria": "Szukaj gry",
+    "sortLabel": "Sortuj",
+    "platformLabel": "Platforma",
+    "studioLabel": "Studio",
+    "sortRating": "Najwyżej oceniane",
+    "sortMostPlayed": "Najczęściej grane",
+    "sortRecent": "Najnowsze",
+    "sortPopular": "Popularne",
+    "allPlatforms": "Wszystkie platformy",
+    "allStudios": "Wszystkie studia",
+    "noResults": "Żadna gra nie pasuje do tych filtrów.",
+    "loading": "Ładowanie…",
+    "loadMore": "Załaduj więcej",
+    "searchNav": "Szukaj",
+    "randomGame": "Losowa gra",
+    "noneInCatalog": "Brak gry „{{query}}” w katalogu.",
+    "importIgdb": "Dodaj z IGDB",
+    "importing": "Importowanie z IGDB…",
+    "studios": "Studia",
+    "eyebrow": "Biblioteka",
+    "subtitle": "Przeglądaj całą bibliotekę gier — filtruj według gatunku, platformy lub studia i sortuj według społeczności.",
+    "unit": "gry",
+    "activeFilters": "Aktywne filtry",
+    "clearAll": "Wyczyść wszystko",
+    "removeFilter": "Usuń {{name}}",
+    "viewGame": "Zobacz grę",
+    "showLess": "Pokaż mniej",
+    "sortRatingAsc": "Najniżej oceniane",
+    "sortMostPlayedAsc": "Najmniej grane",
+    "sortRecentAsc": "Najstarsze",
+    "sortPopularAsc": "Najmniej znane"
+  },
+  "game": {
+    "markedTitle": "Ukończone — kliknij, aby usunąć",
+    "markTitle": "Zagrałem(-am)",
+    "unmarkAria": "Usuń oznaczenie „ukończone”",
+    "markAria": "Oznacz jako ukończone",
+    "playedOne": "{{count}} gracz zagrał w tę grę",
+    "playedMany": "{{count}} graczy zagrało w tę grę",
+    "notFound": "Nie znaleziono gry.",
+    "shareGame": "Udostępnij tę grę znajomemu",
+    "dlcHeading": "Dodatki i DLC ({{count}})",
+    "chooseDlcLabel": "Wybierz DLC",
+    "chooseDlcPlaceholder": "Wybierz DLC…",
+    "dlcExpansion": "Dodatek",
+    "dlcStandalone": "Samodzielna",
+    "dlcGeneric": "DLC",
+    "rate": "Oceń",
+    "completeTitle": "Oznacz jako ukończone",
+    "completedTitle": "Ukończone",
+    "completeAria": "Oznacz tę grę jako ukończoną",
+    "uncompleteAria": "Usuń oznaczenie ukończenia",
+    "completedCountOne": "{{count}} gracz ukończył tę grę",
+    "completedCountMany": "{{count}} graczy ukończyło tę grę",
+    "markDateTitle": "Kiedy w to grałeś?",
+    "completeDateTitle": "Kiedy to ukończyłeś?",
+    "markDateHint": "Wybierz wcześniejszą datę, jeśli grałeś przed rejestracją.",
+    "distributionTitle": "Rozkład ocen",
+    "reviewCountOne": "{{count}} recenzja graczy",
+    "reviewCountMany": "{{count}} recenzji graczy",
+    "eyeDistribution": "Ocena społeczności",
+    "eyeDlc": "Dodatkowa zawartość",
+    "eyeAbout": "O grze",
+    "aboutTitle": "Gra",
+    "rating": {
+      "globalTitle": "Ocena ogólna",
+      "players": "Gracze",
+      "votesOne": "{{count}} głos",
+      "votesMany": "{{count}} głosów"
+    },
+    "dateTypeLabel": "Lub wpisz datę",
+    "datePartYear": "RRRR",
+    "datePartMonth": "MM",
+    "datePartDay": "DD"
+  },
+  "share": {
+    "defaultTitle": "Udostępnij znajomemu",
+    "shareTo": "Udostępnij…",
+    "loading": "Ładowanie…",
+    "noFriends": "Dodaj znajomych, aby się z nimi dzielić.",
+    "sent": "Wysłano ✓",
+    "send": "Wyślij"
+  },
+  "chat": {
+    "open": "Otwórz wiadomości",
+    "close": "Zamknij wiadomości",
+    "title": "Wiadomości",
+    "closeAria": "Zamknij",
+    "noConversations": "Dodaj znajomych, aby tu z nimi rozmawiać.",
+    "back": "Wstecz",
+    "placeholder": "Napisz wiadomość…",
+    "send": "Wyślij",
+    "read": "Przeczytano",
+    "shareGame": "Gra",
+    "shareReview": "Recenzja",
+    "shareProfile": "Profil",
+    "noMessage": "Brak wiadomości",
+    "sharedGame": "Udostępniona gra",
+    "sharedReview": "Udostępniona recenzja",
+    "sharedProfile": "Udostępniony profil"
+  },
+  "company": {
+    "notFound": "Nie znaleziono studia.",
+    "label": "Studio",
+    "games": "Gry studia",
+    "seeMore": "Zobacz więcej gier ({{count}})"
+  },
+  "steam": {
+    "neverPlayed": "Nigdy nie grano",
+    "playMinutes": "{{count}} min",
+    "playHours": "{{count}} godz.",
+    "loadError": "Nie udało się załadować biblioteki Steam",
+    "friendRequestError": "Nie udało się wysłać zaproszenia do znajomych",
+    "title": "Biblioteka Steam",
+    "linkPrompt": "Połącz konto Steam, aby zaimportować bibliotekę gier i znaleźć znajomych ze Steam.",
+    "linkCta": "Połącz moje konto Steam",
+    "friendsHeading": "Znajomi ze Steam na Saveboxd",
+    "friendsPrivate": "Twoja lista znajomych ze Steam jest prywatna, więc nie możemy zaproponować znajomych.",
+    "noFriendsTitle": "Brak znajomych ze Steam",
+    "noFriendsDesc": "Żaden z Twoich znajomych ze Steam nie jest jeszcze na Saveboxd — zaproś ich!",
+    "requestSent": "Zaproszenie wysłane",
+    "addFriend": "Dodaj znajomego",
+    "yourGames": "Twoje gry",
+    "gamesPrivate": "Szczegóły Twoich gier Steam są prywatne. Ustaw <s>Profil → Ustawienia prywatności → Szczegóły gier</s> na Publiczne w Steam, a następnie odśwież tę stronę.",
+    "owned": "{{totalOwned}} gier w Steam — {{matched}} w naszym katalogu.",
+    "ownedUnmatched": "{{totalOwned}} gier w Steam — {{matched}} w naszym katalogu, {{unmatched}} nieuwzględnionych.",
+    "statusPlaying": "w trakcie",
+    "statusBacklog": "do zagrania",
+    "reviewWritten": "Recenzja napisana — zobacz/edytuj",
+    "writeReview": "Napisz recenzję",
+    "viewReviewOf": "Zobacz swoją recenzję gry {{title}}",
+    "writeReviewOf": "Napisz recenzję gry {{title}}",
+    "noMatchedTitle": "Brak dopasowanych gier",
+    "noMatchedDesc": "Żadna z Twoich gier Steam nie znajduje się obecnie w naszym katalogu.",
+    "manageLink": "Zarządzaj połączeniem ze Steam w swoim <l>profilu</l>.",
+    "achievementsTitle": "Osiągnięcia",
+    "achievementsSub": "{{games}} gier · {{perfect}} w 100%",
+    "achPerGame": "{{unlocked}}/{{total}} osiągnięć",
+    "achievementsNone": "Brak zsynchronizowanych osiągnięć — twój profil Steam może być prywatny.",
+    "syncAchievements": "Odśwież",
+    "syncing": "Synchronizacja…"
+  },
+  "genres": {
+    "Adventure": "Przygodowa",
+    "Arcade": "Zręcznościowa",
+    "Card & Board Game": "Karciane i planszowe",
+    "Fighting": "Bijatyka",
+    "Hack and slash/Beat 'em up": "Hack and slash/Bijatyka",
+    "Indie": "Niezależna",
+    "MOBA": "MOBA",
+    "Music": "Muzyczna",
+    "Pinball": "Pinball",
+    "Platform": "Platformowa",
+    "Point-and-click": "Point-and-click",
+    "Puzzle": "Logiczna",
+    "Quiz/Trivia": "Quiz",
+    "Racing": "Wyścigi",
+    "Real Time Strategy (RTS)": "Strategia czasu rzeczywistego (RTS)",
+    "Role-playing (RPG)": "Fabularna (RPG)",
+    "Shooter": "Strzelanka",
+    "Simulator": "Symulator",
+    "Sport": "Sportowa",
+    "Strategy": "Strategiczna",
+    "Tactical": "Taktyczna",
+    "Turn-based strategy (TBS)": "Strategia turowa (TBS)",
+    "Visual Novel": "Powieść wizualna"
+  },
+  "legal": {
+    "privacy": {
+      "title": "Polityka prywatności",
+      "lastUpdated": "Ostatnia aktualizacja: 22 lipca 2026",
+      "intro": "Saveboxd to studencki projekt zrealizowany w ramach programu 42: strona z katalogiem i recenzjami gier wideo z funkcjami społecznościowymi (znajomi, wiadomości, listy). Niniejsza polityka wyjaśnia, jakie dane są zbierane podczas korzystania ze strony, dlaczego, oraz jakie masz prawa.",
+      "sections": {
+        "dataCollected": {
+          "title": "Zbierane dane",
+          "body": [
+            "Zbieramy wyłącznie dane niezbędne do działania strony:",
+            "• Przy klasycznej rejestracji: Twój adres e-mail, nazwę użytkownika oraz hasło (przechowywane w postaci zahaszowanej, nigdy jawnie).",
+            "• Jeśli logujesz się przez Google, 42 (Intra), Discord lub Steam: identyfikator dostarczony przez tę usługę, Twój adres e-mail, jeśli dostawca go udostępnia (Steam nigdy nie udostępnia adresu e-mail), Twoją nazwę wyświetlaną i zdjęcie profilowe.",
+            "• Informacje o profilu, które zdecydujesz się uzupełnić: biografię, awatar, preferowany język.",
+            "• Twoją aktywność na stronie: recenzje i oceny gier, gry oznaczone jako ukończone, niestandardowe listy gier, relacje ze znajomymi, wiadomości wymieniane ze znajomymi, polubienia i komentarze.",
+            "• Techniczne pliki cookie niezbędne do uwierzytelniania (patrz sekcja Pliki cookie).",
+            "• Standardowe techniczne dzienniki serwera (adres IP, znacznik czasu, żądana strona), generowane automatycznie, jak na praktycznie każdej stronie internetowej.",
+            "Nie zbieramy żadnych danych bankowych ani płatniczych, żadnych precyzyjnych danych geolokalizacyjnych, i nie korzystamy z żadnych narzędzi analityki odbiorców ani reklamowych."
+          ]
+        },
+        "purposes": {
+          "title": "Dlaczego wykorzystujemy te dane",
+          "body": [
+            "Twoje dane są wykorzystywane wyłącznie w celu:",
+            "• utworzenia i zarządzania Twoim kontem;",
+            "• uwierzytelnienia Cię i zabezpieczenia Twojej sesji (pliki cookie, tokeny, uwierzytelnianie dwuskładnikowe, jeśli włączone);",
+            "• wyświetlania Twojego profilu i statystyk (rozegrane gry, recenzje, listy);",
+            "• obsługi funkcji społecznościowych (zaproszenia do znajomych, sugestie znajomych przez Steam lub 42, wiadomości, powiadomienia);",
+            "• wysyłania Ci wiadomości e-mail ściśle związanych z obsługą konta (weryfikacja adresu, resetowanie hasła);",
+            "• zapewnienia bezpieczeństwa usługi i zapobiegania nadużyciom.",
+            "Nigdy nie sprzedajemy, nie wynajmujemy ani nie udostępniamy Twoich danych w celach komercyjnych lub reklamowych."
+          ]
+        },
+        "discord": {
+          "title": "Logowanie i łączenie z Discordem",
+          "body": [
+            "Saveboxd umożliwia logowanie lub połączenie konta przez Discord (OAuth2). Discord przekazuje nam wówczas: Twój identyfikator Discord, nazwę użytkownika, powiązany adres e-mail, jeśli Twoje konto Discord go udostępnia, oraz adres URL Twojego awatara Discord.",
+            "Informacje te służą wyłącznie do utworzenia konta Saveboxd lub połączenia istniejącego konta z Twoją tożsamością Discord oraz wyświetlenia odznaki Discord na Twoim profilu. Nigdy nie otrzymujemy Twojego hasła do Discorda i nie mamy dostępu do żadnych innych danych Twojego konta (serwery, wiadomości, kontakty).",
+            "Możesz w każdej chwili odłączyć swoje konto Discord w ustawieniach, chyba że jest to Twój jedyny sposób logowania."
+          ]
+        },
+        "retention": {
+          "title": "Okres przechowywania",
+          "body": [
+            "Twoje dane są przechowywane tak długo, jak długo istnieje Twoje konto.",
+            "Po usunięciu konta w ustawieniach:",
+            "• Twoje konto, awatar, znajomości, gry oznaczone jako ukończone, listy, powiadomienia i wiadomości (wysłane i odebrane) są trwale usuwane;",
+            "• Twoje istniejące recenzje i komentarze są zachowywane, ale anonimizowane (wyświetlane jako pochodzące od „usuniętego użytkownika”), aby nie przerywać wątków dyskusji innych użytkowników;",
+            "• niektóre dane mogą tymczasowo pozostać w kopiach zapasowych technicznych lub dziennikach serwera przed ich automatycznym usunięciem.",
+            "Nie przechowujemy żadnych danych dłużej, niż jest to konieczne do działania strony lub bezpieczeństwa usługi."
+          ]
+        },
+        "rights": {
+          "title": "Twoje prawa",
+          "body": [
+            "Zgodnie z Ogólnym Rozporządzeniem o Ochronie Danych (RODO) przysługują Ci następujące prawa:",
+            "• prawo dostępu do swoich danych osobowych — pełną kopię możesz pobrać w każdej chwili w ustawieniach;",
+            "• prawo do sprostowania niedokładnych danych (możliwe do edycji bezpośrednio w ustawieniach);",
+            "• prawo do usunięcia danych: usunięcie konta w dowolnym momencie w ustawieniach;",
+            "• prawo do ograniczenia przetwarzania w określonych przypadkach;",
+            "• prawo do sprzeciwu wobec niektórych przetwarzań, na przykład za pomocą preferencji powiadomień;",
+            "• prawo do przenoszenia danych: eksportuj swoje dane w ustrukturyzowanym, nadającym się do odczytu maszynowego formacie (JSON) bezpośrednio z ustawień;",
+            "• prawo do wycofania zgody w dowolnym momencie, gdy przetwarzanie się na niej opiera (na przykład logowanie przez zewnętrznego dostawcę);",
+            "• prawo do wniesienia skargi do właściwego organu ochrony danych (we Francji jest to CNIL — cnil.fr).",
+            "Aby skorzystać z któregokolwiek z tych praw, skontaktuj się z nami pod adresem podanym w sekcji Kontakt."
+          ]
+        },
+        "cookies": {
+          "title": "Pliki cookie i pamięć lokalna",
+          "body": [
+            "Saveboxd wykorzystuje wyłącznie pliki cookie ściśle niezbędne do działania strony, wszystkie techniczne, nigdy reklamowe:",
+            "• pliki cookie uwierzytelniające (sesja logowania, odświeżanie sesji, etap uwierzytelniania dwuskładnikowego, łączenie konta zewnętrznego), wszystkie httpOnly i o ograniczonym czasie trwania.",
+            "Nie są wykorzystywane żadne pliki cookie do śledzenia reklamowego ani analityki odbiorców.",
+            "Wykorzystujemy również pamięć lokalną (localStorage) Twojej przeglądarki, aby zapamiętać dwie preferencje wyświetlania: wybrany język oraz jasny/ciemny motyw. Informacje te pozostają na Twoim urządzeniu i nigdy nie są przesyłane na nasze serwery.",
+            "Ponieważ te pliki cookie są ściśle niezbędne do działania usługi, nie wymagają wcześniejszej zgody na mocy przepisów ePrivacy."
+          ]
+        },
+        "thirdParties": {
+          "title": "Usługi stron trzecich",
+          "body": [
+            "Aby działać, Saveboxd korzysta z następujących usług stron trzecich:",
+            "• IGDB (Internet Game Database), w celu uzyskania publicznych informacji o grach wideo — żadne Twoje dane osobowe nie są im przekazywane;",
+            "• Steam (Valve), jeśli zdecydujesz się połączyć swoje konto, w celu weryfikacji Twojej tożsamości oraz pobrania nazwy użytkownika, awatara, biblioteki gier i listy znajomych Steam (wykorzystywanej wyłącznie do sugerowania znajomych już obecnych na Saveboxd, nigdy nieprzechowywanej);",
+            "• Google, 42 (Intra) i Discord, jeśli zdecydujesz się zalogować przez jednego z tych dostawców;",
+            "• Brevo, naszego dostawcę wysyłki wiadomości transakcyjnych, wykorzystywanego wyłącznie do e-maili weryfikacyjnych i resetowania hasła.",
+            "Nie korzystamy z żadnych narzędzi analityki odbiorców, reklamowych ani śledzących stron trzecich.",
+            "Hosting: ten projekt jest rozwijany i oceniany w ramach programu 42. Jeśli strona miałaby zostać publicznie wdrożona, ta sekcja powinna zostać uzupełniona o nazwę dostawcy hostingu."
+          ]
+        },
+        "contact": {
+          "title": "Kontakt",
+          "body": [
+            "W przypadku jakichkolwiek pytań dotyczących niniejszej polityki prywatności lub w celu skorzystania z praw dotyczących Twoich danych osobowych, skontaktuj się z nami pod adresem: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Regulamin korzystania",
+      "lastUpdated": "Ostatnia aktualizacja: 22 lipca 2026",
+      "intro": "Niniejszy regulamin określa zasady dostępu do strony Saveboxd i korzystania z niej — studenckiego projektu zrealizowanego w ramach programu 42. Tworząc konto lub korzystając ze strony, akceptujesz warunki opisane poniżej.",
+      "sections": {
+        "purpose": {
+          "title": "Przedmiot usługi",
+          "body": [
+            "Saveboxd to platforma społecznościowa umożliwiająca katalogowanie, ocenianie i recenzowanie gier wideo, śledzenie ukończonych gier, tworzenie niestandardowych list oraz interakcję z innymi użytkownikami (znajomi, wiadomości, recenzje, komentarze).",
+            "Strona jest studenckim projektem edukacyjnym zrealizowanym w ramach programu 42, a nie usługą komercyjną."
+          ]
+        },
+        "account": {
+          "title": "Dostęp i utworzenie konta",
+          "body": [
+            "Dostęp do większości funkcji wymaga utworzenia konta, poprzez klasyczną rejestrację (e-mail, nazwa użytkownika, hasło) lub za pośrednictwem zewnętrznego dostawcy uwierzytelniania (Google, 42, Discord, Steam).",
+            "Musisz podać dokładne informacje podczas rejestracji i nie możesz tworzyć konta w imieniu innej osoby bez jej zgody ani tworzyć wielu kont w celu obejścia zawieszenia."
+          ]
+        },
+        "credentials": {
+          "title": "Odpowiedzialność za dane logowania",
+          "body": [
+            "Jesteś odpowiedzialny za zachowanie poufności swojego hasła oraz za wszelkie działania wykonywane z Twojego konta.",
+            "Jeśli podejrzewasz nieautoryzowany dostęp do swojego konta, natychmiast zmień hasło i skontaktuj się z nami.",
+            "Zalecamy włączenie uwierzytelniania dwuskładnikowego (2FA), dostępnego w ustawieniach, aby zwiększyć bezpieczeństwo konta."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Dopuszczalne korzystanie ze strony",
+          "body": [
+            "Korzystając z Saveboxd, zobowiązujesz się do:",
+            "• publikowania wyłącznie recenzji, komentarzy i wiadomości szanujących innych;",
+            "• niepodszywania się pod inną osobę lub podmiot;",
+            "• niekorzystania ze strony w celach niezgodnych z prawem lub w celu wyrządzenia szkody innym użytkownikom;",
+            "• niepodejmowania prób zakłócania technicznego działania strony (przeciążenie, wykorzystywanie luk, obchodzenie limitów zapytań)."
+          ]
+        },
+        "abuse": {
+          "title": "Zabronione zachowania",
+          "body": [
+            "Zabronione są w szczególności:",
+            "• nękanie, obelgi, groźby lub jakiekolwiek złośliwe zachowanie wobec innego użytkownika;",
+            "• spam (powtarzające się, promocyjne lub niezwiązane z tematem wiadomości lub recenzje);",
+            "• publikowanie nielegalnych, nawołujących do nienawiści, dyskryminujących lub jawnie seksualnych treści;",
+            "• wszelkie próby nieautoryzowanego dostępu do innego konta lub systemów strony."
+          ]
+        },
+        "interactions": {
+          "title": "Interakcje między użytkownikami",
+          "body": [
+            "Saveboxd oferuje funkcje społecznościowe: zaproszenia do znajomych, prywatne wiadomości, udostępnianie gier/recenzji/profili w rozmowach oraz sugestie znajomych na podstawie Twojej sieci Steam lub przynależności do społeczności 42.",
+            "Ponosisz wyłączną odpowiedzialność za treść swoich wiadomości i publikacji. Prywatne wiadomości wymieniane ze znajomym są trwale usuwane, dla obu stron, jeśli jedno z dwóch kont zostanie usunięte."
+          ]
+        },
+        "moderation": {
+          "title": "Moderacja i zgłoszenia",
+          "body": [
+            "Strona nie posiada obecnie wbudowanego systemu zgłaszania recenzji ani wiadomości.",
+            "W przypadku nadużyć, nękania lub nieodpowiednich treści możesz skontaktować się z nami bezpośrednio pod adresem podanym w sekcji Kontakt; moderacja jest wówczas obsługiwana ręcznie przez zespół projektu."
+          ]
+        },
+        "suspension": {
+          "title": "Zawieszenie lub usunięcie konta",
+          "body": [
+            "W przypadku nieprzestrzegania niniejszego regulaminu (nadużycia, nękanie, spam, nielegalne treści) zastrzegamy sobie prawo do zawieszenia lub usunięcia konta, według własnego uznania, w zakresie rozsądnie możliwym dla studenckiego projektu bez dedykowanego zespołu moderacji.",
+            "Możesz w dowolnym momencie samodzielnie usunąć swoje konto w ustawieniach."
+          ]
+        },
+        "userContent": {
+          "title": "Treści generowane przez użytkowników",
+          "body": [
+            "Zachowujesz własność treści, które publikujesz (recenzje, komentarze, listy, biografia, awatar). Publikując je na Saveboxd, upoważniasz nas do ich wyświetlania i przechowywania w ramach normalnego działania strony.",
+            "Gwarantujesz, że posiadasz niezbędne prawa do wszelkich publikowanych treści, w szczególności do zdjęcia profilowego, jeśli nie korzystasz z tego dostarczonego przez zewnętrznego dostawcę uwierzytelniania."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Własność intelektualna",
+          "body": [
+            "Kod, projekt i marka „Saveboxd” powstają w ramach studenckiego projektu programu 42 i nie są przeznaczone do komercyjnego wykorzystania.",
+            "Informacje i materiały wizualne dotyczące gier wideo (tytuły, okładki, opisy) pochodzą z publicznych baz danych stron trzecich (IGDB) i należą do ich odpowiednich wydawców i właścicieli praw. Saveboxd nie rości sobie żadnych praw własności do tych treści i wyświetla je wyłącznie w celach ilustracyjnych i informacyjnych, w kontekście niekomercyjnym i edukacyjnym."
+          ]
+        },
+        "gameContent": {
+          "title": "Treści dotyczące gier wideo",
+          "body": [
+            "Okładki, opisy i informacje o grach wyświetlane na Saveboxd są automatycznie importowane z IGDB oraz ze Steam w przypadku danych dotyczących Twojej osobistej biblioteki, jeśli połączysz swoje konto. Informacje te pozostają własnością odpowiednich właścicieli praw."
+          ]
+        },
+        "availability": {
+          "title": "Dostępność usługi",
+          "body": [
+            "Saveboxd to studencki projekt dostarczany „tak jak jest”, bez gwarancji ciągłej dostępności. Usługa może zostać przerwana, zmodyfikowana lub zakończona w dowolnym momencie, w szczególności w ramach jej oceny lub konserwacji, bez uprzedzenia."
+          ]
+        },
+        "liability": {
+          "title": "Ograniczenie odpowiedzialności",
+          "body": [
+            "Saveboxd jest dostarczane w celach edukacyjnych, bez jakiejkolwiek gwarancji, wyraźnej ani dorozumianej. W zakresie dozwolonym przez prawo, zespół projektu nie ponosi odpowiedzialności za jakiekolwiek bezpośrednie lub pośrednie szkody wynikające z korzystania lub niemożności korzystania ze strony.",
+            "Niniejsze ograniczenie nie stanowi porady prawnej i nie pozbawia użytkowników żadnych praw bezwzględnie obowiązujących, których nie można wyłączyć umową na mocy obowiązującego prawa."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Usługi stron trzecich i uwierzytelnianie",
+          "body": [
+            "Saveboxd umożliwia logowanie za pośrednictwem zewnętrznych dostawców (Google, 42, Discord, Steam). Korzystanie z tych dostawców podlega również ich własnym regulaminom, nad którymi Saveboxd nie sprawuje żadnej kontroli."
+          ]
+        },
+        "changes": {
+          "title": "Zmiana niniejszego regulaminu",
+          "body": [
+            "Niniejszy regulamin może zostać zmieniony w dowolnym momencie, w szczególności w celu odzwierciedlenia rozwoju funkcji strony. Data ostatniej aktualizacji znajduje się na górze tej strony. W przypadku istotnej zmiany dołożymy rozsądnych starań, aby Cię o tym poinformować."
+          ]
+        },
+        "law": {
+          "title": "Prawo właściwe i jurysdykcja",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — o ile nie wskazano inaczej, niniejszy regulamin ma charakter informacyjny w ramach studenckiego projektu i nie stanowi formalnej umowy komercyjnej."
+          ]
+        },
+        "contact": {
+          "title": "Kontakt",
+          "body": [
+            "W przypadku jakichkolwiek pytań dotyczących niniejszego regulaminu, skontaktuj się z nami pod adresem: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Połącz konto PlayStation, aby zaimportować gry, trofea i znajomych.",
+    "linkCta": "Przejdź do ustawień",
+    "loadError": "Nie udało się wczytać danych PlayStation.",
+    "friendsHeading": "Znajomi z PlayStation na Saveboxd",
+    "friendsPrivate": "Twoja lista znajomych PlayStation jest prywatna.",
+    "noFriendsTitle": "Brak znajomych do zaproponowania",
+    "noFriendsDesc": "Żaden z Twoich znajomych z PlayStation nie jest jeszcze na Saveboxd.",
+    "requestSent": "Wysłano zaproszenie",
+    "addFriend": "Dodaj",
+    "friendRequestError": "Nie udało się wysłać zaproszenia do znajomych.",
+    "yourGames": "Twoje gry",
+    "gamesPrivate": "Twoje gry PlayStation są prywatne.",
+    "played": "Zagrane gry: {{totalPlayed}} · {{matched}} znaleziono w naszym katalogu",
+    "playedUnmatched": "Zagrane gry: {{totalPlayed}} · {{matched}} znaleziono · {{unmatched}} spoza katalogu",
+    "noMatchedTitle": "Brak pasujących gier",
+    "noMatchedDesc": "Żadna z Twoich gier PlayStation nie jest jeszcze w naszym katalogu.",
+    "trophyLevel": "Poziom trofeów",
+    "trophiesEarned": "Zdobyte trofea",
+    "trophyProgress": "{{earned}}/{{total}} trofeów · {{progress}} %",
+    "statusPlaying": "W trakcie",
+    "statusBacklog": "Do zagrania",
+    "reviewWritten": "Recenzja napisana",
+    "writeReview": "Napisz recenzję",
+    "viewReviewOf": "Zobacz swoją recenzję gry {{title}}",
+    "writeReviewOf": "Napisz recenzję gry {{title}}",
+    "refresh": "Odśwież",
+    "syncing": "Orzeźwiające…",
+    "syncedAt": "Ostatnia aktualizacja{{time}}"
+  },
+  "library": {
+    "title": "Moje biblioteki",
+    "noneLinkedTitle": "Brak połączonego konta",
+    "noneLinkedDesc": "Połącz konto Steam lub PlayStation w ustawieniach, aby zobaczyć tu swoje gry i trofea.",
+    "goSettings": "Przejdź do ustawień",
+    "notLinked": "Niepołączone",
+    "eyebrow": "Twoje gry",
+    "subtitle": "Twoje tytuły zaimportowane z połączonych kont.",
+    "linked": "Połączone",
+    "link": "Połącz"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Nie znaleziono strony",
+      "body": "Ta strona nie istnieje lub została przeniesiona.",
+      "home": "Powrót do strony głównej"
+    },
+    "boundary": {
+      "title": "Coś poszło nie tak",
+      "body": "Wystąpił nieoczekiwany błąd. Spróbuj odświeżyć stronę.",
+      "retry": "Odśwież"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Połącz swoje konto Xbox, aby zaimportować gry i osiągnięcia.",
+    "linkCta": "Przejdź do ustawień",
+    "loadError": "Nie udało się załadować danych z konsoli Xbox.",
+    "yourGames": "Twoje gry",
+    "gamesPrivate": "Twoja historia gier na konsoli Xbox jest prywatna.",
+    "gamerscore": "Wynik gracza",
+    "gamesPlayed": "Rozegrane mecze",
+    "perfectGames": "Zrealizowano w 100%",
+    "refresh": "Odśwież",
+    "syncing": "Orzeźwiające…",
+    "syncedAt": "Ostatnia aktualizacja{{time}}",
+    "played": "{{totalPlayed}} rozegrane mecze · w naszym katalogu znaleziono {{matched}}",
+    "playedUnmatched": "{{totalPlayed}} rozegrane mecze · {{matched}} dopasowane · {{unmatched}} nie ma w naszym katalogu",
+    "noMatchedTitle": "Brak pasujących gier",
+    "noMatchedDesc": "W naszym katalogu nie ma jeszcze żadnej z twoich gier na konsolę Xbox.",
+    "achievementProgress": "{{earned}} osiągnięcia · {{progress}} %",
+    "statusPlaying": "Granie",
+    "statusBacklog": "Portfel zamówień",
+    "reviewWritten": "Recenzja napisana",
+    "writeReview": "Napisz recenzję",
+    "viewReviewOf": "Zobacz swoją recenzję filmu „{{title}}”",
+    "writeReviewOf": "Napisz recenzję książki „{{title}}”"
+  },
+  "onboarding": {
+    "welcome": "Witamy!",
+    "subtitle": "Skonfigurujmy Twój profil w kilku krokach.",
+    "skip": "Pomiń na razie",
+    "next": "Kontynuuj",
+    "back": "Powrót",
+    "finish": "Zakończenie",
+    "genericError": "Wystąpił błąd. Spróbuj ponownie.",
+    "username": {
+      "title": "Wybierz swoją nazwę użytkownika",
+      "subtitle": "Wstępnie wprowadziliśmy dane z konta, na którym się zarejestrowałeś — możesz je zmienić, jeśli chcesz.",
+      "hint": "3–24 znaki: wyłącznie litery, cyfry i znaki podkreślenia."
+    },
+    "avatar": {
+      "title": "Dodaj zdjęcie profilowe",
+      "subtitle": "Pobraliśmy zdjęcie z Twojego konta. Prześlij kolejne, a następnie powiększ je i przeciągnij, aby je wykadrować.",
+      "skip": "Pomiń ten krok"
+    },
+    "services": {
+      "title": "Połącz swoje konta w grach",
+      "subtitle": "Połącz swoje platformy, aby zaimportować swoje gry i statystyki.",
+      "laterHint": "Nie ma pośpiechu — możesz połączyć swoje konta również później w ustawieniach konta.",
+      "connected": "Połączone",
+      "connect": "Połącz się",
+      "publicNotice": "Twoje profile na platformach Steam, PlayStation i Xbox muszą być ustawione jako publiczne — w przeciwnym razie nie będziemy mogli zaimportować twoich gier, znajomych i/lub osiągnięć.",
+      "steam": {
+        "perks": [
+          "Zaimportuj swoją bibliotekę rozegranych gier na stronę",
+          "Osiągnięcia i gry ukończone w 100%",
+          "Znajdź znajomych ze Steam, którzy już tu są"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "Zaimportuj swoją bibliotekę gier z PlayStation na tę stronę",
+          "Postępy w zdobywaniu trofeów i gry ukończone w 100% dla poszczególnych tytułów",
+          "Znajdź znajomych z PlayStation, którzy już tu są"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Zaimportuj swoją bibliotekę gier z konsoli Xbox na tę stronę",
+          "Wynik gracza, osiągnięcia i gry ukończone w 100%"
+        ]
+      }
+    }
+  },
+  "a11y": {
+    "skipToContent": "Przejdź do treści głównej"
+  },
+  "achievements": {
+    "sectionTitle": "Osiągnięcia",
+    "done": "Odblokowano",
+    "unlockedOn": "Odblokowano {{date}}",
+    "fam": {
+      "completions": "Ukończone gry",
+      "played": "Zagrane gry",
+      "perfect": "100%",
+      "reviews": "Recenzje",
+      "lists": "Listy",
+      "friends": "Znajomi",
+      "genres": "Odkrywca",
+      "studio": "Fan studia",
+      "linked": "Połączone konta",
+      "popular": "Popularny",
+      "supporter": "Wsparcie",
+      "favorite": "Entuzjasta",
+      "harsh": "Surowy krytyk",
+      "veteran": "Weteran"
+    },
+    "desc": {
+      "completions": "Ukończ {{count}} gier",
+      "played": "Zarejestruj {{count}} gier",
+      "perfect": "Ukończ {{count}} gier w 100%",
+      "reviews": "Napisz {{count}} recenzji",
+      "lists": "Utwórz {{count}} list",
+      "friends": "Zdobądź {{count}} znajomych",
+      "genres": "Ukończ gry w {{count}} gatunkach",
+      "studio": "Oceń {{count}} gier jednego studia",
+      "linked": "Połącz {{count}} kont do gier",
+      "popular": "Zdobądź {{count}} polubień swoich recenzji",
+      "supporter": "Polub {{count}} recenzji",
+      "favorite": "Oceń {{count}} gier na 10/10",
+      "harsh": "Oceń {{count}} gier na 0",
+      "veteran": "Członek od {{count}} miesięcy"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} poziomów",
+    "concernedGames": "Powiązane gry"
+  },
+  "tutorial": {
+    "eyebrow": "Przewodnik",
+    "skip": "Pomiń",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "done": "Rozumiem",
+    "steps": {
+      "home": {
+        "title": "Strona główna",
+        "body": "Kliknij logo Saveboxd, aby w każdej chwili wrócić na stronę główną."
+      },
+      "search": {
+        "title": "Wyszukiwanie",
+        "body": "Znajdź dowolną grę, studio lub gracza z paska wyszukiwania."
+      },
+      "catalog": {
+        "title": "Katalog",
+        "body": "Przeglądaj cały katalog gier i odkrywaj nowe."
+      },
+      "feed": {
+        "title": "Aktualności",
+        "body": "Zobacz, w co grają, co kończą i co recenzują twoi znajomi."
+      },
+      "leaderboard": {
+        "title": "Ranking",
+        "body": "Poznaj najlepszych graczy i śledź własną pozycję."
+      },
+      "friends": {
+        "title": "Znajomi",
+        "body": "Dodawaj znajomych, akceptuj zaproszenia i sprawdzaj, kto jest online."
+      },
+      "library": {
+        "title": "Biblioteka",
+        "body": "Zsynchronizuj swoje gry i trofea ze Steam, PlayStation i Xbox."
+      },
+      "notifications": {
+        "title": "Powiadomienia",
+        "body": "Polubienia, komentarze, zaproszenia i osiągnięcia pojawiają się tutaj."
+      },
+      "profile": {
+        "title": "Twój profil",
+        "body": "Twoje gry, recenzje, statystyki i odznaki są tutaj."
+      },
+      "chat": {
+        "title": "Czat",
+        "body": "Rozmawiaj ze znajomymi na żywo z dymka w prawym dolnym rogu."
+      },
+      "menu": {
+        "title": "Ustawienia",
+        "body": "Otwórz tutaj ustawienia: profil, powiadomienia, motyw i język."
+      }
+    }
+  }
+}

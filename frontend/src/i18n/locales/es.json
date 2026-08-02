@@ -1,0 +1,1237 @@
+{
+  "common": {
+    "loading": "Cargando…",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "cancel": "Cancelar",
+    "add": "Añadir",
+    "back": "Atrás",
+    "close": "Cerrar",
+    "retry": "Reintentar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "edit": "Editar",
+    "skip": "Omitir",
+    "error": "Algo salió mal",
+    "yes": "Sí",
+    "no": "No",
+    "unknown": "Desconocido",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "nav": {
+    "catalog": "Catálogo",
+    "feed": "Feed",
+    "leaderboard": "Clasificación",
+    "friends": "Amigos",
+    "steam": "Steam",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
+    "library": "Bibliotecas"
+  },
+  "menu": {
+    "notifications": "Notificaciones",
+    "settings": "Ajustes",
+    "language": "Idioma",
+    "lightMode": "Modo claro",
+    "darkMode": "Modo oscuro",
+    "logout": "Cerrar sesión",
+    "closeMenu": "Cerrar menú",
+    "notificationPrefs": "Preferencias de notificaciones",
+    "navigation": "Menú de navegación",
+    "replayTutorial": "Volver a ver el tutorial"
+  },
+  "footer": {
+    "tagline": "El Letterboxd de los videojuegos · proyecto 42",
+    "privacy": "Política de privacidad",
+    "terms": "Términos del servicio"
+  },
+  "languagePicker": {
+    "title": "Idioma"
+  },
+  "oauth": {
+    "continueWithGoogle": "Continuar con Google",
+    "continueWithFortyTwo": "Continuar con 42",
+    "continueWithSteam": "Continuar con Steam",
+    "continueWithDiscord": "Continuar con Discord",
+    "or": "o"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "noAccount": "¿No tienes cuenta?",
+      "signupLink": "Regístrate",
+      "genericError": "Error al iniciar sesión",
+      "errorEmailInUse": "Ya existe una cuenta con este correo. Inicia sesión con tu contraseña, o usa un correo distinto para ese proveedor.",
+      "errorGeneric": "Algo salió mal al iniciar sesión — inténtalo de nuevo.",
+      "steamFailed": "Error al iniciar sesión con Steam — inténtalo de nuevo",
+      "subtitle": "Retoma tu diario de juego donde lo dejaste."
+    },
+    "twoFactor": {
+      "title": "Código de dos factores",
+      "description": "Introduce el código de 6 dígitos de tu app de autenticación.",
+      "verify": "Verificar",
+      "verifying": "Verificando…",
+      "invalidCode": "Código no válido"
+    },
+    "signup": {
+      "title": "Registrarse",
+      "titleSteam": "Completa tu registro con Steam",
+      "steamIntro": "Tu cuenta de Steam está verificada — elige un correo y confirma tu nombre de usuario para crear tu cuenta de Saveboxd.",
+      "emailPlaceholder": "Correo electrónico",
+      "usernamePlaceholder": "Nombre de usuario",
+      "usernameHint": "Solo letras, números y guiones bajos",
+      "passwordPlaceholder": "Contraseña (mín. 8 caracteres)",
+      "passwordPlaceholderSteam": "Contraseña (opcional)",
+      "passwordHintSteam": "Sin contraseña solo podrás iniciar sesión con Steam. Puedes añadir una más tarde desde tu perfil.",
+      "submit": "Registrarse",
+      "submitSteam": "Crear cuenta",
+      "submitting": "Creando cuenta…",
+      "sessionExpired": "Sesión caducada — inicia sesión de nuevo con Steam",
+      "genericError": "Error en el registro",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+      "loginLink": "Iniciar sesión",
+      "subtitle": "Crea tu cuenta y empieza tu diario de juego."
+    },
+    "forgotPassword": {
+      "title": "¿Olvidaste tu contraseña?",
+      "emailPlaceholder": "Correo electrónico",
+      "submit": "Enviar enlace de restablecimiento",
+      "submitting": "Enviando…",
+      "checkEmailTitle": "Revisa tu correo",
+      "checkEmailBody": "Si esa dirección está registrada, un enlace para restablecer la contraseña está en camino.",
+      "backToLogin": "Volver a iniciar sesión",
+      "genericError": "Algo salió mal"
+    },
+    "resetPassword": {
+      "title": "Elige una nueva contraseña",
+      "invalidLinkTitle": "Enlace no válido",
+      "invalidLinkBody": "A este enlace de restablecimiento de contraseña le falta el token.",
+      "requestNewLink": "Solicita uno nuevo",
+      "missingToken": "Falta el token de restablecimiento.",
+      "newPasswordPlaceholder": "Nueva contraseña (mín. 8 caracteres)",
+      "submit": "Restablecer contraseña",
+      "submitting": "Restableciendo…",
+      "genericError": "No se pudo restablecer la contraseña"
+    },
+    "verifyEmail": {
+      "verifying": "Verificando tu correo…",
+      "successTitle": "Correo verificado",
+      "successBody": "Tu dirección está confirmada — todo listo.",
+      "goToProfile": "Ir a tu perfil",
+      "failedTitle": "Error de verificación",
+      "backToProfile": "Volver a tu perfil",
+      "missingToken": "Falta el token de verificación.",
+      "genericError": "Error de verificación"
+    }
+  },
+  "settings": {
+    "title": "Configuración de la cuenta",
+    "welcomeTitle": "¡Bienvenido a Saveboxd!",
+    "welcomeBody": "Elegimos {{username}} como tu nombre de usuario — cámbialo abajo si quieres, o déjalo tal cual.",
+    "changeAvatar": "Cambiar avatar",
+    "uploadingAvatar": "Subiendo…",
+    "avatarError": "Error al subir",
+    "emailVerified": "Correo verificado",
+    "emailNotVerified": "Correo no verificado",
+    "resendVerification": "Reenviar correo de verificación",
+    "resendSending": "Enviando…",
+    "resendSent": "Correo de verificación enviado — revisa tu bandeja de entrada.",
+    "resendError": "No se pudo reenviar el correo de verificación",
+    "usernameLabel": "Nombre de usuario",
+    "bioLabel": "Biografía",
+    "saveProfile": "Guardar perfil",
+    "saving": "Guardando…",
+    "skipForNow": "Omitir por ahora",
+    "profileError": "No se pudo guardar el perfil",
+    "signInVia": "Tu cuenta no tiene contraseña — inicias sesión a través de {{provider}}. Añade una para también poder iniciar sesión con tu correo.",
+    "providerGoogle": "Google",
+    "providerFortyTwo": "42",
+    "providerSteam": "Steam",
+    "providerDiscord": "Discord",
+    "twoFactor": {
+      "title": "Autenticación de dos factores",
+      "enabledDescription": "Activada. Introduce un código para desactivarla.",
+      "disable": "Desactivar",
+      "disabling": "Desactivando…",
+      "scanQr": "Escanea este código QR con tu app de autenticación:",
+      "manualKeyPrefix": "O introduce esta clave manualmente:",
+      "confirm": "Confirmar",
+      "confirming": "Confirmando…",
+      "notEnabledDescription": "No activada. Añade un segundo paso al iniciar sesión con una app como Google Authenticator.",
+      "enable": "Activar 2FA",
+      "starting": "Iniciando…",
+      "invalidCode": "Código no válido",
+      "startError": "No se pudo iniciar la configuración de 2FA"
+    },
+    "steam": {
+      "title": "Steam",
+      "alreadyLinkedError": "Esta cuenta de Steam ya está vinculada a otro usuario.",
+      "linkedSuccess": "¡Cuenta de Steam vinculada!",
+      "linkedDescription": "Vinculada — puedes iniciar sesión con Steam e importar tu biblioteca de juegos.",
+      "viewLibrary": "Ver mi biblioteca de Steam",
+      "unlink": "Desvincular Steam",
+      "unlinking": "Desvinculando…",
+      "unlinkError": "No se pudo desvincular Steam",
+      "notLinkedDescription": "Vincula tu cuenta de Steam para iniciar sesión con Steam, importar tu biblioteca y encontrar a tus amigos de Steam.",
+      "linkAccount": "Vincular mi cuenta de Steam"
+    },
+    "password": {
+      "changeTitle": "Cambiar contraseña",
+      "addTitle": "Añadir una contraseña",
+      "currentPasswordPlaceholder": "Contraseña actual",
+      "newPasswordPlaceholder": "Nueva contraseña (mín. 8 caracteres)",
+      "save": "Cambiar contraseña",
+      "add": "Añadir contraseña",
+      "saving": "Guardando…",
+      "saved": "¡Contraseña guardada!",
+      "error": "No se pudo guardar la contraseña",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "forgotSending": "Enviando…",
+      "forgotSent": "Se ha enviado un enlace de restablecimiento a {{email}}.",
+      "forgotError": "No se pudo enviar el correo de restablecimiento"
+    },
+    "delete": {
+      "title": "Eliminar cuenta",
+      "warning": "Esto elimina permanentemente tu cuenta, amistades y mensajes. Tus reseñas y comentarios se conservan pero se anonimizan (mostrados como de un usuario eliminado). No se puede deshacer.",
+      "button": "Eliminar cuenta",
+      "confirmPasswordPlaceholder": "Confirma tu contraseña",
+      "confirmButton": "Eliminar permanentemente",
+      "deleting": "Eliminando…",
+      "cancel": "Cancelar",
+      "error": "No se pudo eliminar la cuenta"
+    },
+    "connections": {
+      "title": "Cuentas vinculadas",
+      "description": "Vincula tus cuentas de juego para iniciar sesión más rápido y encontrar a tus amigos.",
+      "connected": "Conectada",
+      "link": "Vincular",
+      "unlink": "Desvincular",
+      "unlinking": "Desvinculando…",
+      "unlinkError": "No se pudo desvincular esta cuenta",
+      "comingSoon": "Pronto",
+      "discordLinked": "¡Cuenta de Discord vinculada!",
+      "discordTaken": "Esta cuenta de Discord ya está vinculada a otro usuario."
+    },
+    "psn": {
+      "title": "Conectar PlayStation",
+      "intro": "Solo introduce tu ID online de PlayStation: encontraremos tu perfil público. No necesitas contraseña ni token.",
+      "idLabel": "Tu ID online de PSN",
+      "publicHint": "Tu perfil de PlayStation debe ser público (juegos y trofeos visibles) para poder importarlo.",
+      "connect": "Conectar",
+      "connecting": "Conectando…",
+      "connectedAs": "Conectado como {{onlineId}}",
+      "notFound": "No se encontró ninguna cuenta pública de PlayStation con ese ID online. Revisa que esté bien escrito y que tu perfil sea público.",
+      "alreadyLinked": "Esta cuenta de PlayStation ya está vinculada a otro perfil.",
+      "invalidId": "Ese ID online de PSN no parece válido (3–16 letras, dígitos, - o _).",
+      "notConfigured": "La importación de PlayStation aún no está configurada en el servidor. Inténtalo más tarde.",
+      "genericError": "La conexión falló. Inténtalo de nuevo.",
+      "viewLibrary": "Ver mi biblioteca de PlayStation"
+    },
+    "adjustAvatar": "Ajustar",
+    "avatarReset": "Restablecer",
+    "avatarFrameHint": "Arrastra para mover, control para acercar",
+    "avatarZoom": "Zoom",
+    "chooseImage": "Elegir una imagen",
+    "xbox": {
+      "title": "Conectar Xbox",
+      "intro": "Solo tienes que introducir tu gamertag de Xbox y nosotros buscaremos tu perfil público. No hace falta contraseña ni token.",
+      "idLabel": "Tu gamertag de Xbox",
+      "publicHint": "Tu perfil de Xbox debe ser público (con el historial de juegos y los logros visibles) para que podamos importarlo.",
+      "connect": "Conectar",
+      "connecting": "Conectando…",
+      "connectedAs": "Conectado como {{gamertag}}",
+      "notFound": "No se ha encontrado ninguna cuenta pública de Xbox con ese gamertag. Comprueba que lo has escrito bien y que tu perfil sea público.",
+      "alreadyLinked": "Esta cuenta de Xbox ya está vinculada a otro perfil.",
+      "invalidId": "No parece un gamertag válido de Xbox.",
+      "notConfigured": "La importación de Xbox aún no está configurada en el servidor. Inténtalo de nuevo más tarde.",
+      "genericError": "Error de conexión. Inténtalo de nuevo.",
+      "viewLibrary": "Ver mi biblioteca de Xbox"
+    },
+    "eyebrow": "Tu cuenta",
+    "navProfile": "Perfil",
+    "navNotifications": "Notificaciones",
+    "navSecurity": "Seguridad",
+    "navConnections": "Conexiones",
+    "navDanger": "Zona de peligro",
+    "navData": "Tus datos",
+    "export": {
+      "description": "Descarga una copia de todos tus datos personales (perfil, reseñas, comentarios, juegos, listas, amigos, mensajes y notificaciones) en un archivo JSON estructurado.",
+      "button": "Descargar mis datos",
+      "downloading": "Preparando…",
+      "error": "No se pudieron exportar tus datos"
+    }
+  },
+  "friends": {
+    "title": "Amigos",
+    "addPlaceholder": "Nombre de usuario a añadir",
+    "add": "Añadir",
+    "enterUsernameError": "Introduce un nombre de usuario",
+    "sendError": "No se pudo enviar la solicitud",
+    "loadError": "No se pudieron cargar los amigos",
+    "pendingRequests": "Solicitudes pendientes",
+    "sentRequests": "Solicitudes enviadas",
+    "suggestedFriends": "Amigos sugeridos",
+    "yourFriends": "Tus amigos",
+    "pending": "Pendiente",
+    "online": "En línea",
+    "offline": "Desconectado",
+    "noFriendsTitle": "Aún no tienes amigos",
+    "noFriendsDescription": "Añade a alguien por nombre de usuario arriba, o revisa las sugerencias.",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "cancelRequest": "Cancelar solicitud",
+    "removeFriend": "Eliminar amigo",
+    "eyebrow": "Tu círculo",
+    "statFriends": "amigos",
+    "statOnline": "en línea",
+    "statPending": "pendientes",
+    "eyeRequests": "Por validar",
+    "eyeSent": "Enviadas",
+    "eyeSuggested": "Descubre",
+    "eyeFriends": "Activos y desconectados",
+    "sentYouRequest": "te envió una solicitud",
+    "viaSteam": "vía Steam",
+    "via42": "vía 42",
+    "viaPsn": "vía PSN"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todas como leídas",
+    "empty": "No hay notificaciones.",
+    "prefsDescription": "Elige qué notificaciones quieres recibir (campana + tiempo real).",
+    "someone": "Alguien",
+    "reviewLike": "<b>{{who}}</b> valoró tu reseña",
+    "reviewLikeTitled": "<b>{{who}}</b> valoró tu reseña «{{title}}»",
+    "reviewComment": "<b>{{who}}</b> comentó tu reseña",
+    "reviewCommentTitled": "<b>{{who}}</b> comentó tu reseña «{{title}}»",
+    "commentReply": "<b>{{who}}</b> respondió a tu comentario",
+    "friendRequest": "<b>{{who}}</b> te envió una solicitud de amistad",
+    "friendAccept": "<b>{{who}}</b> aceptó tu solicitud de amistad",
+    "newMessage": "<b>{{who}}</b> te envió un mensaje",
+    "friendJoined": "<b>{{who}}</b> ({{via}}) se unió a Saveboxd",
+    "prefFriendRequest": "Solicitudes de amistad",
+    "prefFriendRequestHint": "Cuando alguien te envía una solicitud",
+    "prefFriendAccept": "Solicitudes aceptadas",
+    "prefFriendAcceptHint": "Cuando aceptan tu solicitud",
+    "prefReviewLike": "Me gusta en mis reseñas",
+    "prefReviewLikeHint": "Cuando le gusta a alguien una reseña tuya",
+    "prefReviewComment": "Comentarios en mis reseñas",
+    "prefReviewCommentHint": "Cuando comentan una reseña tuya",
+    "prefCommentReply": "Respuestas a mis comentarios",
+    "prefCommentReplyHint": "Cuando responden a tu comentario",
+    "prefFriendJoined": "Un contacto se une",
+    "prefFriendJoinedHint": "Cuando un contacto de Steam/42 se registra",
+    "achievement": "Logro desbloqueado: <b>{{name}}</b>",
+    "prefAchievement": "Logros",
+    "prefAchievementHint": "Cuando desbloqueas un logro",
+    "clear": "Vaciar"
+  },
+  "home": {
+    "featuredBadge": "Juego destacado",
+    "writeReview": "Escribir una reseña",
+    "popularNow": "Popular ahora",
+    "showMorePopular": "Ver más juegos populares",
+    "showLessPopular": "Ver menos juegos populares",
+    "popularReviews": "Reseñas populares",
+    "noReviewsTitle": "Aún no hay reseñas",
+    "noReviewsDescription": "Sé el primero en valorar un juego — las mejores reseñas aparecerán aquí.",
+    "showMoreReviews": "Ver más reseñas",
+    "showLessReviews": "Mostrar menos reseñas",
+    "deletedUser": "[usuario eliminado]",
+    "viewGame": "Ver {{title}}",
+    "recommendedForYou": "Recomendado para ti",
+    "showMoreRecommended": "Ver más recomendaciones",
+    "showLessRecommended": "Ver menos recomendaciones",
+    "recoEyebrow": "Porque a tus amigos les encantaron",
+    "popularEyebrow": "Ahora mismo",
+    "activityEyebrow": "Tus amigos",
+    "reviewsEyebrow": "La comunidad opina",
+    "statsEyebrow": "Tu año en juegos",
+    "statsHeading": "{{year}} de un vistazo",
+    "seeProfile": "Ver perfil",
+    "statDone": "Hechos",
+    "statDoneCaption": "Juegos marcados como hechos",
+    "statPerfect": "100 %",
+    "statPerfectCaption": "Platinos y logros completos",
+    "statReviews": "Reseñas",
+    "statAvg": "Media {{value}}",
+    "statNoReviews": "Sin reseñas",
+    "statRank": "Rango global",
+    "statRankCaption": "Clasificación de completados",
+    "statUnranked": "Sin clasificar",
+    "statAchievements": "Logros",
+    "activityTitle": "En vivo",
+    "activityEmpty": "Nada todavía.",
+    "activitySeeAll": "Ver todo el muro",
+    "landing": {
+      "eyebrow": "El Letterboxd de los videojuegos",
+      "title": "Tu biblioteca. Valorada, reseñada, compartida.",
+      "subtitle": "Sincroniza tus bibliotecas de Steam, PlayStation y Xbox, puntúa tus juegos, desbloquea logros y sube en la clasificación global.",
+      "ctaPrimary": "Crear mi cuenta",
+      "ctaSecondary": "Iniciar sesión",
+      "feature1Title": "Sincroniza tu biblioteca",
+      "feature1Desc": "Importa automáticamente tus juegos y trofeos de Steam, PlayStation y Xbox.",
+      "feature2Title": "Puntúa y reseña",
+      "feature2Desc": "Puntúa juegos, escribe reseñas, reacciona y comenta las de los demás.",
+      "feature3Title": "Desbloquea y compite",
+      "feature3Desc": "Consigue logros y sube en la clasificación global.",
+      "previewEyebrow": "Vista previa en directo",
+      "previewTitle": "Tendencia ahora",
+      "allTitle": "Todo lo que puedes hacer",
+      "feat1": "Explora un catálogo de miles de juegos",
+      "feat2": "Puntúa y reseña cada juego que juegas",
+      "feat3": "Crea y comparte tus propias listas de juegos",
+      "feat4": "Sincroniza tus bibliotecas de Steam, PlayStation y Xbox",
+      "feat5": "Añade amigos, chatea y sigue su actividad",
+      "feat6": "Desbloquea logros mientras juegas",
+      "feat7": "Sube en la clasificación global",
+      "feat8": "Sigue tu progreso: juegos completados, 100 % y estadísticas anuales",
+      "statsGamesLabel": "Juegos",
+      "statsReviewsLabel": "Reseñas",
+      "statsPlayersLabel": "Jugadores",
+      "topEyebrow": "Los mejores jugadores",
+      "topTitle": "Mejores jugadores ahora",
+      "topCaption": "juegos completados al 100 %",
+      "platformsEyebrow": "Tus cuentas",
+      "platformsTitle": "Trae toda tu biblioteca",
+      "platformsSubtitle": "Conecta Steam, PlayStation y Xbox: tus juegos y trofeos se sincronizan automáticamente.",
+      "achEyebrow": "Logros propios",
+      "achTitle": "Docenas de insignias por desbloquear",
+      "achSubtitle": "Consigue insignias al completar juegos, escribir reseñas, crear listas y añadir amigos.",
+      "feat9": "Recibe recomendaciones de juegos solo para ti"
+    },
+    "recoBecauseGame": "Porque te gustó {{title}}",
+    "recoBecauseGenre": "Porque te gusta {{genre}}",
+    "recoBecausePlayed": "Porque jugaste a {{title}}",
+    "recoBecauseStudio": "Porque te gustan los juegos de {{studio}}"
+  },
+  "feed": {
+    "title": "Actividad de tus amigos",
+    "subtitle": "Las últimas reseñas y los juegos terminados de tus amigos, en directo.",
+    "tabAll": "Todo",
+    "tabReviews": "Reseñas",
+    "tabPlayed": "Juegos",
+    "tabLikes": "Me gusta",
+    "emptyTitle": "Nada nuevo de tus amigos",
+    "emptyTitleTab": "Nada en esta pestaña",
+    "emptyDescription": "Añade amigos y sigue aquí sus últimas reseñas, juegos terminados y me gusta.",
+    "findFriends": "Buscar amigos",
+    "loadMore": "Cargar más",
+    "loading": "Cargando…",
+    "rated": "<a>{{user}}</a> valoró <s>{{game}}</s>",
+    "played": "<a>{{user}}</a> jugó a <s>{{game}}</s>",
+    "likedReview": "A <a>{{actor}}</a> le gustó la reseña de <s>{{author}}</s>",
+    "likedComment": "A <a>{{actor}}</a> le gustó el comentario de <s>{{author}}</s>",
+    "on": "en {{target}}",
+    "gameCompleted": "Juego terminado",
+    "deletedUser": "[usuario eliminado]",
+    "deletedShort": "[eliminado]",
+    "timeNow": "ahora mismo",
+    "timeMinutes": "hace {{count}} min",
+    "timeHours": "hace {{count}} h",
+    "timeYesterday": "ayer",
+    "timeDays": "hace {{count}} d",
+    "tabCompleted": "Finalizaciones",
+    "completed": "<a>{{user}}</a> completado <s>{{game}}</s> al 100 %",
+    "completedBadge": "Completado al 100 %",
+    "rankLine": "<a>{{user}}</a> entra en el <s>top {{rank}}</s> — {{category}}",
+    "rankScopeGlobal": "Clasificación global",
+    "rankScopeFriends": "Entre tus amigos",
+    "achievementLine": "<a>{{user}}</a> desbloqueó <s>{{name}}</s>",
+    "tabAchievements": "Logros",
+    "eyebrow": "Tu círculo, en directo",
+    "live": "En directo",
+    "done": "<a>{{user}}</a> terminó <s>{{game}}</s>"
+  },
+  "leaderboard": {
+    "title": "Clasificación",
+    "subtitle": "Descubre quién encabeza la clasificación: juegos completados, jugados y reseñas.",
+    "metricCompletions": "Completados",
+    "metricPlayed": "Juegos jugados",
+    "metricReviews": "Reseñas",
+    "scopeFriends": "Amigos",
+    "scopeGlobal": "Global",
+    "windowAll": "Histórico",
+    "windowMonth": "Este mes",
+    "yourRank": "Tu posición",
+    "rankLabel": "Posición {{rank}}",
+    "badgeTitle": "Top 3 mundial",
+    "badgeAria": "Distinciones de clasificación",
+    "emptyTitle": "Aún no hay nada que clasificar",
+    "emptyFriends": "Añade amigos y empieza a completar juegos, registrar partidas y escribir reseñas para subir juntos en la clasificación.",
+    "emptyGlobal": "Sé el primero en la clasificación: completa juegos, registra partidas y escribe reseñas.",
+    "findFriends": "Buscar amigos",
+    "eyebrow": "Los mejores jugadores",
+    "you": "tú"
+  },
+  "reviews": {
+    "sortPopular": "Populares",
+    "sortRecent": "Recientes",
+    "sortDiscussed": "Comentadas",
+    "heading": "Reseñas",
+    "loginToReview": "Inicia sesión para escribir una reseña.",
+    "emptyTitle": "Aún no hay reseñas",
+    "emptyDescGame": "Sé el primero en compartir tu opinión sobre este juego.",
+    "emptyDescCompany": "Sé el primero en compartir tu opinión sobre este estudio.",
+    "emptyDescGameGuest": "Inicia sesión para ser el primero en valorar este juego.",
+    "emptyDescCompanyGuest": "Inicia sesión para ser el primero en valorar este estudio.",
+    "deletedUser": "[usuario eliminado]",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "loading": "Cargando…",
+    "loadMore": "Cargar más",
+    "shareReview": "Compartir esta reseña con un amigo",
+    "ratingLabel": "Nota:",
+    "ratingAria": "{{n}}/10",
+    "titlePlaceholder": "Título de tu reseña",
+    "textPlaceholder": "Tu reseña (sin spoilers…)",
+    "publish": "Publicar reseña",
+    "chooseRating": "Elige una nota.",
+    "alreadyReviewedGame": "Ya has reseñado este juego.",
+    "alreadyReviewedCompany": "Ya has reseñado este estudio.",
+    "unexpectedError": "Error inesperado.",
+    "titleTextRequired": "El título y el texto son obligatorios.",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "translate": "Traducir",
+    "showOriginal": "Ver original",
+    "translating": "Traduciendo…",
+    "showTranslation": "Ver traducción",
+    "eyebrow": "La comunidad opina"
+  },
+  "comments": {
+    "sortTop": "Mejores",
+    "sortRecent": "Recientes",
+    "loading": "Cargando…",
+    "empty": "Sin comentarios — inicia la conversación.",
+    "deletedComment": "[comentario eliminado]",
+    "deletedUser": "[usuario eliminado]",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "reply": "Responder",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "viewReplies": "Ver respuestas ({{count}})",
+    "replyPlaceholder": "Responder…",
+    "addPlaceholder": "Añadir un comentario…",
+    "submit": "Comentar",
+    "loginToComment": "Inicia sesión para comentar"
+  },
+  "profile": {
+    "recentReviews": "Reseñas recientes",
+    "noReviewsTitle": "Aún no hay reseñas",
+    "noReviewsDesc": "Este jugador aún no ha reseñado ningún juego.",
+    "calNoDates": "Aún no hay fechas de finalización",
+    "calNoDatesDesc": "Los juegos marcados como terminados llenarán este calendario anual.",
+    "calHint": "Pasa el cursor o toca un día coloreado para ver los juegos terminados ese día.",
+    "friends": "Amigos",
+    "requestPending": "Solicitud pendiente",
+    "respondRequest": "Responder a su solicitud",
+    "couldNotSend": "No se pudo enviar la solicitud",
+    "sending": "Enviando…",
+    "addFriend": "Añadir amigo",
+    "couldNotLoad": "No se pudo cargar el perfil",
+    "notFound": "Perfil no encontrado",
+    "shareProfile": "Compartir este perfil con un amigo",
+    "editProfile": "Editar perfil",
+    "topRated": "Juegos mejor valorados",
+    "completionCalendar": "Calendario de finalización",
+    "memberSince": "Miembro desde {{date}}",
+    "reviewOne": "{{count}} reseña",
+    "reviewMany": "{{count}} reseñas",
+    "playedGameOne": "{{count}} juego jugado",
+    "playedGameMany": "{{count}} juegos jugados",
+    "calLess": "Menos",
+    "calMore": "Más",
+    "calCompletedLabel": "completados",
+    "calPlayedLabel": "jugados",
+    "calViewPlayed": "Jugados",
+    "calViewCompleted": "Completados",
+    "calDoneLabel": "hechos",
+    "calPerfectLabel": "al 100%",
+    "calDoneLegend": "Hecho",
+    "calPerfectLegend": "100%",
+    "tabReviews": "Reseñas",
+    "tabGames": "Juegos",
+    "tabLists": "Listas",
+    "tabAchievements": "Logros",
+    "tabOverview": "Resumen",
+    "recentReviewsTitle": "Últimas reseñas",
+    "seeAllReviews": "Ver todas las reseñas",
+    "bioAdd": "Añadir una bio",
+    "bioPlaceholder": "Cuéntanos algo sobre ti…",
+    "eyeTopRated": "Favoritos",
+    "eyeActivity": "Actividad",
+    "eyeReviews": "Sus opiniones",
+    "eyeLists": "Colecciones",
+    "eyeAchievements": "Logros",
+    "calNewerYears": "Años más recientes",
+    "calOlderYears": "Años más antiguos"
+  },
+  "lists": {
+    "heading": "Listas",
+    "newList": "Nueva lista",
+    "emptyOwn": "Aún no hay listas. Crea una (p. ej. «Best competitive», «To-do»).",
+    "emptyPublic": "No hay listas públicas.",
+    "namePlaceholder": "Nombre de la lista",
+    "creating": "Creando…",
+    "create": "Crear",
+    "cancel": "Cancelar",
+    "error": "Error",
+    "private": "Privada",
+    "public": "Pública",
+    "privateHint": "Solo visible para ti",
+    "publicHint": "Se muestra en tu perfil",
+    "viewGames": "Ver juegos",
+    "empty": "vacía",
+    "gameOne": "{{count}} juego",
+    "gameMany": "{{count}} juegos",
+    "editList": "Editar lista",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar la lista «{{name}}»?",
+    "loading": "Cargando…",
+    "listEmpty": "Lista vacía — añade juegos desde su página.",
+    "removeGame": "Quitar {{title}}",
+    "addToList": "Añadir a una lista",
+    "menuEmpty": "No hay listas — crea una abajo.",
+    "privateShort": "privada",
+    "quickPlaceholder": "Nueva lista + este juego",
+    "createAria": "Crear lista",
+    "validate": "Confirmar",
+    "gameReviews": "Reseñas de {{title}}",
+    "noReview": "Sin reseña",
+    "undoRemove": "Deshacer",
+    "viewCompact": "Compacto",
+    "viewDetailed": "Detallado",
+    "addGamePlaceholder": "Añadir un juego…",
+    "alreadyIn": "Añadido",
+    "limitReached": "Lista llena — máx. {{max}}",
+    "dragToReorder": "Arrastra para reordenar",
+    "noCover": "Sin portada",
+    "addCover": "Añadir portada",
+    "changeCover": "Cambiar portada",
+    "removeCover": "Quitar portada"
+  },
+  "catalog": {
+    "title": "Catálogo",
+    "searchPlaceholder": "Buscar un juego…",
+    "searchAria": "Buscar un juego",
+    "sortLabel": "Orden",
+    "platformLabel": "Plataforma",
+    "studioLabel": "Estudio",
+    "sortRating": "Mejor valorados",
+    "sortMostPlayed": "Más jugados",
+    "sortRecent": "Recientes",
+    "sortPopular": "Populares",
+    "allPlatforms": "Todas las plataformas",
+    "allStudios": "Todos los estudios",
+    "noResults": "Ningún juego coincide con estos filtros.",
+    "loading": "Cargando…",
+    "loadMore": "Cargar más",
+    "searchNav": "Buscar",
+    "randomGame": "Juego al azar",
+    "noneInCatalog": "Ningún juego «{{query}}» en el catálogo.",
+    "importIgdb": "Añadir desde IGDB",
+    "importing": "Importando desde IGDB…",
+    "studios": "Estudios",
+    "eyebrow": "Biblioteca",
+    "subtitle": "Explora toda la biblioteca de juegos: filtra por género, plataforma o estudio y ordena según la comunidad.",
+    "unit": "juegos",
+    "activeFilters": "Filtros activos",
+    "clearAll": "Borrar todo",
+    "removeFilter": "Quitar {{name}}",
+    "viewGame": "Ver ficha",
+    "showLess": "Ver menos",
+    "sortRatingAsc": "Peor valorados",
+    "sortMostPlayedAsc": "Menos jugados",
+    "sortRecentAsc": "Más antiguos",
+    "sortPopularAsc": "Menos conocidos"
+  },
+  "game": {
+    "markedTitle": "Hecho — haz clic para quitar",
+    "markTitle": "Lo he jugado",
+    "unmarkAria": "Quitar la marca «hecho»",
+    "markAria": "Marcar como hecho",
+    "playedOne": "{{count}} jugador jugó a este juego",
+    "playedMany": "{{count}} jugadores jugaron a este juego",
+    "notFound": "Juego no encontrado.",
+    "shareGame": "Compartir este juego con un amigo",
+    "dlcHeading": "Expansiones y DLC ({{count}})",
+    "chooseDlcLabel": "Elegir un DLC",
+    "chooseDlcPlaceholder": "Elegir un DLC…",
+    "dlcExpansion": "Expansión",
+    "dlcStandalone": "Independiente",
+    "dlcGeneric": "DLC",
+    "rate": "Valorar",
+    "completeTitle": "Marcar como completado",
+    "completedTitle": "Completado",
+    "completeAria": "Marcar este juego como completado",
+    "uncompleteAria": "Quitar la marca de completado",
+    "completedCountOne": "{{count}} jugador completó este juego",
+    "completedCountMany": "{{count}} jugadores completaron este juego",
+    "markDateTitle": "¿Cuándo lo jugaste?",
+    "completeDateTitle": "¿Cuándo lo terminaste?",
+    "markDateHint": "Elige una fecha anterior si lo jugaste antes de registrarte.",
+    "distributionTitle": "Distribución de notas",
+    "reviewCountOne": "{{count}} reseña de jugador",
+    "reviewCountMany": "{{count}} reseñas de jugadores",
+    "eyeDistribution": "Nota de la comunidad",
+    "eyeDlc": "Contenido adicional",
+    "eyeAbout": "Acerca de",
+    "aboutTitle": "El juego",
+    "rating": {
+      "globalTitle": "Puntuación global",
+      "players": "Jugadores",
+      "votesOne": "{{count}} voto",
+      "votesMany": "{{count}} votos"
+    },
+    "dateTypeLabel": "O escribe una fecha",
+    "datePartYear": "AAAA",
+    "datePartMonth": "MM",
+    "datePartDay": "DD"
+  },
+  "share": {
+    "defaultTitle": "Compartir con un amigo",
+    "shareTo": "Compartir con…",
+    "loading": "Cargando…",
+    "noFriends": "Añade amigos para compartir con ellos.",
+    "sent": "Enviado ✓",
+    "send": "Enviar"
+  },
+  "chat": {
+    "open": "Abrir mensajes",
+    "close": "Cerrar mensajes",
+    "title": "Mensajes",
+    "closeAria": "Cerrar",
+    "noConversations": "Añade amigos para chatear con ellos aquí.",
+    "back": "Atrás",
+    "placeholder": "Escribe un mensaje…",
+    "send": "Enviar",
+    "read": "Leído",
+    "shareGame": "Juego",
+    "shareReview": "Reseña",
+    "shareProfile": "Perfil",
+    "noMessage": "Sin mensajes",
+    "sharedGame": "Juego compartido",
+    "sharedReview": "Reseña compartida",
+    "sharedProfile": "Perfil compartido"
+  },
+  "company": {
+    "notFound": "Estudio no encontrado.",
+    "label": "Estudio",
+    "games": "Juegos del estudio",
+    "seeMore": "Ver más juegos ({{count}})"
+  },
+  "steam": {
+    "neverPlayed": "Nunca jugado",
+    "playMinutes": "{{count}} min",
+    "playHours": "{{count}} h",
+    "loadError": "No se pudo cargar tu biblioteca de Steam",
+    "friendRequestError": "No se pudo enviar la solicitud de amistad",
+    "title": "Biblioteca de Steam",
+    "linkPrompt": "Vincula tu cuenta de Steam para importar tu biblioteca de juegos y encontrar a tus amigos de Steam.",
+    "linkCta": "Vincular mi cuenta de Steam",
+    "friendsHeading": "Amigos de Steam en Saveboxd",
+    "friendsPrivate": "Tu lista de amigos de Steam es privada, así que no podemos sugerirte amigos.",
+    "noFriendsTitle": "Aún no hay amigos de Steam aquí",
+    "noFriendsDesc": "Ninguno de tus amigos de Steam está todavía en Saveboxd — ¡invítalos!",
+    "requestSent": "Solicitud enviada",
+    "addFriend": "Añadir amigo",
+    "yourGames": "Tus juegos",
+    "gamesPrivate": "Los detalles de tus juegos de Steam son privados. Pon <s>Perfil → Configuración de privacidad → Detalles de juegos</s> en Público en Steam y recarga esta página.",
+    "owned": "{{totalOwned}} juegos en Steam — {{matched}} en nuestro catálogo.",
+    "ownedUnmatched": "{{totalOwned}} juegos en Steam — {{matched}} en nuestro catálogo, {{unmatched}} sin referenciar.",
+    "statusPlaying": "jugando",
+    "statusBacklog": "pendiente",
+    "reviewWritten": "Reseña escrita — ver/editar",
+    "writeReview": "Escribir una reseña",
+    "viewReviewOf": "Ver tu reseña de {{title}}",
+    "writeReviewOf": "Escribir una reseña de {{title}}",
+    "noMatchedTitle": "Aún no hay juegos coincidentes",
+    "noMatchedDesc": "Ninguno de tus juegos de Steam está en nuestro catálogo por ahora.",
+    "manageLink": "Gestiona tu vinculación de Steam desde tu <l>perfil</l>.",
+    "achievementsTitle": "Logros",
+    "achievementsSub": "{{games}} juegos · {{perfect}} al 100 %",
+    "achPerGame": "{{unlocked}}/{{total}} logros",
+    "achievementsNone": "Aún no hay logros sincronizados: tu perfil de Steam puede ser privado.",
+    "syncAchievements": "Actualizar",
+    "syncing": "Sincronizando…"
+  },
+  "genres": {
+    "Adventure": "Aventura",
+    "Arcade": "Arcade",
+    "Card & Board Game": "Cartas y mesa",
+    "Fighting": "Lucha",
+    "Hack and slash/Beat 'em up": "Hack and slash/Beat'em up",
+    "Indie": "Indie",
+    "MOBA": "MOBA",
+    "Music": "Música",
+    "Pinball": "Pinball",
+    "Platform": "Plataformas",
+    "Point-and-click": "Apuntar y clicar",
+    "Puzzle": "Puzle",
+    "Quiz/Trivia": "Concurso/Trivial",
+    "Racing": "Carreras",
+    "Real Time Strategy (RTS)": "Estrategia en tiempo real (RTS)",
+    "Role-playing (RPG)": "Rol (RPG)",
+    "Shooter": "Disparos",
+    "Simulator": "Simulación",
+    "Sport": "Deportes",
+    "Strategy": "Estrategia",
+    "Tactical": "Táctico",
+    "Turn-based strategy (TBS)": "Estrategia por turnos (TBS)",
+    "Visual Novel": "Novela visual"
+  },
+  "legal": {
+    "privacy": {
+      "title": "Política de privacidad",
+      "lastUpdated": "Última actualización: 22 de julio de 2026",
+      "intro": "Saveboxd es un proyecto estudiantil desarrollado en el marco del programa 42: un sitio de catálogo y reseñas de videojuegos con funciones sociales (amigos, mensajería, listas). Esta política explica qué datos se recopilan al usar el sitio, por qué, y cuáles son tus derechos.",
+      "sections": {
+        "dataCollected": {
+          "title": "Datos que recopilamos",
+          "body": [
+            "Solo recopilamos los datos necesarios para el funcionamiento del sitio:",
+            "• Al registrarte de forma clásica: tu dirección de correo electrónico, un nombre de usuario y una contraseña (almacenada de forma cifrada, nunca en texto plano).",
+            "• Si inicias sesión a través de Google, 42 (Intra), Discord o Steam: un identificador proporcionado por ese servicio, tu dirección de correo si el proveedor la comparte (Steam nunca comparte una dirección de correo), tu nombre para mostrar y tu foto de perfil.",
+            "• La información de perfil que decidas completar: biografía, avatar, idioma preferido.",
+            "• Tu actividad en el sitio: reseñas y calificaciones de juegos, juegos marcados como jugados, listas de juegos personalizadas, relaciones de amistad, mensajes intercambiados con tus amigos, «me gusta» y comentarios.",
+            "• Cookies técnicas necesarias para la autenticación (ver la sección Cookies).",
+            "• Los registros técnicos estándar del servidor (dirección IP, marca de tiempo, página solicitada), generados automáticamente, como en prácticamente todos los sitios web.",
+            "No recopilamos ningún dato bancario o de pago, ningún dato de geolocalización precisa, y no utilizamos ninguna herramienta de análisis de audiencia ni de publicidad."
+          ]
+        },
+        "purposes": {
+          "title": "Por qué usamos estos datos",
+          "body": [
+            "Tus datos se utilizan exclusivamente para:",
+            "• crear y gestionar tu cuenta;",
+            "• autenticarte y proteger tu sesión (cookies, tokens, autenticación de dos factores si está activada);",
+            "• mostrar tu perfil y tus estadísticas (juegos jugados, reseñas, listas);",
+            "• hacer funcionar las funciones sociales (solicitudes de amistad, sugerencias de amigos vía Steam o 42, mensajería, notificaciones);",
+            "• enviarte correos estrictamente relacionados con el funcionamiento de la cuenta (verificación de dirección, restablecimiento de contraseña);",
+            "• garantizar la seguridad del servicio y prevenir abusos.",
+            "Nunca vendemos, alquilamos ni compartimos tus datos con fines comerciales o publicitarios."
+          ]
+        },
+        "discord": {
+          "title": "Inicio de sesión y vinculación con Discord",
+          "body": [
+            "Saveboxd permite iniciar sesión o vincular tu cuenta a través de Discord (OAuth2). Discord nos transmite entonces: tu identificador de Discord, tu nombre de usuario, tu dirección de correo asociada si tu cuenta de Discord la hace disponible, y la URL de tu avatar de Discord.",
+            "Esta información se utiliza únicamente para crear tu cuenta de Saveboxd o vincular una cuenta existente a tu identidad de Discord, y para mostrar una insignia de Discord en tu perfil. Nunca recibimos tu contraseña de Discord, y no accedemos a ningún otro dato de tu cuenta (servidores, mensajes, contactos).",
+            "Puedes desvincular tu cuenta de Discord en cualquier momento desde tus ajustes, salvo que sea tu único medio de inicio de sesión."
+          ]
+        },
+        "retention": {
+          "title": "Duración de la conservación",
+          "body": [
+            "Tus datos se conservan mientras tu cuenta exista.",
+            "Cuando eliminas tu cuenta desde tus ajustes:",
+            "• tu cuenta, tu avatar, tus amistades, tus juegos marcados como jugados, tus listas, tus notificaciones y tus mensajes (enviados y recibidos) se eliminan definitivamente;",
+            "• tus reseñas y comentarios existentes se conservan pero se anonimizan (se muestran como provenientes de un «usuario eliminado»), para no romper los hilos de discusión de otros usuarios;",
+            "• algunos datos pueden subsistir temporalmente en copias de seguridad técnicas o registros del servidor, antes de su eliminación automática.",
+            "No conservamos ningún dato más allá de lo necesario para el funcionamiento del sitio o la seguridad del servicio."
+          ]
+        },
+        "rights": {
+          "title": "Tus derechos",
+          "body": [
+            "De conformidad con el Reglamento General de Protección de Datos (RGPD), dispones de los siguientes derechos:",
+            "• derecho de acceso a tus datos personales: puedes descargar una copia completa en cualquier momento desde tus ajustes;",
+            "• derecho de rectificación de datos inexactos (modificable directamente desde tus ajustes);",
+            "• derecho de supresión: eliminación de tu cuenta en cualquier momento desde tus ajustes;",
+            "• derecho a la limitación del tratamiento en ciertos casos;",
+            "• derecho de oposición a determinados tratamientos, por ejemplo mediante tus preferencias de notificaciones;",
+            "• derecho a la portabilidad: exporta tus datos en un formato estructurado y legible por máquina (JSON) directamente desde tus ajustes;",
+            "• derecho a retirar tu consentimiento en cualquier momento cuando el tratamiento dependa de él (por ejemplo, el inicio de sesión mediante un proveedor externo);",
+            "• derecho a presentar una reclamación ante la autoridad de protección de datos competente (en Francia, la CNIL — cnil.fr).",
+            "Para ejercer cualquiera de estos derechos, contáctanos en la dirección indicada en la sección Contacto."
+          ]
+        },
+        "cookies": {
+          "title": "Cookies y almacenamiento local",
+          "body": [
+            "Saveboxd utiliza únicamente cookies estrictamente necesarias para el funcionamiento del sitio, todas técnicas, nunca publicitarias:",
+            "• cookies de autenticación (sesión, renovación de sesión, paso de autenticación de dos factores, vinculación de una cuenta externa), todas httpOnly y con duración limitada.",
+            "No se utiliza ninguna cookie de seguimiento publicitario ni de análisis de audiencia.",
+            "También utilizamos el almacenamiento local (localStorage) de tu navegador para recordar dos preferencias de visualización: el idioma elegido y el tema claro/oscuro. Esta información permanece en tu dispositivo y nunca se transmite a nuestros servidores.",
+            "Dado que estas cookies son estrictamente necesarias para el funcionamiento del servicio, no requieren consentimiento previo conforme a la normativa ePrivacy."
+          ]
+        },
+        "thirdParties": {
+          "title": "Servicios de terceros",
+          "body": [
+            "Para funcionar, Saveboxd recurre a los siguientes servicios de terceros:",
+            "• IGDB (Internet Game Database), para la información pública sobre videojuegos — no se les transmite ningún dato personal tuyo;",
+            "• Steam (Valve), si eliges vincular tu cuenta, para verificar tu identidad y obtener tu nombre de usuario, avatar, biblioteca de juegos y lista de amigos de Steam (utilizada únicamente para sugerirte amigos ya presentes en Saveboxd, nunca almacenada);",
+            "• Google, 42 (Intra) y Discord, si eliges iniciar sesión a través de uno de estos proveedores;",
+            "• Brevo, nuestro proveedor de envío de correos transaccionales, utilizado únicamente para los correos de verificación de dirección y restablecimiento de contraseña.",
+            "No utilizamos ninguna herramienta de análisis de audiencia, publicidad o seguimiento de terceros.",
+            "Alojamiento: este proyecto se desarrolla y evalúa en el marco del programa 42. Si el sitio llegara a desplegarse públicamente, esta sección deberá completarse con el nombre del proveedor de alojamiento."
+          ]
+        },
+        "contact": {
+          "title": "Contacto",
+          "body": [
+            "Para cualquier pregunta sobre esta política de privacidad, o para ejercer tus derechos sobre tus datos personales, contáctanos en: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Condiciones de uso",
+      "lastUpdated": "Última actualización: 22 de julio de 2026",
+      "intro": "Estas condiciones rigen el acceso y el uso del sitio Saveboxd, un proyecto estudiantil desarrollado en el marco del programa 42. Al crear una cuenta o utilizar el sitio, aceptas las condiciones descritas a continuación.",
+      "sections": {
+        "purpose": {
+          "title": "Objeto del servicio",
+          "body": [
+            "Saveboxd es una plataforma comunitaria que permite catalogar, calificar y reseñar videojuegos, hacer seguimiento de los juegos que has jugado, crear listas personalizadas e interactuar con otros usuarios (amigos, mensajería, reseñas, comentarios).",
+            "El sitio es un proyecto estudiantil desarrollado con fines pedagógicos en el marco del programa 42, y no un servicio comercial."
+          ]
+        },
+        "account": {
+          "title": "Acceso y creación de cuenta",
+          "body": [
+            "El acceso a la mayoría de las funciones requiere la creación de una cuenta, ya sea mediante registro clásico (correo, nombre de usuario, contraseña) o a través de un proveedor de autenticación externo (Google, 42, Discord, Steam).",
+            "Debes proporcionar información precisa al registrarte, y no está permitido crear una cuenta en nombre de otra persona sin su consentimiento, ni crear varias cuentas para eludir una suspensión."
+          ]
+        },
+        "credentials": {
+          "title": "Responsabilidad sobre tus credenciales",
+          "body": [
+            "Eres responsable de mantener la confidencialidad de tu contraseña y de toda actividad realizada desde tu cuenta.",
+            "Si sospechas de un acceso no autorizado a tu cuenta, cambia tu contraseña de inmediato y contáctanos.",
+            "Te recomendamos activar la autenticación de dos factores (2FA), disponible en tus ajustes, para reforzar la seguridad de tu cuenta."
+          ]
+        },
+        "acceptableUse": {
+          "title": "Uso aceptable del sitio",
+          "body": [
+            "Al usar Saveboxd, te comprometes a:",
+            "• publicar únicamente reseñas, comentarios y mensajes respetuosos con los demás;",
+            "• no suplantar la identidad de otra persona o entidad;",
+            "• no usar el sitio con fines ilegales ni para perjudicar a otros usuarios;",
+            "• no intentar perturbar el funcionamiento técnico del sitio (sobrecarga, explotación de vulnerabilidades, elusión de los límites de solicitudes)."
+          ]
+        },
+        "abuse": {
+          "title": "Comportamientos prohibidos",
+          "body": [
+            "Están especialmente prohibidos:",
+            "• el acoso, los insultos, las amenazas o cualquier comportamiento malicioso hacia otro usuario;",
+            "• el spam (mensajes o reseñas repetitivas, publicitarias o fuera de tema);",
+            "• la publicación de contenido ilegal, de odio, discriminatorio o de carácter sexual explícito;",
+            "• cualquier intento de acceso no autorizado a otra cuenta o a los sistemas del sitio."
+          ]
+        },
+        "interactions": {
+          "title": "Interacciones entre usuarios",
+          "body": [
+            "Saveboxd ofrece funciones sociales: solicitudes de amistad, mensajería privada, compartir juegos/reseñas/perfiles en las conversaciones, y sugerencias de amigos basadas en tu red de Steam o tu pertenencia a la comunidad 42.",
+            "Sigues siendo el único responsable del contenido de tus mensajes y publicaciones. Los mensajes privados intercambiados con un amigo se eliminan definitivamente, para ambas partes, si alguna de las dos cuentas se elimina."
+          ]
+        },
+        "moderation": {
+          "title": "Moderación y denuncias",
+          "body": [
+            "El sitio no cuenta actualmente con un sistema de denuncia integrado en las reseñas o los mensajes.",
+            "Si sufres abuso, acoso o contenido inapropiado, puedes contactarnos directamente en la dirección indicada en la sección Contacto; la moderación se gestiona entonces manualmente por el equipo del proyecto."
+          ]
+        },
+        "suspension": {
+          "title": "Suspensión o eliminación de cuenta",
+          "body": [
+            "En caso de incumplimiento de estas condiciones (abuso, acoso, spam, contenido ilegal), nos reservamos el derecho de suspender o eliminar una cuenta, a nuestra discreción, en la medida razonablemente posible para un proyecto estudiantil sin un equipo de moderación dedicado.",
+            "Puedes eliminar tu propia cuenta en cualquier momento desde tus ajustes."
+          ]
+        },
+        "userContent": {
+          "title": "Contenido generado por los usuarios",
+          "body": [
+            "Conservas la propiedad del contenido que publicas (reseñas, comentarios, listas, biografía, avatar). Al publicarlo en Saveboxd, nos autorizas a mostrarlo y almacenarlo como parte del funcionamiento normal del sitio.",
+            "Garantizas contar con los derechos necesarios sobre cualquier contenido que publiques, en particular tu foto de perfil si no utilizas la proporcionada por un proveedor de autenticación externo."
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Propiedad intelectual",
+          "body": [
+            "El código, el diseño y la marca «Saveboxd» se desarrollan en el marco de un proyecto estudiantil del programa 42 y no están destinados a una explotación comercial.",
+            "La información y los elementos visuales relativos a los videojuegos (títulos, carátulas, descripciones) provienen de bases de datos públicas de terceros (IGDB) y pertenecen a sus respectivos editores y titulares de derechos. Saveboxd no reclama ninguna propiedad sobre estos contenidos y los muestra con fines ilustrativos e informativos, en un contexto no comercial y educativo."
+          ]
+        },
+        "gameContent": {
+          "title": "Contenidos relativos a los videojuegos",
+          "body": [
+            "Las carátulas, descripciones e información de los juegos mostrados en Saveboxd se importan automáticamente desde IGDB, y desde Steam para los datos relativos a tu biblioteca personal si vinculas tu cuenta. Esta información sigue siendo propiedad de sus respectivos titulares de derechos."
+          ]
+        },
+        "availability": {
+          "title": "Disponibilidad del servicio",
+          "body": [
+            "Saveboxd es un proyecto estudiantil proporcionado «tal cual», sin garantía de disponibilidad continua. El servicio puede interrumpirse, modificarse o suspenderse en cualquier momento, en particular en el marco de su evaluación o mantenimiento, sin previo aviso."
+          ]
+        },
+        "liability": {
+          "title": "Limitación de responsabilidad",
+          "body": [
+            "Saveboxd se proporciona con fines pedagógicos, sin garantía de ningún tipo, expresa o implícita. En la medida permitida por la ley, el equipo del proyecto no podrá ser considerado responsable de ningún daño directo o indirecto derivado del uso o la imposibilidad de uso del sitio.",
+            "Esta limitación no constituye asesoramiento jurídico y no priva a los usuarios de derechos imperativos que no puedan excluirse contractualmente en virtud del derecho aplicable."
+          ]
+        },
+        "thirdPartiesAuth": {
+          "title": "Servicios de terceros y autenticación",
+          "body": [
+            "Saveboxd permite iniciar sesión a través de proveedores externos (Google, 42, Discord, Steam). El uso de estos proveedores también está sujeto a sus propias condiciones de uso respectivas, sobre las cuales Saveboxd no tiene ningún control."
+          ]
+        },
+        "changes": {
+          "title": "Modificación de estas condiciones",
+          "body": [
+            "Estas condiciones pueden modificarse en cualquier momento, en particular para reflejar la evolución de las funciones del sitio. La fecha de última actualización aparece en la parte superior de esta página. En caso de modificación sustancial, procuraremos informarte por un medio razonable."
+          ]
+        },
+        "law": {
+          "title": "Ley aplicable y jurisdicción",
+          "body": [
+            "[DROIT_APPLICABLE_À_CONFIRMER] — salvo indicación en contrario, estas condiciones se ofrecen a título indicativo en el marco de un proyecto estudiantil y no constituyen un contrato comercial formal."
+          ]
+        },
+        "contact": {
+          "title": "Contacto",
+          "body": [
+            "Para cualquier pregunta sobre estas condiciones de uso, contáctanos en: saveboxd.transcendence@gmail.com"
+          ]
+        }
+      }
+    }
+  },
+  "psn": {
+    "title": "PlayStation",
+    "linkPrompt": "Vincula tu cuenta de PlayStation para importar tus juegos, trofeos y amigos.",
+    "linkCta": "Ir a ajustes",
+    "loadError": "No se pudieron cargar tus datos de PlayStation.",
+    "friendsHeading": "Amigos de PlayStation en Saveboxd",
+    "friendsPrivate": "Tu lista de amigos de PlayStation es privada.",
+    "noFriendsTitle": "No hay amigos que sugerir",
+    "noFriendsDesc": "Ninguno de tus amigos de PlayStation está aún en Saveboxd.",
+    "requestSent": "Solicitud enviada",
+    "addFriend": "Añadir",
+    "friendRequestError": "No se pudo enviar la solicitud de amistad.",
+    "yourGames": "Tus juegos",
+    "gamesPrivate": "Tus juegos de PlayStation son privados.",
+    "played": "{{totalPlayed}} juegos jugados · {{matched}} encontrados en nuestro catálogo",
+    "playedUnmatched": "{{totalPlayed}} juegos jugados · {{matched}} encontrados · {{unmatched}} ausentes del catálogo",
+    "noMatchedTitle": "No hay juegos coincidentes",
+    "noMatchedDesc": "Ninguno de tus juegos de PlayStation está aún en nuestro catálogo.",
+    "trophyLevel": "Nivel de trofeos",
+    "trophiesEarned": "Trofeos obtenidos",
+    "trophyProgress": "{{earned}}/{{total}} trofeos · {{progress}} %",
+    "statusPlaying": "Jugando",
+    "statusBacklog": "Pendiente",
+    "reviewWritten": "Reseña escrita",
+    "writeReview": "Escribir una reseña",
+    "viewReviewOf": "Ver tu reseña de {{title}}",
+    "writeReviewOf": "Escribir una reseña de {{title}}",
+    "refresh": "Actualizar",
+    "syncing": "Qué refrescante…",
+    "syncedAt": "Última actualización{{time}}"
+  },
+  "library": {
+    "title": "Mis bibliotecas",
+    "noneLinkedTitle": "Ninguna cuenta vinculada",
+    "noneLinkedDesc": "Vincula una cuenta de Steam o PlayStation en tus ajustes para ver aquí tus juegos y trofeos.",
+    "goSettings": "Ir a ajustes",
+    "notLinked": "No vinculada",
+    "eyebrow": "Tus juegos",
+    "subtitle": "Tus títulos importados desde tus cuentas vinculadas.",
+    "linked": "Vinculado",
+    "link": "Vincular"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Página no encontrada",
+      "body": "Esta página no existe o se ha movido.",
+      "home": "Volver al inicio"
+    },
+    "boundary": {
+      "title": "Algo salió mal",
+      "body": "Se produjo un error inesperado. Prueba a recargar la página.",
+      "retry": "Recargar"
+    }
+  },
+  "xbox": {
+    "title": "Xbox",
+    "linkPrompt": "Vincula tu cuenta de Xbox para importar tus juegos y tus logros.",
+    "linkCta": "Ir a la configuración",
+    "loadError": "No se han podido cargar tus datos de Xbox.",
+    "yourGames": "Tus juegos",
+    "gamesPrivate": "Tu historial de juegos de Xbox es privado.",
+    "gamerscore": "Puntuación de jugador",
+    "gamesPlayed": "Partidos disputados",
+    "perfectGames": "Completado al 100 %",
+    "refresh": "Actualizar",
+    "syncing": "Qué refrescante…",
+    "syncedAt": "Última actualización{{time}}",
+    "played": "{{totalPlayed}} partidos disputados · {{matched}} coincidencias en nuestro catálogo",
+    "playedUnmatched": "{{totalPlayed}} partidas jugadas · {{matched}} coincidencias · {{unmatched}} no figura en nuestro catálogo",
+    "noMatchedTitle": "No hay partidos coincidentes",
+    "noMatchedDesc": "Todavía no tenemos ninguno de tus juegos de Xbox en nuestro catálogo.",
+    "achievementProgress": "{{earned}} logros · {{progress}} %",
+    "statusPlaying": "Jugando",
+    "statusBacklog": "Cartera de pedidos",
+    "reviewWritten": "Reseña escrita",
+    "writeReview": "Escribe una reseña",
+    "viewReviewOf": "Consulta tu reseña de «{{title}}»",
+    "writeReviewOf": "Escribe una reseña sobre «{{title}}»"
+  },
+  "onboarding": {
+    "welcome": "¡Bienvenidos!",
+    "subtitle": "Vamos a configurar tu perfil en unos pocos pasos.",
+    "skip": "Dejarlo para más adelante",
+    "next": "Continuar",
+    "back": "Atrás",
+    "finish": "Finalizar",
+    "genericError": "Ha habido un error. Inténtalo de nuevo.",
+    "username": {
+      "title": "Elige tu nombre de usuario",
+      "subtitle": "Lo hemos rellenado automáticamente con los datos de la cuenta con la que te registraste; puedes cambiarlos si lo deseas.",
+      "hint": "De 3 a 24 caracteres: solo letras, números y guiones bajos."
+    },
+    "avatar": {
+      "title": "Añadir una foto de perfil",
+      "subtitle": "Hemos seleccionado la foto de tu cuenta. Sube otra y, a continuación, amplía la imagen y arrastra el cursor para encuadrarla.",
+      "skip": "Saltar este paso"
+    },
+    "services": {
+      "title": "Vincula tus cuentas de juego",
+      "subtitle": "Conecta tus plataformas para importar tus juegos y estadísticas.",
+      "laterHint": "No hay prisa: también puedes vincular tus cuentas más adelante, en la configuración de tu cuenta.",
+      "connected": "Conectado",
+      "connect": "Conectar",
+      "publicNotice": "Tus perfiles de Steam, PlayStation y Xbox deben estar configurados como públicos; de lo contrario, no podremos importar tus juegos, amigos y/o logros.",
+      "steam": {
+        "perks": [
+          "Importa tu biblioteca de juegos a los que has jugado a la web",
+          "Logros y juegos completados al 100 %",
+          "Encuentra amigos de Steam que ya están aquí"
+        ]
+      },
+      "playstation": {
+        "perks": [
+          "Importa tu biblioteca de juegos de PlayStation a la web",
+          "Progreso en los trofeos y juegos completados al 100 % por título",
+          "Encuentra amigos de PlayStation que ya están aquí"
+        ]
+      },
+      "xbox": {
+        "perks": [
+          "Importa tu biblioteca de juegos de Xbox a la web",
+          "Puntuación de jugador, logros y juegos al 100 %"
+        ]
+      }
+    }
+  },
+  "a11y": {
+    "skipToContent": "Saltar al contenido principal"
+  },
+  "achievements": {
+    "sectionTitle": "Logros",
+    "done": "Desbloqueado",
+    "unlockedOn": "Desbloqueado el {{date}}",
+    "fam": {
+      "completions": "Juegos terminados",
+      "played": "Juegos jugados",
+      "perfect": "100%",
+      "reviews": "Reseñas",
+      "lists": "Listas",
+      "friends": "Amigos",
+      "genres": "Explorador",
+      "studio": "Fan de estudio",
+      "linked": "Cuentas vinculadas",
+      "popular": "Popular",
+      "supporter": "Apoyo",
+      "favorite": "Entusiasta",
+      "harsh": "Crítico severo",
+      "veteran": "Veterano"
+    },
+    "desc": {
+      "completions": "Terminar {{count}} juegos",
+      "played": "Registrar {{count}} juegos",
+      "perfect": "Completar {{count}} juegos al 100%",
+      "reviews": "Escribir {{count}} reseñas",
+      "lists": "Crear {{count}} listas",
+      "friends": "Llegar a {{count}} amigos",
+      "genres": "Terminar juegos en {{count}} géneros",
+      "studio": "Reseñar {{count}} juegos de un mismo estudio",
+      "linked": "Vincular {{count}} cuentas de juego",
+      "popular": "Recibir {{count}} me gusta en tus reseñas",
+      "supporter": "Dar {{count}} me gusta a reseñas",
+      "favorite": "Puntuar {{count}} juegos con 10/10",
+      "harsh": "Puntuar {{count}} juegos con 0",
+      "veteran": "Miembro desde hace {{count}} meses"
+    },
+    "tiersUnlocked": "{{count}} / {{total}} niveles",
+    "concernedGames": "Juegos relacionados"
+  },
+  "tutorial": {
+    "eyebrow": "Guía",
+    "skip": "Omitir",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Entendido",
+    "steps": {
+      "home": {
+        "title": "Inicio",
+        "body": "Haz clic en el logo de Saveboxd para volver al inicio cuando quieras."
+      },
+      "search": {
+        "title": "Búsqueda",
+        "body": "Encuentra cualquier juego, estudio o jugador desde la barra de búsqueda."
+      },
+      "catalog": {
+        "title": "Catálogo",
+        "body": "Explora todo el catálogo de juegos y descubre nuevos."
+      },
+      "feed": {
+        "title": "Novedades",
+        "body": "Mira a qué juegan, qué terminan y qué reseñan tus amigos."
+      },
+      "leaderboard": {
+        "title": "Clasificación",
+        "body": "Descubre a los mejores jugadores y sigue tu propia posición."
+      },
+      "friends": {
+        "title": "Amigos",
+        "body": "Añade amigos, acepta solicitudes y mira quién está en línea."
+      },
+      "library": {
+        "title": "Biblioteca",
+        "body": "Sincroniza tus juegos y trofeos de Steam, PlayStation y Xbox."
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "body": "Los me gusta, comentarios, solicitudes y logros aparecen aquí."
+      },
+      "profile": {
+        "title": "Tu perfil",
+        "body": "Tus juegos, reseñas, estadísticas e insignias están aquí."
+      },
+      "chat": {
+        "title": "Chat",
+        "body": "Habla con tus amigos en tiempo real desde la burbuja de abajo a la derecha."
+      },
+      "menu": {
+        "title": "Ajustes",
+        "body": "Abre aquí tus ajustes: perfil, notificaciones, tema e idioma."
+      }
+    }
+  }
+}
