@@ -281,6 +281,4 @@ reviewed and adapted by the team before being committed. Typical uses:
 - Debugging (reading stack traces, narrowing down issues) and rubber-ducking
   design decisions.
 
-No feature was submitted that its author could not explain and defend. *Each
-member: replace/extend this with the specific tasks and project parts where you
-personally used AI.*
+No feature was submitted that its author could not explain and defend.
