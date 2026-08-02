@@ -15,9 +15,9 @@ export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 // Only ever the game (never company) reference, shared by top games / calendar
 const gameRef = { select: { id: true, title: true, coverUrl: true } } as const;
 
-// Garde une seule entrée par jeu (la première rencontrée). Entrée = tri déjà
-// fait en amont → on garde donc la plus récente. Utilisé pour le calendrier
-// « terminé » où un même jeu peut être complété sur plusieurs plateformes.
+// Keeps one entry per game — the first seen, and input is pre-sorted, so the
+// most recent. Used by the "completed" calendar, where one game can be
+// completed on several platforms.
 function dedupeByGame<T extends { game: { id: number } }>(entries: T[]): T[] {
   const seen = new Set<number>();
   return entries.filter((e) => (seen.has(e.game.id) ? false : (seen.add(e.game.id), true)));
@@ -55,15 +55,11 @@ export class UsersService {
     return this.prisma.user.delete({ where: { id } });
   }
 
-  // RGPD — droit d'accès (Art. 15) & portabilité (Art. 20) : rassemble TOUTES
-  // les données personnelles de l'utilisateur dans un JSON structuré et lisible,
-  // téléchargeable en self-service depuis les réglages. On exclut délibérément
-  // les secrets/identifiants d'authentification (passwordHash, twoFactorSecret,
-  // hashes des refresh/verification tokens) : ce sont des données de sécurité,
-  // pas des informations personnelles à restituer. Les gros caches de librairies
-  // tierces (steamAchievements / psnLibrary / xboxLibrary) sont omis — ce sont
-  // des copies de profils publics Steam/PSN/Xbox, réexportées telles quelles chez
-  // la source ; on garde en revanche les identifiants de comptes liés.
+  // GDPR right of access (Art. 15) and portability (Art. 20): every personal
+  // record in one structured JSON, downloadable from the settings. Auth secrets
+  // (passwordHash, twoFactorSecret, token hashes) are excluded as security data,
+  // and the third-party library caches are omitted — they are copies of public
+  // Steam/PSN/Xbox profiles. Linked-account ids are kept.
   async exportData(userId: number) {
     const u = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -232,8 +228,8 @@ export class UsersService {
           take: 5,
           select: { rating: true, game: gameRef },
         }),
-        // Latest reviews (game or company) — seed de la section avis (sort
-        // "recent", page 1) ; _count pour afficher likes/💬 (tri lisible)
+        // Latest reviews (game or company): seeds the reviews section (recent
+        // sort, page 1); _count feeds the likes/comments counters
         this.prisma.review.findMany({
           where: { userId: user.id },
           orderBy: { createdAt: 'desc' },
@@ -251,29 +247,28 @@ export class UsersService {
             },
           },
         }),
-        // Complétions, datées par completedAt (date réelle). `platform` distingue
-        // les deux séries du calendrier : 'manual' = marqué « fait » à la main
-        // (ambre) ; steam/xbox/psn = 100 % plateforme (vert). Un même jeu peut
-        // avoir plusieurs lignes (une par source) → dédupliqué par jeu et par
-        // série plus bas (garde la plus récente, déjà en tête car tri desc).
+        // Completions, dated by completedAt. `platform` splits the two calendar
+        // series: 'manual' = marked done by hand (amber), steam/xbox/psn = 100%
+        // on the platform (green). A game can have one row per source, so each
+        // series is deduped below (keeps the most recent, already first).
         this.prisma.gameCompletion.findMany({
           where: { userId: user.id },
           orderBy: { completedAt: 'desc' },
           select: { completedAt: true, platform: true, game: gameRef },
         }),
         this.friendState(user.id, viewerId),
-        // Listes publiques : les privées ne sont jamais exposées ici
+        // Public lists only: private ones are never exposed here
         this.lists.publicListsOf(user.id),
-        // Rang mondial (complétions) — même métrique que la bande de stats de
-        // l'accueil et que la page Classement. null si non classé.
+        // Global completions rank, same metric as the home stats band and the
+        // Leaderboard page. null when unranked.
         this.completionsRank(user.id),
-        // Total de listes (publiques + privées) — pour le compteur d'onglet du
-        // propriétaire (les visiteurs ne comptent que les publiques, plus bas).
+        // Total lists (public + private) for the owner's tab counter; visitors
+        // only ever count the public ones, below.
         this.prisma.gameList.count({ where: { userId: user.id } }),
       ]);
 
-    // Le propriétaire voit le total (privées incluses) ; un visiteur, seulement
-    // le nombre de listes publiques qu'on lui expose.
+    // The owner sees the total, private lists included; a visitor only sees the
+    // public ones we expose.
     const listCount = viewerId === user.id ? totalListCount : publicLists.length;
 
     return {
@@ -283,25 +278,25 @@ export class UsersService {
       bio: user.bio,
       provider: user.provider,
       steamId: user.steamId,
-      // Badges PlayStation / Xbox sur le profil (même jeu de badges que la liste
-      // d'amis). On n'expose que le booléen de liaison, jamais l'ID interne.
+      // PlayStation / Xbox badges (same set as the friends list). Only the
+      // linked boolean is exposed, never the internal ID.
       psnLinked: user.psnAccountId !== null,
       xboxLinked: user.xboxXuid !== null,
       createdAt: user.createdAt,
       reviewCount,
       playedCount,
-      rank, // { rank } global (complétions) ou null si non classé
+      rank, // global completions rank, or null when unranked
       topGames: topReviews
         .filter((r) => r.game)
         .map((r) => ({ rating: r.rating, game: r.game! })),
       recentReviews,
-      // Série ambre du calendrier : jeux marqués « fait » à la main.
+      // Amber calendar series: games marked done by hand.
       completions: dedupeByGame(
         completedRaw
           .filter((c) => c.platform === 'manual')
           .map((c) => ({ playedAt: c.completedAt, game: c.game })),
       ),
-      // Série verte du calendrier : jeux 100 % sur une plateforme (Steam/Xbox/PSN).
+      // Green calendar series: games at 100% on a platform (Steam/Xbox/PSN).
       perfectGames: dedupeByGame(
         completedRaw
           .filter((c) => c.platform !== 'manual')
@@ -313,12 +308,10 @@ export class UsersService {
     };
   }
 
-  // Résumé chiffré « ton année en jeux » pour la bande de stats de l'accueil du
-  // connecté : jeux faits (série ambre) / 100 % plateforme (série verte),
-  // critiques + note moyenne, rang mondial (complétions), succès débloqués.
-  // Tout est recalculé à la volée en Prisma (pas de dépendance cross-module :
-  // UsersModule resterait pris dans un cycle via Auth s'il importait
-  // Leaderboard/Achievements — d'où le rang calculé en requête brute ici).
+  // "Your year in games" summary for the signed-in home stats band: games done
+  // (amber) and platform 100% (green), reviews with average rating, global rank,
+  // achievements. Computed inline in Prisma — importing Leaderboard/Achievements
+  // would put UsersModule in a cycle through Auth, hence the raw rank query.
   async getHomeStats(userId: number) {
     const [reviewAgg, doneRows, perfectRows, achievementCount, rank] = await Promise.all([
       this.prisma.review.aggregate({
@@ -326,13 +319,13 @@ export class UsersService {
         _count: { _all: true },
         _avg: { rating: true },
       }),
-      // Jeux marqués « fait » à la main (distincts) — série ambre du calendrier.
+      // Distinct games marked done by hand: amber calendar series.
       this.prisma.gameCompletion.findMany({
         where: { userId, platform: 'manual' },
         distinct: ['gameId'],
         select: { gameId: true },
       }),
-      // Jeux 100 % sur une plateforme (distincts) — série verte.
+      // Distinct games at 100% on a platform: green series.
       this.prisma.gameCompletion.findMany({
         where: { userId, platform: { not: 'manual' } },
         distinct: ['gameId'],
@@ -346,17 +339,16 @@ export class UsersService {
       done: doneRows.length,
       perfect: perfectRows.length,
       reviews: reviewAgg._count._all,
-      avgRating: reviewAgg._avg.rating, // null si aucune critique
+      avgRating: reviewAgg._avg.rating, // null when there is no review
       achievements: { unlocked: achievementCount, total: ALL_ACHIEVEMENTS.length },
-      rank, // { rank } global (complétions), ou null si non classé
+      rank, // global completions rank, or null when unranked
     };
   }
 
-  // Rang mondial de l'utilisateur au classement « complétions » (all-time,
-  // global). Même départage que LeaderboardService (score DESC, puis premier
-  // arrivé à ce score = MAX createdAt le plus ancien). null s'il n'a rien
-  // complété (score 0 ⇒ non classé). Requête brute pour ne pas coupler
-  // UsersModule à LeaderboardModule (cycle via AuthModule).
+  // Global all-time rank on the "completions" leaderboard. Same tie-break as
+  // LeaderboardService (score DESC, then whoever reached it first). null at
+  // score 0. Raw query so UsersModule stays off LeaderboardModule, which would
+  // introduce a cycle through AuthModule.
   private async completionsRank(userId: number): Promise<{ rank: number } | null> {
     const mine = await this.prisma.$queryRaw<{ score: number; lastAt: Date | null }[]>`
       SELECT COUNT(*)::int AS "score", MAX("createdAt") AS "lastAt"
@@ -412,8 +404,7 @@ export class UsersService {
   }
 
   // avatarUrl looks like /api/uploads/avatars/<file> — only ever deletes inside
-  // AVATARS_DIR. split('#') : retire un éventuel fragment de cadrage (#af=...)
-  // avant de déduire le nom de fichier.
+  // AVATARS_DIR. split('#') drops any crop fragment (#af=...) first.
   async deleteAvatarFile(avatarUrl: string): Promise<void> {
     const filePath = join(AVATARS_DIR, basename(avatarUrl.split('#')[0]));
     if (filePath.startsWith(AVATARS_DIR) && existsSync(filePath)) {

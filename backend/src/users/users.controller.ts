@@ -35,9 +35,9 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { toPublicUser, toPublicUserLite } from './public-user';
 import { UsersService } from './users.service';
 
-// image/gif inclus : l'avatar est stocké tel quel (aucun ré-encodage), donc le
-// GIF animé est servi et s'anime dans le <img>. 4 Mo reste sous le plafond
-// nginx (client_max_body_size 5m), assez pour un GIF d'avatar.
+// image/gif included: avatars are stored as-is (no re-encoding), so an animated
+// GIF stays animated in the <img>. 4MB stays under nginx's client_max_body_size
+// of 5m and is plenty for an avatar.
 const ALLOWED_AVATAR_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const MAX_AVATAR_BYTES = 4 * 1024 * 1024;
 
@@ -68,16 +68,16 @@ export class UsersController {
     return rows;
   }
 
-  // Bande de stats « ton année en jeux » sur l'accueil du connecté. Deux
-  // segments ⇒ pas de conflit avec @Get(':id'). Réservé au propriétaire (soi).
+  // "Your year in games" stats band on the signed-in home. Two path segments,
+  // so it can't collide with @Get(':id'). Owner only.
   @UseGuards(JwtAuthGuard)
   @Get('me/home-stats')
   homeStats(@CurrentUser() current: JwtPayload) {
     return this.usersService.getHomeStats(current.sub);
   }
 
-  // Public lookup by id → vue MINIMALE (identité + badges) : jamais email,
-  // réglages, tokens ni secrets d'un autre utilisateur.
+  // Public lookup by id: MINIMAL view (identity + badges). Never another user's
+  // email, settings, tokens or secrets.
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findById(id);
@@ -98,9 +98,9 @@ export class UsersController {
     return toPublicUser(updated);
   }
 
-  // Marque le wizard d'onboarding comme terminé (ou explicitement passé) :
-  // pose onboardedAt une seule fois. Tant que c'est nul, le front redirige vers
-  // /welcome ; une fois posé, plus de redirection auto (on repasse par settings).
+  // Marks the onboarding wizard done (or explicitly skipped): sets onboardedAt
+  // once. While null the front redirects to /welcome; once set there is no auto
+  // redirect and the user goes through settings instead.
   @UseGuards(JwtAuthGuard)
   @Post('me/onboarded')
   async markOnboarded(@CurrentUser() current: JwtPayload) {
@@ -112,9 +112,9 @@ export class UsersController {
     return toPublicUser(updated);
   }
 
-  // Marque le tour guidé comme vu (ou passé) : pose tutorialSeenAt une seule
-  // fois. Tant que c'est nul, le front le lance automatiquement après
-  // l'onboarding ; une fois posé, il ne se déclenche plus qu'à la demande.
+  // Marks the guided tour seen (or skipped): sets tutorialSeenAt once. While
+  // null the front starts it automatically after onboarding; once set it only
+  // runs on demand.
   @UseGuards(JwtAuthGuard)
   @Post('me/tutorial-seen')
   async markTutorialSeen(@CurrentUser() current: JwtPayload) {
@@ -148,9 +148,9 @@ export class UsersController {
     });
   }
 
-  // RGPD — export self-service de toutes ses données personnelles (droit d'accès
-  // Art. 15 + portabilité Art. 20), en JSON structuré téléchargeable. Deux
-  // segments ⇒ pas de conflit avec @Get(':id').
+  // GDPR self-service export of every personal record (right of access Art. 15
+  // and portability Art. 20) as downloadable JSON. Two path segments, so it
+  // can't collide with @Get(':id').
   @UseGuards(JwtAuthGuard)
   @Get('me/export')
   async exportMyData(@CurrentUser() current: JwtPayload, @Res({ passthrough: true }) res: Response) {
@@ -160,8 +160,8 @@ export class UsersController {
     const safeName = data.account.username.replace(/[^a-zA-Z0-9_-]/g, '_');
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="saveboxd-data-${safeName}-${date}.json"`);
-    // RGPD — email de confirmation de l'opération sur les données (mailer.send
-    // avale ses erreurs → n'échoue jamais le téléchargement si le SMTP est down).
+    // GDPR confirmation email. mailer.send swallows its errors, so a dead SMTP
+    // relay never fails the download.
     await this.mailer.send({
       to: data.account.email,
       subject: 'Your Saveboxd data export',
@@ -182,12 +182,12 @@ export class UsersController {
       if (!valid) throw new UnauthorizedException('Incorrect password');
     }
 
-    // On capture l'e-mail AVANT la suppression (la ligne user disparaît ensuite).
+    // Capture the address BEFORE deleting — the user row is gone afterwards.
     const email = user.email;
     if (user.avatarUrl) await this.usersService.deleteAvatarFile(user.avatarUrl);
     await this.usersService.delete(current.sub);
-    // RGPD — email de confirmation de suppression (best-effort ; le compte est
-    // déjà supprimé, l'échec SMTP ne doit pas casser la réponse 204).
+    // GDPR deletion confirmation, best-effort: the account is already gone, so
+    // an SMTP failure must not break the 204.
     await this.mailer.send({
       to: email,
       subject: 'Your Saveboxd account has been deleted',
@@ -219,11 +219,10 @@ export class UsersController {
     return toPublicUser(updated);
   }
 
-  // Zoom/centrage de l'avatar : encodé dans avatarUrl via #af=scale,x,y. Ce
-  // fragment n'est jamais envoyé au serveur au fetch de l'image (le navigateur
-  // le retire), mais accompagne avatarUrl dans toutes les réponses → le cadrage
-  // s'applique sur tous les profils sans dupliquer de champs. Défaut (1,0,0) =
-  // pas de fragment (URL propre).
+  // Avatar zoom/centering, encoded in avatarUrl as #af=scale,x,y. Browsers strip
+  // the fragment when fetching the image, but it travels with avatarUrl in every
+  // response, so the framing applies everywhere without extra fields. The
+  // default (1,0,0) writes no fragment at all.
   @UseGuards(JwtAuthGuard)
   @Patch('me/avatar-frame')
   async setAvatarFrame(@CurrentUser() current: JwtPayload, @Body() dto: AvatarFrameDto) {

@@ -22,11 +22,11 @@ import { UsersService } from '../users/users.service';
 import { LinkXboxDto } from './dto/link-xbox.dto';
 import { XboxApiService, XboxTitle } from './xbox-api.service';
 
-// Normalise un titre pour le matching Xbox↔catalogue : minuscules + on ne garde
-// que lettres/chiffres (retire ™®©, espaces, ponctuation). Identique à PSN.
+// Normalises a title for Xbox/catalog matching: lowercase, letters and digits
+// only (drops ™®©, spaces, punctuation). Same as PSN.
 const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-// Forme du cache stocké dans User.xboxLibrary.
+// Shape of the cache stored in User.xboxLibrary.
 interface XboxCache {
   syncedAt: string;
   gamerscore: number | null;
@@ -44,9 +44,9 @@ export class XboxController {
     private readonly achievements: AchievementsService,
   ) {}
 
-  // Rattache un compte Xbox : on résout le gamertag déclaré en XUID via la clé
-  // service, puis on stocke le XUID + le gamertag (aucun jeton par utilisateur).
-  // Le profil doit être public pour être trouvé. Miroir de POST /psn/link.
+  // Links an Xbox account: resolves the declared gamertag to a XUID via the
+  // service key, then stores XUID + gamertag (no per-user token). The profile
+  // must be public to be found. Mirrors POST /psn/link.
   @Post('link')
   async link(@CurrentUser() current: JwtPayload, @Body() dto: LinkXboxDto) {
     const account = await this.api.resolveGamertag(dto.gamertag.trim());
@@ -54,18 +54,17 @@ export class XboxController {
       throw new NotFoundException('Aucun compte Xbox public trouvé pour ce gamertag');
     }
 
-    // Aucune vérification d'unicité : la liaison ne prouve pas la propriété (on
-    // lit juste un profil public par gamertag), donc bloquer un XUID déjà utilisé
-    // permettrait à quelqu'un de « réserver » le compte d'autrui. Plusieurs
-    // profils peuvent pointer le même gamertag.
+    // No uniqueness check on purpose: linking proves nothing (we only read a
+    // public profile), so rejecting an already-used XUID would let someone
+    // "reserve" another person's account. Several profiles may share a gamertag.
     await this.prisma.user.update({
       where: { id: current.sub },
-      // xboxLibrary vidé : le cache d'un éventuel compte précédent ne doit pas
-      // rester après un changement de gamertag.
+      // xboxLibrary cleared: a previous account's cache must not survive a
+      // gamertag change.
       data: { xboxXuid: account.xuid, xboxGamertag: account.gamertag, xboxLibrary: Prisma.DbNull },
     });
 
-    // Succès « comptes liés »
+    // "Linked accounts" achievements
     void this.achievements.evaluate(current.sub, ['linked']);
     return { gamertag: account.gamertag, avatarUrl: account.avatarUrl };
   }
@@ -81,11 +80,10 @@ export class XboxController {
     });
   }
 
-  // Bibliothèque Xbox : les jeux joués (titres à succès) matchés à notre
-  // catalogue par nom, avec la progression de succès/Gamerscore par jeu, + le
-  // résumé global (Gamerscore total, nb de jeux, jeux complétés à 100 %).
-  // Les titres sont mis en cache sur l'utilisateur (OpenXBL est lent) ; on ne
-  // resynchronise que sur ?refresh=true. Miroir de GET /steam/library.
+  // Xbox library: played titles matched to our catalog by name, with per-game
+  // achievement/Gamerscore progress plus a global summary. Titles are cached on
+  // the user (OpenXBL is slow) and only resynced on ?refresh=true. Mirrors
+  // GET /steam/library.
   @Get('library')
   async library(@CurrentUser() current: JwtPayload, @Query('refresh') refresh?: string) {
     const user = await this.users.findById(current.sub);
@@ -106,8 +104,8 @@ export class XboxController {
         this.api.getGamerscore(user.xboxXuid),
       ]);
       if (fetched === null) {
-        // Profil privé OU erreur passagère : on ne vide pas la page si on a déjà
-        // un cache — on le ressert. Sinon seulement, on signale "privé".
+        // Private profile OR transient error: never blank the page when a cache
+        // exists — serve it again. Only report "private" without one.
         if (!cached?.titles) {
           return { private: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
         }
@@ -124,19 +122,18 @@ export class XboxController {
     }
 
     const summary = {
-      // Gamerscore officiel du profil (fallback : somme des titres si absent).
+      // Official profile Gamerscore, falling back to the sum of the titles.
       gamerscore: gamerscore ?? titles.reduce((acc, t) => acc + t.currentGamerscore, 0),
       games: titles.length,
-      // jeux complétés à 100 % : tout le Gamerscore du jeu obtenu. (OpenXBL ne
-      // remplit pas totalAchievements ici, on se base donc sur le Gamerscore.)
+      // 100% games: the whole Gamerscore earned. OpenXBL leaves
+      // totalAchievements empty here, so Gamerscore is the only signal.
       perfect: titles.filter((t) => t.totalGamerscore > 0 && t.currentGamerscore === t.totalGamerscore).length,
     };
     const matched = await this.matchTitles(current.sub, titles);
 
-    // Jeux du catalogue à 100 % (tout le Gamerscore obtenu) → événements de feed
-    // + calendrier « Terminé ». OpenXBL ne donne pas la date par succès sans un
-    // appel par jeu ; on approxime la date du 100 % par lastPlayed (dernière
-    // session) — 0/invalide → défaut (now) côté insertion.
+    // Catalog games at 100% -> feed events and the "Completed" calendar. OpenXBL
+    // gives no per-achievement date without a call per game, so lastPlayed
+    // approximates the 100% date; 0/invalid falls back to now on insert.
     const completed = matched
       .filter((m) => m.achievements.totalGamerscore > 0 && m.achievements.gamerscore === m.achievements.totalGamerscore)
       .map((m) => {
@@ -156,12 +153,12 @@ export class XboxController {
     };
   }
 
-  // Associe les titres Xbox aux jeux du catalogue par nom normalisé (SQL), puis
-  // décore chaque jeu de sa progression de succès et de l'état de l'utilisateur
-  // (déjà "joué" / déjà noté). Un jeu vu plusieurs fois n'apparaît qu'une fois.
-  // Calqué sur PsnController.matchTitles.
+  // Matches Xbox titles to catalog games by normalised name (in SQL), then
+  // decorates each game with its achievement progress and the user's state
+  // (already played / already reviewed). Duplicates collapse to one entry.
+  // Modelled on PsnController.matchTitles.
   private async matchTitles(userId: number, titles: XboxTitle[]) {
-    // nom normalisé -> meilleur titre Xbox (progression la plus haute)
+    // normalised name -> best Xbox title (highest progress)
     const byNorm = new Map<string, XboxTitle>();
     for (const t of titles) {
       const n = normalize(t.name);
@@ -181,7 +178,7 @@ export class XboxController {
       WHERE lower(regexp_replace(title, '[^a-zA-Z0-9]', '', 'g')) = ANY(${normNames})
     `;
 
-    // norm -> premier jeu catalogue trouvé
+    // norm -> first matching catalog game
     const gameByNorm = new Map<string, (typeof rows)[number]>();
     for (const r of rows) if (!gameByNorm.has(r.norm)) gameByNorm.set(r.norm, r);
 
@@ -189,7 +186,7 @@ export class XboxController {
       .map((n) => ({ game: gameByNorm.get(n), title: byNorm.get(n)! }))
       .filter((m): m is { game: (typeof rows)[number]; title: XboxTitle } => !!m.game);
 
-    // État de l'utilisateur pour ces jeux (joué / noté), en 2 requêtes groupées
+    // User state for these games (played / reviewed), in 2 batched queries
     const gameIds = matched.map((m) => m.game.id);
     const [played, reviewed] = await Promise.all([
       this.prisma.playedGame.findMany({
@@ -211,8 +208,8 @@ export class XboxController {
         coverUrl: game.coverUrl,
         gameType: game.gameType,
         achievements: {
-          // OpenXBL ne remplit pas totalAchievements sur cet endpoint : on
-          // expose le nb de succès obtenus + le Gamerscore + le %.
+          // OpenXBL leaves totalAchievements empty on this endpoint, so we
+          // expose the earned count, the Gamerscore and the percentage.
           earned: title.currentAchievements,
           gamerscore: title.currentGamerscore,
           totalGamerscore: title.totalGamerscore,
@@ -222,7 +219,7 @@ export class XboxController {
         playedStatus: playedBy.get(game.id)?.status ?? null,
         reviewed: reviewedIds.has(game.id),
       }))
-      // les plus récemment joués d'abord (à défaut, les plus avancés)
+      // most recently played first, then the furthest along
       .sort((a, b) => {
         if (a.lastPlayed && b.lastPlayed) return a.lastPlayed < b.lastPlayed ? 1 : -1;
         if (a.lastPlayed) return -1;

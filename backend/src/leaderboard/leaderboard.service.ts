@@ -2,14 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { FriendshipStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
-// Trois classements possibles, chacun = un simple comptage par utilisateur :
-//  - completions : nombre de jeux finis à 100 % (table GameCompletion)
-//  - played      : nombre de jeux « faits » (PlayedGame, status PLAYED)
-//  - reviews     : nombre d'avis écrits (Review)
+// Three leaderboards, each a per-user count: completions (GameCompletion),
+// played (PlayedGame with status PLAYED), reviews (Review).
 export type LeaderboardMetric = 'completions' | 'played' | 'reviews';
-// Portée : entre amis (moi + mes amis acceptés) ou tout le site.
+// Friends (me + accepted friends) or site-wide.
 export type LeaderboardScope = 'friends' | 'global';
-// Fenêtre : cumul depuis toujours ou 30 derniers jours glissants (via createdAt).
+// All-time, or a rolling 30-day window on createdAt.
 export type LeaderboardWindow = 'all' | 'month';
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
@@ -18,9 +16,8 @@ const MAX_LIMIT = 100;
 
 const actorSelect = { id: true, username: true, avatarUrl: true } as const;
 
-// Table SQL par métrique. Whitelist FERMÉE (jamais d'entrée utilisateur) : le
-// nom de table ne peut pas être un paramètre lié, on l'injecte via Prisma.raw
-// depuis cette map uniquement — donc sûr (pas d'injection possible).
+// Closed whitelist: a table name can't be a bound parameter, so it goes through
+// Prisma.raw — safe only because it never comes from user input.
 const TABLE: Record<LeaderboardMetric, string> = {
   completions: 'GameCompletion',
   played: 'PlayedGame',
@@ -38,18 +35,17 @@ export interface LeaderboardResult {
   scope: LeaderboardScope;
   window: LeaderboardWindow;
   rows: LeaderboardRow[];
-  // Position du viewer même s'il n'apparaît pas dans le top affiché. null s'il
-  // n'a encore rien dans cette métrique/fenêtre (score 0 ⇒ pas classé).
+  // Viewer's position even when outside the displayed top. null when score is 0.
   me: { rank: number; score: number } | null;
 }
 
-// Jalon fraîchement enregistré, renvoyé pour diffusion temps réel dans le feed.
+// Freshly recorded milestone, returned for real-time feed broadcast.
 export interface RecordedMilestone {
   id: number;
   subject: { id: number; username: string; avatarUrl: string | null };
   metric: LeaderboardMetric;
   scope: 'global' | 'friends';
-  viewerId: number | null; // null = global (tous les amis du sujet), sinon l'observateur
+  viewerId: number | null; // null = global (all the subject's friends), else the observer
   rank: number;
   createdAt: Date;
 }
@@ -58,7 +54,7 @@ export interface RecordedMilestone {
 export class LeaderboardService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // IDs des amis acceptés (mêmes deux sens que le feed).
+  // Accepted friend IDs, both directions (same as the feed).
   private async friendIds(userId: number): Promise<number[]> {
     const rows = await this.prisma.friendship.findMany({
       where: {
@@ -70,8 +66,8 @@ export class LeaderboardService {
     return rows.map((r) => (r.requesterId === userId ? r.addresseeId : r.requesterId));
   }
 
-  // Fragment WHERE partagé par toutes les requêtes (top N + rang du viewer) :
-  // une seule source de vérité pour les filtres métrique/portée/fenêtre.
+  // Shared WHERE fragment for both queries (top N and viewer rank): one source
+  // of truth for the metric/scope/window filters.
   private whereSql(
     metric: LeaderboardMetric,
     userIds: number[] | undefined,
@@ -95,8 +91,7 @@ export class LeaderboardService {
   ): Promise<LeaderboardResult> {
     limit = Math.min(Math.max(limit, 1), MAX_LIMIT);
 
-    // Portée « amis » : moi inclus (pour voir ma place). « global » : pas de
-    // restriction d'utilisateur.
+    // "friends" includes me so I can see my own place; "global" has no filter.
     const userIds =
       scope === 'friends' ? [viewerId, ...(await this.friendIds(viewerId))] : undefined;
     const since = window === 'month' ? new Date(Date.now() - MONTH_MS) : undefined;
@@ -104,11 +99,8 @@ export class LeaderboardService {
     const table = Prisma.raw(`"${TABLE[metric]}"`);
     const where = this.whereSql(metric, userIds, since);
 
-    // Top N trié ET tronqué par Postgres : on ne charge jamais tous les
-    // utilisateurs en mémoire (point de scalabilité). Départage : à score égal,
-    // le PREMIER arrivé à ce score passe devant. Sa dernière occurrence (MAX
-    // createdAt) est le moment où il a atteint son total ; la plus ancienne
-    // gagne, d'où MAX("createdAt") ASC.
+    // Sorted and truncated by Postgres — every user is never loaded in memory.
+    // Ties go to whoever reached the score first, hence MAX("createdAt") ASC.
     const raw = await this.prisma.$queryRaw<{ userId: number; score: number }[]>(Prisma.sql`
       SELECT "userId", COUNT(*)::int AS "score"
       FROM ${table}
@@ -127,7 +119,7 @@ export class LeaderboardService {
     const rows: LeaderboardRow[] = [];
     for (let i = 0; i < raw.length; i += 1) {
       const u = byId.get(raw[i].userId);
-      if (!u) continue; // user supprimé entre-temps : on saute
+      if (!u) continue; // user deleted meanwhile
       rows.push({ rank: i + 1, user: u, score: raw[i].score });
     }
 
@@ -135,9 +127,8 @@ export class LeaderboardService {
     return { metric, scope, window, rows, me };
   }
 
-  // Top N GLOBAL all-time d'une métrique, SANS viewer (pas de « ma place ») :
-  // sert la home publique (visiteur anonyme). Même tri/départage que le
-  // classement connecté, mais lecture seule et sans rang personnel.
+  // Global all-time top N with no viewer (no personal rank): powers the public
+  // home page for signed-out visitors. Same sort and tie-break as above.
   async getPublicTop(metric: LeaderboardMetric, limit = 3): Promise<LeaderboardRow[]> {
     limit = Math.min(Math.max(limit, 1), MAX_LIMIT);
     const table = Prisma.raw(`"${TABLE[metric]}"`);
@@ -167,11 +158,8 @@ export class LeaderboardService {
     return rows;
   }
 
-  // Récompenses de classement d'un utilisateur : pour chaque métrique, son rang
-  // GLOBAL all-time, ne gardant que les podiums (rang ≤ 3). Sert à afficher un
-  // badge à côté du pseudo. Même départage que le classement (score DESC puis
-  // premier arrivé au score). Portée globale (userIds indéfini) et fenêtre all
-  // (since indéfini).
+  // Global all-time rank per metric, kept only for podiums (rank <= 3) — shown
+  // as a badge next to the username.
   async getRankBadges(userId: number): Promise<{ metric: LeaderboardMetric; rank: number }[]> {
     const metrics: LeaderboardMetric[] = ['completions', 'played', 'reviews'];
     const badges: { metric: LeaderboardMetric; rank: number }[] = [];
@@ -184,10 +172,9 @@ export class LeaderboardService {
     return badges;
   }
 
-  // Détecte et enregistre les jalons « entrée dans le top 3 » déclenchés par une
-  // action du sujet sur `metric` (chaque action = +1 au score). Renvoie les
-  // jalons NOUVELLEMENT créés (pour push feed). Coût : ~quelques requêtes
-  // indexées, indépendant du nombre d'amis (la portée amis est ensembliste).
+  // Detects "entered the top 3" milestones triggered by one action on `metric`.
+  // Returns only the newly created ones, for the feed push. Cost is independent
+  // of the friend count — the friends scope is resolved set-wise in SQL.
   async recordMilestones(
     subjectId: number,
     metric: LeaderboardMetric,
@@ -195,8 +182,7 @@ export class LeaderboardService {
     const table = Prisma.raw(`"${TABLE[metric]}"`);
     const where = this.whereSql(metric, undefined, undefined);
 
-    // Score + dernière occurrence du sujet (global all-time). Départage : le
-    // premier arrivé au score passe devant ⇒ MAX(createdAt) le plus ancien gagne.
+    // Subject's score and last occurrence. Ties: the earliest MAX(createdAt) wins.
     const mine = await this.prisma.$queryRaw<{ score: number; lastAt: Date | null }[]>(Prisma.sql`
       SELECT COUNT(*)::int AS "score", MAX("createdAt") AS "lastAt"
       FROM ${table} WHERE ${where} AND "userId" = ${subjectId}
@@ -207,7 +193,7 @@ export class LeaderboardService {
 
     const candidates: { scope: 'global' | 'friends'; viewerId: number | null; rank: number }[] = [];
 
-    // --- GLOBAL : rang exact (même départage que le classement) ---
+    // --- GLOBAL: exact rank, same tie-break as the leaderboard ---
     const aboveGlobal = await this.prisma.$queryRaw<{ above: number }[]>(Prisma.sql`
       SELECT COUNT(*)::int AS "above" FROM (
         SELECT "userId" FROM ${table} WHERE ${where} GROUP BY "userId"
@@ -220,10 +206,9 @@ export class LeaderboardService {
       candidates.push({ scope: 'global', viewerId: null, rank: globalRank });
     }
 
-    // --- AMIS : UNE requête ensembliste renvoie les observateurs V (amis du
-    // sujet) dont le cercle place le sujet dans le top 3, sans boucle applicative.
-    // Tournée MÊME si le sujet est top 3 global (choix « toujours les deux » :
-    // un ami top 3 global déclenche aussi la carte « top 3 de tes amis »).
+    // --- FRIENDS: one set-based query returns every observer whose circle puts
+    // the subject in the top 3, with no application-side loop. Runs even when
+    // the subject is already global top 3, so both cards can fire.
     const hits = await this.prisma.$queryRaw<{ viewer: number; rank: number }[]>(Prisma.sql`
       WITH scores AS (
         SELECT "userId" AS uid, COUNT(*)::int AS sc, MAX("createdAt") AS last
@@ -260,9 +245,8 @@ export class LeaderboardService {
 
     if (candidates.length === 0) return [];
 
-    // --- Anti-spam : ne garder que les NOUVEAUX meilleurs rangs par
-    // (scope, viewer). Un utilisateur ne reçoit donc qu'un event quand il
-    // progresse (3 → 2 → 1), jamais de doublon ni d'oscillation.
+    // Anti-spam: keep only new best ranks per (scope, viewer), so climbing
+    // 3 -> 2 -> 1 fires once per step and never oscillates.
     const existing = await this.prisma.leaderboardMilestone.findMany({
       where: { subjectId, metric },
       select: { scope: true, viewerId: true, rank: true },
@@ -304,10 +288,8 @@ export class LeaderboardService {
     return created;
   }
 
-  // Rang exact du viewer, calculé côté Postgres (aucun chargement de la liste
-  // complète) : on compte les utilisateurs qui le devancent, avec le MÊME
-  // départage que le top N. `where` est le fragment déjà construit (portée +
-  // fenêtre + métrique).
+  // Viewer's exact rank, computed in Postgres: count who is ahead, with the
+  // same tie-break as the top N. `where` already carries scope/window/metric.
   private async computeMyRank(
     viewerId: number,
     table: Prisma.Sql,
@@ -320,10 +302,9 @@ export class LeaderboardService {
     `);
     const myScore = mine[0]?.score ?? 0;
     const myLastAt = mine[0]?.lastAt ?? null;
-    if (myScore === 0 || !myLastAt) return null; // rien dans cette métrique ⇒ pas classé
+    if (myScore === 0 || !myLastAt) return null; // nothing in this metric, so unranked
 
-    // Devancé par : score strictement supérieur, OU même score mais atteint plus
-    // tôt (MAX createdAt antérieur). COUNT groupé ⇒ un seul entier renvoyé.
+    // Ahead = strictly higher score, or same score reached earlier.
     const above = await this.prisma.$queryRaw<{ above: number }[]>(Prisma.sql`
       SELECT COUNT(*)::int AS "above" FROM (
         SELECT "userId"

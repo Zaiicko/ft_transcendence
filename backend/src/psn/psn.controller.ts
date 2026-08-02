@@ -26,15 +26,15 @@ import { UsersService } from '../users/users.service';
 import { LinkPsnDto } from './dto/link-psn.dto';
 import { PsnApiService, PsnTrophySummary } from './psn-api.service';
 
-// Forme du cache stocké dans User.psnLibrary.
+// Shape of the cache stored in User.psnLibrary.
 interface PsnCache {
   syncedAt: string;
   titles: TrophyTitle[];
   summary: PsnTrophySummary | null;
 }
 
-// Normalise un titre pour le matching PSN↔catalogue : minuscules + on ne garde
-// que lettres/chiffres (retire ™®©, espaces, ponctuation, éditions "™").
+// Normalises a title for PSN/catalog matching: lowercase, letters and digits
+// only (drops ™®©, spaces, punctuation, edition suffixes).
 const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 @UseGuards(JwtAuthGuard)
@@ -58,9 +58,9 @@ export class PsnController {
     return user.psnAccountId;
   }
 
-  // Rattache un compte PlayStation : on résout le PSN Online ID déclaré en
-  // accountId via la session service, puis on stocke l'ID + l'accountId (aucun
-  // jeton par utilisateur). Le profil doit être public pour être trouvé.
+  // Links a PlayStation account: resolves the declared PSN Online ID to an
+  // accountId through the service session, then stores both (no per-user
+  // token). The profile must be public to be found.
   @Post('link')
   async link(@CurrentUser() current: JwtPayload, @Body() dto: LinkPsnDto) {
     const account = await this.api.resolveOnlineId(dto.onlineId.trim());
@@ -68,18 +68,17 @@ export class PsnController {
       throw new NotFoundException('Aucun compte PlayStation public trouvé pour cet Online ID');
     }
 
-    // Aucune vérification d'unicité : la liaison ne prouve pas la propriété (on
-    // lit juste un profil public par Online ID), donc bloquer un accountId déjà
-    // utilisé permettrait à quelqu'un de « réserver » le compte d'autrui.
-    // Plusieurs profils peuvent pointer le même Online ID.
+    // No uniqueness check on purpose: linking proves nothing (we only read a
+    // public profile), so rejecting an already-used accountId would let someone
+    // "reserve" another person's account. Several profiles may share an ID.
     await this.prisma.user.update({
       where: { id: current.sub },
-      // psnLibrary vidé : le cache d'un éventuel compte précédent ne doit pas
-      // rester après un changement d'Online ID.
+      // psnLibrary cleared: a previous account's cache must not survive an
+      // Online ID change.
       data: { psnAccountId: account.accountId, psnOnlineId: account.onlineId, psnLibrary: Prisma.DbNull },
     });
 
-    // Succès « comptes liés »
+    // "Linked accounts" achievements
     void this.achievements.evaluate(current.sub, ['linked']);
     return { onlineId: account.onlineId, avatarUrl: account.avatarUrl };
   }
@@ -95,9 +94,9 @@ export class PsnController {
     });
   }
 
-  // Bibliothèque PSN : les jeux joués (titres à trophées) matchés à notre
-  // catalogue par nom, avec la progression de trophées par jeu, + le résumé
-  // global de trophées. Miroir de GET /steam/library.
+  // PSN library: played trophy titles matched to our catalog by name, with
+  // per-game trophy progress and the global trophy summary. Mirrors
+  // GET /steam/library.
   @Get('library')
   async library(@CurrentUser() current: JwtPayload, @Query('refresh') refresh?: string) {
     const user = await this.users.findById(current.sub);
@@ -119,8 +118,8 @@ export class PsnController {
         this.api.getTrophySummary(accountId),
       ]);
       if (fetched === null) {
-        // Profil privé OU erreur passagère : on ne vide pas la page si on a déjà
-        // un cache — on le ressert. Sinon seulement, on signale "privé".
+        // Private profile OR transient error: never blank the page when a cache
+        // exists — serve it again. Only report "private" without one.
         if (!cached?.titles) {
           return { private: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: fetchedSummary, syncedAt: null };
         }
@@ -138,9 +137,9 @@ export class PsnController {
 
     const matched = await this.matchTitles(current.sub, titles);
 
-    // Jeux du catalogue à 100 % : tous les trophées obtenus (progress 100) OU un
-    // platine décroché (décision produit : le platine vaut 100 %). → feed +
-    // calendrier « Terminé ». Date réelle = dernier trophée (lastUpdatedDateTime).
+    // Catalog games at 100%: every trophy earned, or a platinum unlocked — a
+    // product call that platinum counts as 100%. Feeds the "Completed" calendar,
+    // dated by the last trophy (lastUpdatedDateTime).
     const completed = matched
       .filter((m) => m.trophies.progress === 100 || (m.trophies.earned?.platinum ?? 0) >= 1)
       .map((m) => {
@@ -160,8 +159,8 @@ export class PsnController {
     };
   }
 
-  // Amis PSN déjà inscrits sur Saveboxd et pas encore amis (ni en attente) avec
-  // l'utilisateur courant. Miroir de GET /steam/friends/suggestions.
+  // PSN friends already on Saveboxd who aren't friends (or pending) with the
+  // current user. Mirrors GET /steam/friends/suggestions.
   @Get('friends/suggestions')
   async friendSuggestions(@CurrentUser() current: JwtPayload) {
     const accountId = await this.requireAccountId(current.sub);
@@ -192,11 +191,11 @@ export class PsnController {
     };
   }
 
-  // Associe les titres PSN aux jeux du catalogue par nom normalisé (SQL), puis
-  // décore chaque jeu de sa progression de trophées et de l'état de l'utilisateur
-  // (déjà "joué" / déjà noté). Un jeu multi-plateformes n'apparaît qu'une fois.
+  // Matches PSN titles to catalog games by normalised name (in SQL), then
+  // decorates each game with its trophy progress and the user's state (already
+  // played / already reviewed). A multi-platform game appears once.
   private async matchTitles(userId: number, titles: TrophyTitle[]) {
-    // nom normalisé -> meilleur titre PSN (progression la plus haute)
+    // normalised name -> best PSN title (highest progress)
     const byNorm = new Map<string, TrophyTitle>();
     for (const t of titles) {
       const n = normalize(t.trophyTitleName);
@@ -216,7 +215,7 @@ export class PsnController {
       WHERE lower(regexp_replace(title, '[^a-zA-Z0-9]', '', 'g')) = ANY(${normNames})
     `;
 
-    // norm -> premier jeu catalogue trouvé
+    // norm -> first matching catalog game
     const gameByNorm = new Map<string, (typeof rows)[number]>();
     for (const r of rows) if (!gameByNorm.has(r.norm)) gameByNorm.set(r.norm, r);
 
@@ -224,7 +223,7 @@ export class PsnController {
       .map((n) => ({ game: gameByNorm.get(n), title: byNorm.get(n)! }))
       .filter((m): m is { game: (typeof rows)[number]; title: TrophyTitle } => !!m.game);
 
-    // État de l'utilisateur pour ces jeux (joué / noté), en 2 requêtes groupées
+    // User state for these games (played / reviewed), in 2 batched queries
     const gameIds = matched.map((m) => m.game.id);
     const [played, reviewed] = await Promise.all([
       this.prisma.playedGame.findMany({
@@ -251,13 +250,13 @@ export class PsnController {
           defined: title.definedTrophies,
           progress: title.progress,
         },
-        // Date du dernier trophée obtenu (≈ date du 100 % / platine) → calendrier
-        // « Terminé ». ISO string ou null.
+        // Last trophy date, standing in for the 100%/platinum date in the
+        // "Completed" calendar. ISO string or null.
         lastUpdatedDateTime: title.lastUpdatedDateTime ?? null,
         playedStatus: playedBy.get(game.id)?.status ?? null,
         reviewed: reviewedIds.has(game.id),
       }))
-      // les plus avancés / récents d'abord
+      // furthest along first
       .sort((a, b) => b.trophies.progress - a.trophies.progress);
   }
 }

@@ -22,7 +22,7 @@ const publicAuthor = { select: { id: true, username: true, avatarUrl: true } };
 // turned into a `myReaction` field by toDto below
 const reviewInclude = (viewerId?: number): Prisma.ReviewInclude => ({
   user: publicAuthor,
-  // comments filtré : les tombales "[supprimé]" ne comptent pas dans le 💬
+  // comments is filtered: "[deleted]" tombstones don't count in the counter
   _count: {
     select: { likes: true, dislikes: true, comments: { where: { deletedAt: null } } },
   },
@@ -55,11 +55,11 @@ export class ReviewsService {
     private readonly achievements: AchievementsService,
   ) {}
 
-  // Traduction "à la demande" (bouton Traduire) du titre + texte d'un avis vers
-  // `lang`, mise en cache par (avis, langue). Source auto-détectée (un avis peut
-  // être écrit dans n'importe quelle langue). Si l'avis est déjà dans la langue
-  // cible, la traduction renvoie ~le même texte — le front compare et propose
-  // alors "voir l'original".
+  // On-demand translation (Translate button) of a review's title and text into
+  // `lang`, cached per (review, language). The source language is auto-detected,
+  // since a review can be written in any of them. When the review is already in
+  // the target language the result comes back nearly identical, which the front
+  // detects to offer "see original".
   async translateReview(id: number, lang: string): Promise<{ title: string; text: string }> {
     const cached = await this.prisma.reviewTranslation.findUnique({
       where: { reviewId_language: { reviewId: id, language: lang } },
@@ -84,10 +84,9 @@ export class ReviewsService {
     return { title, text };
   }
 
-  // Traduction en lot (auto-traduction) : les déjà-cachés en une requête, les
-  // manquants traduits SÉQUENTIELLEMENT (pour ne pas dépasser le débit DeepL).
-  // Un avis qui échoue est simplement absent du résultat → le front garde
-  // l'original.
+  // Batch translation: cached ones in a single query, missing ones translated
+  // SEQUENTIALLY to stay under DeepL's rate limit. A review that fails is simply
+  // absent from the result and the front keeps the original.
   async translateReviews(
     ids: number[],
     lang: string,
@@ -125,14 +124,14 @@ export class ReviewsService {
         include: reviewInclude(),
       });
       this.gateway.emitToTarget(target, 'review:created', review);
-      // Pousse l'avis dans le feed d'activité des amis (best-effort)
+      // Push the review to friends' activity feed (best-effort)
       void this.feed.onReviewCreated(review.id);
       // Reviewing a game implies you played it: mark it PLAYED (idempotent —
       // keep the original date if already marked, so the completion calendar
       // doesn't drift). Studio reviews have no "played" notion.
       if (target.gameId) await this.ensurePlayed(userId, target.gameId);
-      // Succès : avis écrit (+ fan de studio, + coup de cœur / critique sévère
-      // selon la note).
+      // Achievements: review written, plus studio fan and favourite/harsh
+      // depending on the rating.
       void this.achievements.evaluate(userId, ['reviews', 'studio', 'favorite', 'harsh']);
       return review;
     } catch (e) {
@@ -171,8 +170,8 @@ export class ReviewsService {
     limit: number,
     viewerId?: number,
   ) {
-    // Net score et "discussed" filtré tombales : au-delà du orderBy Prisma,
-    // chemin SQL brut pour les deux
+    // Net score and tombstone-filtered "discussed" are beyond Prisma's orderBy,
+    // so both take a raw SQL path
     if (sort === 'popular') return this.findByScore({ gameId }, page, limit, viewerId);
     if (sort === 'discussed') return this.findByDiscussed({ gameId }, page, limit, viewerId);
     const rows = await this.prisma.review.findMany({
@@ -226,8 +225,8 @@ export class ReviewsService {
     return this.loadOrdered(rows.map((r) => r.id), viewerId);
   }
 
-  // "Discussed" classe sur les commentaires VISIBLES (tombales exclues),
-  // comme le compteur affiché — même histoire des deux côtés
+  // "Discussed" ranks on VISIBLE comments (tombstones excluded), matching the
+  // counter shown in the UI — one story on both sides
   private async findByDiscussed(
     target: { gameId?: number; companyId?: number },
     page: number,
@@ -253,7 +252,7 @@ export class ReviewsService {
       : Prisma.sql`r."companyId" = ${target.companyId}`;
   }
 
-  // Résout le pseudo puis délègue à findForUser (renvoie [] si inconnu).
+  // Resolves the username then delegates to findForUser ([] when unknown).
   async findForUsername(
     username: string,
     sort: ReviewSort,
@@ -269,9 +268,9 @@ export class ReviewsService {
     return this.findForUser(user.id, sort, page, limit, viewerId);
   }
 
-  // Avis d'un utilisateur (tous jeux/studios confondus) — pour son profil.
-  // Chaque avis porte son jeu/studio (comme highlights) pour être affiché hors
-  // de sa page cible. Mêmes tris que la fiche jeu : récents / populaires / discutés.
+  // A user's reviews across every game and studio, for their profile. Each one
+  // carries its target (like highlights) so it can render away from that page.
+  // Same sorts as the game page: recent / popular / discussed.
   private async findForUser(
     userId: number,
     sort: ReviewSort,
@@ -385,11 +384,11 @@ export class ReviewsService {
   async update(userId: number, id: number, dto: UpdateReviewDto) {
     const target = await this.assertOwner(id, userId);
     const review = await this.prisma.review.update({ where: { id }, data: dto });
-    // Le contenu a changé → les traductions en cache sont périmées : on les jette
-    // (elles seront régénérées à la demande au prochain clic "Traduire").
+    // The content changed, so cached translations are stale: drop them and let
+    // the next "Translate" click regenerate them.
     await this.prisma.reviewTranslation.deleteMany({ where: { reviewId: id } });
     this.gateway.emitToTarget(target, 'review:updated', { reviewId: id });
-    // La note a pu changer → réévalue coup de cœur / critique sévère.
+    // The rating may have changed: re-evaluate favourite / harsh.
     void this.achievements.evaluate(userId, ['favorite', 'harsh']);
     return review;
   }
@@ -410,13 +409,13 @@ export class ReviewsService {
       await this.emitReaction(reviewId);
       await this.notifications.reviewLiked(userId, reviewId);
       void this.feed.onReviewLiked(userId, reviewId);
-      // Succès « populaire » : c'est l'AUTEUR de la critique qui gagne le like.
+      // "Popular" goes to the review's AUTHOR, who earned the like.
       const author = await this.prisma.review.findUnique({
         where: { id: reviewId },
         select: { userId: true },
       });
       if (author?.userId) void this.achievements.evaluate(author.userId, ['popular']);
-      // ...et le SOUTIEN va à celui qui a liké.
+      // ...and "supporter" goes to whoever gave it.
       void this.achievements.evaluate(userId, ['supporter']);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -482,7 +481,7 @@ export class ReviewsService {
     const where = target.gameId ? { gameId: target.gameId } : { companyId: target.companyId };
     const [agg, grouped] = await Promise.all([
       this.prisma.review.aggregate({ where, _avg: { rating: true }, _count: true }),
-      // Répartition des notes 0–10 (histogramme de la fiche).
+      // 0-10 rating spread for the game page histogram.
       this.prisma.review.groupBy({ by: ['rating'], where, _count: true }),
     ]);
     const distribution = Array<number>(11).fill(0);

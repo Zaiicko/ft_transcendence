@@ -9,8 +9,8 @@ import {
   buildAchievementFeedItem,
 } from './achievements.catalog';
 
-// Un succès tel que renvoyé au profil : définition + état (débloqué ou non) +
-// progression courante (pour la barre X/Y sur les succès verrouillés).
+// One achievement as returned to the profile: definition, unlocked state and
+// current progress (for the X/Y bar on locked ones).
 export interface AchievementView {
   key: string;
   family: AchievementFamily;
@@ -19,13 +19,13 @@ export interface AchievementView {
   icon: string;
   unlocked: boolean;
   unlockedAt: string | null;
-  progress: number; // valeur courante de la métrique (bornée au seuil)
+  progress: number; // current metric value, capped at the threshold
 }
 
 type GameRef = { id: number; title: string; coverUrl: string | null };
 
-// Réponse du profil : les succès + les jeux qui illustrent certaines familles
-// (notés 10 = coups de cœur, notés 0 = critiques sévères).
+// Profile response: the achievements plus the games illustrating some families
+// (rated 10 = favourites, rated 0 = harsh reviews).
 export interface AchievementsPayload {
   items: AchievementView[];
   ratedGames: { favorite: GameRef[]; harsh: GameRef[] };
@@ -43,9 +43,9 @@ export class AchievementsService implements OnModuleInit {
     private readonly gateway: FeedGateway,
   ) {}
 
-  // Amorçage unique : si aucun succès n'existe encore (première mise en service
-  // de la feature), on débloque en SILENCE les succès déjà mérités par l'existant
-  // — pas de notif ni de feed, sinon tout l'historique s'annoncerait d'un coup.
+  // One-off backfill: when no achievement exists yet (first deploy of the
+  // feature), silently unlock what existing data already earned — no
+  // notification, no feed, or the whole history would announce at once.
   async onModuleInit(): Promise<void> {
     try {
       if ((await this.prisma.userAchievement.count()) > 0) return;
@@ -59,7 +59,7 @@ export class AchievementsService implements OnModuleInit {
     }
   }
 
-  // Valeur courante de la métrique d'une famille pour un utilisateur.
+  // Current value of a family's metric for one user.
   private async metric(userId: number, family: AchievementFamily): Promise<number> {
     switch (family) {
       case 'completions':
@@ -79,7 +79,6 @@ export class AchievementsService implements OnModuleInit {
           })
         ).length;
       case 'linked': {
-        // Nb de comptes plateforme liés : Steam / Xbox / PlayStation.
         const u = await this.prisma.user.findUnique({
           where: { id: userId },
           select: { steamId: true, xboxXuid: true, psnAccountId: true },
@@ -89,19 +88,17 @@ export class AchievementsService implements OnModuleInit {
       case 'reviews':
         return this.prisma.review.count({ where: { userId } });
       case 'popular':
-        // Total de j'aime reçus sur les critiques de l'utilisateur.
+        // Likes received on this user's reviews.
         return this.prisma.reviewLike.count({ where: { review: { userId } } });
       case 'supporter':
-        // Total de j'aime DONNÉS aux critiques des autres.
+        // Likes given to other people's reviews.
         return this.prisma.reviewLike.count({ where: { userId } });
       case 'favorite':
-        // Critiques notées 10/10.
         return this.prisma.review.count({ where: { userId, rating: 10 } });
       case 'harsh':
-        // Critiques notées 0.
         return this.prisma.review.count({ where: { userId, rating: 0 } });
       case 'veteran': {
-        // Ancienneté du compte, en mois (~30 j).
+        // Account age in months (~30 days).
         const u = await this.prisma.user.findUnique({
           where: { id: userId },
           select: { createdAt: true },
@@ -116,7 +113,7 @@ export class AchievementsService implements OnModuleInit {
           where: { status: 'ACCEPTED', OR: [{ requesterId: userId }, { addresseeId: userId }] },
         });
       case 'genres': {
-        // Nb de genres distincts parmi les jeux terminés (join m2m implicite).
+        // Distinct genres across completed games (implicit m2m join).
         const rows = await this.prisma.$queryRaw<{ n: number }[]>`
           SELECT COUNT(DISTINCT gg."B")::int AS n
           FROM "GameCompletion" c
@@ -126,7 +123,7 @@ export class AchievementsService implements OnModuleInit {
         return rows[0]?.n ?? 0;
       }
       case 'studio': {
-        // Max de jeux notés appartenant à un même studio.
+        // Most rated games belonging to a single studio.
         const rows = await this.prisma.$queryRaw<{ n: number }[]>`
           SELECT COUNT(DISTINCT r."gameId")::int AS n
           FROM "Review" r
@@ -141,9 +138,9 @@ export class AchievementsService implements OnModuleInit {
     }
   }
 
-  // Recalcule les familles concernées par une action et débloque les paliers
-  // franchis (insert idempotent) ; notifie l'utilisateur et pousse une carte de
-  // feed à ses amis. Best-effort : ne bloque jamais l'action déclenchante.
+  // Recomputes the families an action touches and unlocks the tiers crossed
+  // (idempotent insert), notifies the user and pushes a feed card to their
+  // friends. Best-effort: never blocks the triggering action.
   async evaluate(
     userId: number,
     families: AchievementFamily[],
@@ -153,7 +150,7 @@ export class AchievementsService implements OnModuleInit {
       const defs = ALL_ACHIEVEMENTS.filter((a) => families.includes(a.family));
       if (defs.length === 0) return;
 
-      // Paliers pas encore débloqués
+      // Tiers not unlocked yet
       const owned = new Set(
         (
           await this.prisma.userAchievement.findMany({
@@ -165,7 +162,7 @@ export class AchievementsService implements OnModuleInit {
       const pending = defs.filter((d) => !owned.has(d.key));
       if (pending.length === 0) return;
 
-      // Une seule mesure par famille concernée
+      // One measurement per family involved
       const fams = [...new Set(pending.map((d) => d.family))];
       const values = new Map<AchievementFamily, number>();
       await Promise.all(fams.map(async (f) => values.set(f, await this.metric(userId, f))));
@@ -174,19 +171,19 @@ export class AchievementsService implements OnModuleInit {
       if (toUnlock.length === 0) return;
 
       await this.prisma.userAchievement.createMany({
-        // `announced` = true seulement pour une vraie action → apparaît dans le
-        // feed. Backfill/amorçage (notify=false) reste invisible du feed.
+        // `announced` is true only for a real action, which is what makes it
+        // show up in the feed; a backfill (notify=false) stays invisible.
         data: toUnlock.map((d) => ({ userId, key: d.key, announced: notify })),
         skipDuplicates: true,
       });
 
-      // Backfill / amorçage : on insère mais on n'annonce rien.
+      // Backfill: rows are inserted but nothing is announced.
       if (!notify) return;
 
-      // Notification perso (respecte les préférences)
+      // Personal notification (honours the user's preferences)
       for (const d of toUnlock) await this.notifications.achievementUnlocked(userId, d.key);
 
-      // Carte de feed pour les amis
+      // Feed card for friends
       const rows = await this.prisma.userAchievement.findMany({
         where: { userId, key: { in: toUnlock.map((d) => d.key) } },
         select: {
@@ -207,8 +204,8 @@ export class AchievementsService implements OnModuleInit {
     }
   }
 
-  // Tous les succès du catalogue avec l'état (débloqué + progression) d'un user,
-  // pour la section « Succès » du profil. Débloqués d'abord, puis par famille.
+  // Every catalog achievement with this user's state (unlocked + progress), for
+  // the profile's "Achievements" section. Unlocked first, then by family.
   async getForUser(userId: number): Promise<AchievementsPayload> {
     const [unlocked, values, favGames, harshGames] = await Promise.all([
       this.prisma.userAchievement.findMany({
@@ -222,7 +219,7 @@ export class AchievementsService implements OnModuleInit {
         );
         return map;
       })(),
-      // Jeux notés 10 (coups de cœur) et 0 (critiques sévères), récents d'abord.
+      // Games rated 10 (favourites) and 0 (harsh), most recent first.
       this.prisma.review.findMany({
         where: { userId, rating: 10, gameId: { not: null } },
         orderBy: { createdAt: 'desc' },
@@ -238,10 +235,10 @@ export class AchievementsService implements OnModuleInit {
     ]);
     const unlockedAt = new Map(unlocked.map((u) => [u.key, u.unlockedAt]));
 
-    // Auto-réparation silencieuse : les succès déjà mérités (progression ≥ seuil)
-    // mais pas encore enregistrés sont insérés à la volée. Indispensable pour les
-    // familles SANS déclencheur d'action (ex. « vétéran », qui se débloque avec le
-    // temps). Aucune notif/feed ici — simple rattrapage.
+    // Silent self-repair: achievements already earned (progress >= threshold)
+    // but never stored are inserted here. Required for families with no action
+    // trigger, like "veteran", which unlocks purely with time. No notification
+    // or feed — this is catch-up only.
     const missing = ALL_ACHIEVEMENTS.filter(
       (a) => !unlockedAt.has(a.key) && (values.get(a.family) ?? 0) >= a.threshold,
     );
@@ -268,7 +265,7 @@ export class AchievementsService implements OnModuleInit {
         progress: Math.min(current, a.threshold),
       };
     }).sort((x, y) => {
-      // Débloqués d'abord, puis les plus proches d'être débloqués (progression %)
+      // Unlocked first, then whichever is closest to unlocking (progress %)
       if (x.unlocked !== y.unlocked) return x.unlocked ? -1 : 1;
       if (x.unlocked && y.unlocked) return (y.unlockedAt! > x.unlockedAt! ? 1 : -1);
       return y.progress / y.threshold - x.progress / x.threshold;
@@ -283,7 +280,7 @@ export class AchievementsService implements OnModuleInit {
     };
   }
 
-  // Amis acceptés d'un utilisateur (destinataires du feed).
+  // Accepted friends of a user (the feed recipients).
   private async friendIds(userId: number): Promise<number[]> {
     const rows = await this.prisma.friendship.findMany({
       where: { status: 'ACCEPTED', OR: [{ requesterId: userId }, { addresseeId: userId }] },

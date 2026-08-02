@@ -96,8 +96,8 @@ export class GamesService {
     if (total === 0) return { data: [], total, page, limit };
     const ids = candidates.map((c) => c.id);
 
-    // Direction principale pilotée par dto.dir (chaque bouton bascule desc↔asc).
-    // Valeurs contrôlées par l'enum SortDir → Prisma.raw sans risque d'injection.
+    // Direction driven by dto.dir (each button toggles desc/asc). Values come
+    // from the SortDir enum, so Prisma.raw carries no injection risk.
     const dir = dto.dir === SortDir.ASC ? Prisma.raw('ASC') : Prisma.raw('DESC');
     const orderBy: Record<GameSort, Prisma.Sql> = {
       [GameSort.RATING]: Prisma.sql`score ${dir}, s."igdbRatingCount" DESC NULLS LAST`,
@@ -273,9 +273,8 @@ export class GamesService {
       this.prisma.playedGame.count({
         where: { gameId, status: PlayStatus.PLAYED },
       }),
-      // Nb de JOUEURS distincts ayant terminé ce jeu (manuel ou 100 % plateforme).
-      // distinct userId : un même joueur compté une fois même s'il l'a fini sur
-      // plusieurs plateformes.
+      // Distinct PLAYERS who completed this game (manual or platform 100%).
+      // distinct userId, so finishing it on several platforms counts once.
       this.prisma.gameCompletion.findMany({
         where: { gameId },
         distinct: ['userId'],
@@ -287,7 +286,7 @@ export class GamesService {
             select: { status: true, playedAt: true },
           })
         : null,
-      // Le viewer a-t-il marqué ce jeu « terminé » à la main ?
+      // Did the viewer mark this game completed by hand?
       viewerId
         ? this.prisma.gameCompletion.findUnique({
             where: { userId_gameId_platform: { userId: viewerId, gameId, platform: 'manual' } },
@@ -298,11 +297,10 @@ export class GamesService {
     return { count, completedCount: completers.length, mine, completedByMe: !!completed };
   }
 
-  // Marque le jeu « fait ». `playedAt` optionnel = date choisie par l'user
-  // (jeux faits avant le compte / pas le jour même) ; défaut = maintenant.
-  // Sans date fournie : re-marquer un jeu déjà « fait » garde sa date d'origine
-  // (le calendrier ne doit pas dériver sur un double-clic). Avec une date
-  // fournie : on la pose toujours (l'user corrige explicitement la date).
+  // Marks the game played. Optional `playedAt` is the user's own date (games
+  // finished before signing up); defaults to now. Without a date, re-marking an
+  // already-played game keeps the original one so a double click can't drift the
+  // calendar. With a date, it is always applied — the user is correcting it.
   async markPlayed(userId: number, gameId: number, playedAt?: Date) {
     const exists = await this.prisma.game.findUnique({ where: { id: gameId }, select: { id: true } });
     if (!exists) throw new NotFoundException(`Game ${gameId} not found`);
@@ -319,8 +317,8 @@ export class GamesService {
           : {},
       create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when },
     });
-    // Nouvelle transition vers « fait » → pousse dans le feed des amis
-    // (best-effort ; le service ignore le cas où un avis existe déjà)
+    // Fresh transition to played -> push to friends' feed (best-effort; the
+    // service skips it when a review already exists)
     if (current?.status !== PlayStatus.PLAYED) void this.feed.onGamePlayed(userId, gameId);
     return { status: row.status, playedAt: row.playedAt };
   }
@@ -330,17 +328,17 @@ export class GamesService {
     await this.prisma.playedGame.deleteMany({ where: { userId, gameId } });
   }
 
-  // « Terminé » manuel : crée une GameCompletion(platform='manual') — même
-  // pipeline que les 100 % plateformes (calendrier vert + feed « terminé »).
-  // Terminer implique avoir joué → on garantit aussi un PlayedGame PLAYED.
+  // Manual "completed": creates a GameCompletion(platform='manual'), same
+  // pipeline as platform 100% (green calendar + feed card). Completing implies
+  // playing, so a PlayedGame PLAYED is guaranteed too.
   async markCompleted(userId: number, gameId: number, completedAt?: Date) {
     const game = await this.prisma.game.findUnique({
       where: { id: gameId },
       select: { id: true, releaseDate: true },
     });
     if (!game) throw new NotFoundException(`Game ${gameId} not found`);
-    // Garde-fous sur la date choisie par l'user : pas dans le futur, et pas
-    // avant la sortie du jeu (on ne peut pas l'avoir fini avant qu'il existe).
+    // Guards on the user-picked date: not in the future, and not before the
+    // game was released.
     if (completedAt) {
       if (completedAt.getTime() > Date.now() + 24 * 3600 * 1000) {
         throw new BadRequestException('Completion date cannot be in the future');
@@ -354,8 +352,8 @@ export class GamesService {
       select: { status: true },
     });
     const when = completedAt ?? new Date();
-    // Terminer implique avoir joué : si pas encore « fait », on pose PLAYED à la
-    // même date que la complétion (cohérence des deux calendriers).
+    // Completing implies playing: if not marked yet, set PLAYED on the same
+    // date as the completion so both calendars agree.
     await this.prisma.playedGame.upsert({
       where: { userId_gameId: { userId, gameId } },
       update: current?.status === PlayStatus.PLAYED ? {} : { status: PlayStatus.PLAYED, playedAt: when },
@@ -365,23 +363,23 @@ export class GamesService {
       where: { userId_gameId_platform: { userId, gameId, platform: 'manual' } },
       select: { id: true },
     });
-    // Avec une date fournie : on la (re)pose toujours (l'user corrige la date).
+    // When a date is given it is always reapplied — the user is correcting it.
     await this.prisma.gameCompletion.upsert({
       where: { userId_gameId_platform: { userId, gameId, platform: 'manual' } },
       update: completedAt ? { completedAt: when } : {},
       create: { userId, gameId, platform: 'manual', completedAt: when },
     });
-    // Nouvelle complétion → feed (et « fait » si le jeu ne l'était pas encore)
+    // New completion -> feed (plus "played" if it wasn't marked yet)
     if (!before) {
       if (current?.status !== PlayStatus.PLAYED) void this.feed.onGamePlayed(userId, gameId);
       void this.feed.onGameCompleted(userId, gameId);
     }
-    // Succès : « fait » manuel alimente les familles terminés / genres.
+    // Achievements: a manual completion feeds the completions / genres families.
     void this.achievements.evaluate(userId, ['completions', 'genres']);
     return { completedByMe: true };
   }
 
-  // 204 idempotent : ne retire que la complétion MANUELLE (pas les 100 % plateformes)
+  // Idempotent 204: only removes the MANUAL completion, never platform 100%
   async unmarkCompleted(userId: number, gameId: number) {
     await this.prisma.gameCompletion.deleteMany({ where: { userId, gameId, platform: 'manual' } });
   }
@@ -477,8 +475,8 @@ export class GamesService {
       if (weight === 0) return;
       for (const g of genres) genreWeight.set(g.id, (genreWeight.get(g.id) ?? 0) + weight);
     };
-    // Profil de goûts par STUDIO (même logique que par genre) : sert la raison
-    // « parce que tu aimes les jeux de <studio> ». On garde aussi le nom.
+    // Taste profile per STUDIO, same logic as genres: backs the "because you
+    // like games from <studio>" reason. The name is kept alongside.
     const studioWeight = new Map<number, number>();
     const studioName = new Map<number, string>();
     const addStudios = (companies: { id: number; name: string }[], weight: number) => {
@@ -488,11 +486,11 @@ export class GamesService {
         studioName.set(c.id, c.name);
       }
     };
-    // Pool de « jeux ancres » pour justifier une reco par un jeu concret plutôt
-    // qu'un simple nom de genre. Deux niveaux : un jeu BIEN noté (rating > neutre,
-    // tier 2 → « parce que tu as aimé X ») prime sur un jeu simplement joué
-    // (tier 1 → « parce que tu as joué à X »). Le choix final se fait PAR reco,
-    // selon le recouvrement de genres — pour varier l'ancre d'une carte à l'autre.
+    // Pool of "anchor games" so a recommendation can cite a concrete game
+    // instead of a bare genre name. Two tiers: a well-rated game (rating above
+    // neutral, tier 2, "because you liked X") outranks a merely played one
+    // (tier 1). The pick happens per recommendation, by genre overlap, so the
+    // anchor varies from card to card.
     type Anchor = { id: number; title: string; genres: Set<number>; tier: number; rating: number; at: number };
     const anchors: Anchor[] = [];
     for (const r of reviews) {
@@ -568,17 +566,16 @@ export class GamesService {
       limit,
     );
 
-    // Attache le même score bayésien que la liste du catalogue, pour afficher la
-    // pastille de note sur les cartes « Recommandés » (comme « Populaires »).
+    // Same bayesian score as the catalog list, so "Recommended" cards show the
+    // rating pill like "Popular" ones do.
     const scores = await this.scoresByIds(data.map((g) => g.id));
 
-    // Raison de la reco : on VARIE le type d'une carte à l'autre (jeu / studio /
-    // genre) pour ne pas tout justifier de la même façon. Pour chaque jeu on
-    // calcule les options possibles, puis on répartit en privilégiant à chaque
-    // fois le type le MOINS utilisé jusque-là → un mix équilibré sur la liste.
+    // Recommendation reason: the type varies from card to card (game / studio /
+    // genre) so the row isn't justified the same way throughout. Options are
+    // computed per game, then spread by always preferring the least-used type.
 
-    // Meilleure ancre-jeu partageant le plus de genres avec ce jeu (tier d'abord :
-    // un jeu aimé prime sur un jeu simplement joué).
+    // Best anchor game sharing the most genres with this one (tier first: a
+    // liked game beats a merely played one).
     const anchorFor = (genreIds: number[], selfId: number): Anchor | null => {
       let best: Anchor | null = null;
       let bestOv = 0;
@@ -601,7 +598,7 @@ export class GamesService {
       }
       return best;
     };
-    // Studio du jeu au poids le plus fort dans le profil (ou null).
+    // The game's studio carrying the most weight in the profile, or null.
     const studioFor = (companies: { id: number; name: string }[]) => {
       let best: { id: number; name: string } | null = null;
       let bestW = 0;
@@ -614,7 +611,7 @@ export class GamesService {
       }
       return best;
     };
-    // Genre du jeu au poids le plus fort (les candidats en ont toujours ≥ 1 > 0).
+    // The game's heaviest genre (candidates always have at least one above 0).
     const genreFor = (genres: { id: number; name: string }[]) => {
       let best: { id: number; name: string } | null = null;
       let bestW = -1;
@@ -640,8 +637,8 @@ export class GamesService {
       genre: genreFor(g.genres),
     }));
 
-    // Répartition : à chaque carte, le type disponible le MOINS servi jusque-là
-    // (départage par richesse : jeu > studio > genre).
+    // Spread: each card takes the least-used available type, ties broken by
+    // richness (game > studio > genre).
     const RICHNESS: ReasonKind[] = ['game', 'studio', 'genre'];
     const usedCount: Record<ReasonKind, number> = { game: 0, studio: 0, genre: 0 };
     const reasons: (Reason | null)[] = options.map((o) => {
@@ -672,9 +669,9 @@ export class GamesService {
     };
   }
 
-  // Score bayésien (même formule que la liste du catalogue) pour un ensemble
-  // d'ids, renvoyé en table id → score. Sert aux recommandations, qui tirent
-  // leurs jeux hors de la requête notée du catalogue.
+  // Bayesian score (same formula as the catalog list) for a set of ids, as an
+  // id -> score map. Used by recommendations, which pick their games outside
+  // the catalog's scored query.
   private async scoresByIds(ids: number[]): Promise<Map<number, number>> {
     if (ids.length === 0) return new Map();
     const rows = await this.prisma.$queryRaw<{ id: number; score: number }[]>(Prisma.sql`

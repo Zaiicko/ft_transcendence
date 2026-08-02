@@ -9,21 +9,21 @@ import { PsnApiService } from '../psn/psn-api.service';
 import { SteamWebApiService, SteamOwnedGame } from '../steam/steam-web-api.service';
 import { XboxApiService } from '../xbox/xbox-api.service';
 
-// Âge max d'un compte avant re-synchro de fond des complétions ≈ fraîcheur avec
-// laquelle les amis voient les jeux finis à 100 % (décision produit : ~6 h).
+// How stale an account may get before a background resync — i.e. how fresh
+// friends' 100% games are. Product call: ~6h.
 const STALE_MS = 6 * 60 * 60 * 1000;
-// Nombre de (compte, plateforme) rafraîchis par tick. Volontairement bas : le
-// facteur limitant est OpenXBL (Xbox), dont la CLÉ SERVICE est PARTAGÉE par tous
-// les utilisateurs et plafonnée à ~150 req/h ; PSN (session NPSSO partagée) veut
-// aussi de la douceur. À 6/h × 2 appels ≈ 12 req/h : très loin du plafond.
+// (account, platform) pairs refreshed per tick. Deliberately low: the limiting
+// factor is OpenXBL, whose SERVICE KEY is SHARED by every user and capped at
+// ~150 req/h; the shared PSN session wants gentleness too. 6/h x 2 calls is
+// ~12 req/h, far below the ceiling.
 const BATCH = 6;
-// Pause entre deux comptes : lisse les appels vers les clés partagées au lieu
-// d'une rafale (le vrai risque de rate-limit, plus que la fréquence globale).
+// Gap between two accounts: spreads calls on the shared keys instead of
+// bursting, which is the real rate-limit risk rather than overall frequency.
 const INTER_JOB_MS = 3000;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-// Même normalisation que les contrôleurs Xbox/PSN (minuscules + alphanumérique).
+// Same normalisation as the Xbox/PSN controllers (lowercase, alphanumeric).
 const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 type PlatformKey = 'steam' | 'xbox' | 'psn';
@@ -34,12 +34,11 @@ interface Job {
   staleFor: number;
 }
 
-// Détection périodique, en tâche de fond, des jeux passés à 100 % : sans elle,
-// un ami qui ne rouvre jamais sa bibliothèque ne diffuserait jamais ses
-// complétions. On re-synchronise depuis les API (fetch frais), on met à jour le
-// cache, puis on délègue à FeedService.syncCompletions — EXACTEMENT le même
-// chemin (seuil 100 %, amorçage silencieux) que la synchro interactive. Best
-// effort : aucun échec ne remonte, chaque tentative est bornée et espacée.
+// Background detection of games that reached 100%. Without it, a friend who
+// never reopens their library would never broadcast a completion. Refetches
+// from the APIs, refreshes the cache, then delegates to
+// FeedService.syncCompletions — the exact same path as an interactive sync.
+// Best-effort: no failure propagates, every attempt is bounded and spaced out.
 @Injectable()
 export class CompletionsService {
   private readonly logger = new Logger(CompletionsService.name);
@@ -72,7 +71,7 @@ export class CompletionsService {
             `refresh ${job.platform}#${job.userId} failed: ${(err as Error).message}`,
           );
         } finally {
-          // Bumpé même en échec : on ne re-tente pas un profil privé tous les ticks.
+          // Bumped even on failure, so a private profile isn't retried every tick.
           await this.prisma.user
             .update({ where: { id: job.userId }, data: { completionCheckedAt: new Date() } })
             .catch(() => undefined);
@@ -83,8 +82,8 @@ export class CompletionsService {
     }
   }
 
-  // Comptes liés, ayant au moins un ami accepté (sinon personne ne lit ce feed),
-  // dont la dernière vérification est absente ou périmée. Les plus périmés d'abord.
+  // Linked accounts with at least one accepted friend (nobody reads the feed
+  // otherwise) whose last check is missing or stale. Stalest first.
   private async selectDueJobs(): Promise<Job[]> {
     const threshold = new Date(Date.now() - STALE_MS);
     const users = await this.prisma.user.findMany({
@@ -137,11 +136,11 @@ export class CompletionsService {
     return this.detectPsn(job.userId, job.linkId);
   }
 
-  // ---- Steam : succès par jeu (1 requête/jeu), match catalogue par steamAppId ----
+  // ---- Steam: achievements per game (1 request each), matched by steamAppId ----
 
   private async detectSteam(userId: number, steamId: string): Promise<void> {
     const owned = await this.steam.getOwnedGames(steamId);
-    if (owned === null) return; // profil privé/erreur : on ne touche pas au cache
+    if (owned === null) return; // private profile or error: leave the cache alone
     const perGame = await this.syncSteamAchievements(steamId, owned);
     await this.prisma.user.update({
       where: { id: userId },
@@ -155,7 +154,7 @@ export class CompletionsService {
     const completed = games
       .filter((g) => {
         const a = g.steamAppId ? perGame[String(g.steamAppId)] : undefined;
-        return a && a[1] > 0 && a[0] === a[1]; // tous les succès obtenus
+        return a && a[1] > 0 && a[0] === a[1]; // every achievement earned
       })
       .map((g) => {
         const lastUnlock = g.steamAppId ? (perGame[String(g.steamAppId)]?.[2] ?? 0) : 0;
@@ -168,9 +167,9 @@ export class CompletionsService {
     void this.achievements.evaluate(userId, ['completions', 'perfect', 'genres']);
   }
 
-  // Copie assumée de SteamController.syncAchievements (Steam n'a pas d'appel
-  // groupé) : les deux chemins doivent rester identiques. perGame :
-  // [obtenus, total, lastUnlock] — lastUnlock (unix s) = date réelle du 100 %.
+  // Deliberate copy of SteamController.syncAchievements (Steam has no batch
+  // call): both paths must stay identical. perGame is
+  // [earned, total, lastUnlock], lastUnlock (unix s) being the real 100% date.
   private async syncSteamAchievements(
     steamId: string,
     owned: SteamOwnedGame[],
@@ -215,14 +214,14 @@ export class CompletionsService {
       titles,
       (t) => t.name,
       (t) => t.totalGamerscore > 0 && t.currentGamerscore === t.totalGamerscore,
-      // Xbox : pas de date par succès sans appel par jeu → approx. lastPlayed.
+      // Xbox gives no per-achievement date without a call per game: use lastPlayed.
       (t) => (t.lastPlayed ? new Date(t.lastPlayed) : undefined),
     );
     await this.feed.syncCompletions(userId, 'xbox', completed);
     void this.achievements.evaluate(userId, ['completions', 'perfect', 'genres']);
   }
 
-  // ---- PSN : 100 % des trophées OU platine (décision produit) ----
+  // ---- PSN: all trophies OR a platinum, a product call ----
 
   private async detectPsn(userId: number, accountId: string): Promise<void> {
     const titles = await this.psn.getTitles(accountId);
@@ -242,23 +241,23 @@ export class CompletionsService {
       titles,
       (t) => t.trophyTitleName,
       (t) => t.progress === 100 || (t.earnedTrophies?.platinum ?? 0) >= 1,
-      // PSN : date du dernier trophée (≈ 100 % / platine).
+      // PSN: date of the last trophy, standing in for the 100%/platinum date.
       (t) => (t.lastUpdatedDateTime ? new Date(t.lastUpdatedDateTime) : undefined),
     );
     await this.feed.syncCompletions(userId, 'psn', completed);
     void this.achievements.evaluate(userId, ['completions', 'perfect', 'genres']);
   }
 
-  // Titres complétés → { gameId, completedAt } du catalogue, par nom normalisé
-  // (même SQL que les contrôleurs). Un nom compte comme complété dès qu'un de ses
-  // titres l'est ; on retient la date de complétion la plus récente pour ce nom.
+  // Completed titles -> catalog { gameId, completedAt }, by normalised name
+  // (same SQL as the controllers). A name counts as completed as soon as one of
+  // its titles is, keeping the most recent completion date for that name.
   private async matchCompleted<T>(
     titles: T[],
     getName: (t: T) => string,
     isComplete: (t: T) => boolean,
     getDate: (t: T) => Date | undefined,
   ): Promise<{ gameId: number; completedAt?: Date }[]> {
-    // norm -> date de complétion la plus récente (ou undefined si non datée)
+    // norm -> most recent completion date (undefined when undated)
     const dateByNorm = new Map<string, Date | undefined>();
     for (const t of titles) {
       if (!isComplete(t)) continue;

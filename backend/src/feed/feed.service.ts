@@ -16,7 +16,7 @@ const actorSelect = { id: true, username: true, avatarUrl: true } as const;
 const gameSelect = { id: true, title: true, coverUrl: true } as const;
 const companySelect = { id: true, name: true, logoUrl: true } as const;
 
-// Aperçu dénormalisé d'un avis (mêmes champs que ReviewHighlight côté front)
+// Denormalised review preview (same fields as ReviewHighlight on the front)
 const reviewSelect = {
   id: true,
   rating: true,
@@ -29,7 +29,7 @@ const reviewSelect = {
   _count: { select: { likes: true, dislikes: true, comments: true } },
 } as const;
 
-// Complétion 100 % : acteur + jeu + plateforme pour la carte du feed
+// 100% completion: actor + game + platform for the feed card
 const completionSelect = {
   id: true,
   createdAt: true,
@@ -38,7 +38,7 @@ const completionSelect = {
   game: { select: gameSelect },
 } as const;
 
-// Cible (jeu/studio) minimale pour construire les liens des « likes »
+// Minimal target (game/studio) needed to build the "like" links
 const reviewTargetSelect = {
   id: true,
   title: true,
@@ -49,12 +49,11 @@ const reviewTargetSelect = {
 
 export type FeedActor = { id: number; username: string; avatarUrl: string | null };
 
-// Filtre optionnel du feed (onglets en haut de la page). Absent = tout.
+// Optional feed filter (tabs at the top of the page). Absent = everything.
 export type FeedFilter = 'reviews' | 'played' | 'completed' | 'likes' | 'achievements';
 
-// Un événement du feed. `at` sert au tri chronologique et de curseur « charger
-// plus ». `id` est unique tous types confondus (préfixé) pour dédupliquer côté
-// front lors du push temps réel.
+// One feed event. `at` drives both the chronological sort and the "load more"
+// cursor. `id` is prefixed per type so the front can dedupe real-time pushes.
 export type FeedItem =
   | { id: string; kind: 'review'; at: string; review: unknown }
   | { id: string; kind: 'played'; at: string; actor: FeedActor; game: unknown }
@@ -95,7 +94,7 @@ export class FeedService {
     private readonly leaderboard: LeaderboardService,
   ) {}
 
-  // IDs des amis acceptés (dans les deux sens de la relation)
+  // Accepted friend IDs, both directions of the relation
   private async friendIds(userId: number): Promise<number[]> {
     const rows = await this.prisma.friendship.findMany({
       where: {
@@ -107,9 +106,9 @@ export class FeedService {
     return rows.map((r) => (r.requesterId === userId ? r.addresseeId : r.requesterId));
   }
 
-  // Feed paginé par curseur (timestamp ISO) : les items strictement plus
-  // anciens que `cursor`. Fusionne avis, jeux faits et likes des amis. `filter`
-  // (onglet) restreint aux sources voulues pour que la pagination reste juste.
+  // Cursor-paginated feed (ISO timestamp): items strictly older than `cursor`.
+  // Merges friends' reviews, played games and likes. `filter` narrows the
+  // sources so pagination stays correct per tab.
   async getFeed(
     viewerId: number,
     cursor: string | undefined,
@@ -122,17 +121,17 @@ export class FeedService {
 
     const before = cursor ? new Date(cursor) : undefined;
     const olderThan = before ? { createdAt: { lt: before } } : {};
-    const take = limit + 1; // +1 par source pour détecter s'il reste des items
+    const take = limit + 1; // +1 per source to detect whether more remain
     const wantReviews = !filter || filter === 'reviews';
     const wantPlayed = !filter || filter === 'played';
     const wantCompleted = !filter || filter === 'completed';
     const wantLikes = !filter || filter === 'likes';
-    // Jalons de classement : uniquement dans l'onglet « tout ».
+    // Rank milestones: "all" tab only.
     const wantRank = !filter;
-    // Succès : onglet « tout » ou onglet dédié « Succès ».
+    // Achievements: "all" tab or the dedicated one.
     const wantAchievement = !filter || filter === 'achievements';
 
-    // On sur-échantillonne chaque source demandée, on fusionne, on trie, on tronque.
+    // Over-sample every requested source, then merge, sort and truncate.
     const [reviews, playedRaw, completions, reviewLikes, commentLikes, milestones, achievements] =
       await Promise.all([
       wantReviews
@@ -206,9 +205,9 @@ export class FeedService {
             where: {
               ...olderThan,
               OR: [
-                // Jalons GLOBAUX d'un ami (visibles par tous ses amis)
+                // A friend's GLOBAL milestones (visible to all their friends)
                 { scope: 'global', subjectId: { in: friends } },
-                // Jalons « top 3 de MES amis » qui me sont adressés
+                // "Top 3 among MY friends" milestones addressed to me
                 { scope: 'friends', viewerId: viewerId },
               ],
             },
@@ -243,8 +242,8 @@ export class FeedService {
         : [],
     ]);
 
-    // Déduplication : un « jeu fait » dont l'user a aussi écrit un avis est
-    // masqué (l'avis, plus riche, le représente déjà).
+    // A played game the user also reviewed is hidden: the richer review card
+    // already stands for it.
     const played = await this.dedupePlayed(playedRaw);
 
     const items: FeedItem[] = [
@@ -281,7 +280,7 @@ export class FeedService {
     return rows.filter((r) => !seen.has(`${r.userId}:${r.gameId}`));
   }
 
-  // ---- Constructeurs d'items (partagés par getFeed et le push temps réel) ----
+  // ---- Item builders (shared by getFeed and the real-time push) ----
 
   private reviewItem(r: { id: number; createdAt: Date }): FeedItem {
     return { id: `review-${r.id}`, kind: 'review', at: r.createdAt.toISOString(), review: r };
@@ -368,7 +367,7 @@ export class FeedService {
     };
   }
 
-  // ---- Push temps réel (best-effort, jamais bloquant pour l'action) ----
+  // ---- Real-time push (best-effort, never blocks the action) ----
 
   async onReviewCreated(reviewId: number): Promise<void> {
     try {
@@ -384,12 +383,12 @@ export class FeedService {
     }
   }
 
-  // Nouveau jeu « fait » (bouton explicite). Si l'user a déjà un avis sur ce
-  // jeu, on n'émet pas (l'avis le représente déjà).
+  // New "played" game (explicit button). No card when the user already reviewed
+  // it — the review stands for it.
   async onGamePlayed(userId: number, gameId: number): Promise<void> {
     try {
-      // Le jeu compte pour la métrique « played » même si un avis existe : on
-      // détecte le jalon indépendamment de la carte « jeu fait » ci-dessous.
+      // Still counts for the "played" metric even with a review, so milestone
+      // detection runs independently of the card below.
       await this.onRankAction(userId, 'played');
       const hasReview = await this.prisma.review.findFirst({
         where: { userId, gameId },
@@ -407,13 +406,10 @@ export class FeedService {
     }
   }
 
-  // Appelé à chaque synchro de bibliothèque d'une plateforme. `completed` =
-  // jeux du CATALOGUE actuellement à 100 % sur cette plateforme, avec la date
-  // réelle du 100 % quand la plateforme la fournit (sinon `completedAt` absent →
-  // défaut now). On enregistre ceux qu'on ne connaît pas encore. La toute
-  // première synchro d'une plateforme amorce silencieusement l'existant (aucun
-  // push feed, sinon tous les vieux 100 % s'annonceraient d'un coup) ; ensuite
-  // chaque nouvelle complétion émet un événement. Best-effort.
+  // Called on every platform library sync. `completed` = catalog games currently
+  // at 100% there, with the real date when the platform provides one. The first
+  // sync of a platform only seeds what already exists (pushing it would announce
+  // every old 100% at once); later syncs emit per new completion. Best-effort.
   async syncCompletions(
     userId: number,
     platform: string,
@@ -438,8 +434,8 @@ export class FeedService {
 
       if (newItems.length > 0) {
         await this.prisma.gameCompletion.createMany({
-          // completedAt omis → défaut Prisma (now). On ne pousse une date que si
-          // la plateforme l'a fournie.
+          // completedAt omitted -> Prisma default (now); only set when the
+          // platform actually gave us a date.
           data: newItems.map((c) => ({
             userId,
             gameId: c.gameId,
@@ -450,11 +446,9 @@ export class FeedService {
         });
       }
 
-      // Backfill : les complétions déjà enregistrées avant qu'on remonte la vraie
-      // date portent un completedAt approximatif (défaut d'insertion). Dès qu'une
-      // resynchro fournit la vraie date et qu'elle tombe un autre JOUR, on corrige
-      // la ligne. Le même jour → on ne réécrit pas (évite un write inutile à
-      // chaque synchro). N'émet aucun événement feed.
+      // Backfill: rows stored before we could read the real date carry an
+      // approximate completedAt. A resync with a real date on a different DAY
+      // fixes them; same day is left alone to avoid a pointless write.
       const sameDay = (a: Date, b: Date) => a.toISOString().slice(0, 10) === b.toISOString().slice(0, 10);
       const toFix = completed.filter(
         (c): c is { gameId: number; completedAt: Date } =>
@@ -471,8 +465,8 @@ export class FeedService {
         );
       }
 
-      // Première passe sur cette plateforme : on marque comme amorcée et on
-      // s'arrête là — l'existant est enregistré mais rien n'est poussé au feed.
+      // First pass on this platform: mark it seeded and stop. What exists is
+      // stored, nothing reaches the feed.
       if (!seeded) {
         await this.prisma.user.update({
           where: { id: userId },
@@ -483,7 +477,7 @@ export class FeedService {
 
       if (newIds.length === 0) return;
 
-      // Push temps réel des complétions fraîchement enregistrées.
+      // Real-time push for the completions just stored.
       const rows = await this.prisma.gameCompletion.findMany({
         where: { userId, platform, gameId: { in: newIds } },
         select: completionSelect,
@@ -492,16 +486,15 @@ export class FeedService {
         if (!row.user) continue;
         await this.broadcast(row.user.id, this.completedItem(row));
       }
-      // Une seule détection de jalon après le batch de nouvelles complétions.
+      // One milestone check for the whole batch.
       await this.onRankAction(userId, 'completions');
     } catch (err) {
       this.logger.warn(`syncCompletions failed: ${(err as Error).message}`);
     }
   }
 
-  // Complétion MANUELLE (bouton « Terminé » de la page jeu) → carte « terminé »
-  // temps réel dans le feed des amis + jalon de classement. Miroir de
-  // onGamePlayed pour la complétion.
+  // Manual completion ("Finished" button on the game page): real-time card in
+  // friends' feeds plus a rank milestone. Mirrors onGamePlayed.
   async onGameCompleted(userId: number, gameId: number): Promise<void> {
     try {
       await this.onRankAction(userId, 'completions');
@@ -516,7 +509,7 @@ export class FeedService {
     }
   }
 
-  // Un ami a aimé un avis
+  // A friend liked a review
   async onReviewLiked(userId: number, reviewId: number): Promise<void> {
     try {
       const row = await this.prisma.reviewLike.findUnique({
@@ -535,7 +528,7 @@ export class FeedService {
     }
   }
 
-  // Un ami a aimé un commentaire
+  // A friend liked a comment
   async onCommentLiked(userId: number, commentId: number): Promise<void> {
     try {
       const row = await this.prisma.reviewCommentLike.findUnique({
@@ -563,14 +556,14 @@ export class FeedService {
     }
   }
 
-  // Diffuse un item à tous les amis de l'acteur (pas à l'acteur lui-même)
+  // Broadcasts an item to every friend of the actor, not the actor themselves
   private async broadcast(actorId: number, item: FeedItem): Promise<void> {
     const friends = await this.friendIds(actorId);
     for (const id of friends) this.gateway.emitToUser(id, 'feed:new', item);
   }
 
-  // Détecte les jalons de classement provoqués par une action (+1 sur `metric`)
-  // et les pousse au feed. Best-effort : n'interrompt jamais l'action appelante.
+  // Detects the rank milestones an action (+1 on `metric`) causes and pushes
+  // them. Best-effort: never interrupts the calling action.
   async onRankAction(userId: number, metric: LeaderboardMetric): Promise<void> {
     try {
       const created = await this.leaderboard.recordMilestones(userId, metric);
@@ -580,7 +573,7 @@ export class FeedService {
     }
   }
 
-  // Global ⇒ à tous les amis du sujet ; amis ⇒ au seul observateur concerné.
+  // Global -> every friend of the subject; friends -> only the observer it targets.
   private async broadcastMilestone(m: RecordedMilestone): Promise<void> {
     const item = this.rankItem(m);
     if (m.scope === 'global') {

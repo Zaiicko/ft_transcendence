@@ -44,8 +44,8 @@ const MFA_CHALLENGE_COOKIE_MAX_AGE_MS = 5 * 60 * 1000;
 // what credential-stuffing / spam / 2FA-guessing target.
 const AUTH_THROTTLE = { default: { limit: 5, ttl: 60_000 } };
 
-// Preuve courte, signée, du user qui rattache son Discord — portée entre le
-// départ vers Discord et le callback. Le userId vient du JWT, jamais du query.
+// Short signed proof of which user is linking Discord, carried between the
+// redirect out and the callback. The userId comes from the JWT, never the query.
 const DISCORD_LINK_COOKIE = 'discord_link';
 const DISCORD_LINK_COOKIE_PATH = '/api/auth/discord';
 const DISCORD_LINK_TTL = '10m';
@@ -62,8 +62,8 @@ export class AuthController {
     private readonly config: ConfigService,
     private readonly jwt: JwtService,
     private readonly prisma: PrismaService,
-    // Résolu en lazy pour notifier les contacts d'un nouvel inscrit sans créer
-    // de cycle de modules (Auth ↔ Friends ↔ Chat/Notifications).
+    // Resolved lazily so a new signup can notify their contacts without a
+    // module cycle (Auth <-> Friends <-> Chat/Notifications).
     private readonly moduleRef: ModuleRef,
   ) {}
 
@@ -133,9 +133,9 @@ export class AuthController {
     this.clearAuthCookies(res);
   }
 
-  // Guard optionnel : la page se charge déconnectée aussi. Sans session on
-  // renvoie 200 + null (au lieu d'un 401) — le front lit "pas connecté" sans
-  // que la console/Network ne s'encombre d'une erreur à chaque chargement.
+  // Optional guard: the page also loads signed out. Without a session this
+  // returns 200 + null rather than 401, so the front reads "not signed in"
+  // without an error in the console on every load.
   @UseGuards(OptionalJwtAuthGuard)
   @Get('me')
   async me(@CurrentUser() current?: JwtPayload) {
@@ -221,9 +221,9 @@ export class AuthController {
   @UseGuards(AuthGuard('discord'))
   discordLogin() {}
 
-  // Rattachement d'un Discord à un compte déjà connecté. On mémorise le userId
-  // (issu du JWT, jamais du query/body) dans un cookie signé court, puis on
-  // envoie vers Discord — le callback distingue link vs login sur ce cookie.
+  // Links Discord to an already signed-in account: stores the userId (from the
+  // JWT, never the query or body) in a short signed cookie, then heads to
+  // Discord. The callback tells link from login by that cookie.
   @UseGuards(JwtAuthGuard)
   @Get('discord/link')
   async discordLinkStart(@CurrentUser() current: JwtPayload, @Res() res: Response) {
@@ -262,8 +262,8 @@ export class AuthController {
       return res.redirect(`${front}/profile?link=discord_linked`);
     }
 
-    // Mode connexion : on résout par discordId (comme Steam par steamId) ; sinon
-    // c'est une première connexion Discord → création via completeOAuth.
+    // Login mode: resolve by discordId (as Steam does by steamId); otherwise
+    // this is a first Discord sign-in and completeOAuth creates the account.
     const owner = await this.prisma.user.findUnique({ where: { discordId: profile.providerId } });
     if (owner) {
       this.setAuthCookies(res, await this.auth.issueTokens(owner));
@@ -272,15 +272,15 @@ export class AuthController {
     await this.completeOAuth(AuthProvider.DISCORD, profile, res);
   }
 
-  // Délie le Discord. Garde-fou anti-lock-out : interdit si c'est la seule façon
-  // de se connecter (compte né sur Discord sans mot de passe ni autre méthode).
+  // Unlinks Discord. Anti-lockout guard: refused when it is the only way left to
+  // sign in (Discord-born account with no password and no other method).
   @UseGuards(JwtAuthGuard)
   @Delete('discord/link')
   @HttpCode(204)
   async unlinkDiscord(@CurrentUser() current: JwtPayload) {
     const user = await this.users.findById(current.sub);
     if (!user) throw new UnauthorizedException();
-    if (!user.discordId) return; // déjà délié — idempotent
+    if (!user.discordId) return; // already unlinked, idempotent
     if (!this.hasOtherLoginMethod(user, AuthProvider.DISCORD)) {
       throw new BadRequestException(
         'Add a password first — Discord is currently your only way to sign in',
@@ -292,9 +292,9 @@ export class AuthController {
     });
   }
 
-  // URL d'autorisation Discord (identique au redirect_uri de la stratégie
-  // passport pour que Discord l'accepte), construite à la main car on doit
-  // poser le cookie d'intention avant la redirection.
+  // Discord authorize URL, built by hand because the intent cookie has to be
+  // set before redirecting. redirect_uri must match the passport strategy's
+  // exactly or Discord rejects it.
   private discordAuthorizeUrl(): string {
     const params = new URLSearchParams({
       response_type: 'code',
@@ -322,7 +322,7 @@ export class AuthController {
   private hasOtherLoginMethod(user: User, excluding: AuthProvider): boolean {
     if (user.passwordHash) return true;
     if (excluding !== AuthProvider.STEAM && user.steamId) return true;
-    // Google/42 restent utilisables via provider/providerId (pas de colonne dédiée)
+    // Google/42 stay usable through provider/providerId — they have no own column
     if (
       (user.provider === AuthProvider.GOOGLE || user.provider === AuthProvider.FORTYTWO) &&
       user.providerId
@@ -351,8 +351,8 @@ export class AuthController {
       throw err;
     }
 
-    // Un compte né sur Discord garde son id aussi dans `discordId` (comme
-    // steamId) : les connexions suivantes se résolvent par cette colonne.
+    // A Discord-born account also keeps its id in `discordId` (like steamId),
+    // so later sign-ins resolve through that column.
     if (provider === AuthProvider.DISCORD && !user.discordId) {
       user = await this.prisma.user.update({
         where: { id: user.id },
@@ -362,7 +362,7 @@ export class AuthController {
 
     this.setAuthCookies(res, await this.auth.issueTokens(user));
     if (isNewUser) {
-      // Prévient les camarades 42 / amis Steam déjà inscrits (best-effort)
+      // Tells 42 classmates / Steam friends already signed up (best-effort)
       this.moduleRef
         .get(FriendsService, { strict: false })
         .notifyContactJoined(user.id)
@@ -372,8 +372,8 @@ export class AuthController {
   }
 
   private frontendUrl(): string {
-    // Slash final toléré dans .env : sans ça, `${base}/x` produit "//x"
-    // (callback Steam en 404, redirections et liens d'emails cassés)
+    // Tolerates a trailing slash in .env: without this, `${base}/x` yields
+    // "//x" — a 404 on the Steam callback and broken redirects and email links
     const url = this.config.get<string>('FRONTEND_URL') ?? 'https://localhost:8443';
     return url.replace(/\/+$/, '');
   }
