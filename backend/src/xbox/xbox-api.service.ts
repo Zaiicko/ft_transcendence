@@ -10,26 +10,26 @@ export interface XboxAccount {
   gamerscore: number;
 }
 
-// Un jeu joué côté Xbox : identité + progression de succès (Gamerscore, le
-// pendant des trophées PSN). `lastPlayed` sert au tri.
+// A game played on Xbox: identity plus achievement progress (Gamerscore, the
+// counterpart of PSN trophies). `lastPlayed` drives the sort.
 export interface XboxTitle {
   name: string;
   currentGamerscore: number;
   totalGamerscore: number;
   currentAchievements: number;
   totalAchievements: number;
-  progress: number; // % de succès obtenus
+  progress: number; // % of achievements earned
   lastPlayed: string | null;
 }
 
-// Formes brutes (partielles) renvoyées par OpenXBL — on ne type que ce qu'on lit.
+// Partial shapes returned by OpenXBL: only what we actually read is typed.
 interface OpenXblPerson {
   xuid?: string;
   gamertag?: string;
   displayPicRaw?: string;
   gamerScore?: string;
 }
-// OpenXBL enveloppe toutes ses réponses dans `content`.
+// OpenXBL wraps every response in `content`.
 interface OpenXblSearch {
   content?: { people?: OpenXblPerson[] };
 }
@@ -52,11 +52,10 @@ interface OpenXblAccount {
   content?: { profileUsers?: { settings?: { id?: string; value?: string }[] }[] };
 }
 
-// Fonctionnalités liées au compte Xbox via OpenXBL (xbl.io). Modèle à clé
-// service unique (XBL_API_KEY, le pendant du PSN_SERVICE_NPSSO) : les
-// utilisateurs déclarent leur gamertag public, le backend le résout en XUID et
-// lit leurs jeux/succès publics. Aucun jeton par utilisateur. Miroir de
-// PsnApiService.
+// Xbox account features through OpenXBL (xbl.io). Single service-key model
+// (XBL_API_KEY, the counterpart of PSN_SERVICE_NPSSO): users declare their
+// public gamertag, the backend resolves it to a XUID and reads their public
+// games and achievements. No per-user token. Mirrors PsnApiService.
 @Injectable()
 export class XboxApiService {
   private readonly logger = new Logger(XboxApiService.name);
@@ -81,14 +80,14 @@ export class XboxApiService {
         'Accept-Language': 'en-US',
       },
     });
-    // 404/403 : le profil existe peut-être mais n'est pas lisible (privé) — on
-    // laisse l'appelant décider ; on ne parse le corps que sur succès.
+    // 404/403: the profile may exist but be unreadable (private). The caller
+    // decides; the body is only parsed on success.
     const data = res.ok ? ((await res.json()) as T) : null;
     return { ok: res.ok, status: res.status, data };
   }
 
-  // Résout un gamertag (pseudo public) en compte { xuid, gamertag, avatar,
-  // gamerscore }. Renvoie null si aucun compte ne correspond exactement.
+  // Resolves a public gamertag to { xuid, gamertag, avatar, gamerscore }.
+  // null when no account matches exactly.
   async resolveGamertag(gamertag: string): Promise<XboxAccount | null> {
     const wanted = gamertag.trim().toLowerCase();
     let res;
@@ -118,8 +117,8 @@ export class XboxApiService {
     return null;
   }
 
-  // Jeux joués (avec succès) d'un XUID, triés par déblocage récent côté appelant.
-  // null = profil dont l'historique de jeux/succès n'est pas public.
+  // A XUID's played games with achievements, sorted by the caller.
+  // null when the game/achievement history isn't public.
   async getTitles(xuid: string): Promise<XboxTitle[] | null> {
     let res;
     try {
@@ -128,7 +127,7 @@ export class XboxApiService {
       this.logger.warn(`getTitles(${xuid}) échoué: ${this.msg(e)}`);
       return null;
     }
-    // 403 = historique privé ; autre erreur = on renvoie null (pas de biblio).
+    // 403 means a private history; any other error also yields null.
     if (!res.ok) {
       this.logger.warn(`getTitles(${xuid}) a renvoyé ${res.status} (profil privé ?)`);
       return null;
@@ -150,9 +149,8 @@ export class XboxApiService {
       });
   }
 
-  // Gamerscore officiel du profil (celui affiché sur Xbox). Différent de la
-  // somme des titres renvoyés par getTitles, qui plafonne à ~1000 titres.
-  // null si indisponible.
+  // Official profile Gamerscore, as shown on Xbox. Differs from summing
+  // getTitles, which caps at ~1000 titles. null when unavailable.
   async getGamerscore(xuid: string): Promise<number | null> {
     let res;
     try {

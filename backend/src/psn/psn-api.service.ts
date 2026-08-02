@@ -25,16 +25,15 @@ export interface PsnTrophySummary {
   earned: TrophyCounts; // { bronze, silver, gold, platinum }
 }
 
-// PSN n'a pas d'API publique et pas d'OAuth ouvert. Modèle "infinitebacklog" :
-// le backend détient UNE session PSN (un jeton NPSSO service, PSN_SERVICE_NPSSO)
-// et s'en sert pour lire les profils PUBLICS que les utilisateurs déclarent par
-// leur PSN Online ID. Aucun jeton par utilisateur.
+// PSN has no public API and no open OAuth. "infinitebacklog" model: the backend
+// holds ONE PSN session (a service NPSSO token, PSN_SERVICE_NPSSO) and reads the
+// PUBLIC profiles users declare by their Online ID. No per-user token.
 @Injectable()
 export class PsnApiService {
   private readonly logger = new Logger(PsnApiService.name);
 
-  // Autorisation service en cache + échéance (le jeton d'accès dure ~1 h). On
-  // ré-échange simplement le NPSSO quand il expire (NPSSO valide ~2 mois).
+  // Cached service authorization and its deadline (access tokens last ~1h). The
+  // NPSSO is simply re-exchanged on expiry; it stays valid ~2 months.
   private auth: AuthorizationPayload | null = null;
   private authExpiresAt = 0;
 
@@ -50,18 +49,18 @@ export class PsnApiService {
     return npsso;
   }
 
-  // Renvoie une autorisation service valide (depuis le cache ou en ré-échangeant
-  // le NPSSO). NPSSO expiré => 503 (invite à en régénérer un côté serveur).
+  // A valid service authorization, from cache or by re-exchanging the NPSSO.
+  // An expired NPSSO yields 503, prompting a server-side regeneration.
   private async serviceAuth(): Promise<AuthorizationPayload> {
     if (this.auth && Date.now() < this.authExpiresAt) return this.auth;
-    // Hors du try : "non configuré" (503) doit remonter avec son message propre,
-    // sans être masqué par le catch générique ci-dessous.
+    // Outside the try: the "not configured" 503 must surface with its own
+    // message instead of being swallowed by the generic catch below.
     const npsso = this.npsso();
     try {
       const accessCode = await exchangeNpssoForAccessCode(npsso);
       const auth = await exchangeAccessCodeForAuthTokens(accessCode);
       this.auth = auth;
-      // marge de 60 s pour ne pas utiliser un jeton au bord de l'expiration
+      // 60s margin so a token on the edge of expiry is never used
       this.authExpiresAt = Date.now() + Math.max(0, (auth.expiresIn - 60) * 1000);
       return auth;
     } catch (e) {
@@ -74,8 +73,8 @@ export class PsnApiService {
     }
   }
 
-  // Résout un PSN Online ID (pseudo public) en compte { accountId, onlineId,
-  // avatar }. Renvoie null si aucun compte ne correspond exactement.
+  // Resolves a public PSN Online ID to { accountId, onlineId, avatar }.
+  // null when no account matches exactly.
   async resolveOnlineId(onlineId: string): Promise<PsnAccount | null> {
     const auth = await this.serviceAuth();
     let res;
@@ -102,8 +101,8 @@ export class PsnApiService {
     return null;
   }
 
-  // Jeux joués (titres à trophées) d'un compte, triés par déblocage récent.
-  // null = profil dont les jeux/trophées ne sont pas publics.
+  // An account's played trophy titles, most recently unlocked first.
+  // null when the games/trophies aren't public.
   async getTitles(accountId: string): Promise<TrophyTitle[] | null> {
     const auth = await this.serviceAuth();
     try {
@@ -115,8 +114,7 @@ export class PsnApiService {
     }
   }
 
-  // Résumé de trophées (niveau, palier, progression, compteurs par grade).
-  // null = profil privé.
+  // Trophy summary (level, tier, progress, counts per grade). null when private.
   async getTrophySummary(accountId: string): Promise<PsnTrophySummary | null> {
     const auth = await this.serviceAuth();
     try {
@@ -134,7 +132,7 @@ export class PsnApiService {
     }
   }
 
-  // accountId des amis PSN d'un compte. null = liste d'amis non publique.
+  // accountIds of an account's PSN friends. null when the list isn't public.
   async getFriendAccountIds(accountId: string): Promise<string[] | null> {
     const auth = await this.serviceAuth();
     try {

@@ -248,7 +248,7 @@ export class AuthController {
     const front = this.frontendUrl();
     const intent = await this.readDiscordLinkIntent(req);
 
-    // Mode rattachement : on attache le discordId au compte courant.
+    // Link mode: attach the discordId to the current account.
     if (intent) {
       res.clearCookie(DISCORD_LINK_COOKIE, { path: DISCORD_LINK_COOKIE_PATH });
       const owner = await this.prisma.user.findUnique({ where: { discordId: profile.providerId } });
@@ -318,7 +318,7 @@ export class AuthController {
     }
   }
 
-  // Reste-t-il un moyen de se connecter si on retire `excluding` ?
+  // Any sign-in method left once `excluding` is removed?
   private hasOtherLoginMethod(user: User, excluding: AuthProvider): boolean {
     if (user.passwordHash) return true;
     if (excluding !== AuthProvider.STEAM && user.steamId) return true;

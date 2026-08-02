@@ -17,11 +17,9 @@ import { AddItemDto } from './dto/add-item.dto';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 
-// Jeux inclus dans l'aperçu d'une liste (jaquettes empilées sur la carte)
+// Covers stacked on a list's preview card
 const PREVIEW_COVERS = 5;
-// Nombre maximum de listes par utilisateur
 const MAX_LISTS = 6;
-// Nombre maximum de jeux par liste
 const MAX_GAMES_PER_LIST = 30;
 
 @Injectable()
@@ -32,8 +30,8 @@ export class ListsService {
     private readonly achievements: AchievementsService,
   ) {}
 
-  // Toutes les listes de l'utilisateur (privées comprises) — pour son profil.
-  // gameId optionnel : marque les listes contenant déjà ce jeu (menu "Ajouter").
+  // Every list of the user, private ones included, for their own profile.
+  // Optional gameId flags the lists already holding it (the "Add" menu).
   async listMine(userId: number, gameId?: number) {
     const [lists, containing] = await Promise.all([
       this.prisma.gameList.findMany({
@@ -55,7 +53,7 @@ export class ListsService {
     }));
   }
 
-  // Listes publiques d'un utilisateur donné — pour un profil consulté par autrui
+  // Public lists of a given user, for a profile viewed by someone else
   async publicListsOf(userId: number) {
     const lists = await this.prisma.gameList.findMany({
       where: { userId, isPublic: true },
@@ -65,7 +63,7 @@ export class ListsService {
     return lists.map((l) => this.toSummary(l));
   }
 
-  // Détail d'une liste : publique pour tous, privée réservée au propriétaire
+  // List detail: public to everyone, private to its owner only
   async findOne(id: number, viewerId?: number) {
     const list = await this.prisma.gameList.findUnique({
       where: { id },
@@ -83,8 +81,8 @@ export class ListsService {
     });
     if (!list) throw new NotFoundException();
     if (!list.isPublic && list.userId !== viewerId) throw new ForbiddenException();
-    // Avis du PROPRIÉTAIRE de la liste sur ces jeux (note + extrait affichés à
-    // côté de chaque jeu, façon Letterboxd).
+    // The list OWNER's reviews of these games — rating and excerpt shown next
+    // to each game, Letterboxd style.
     const gameIds = list.items.map((it) => it.game.id);
     const reviews = gameIds.length
       ? await this.prisma.review.findMany({
@@ -119,7 +117,7 @@ export class ListsService {
         data: { userId, name: dto.name.trim(), isPublic: dto.isPublic ?? false },
         include: this.summaryInclude(),
       });
-      // Succès « listes » : nouvelle liste créée
+      // "Lists" achievements: a new list was created
       void this.achievements.evaluate(userId, ['lists']);
       return this.toSummary(list);
     } catch (e) {
@@ -155,7 +153,7 @@ export class ListsService {
     return { ok: true };
   }
 
-  // Ajoute un jeu en fin de liste ; ne bronche pas s'il y est déjà (idempotent)
+  // Appends a game to the list; idempotent when it is already there
   async addItem(userId: number, listId: number, dto: AddItemDto) {
     await this.assertOwner(userId, listId);
     const game = await this.prisma.game.findUnique({
@@ -163,8 +161,8 @@ export class ListsService {
       select: { id: true },
     });
     if (!game) throw new NotFoundException('Game not found');
-    // Limite atteinte seulement pour un NOUVEAU jeu (re-ajouter un jeu déjà
-    // présent est idempotent et ne doit pas être bloqué).
+    // The cap only applies to a NEW game: re-adding one already present is
+    // idempotent and must not be rejected.
     const already = await this.prisma.gameListItem.findUnique({
       where: { listId_gameId: { listId, gameId: dto.gameId } },
       select: { id: true },
@@ -195,8 +193,8 @@ export class ListsService {
     return this.findOne(listId, userId);
   }
 
-  // Réordonne : la position de chaque jeu devient son index dans `gameIds`.
-  // updateMany filtre par listId → ne touche que les items de CETTE liste.
+  // Reorders: each game's position becomes its index in `gameIds`. updateMany
+  // filters on listId, so only THIS list's items are touched.
   async reorder(userId: number, listId: number, gameIds: number[]) {
     await this.assertOwner(userId, listId);
     await this.prisma.$transaction(
@@ -265,8 +263,8 @@ export class ListsService {
     return this.toSummary(list);
   }
 
-  // Cadrage (zoom/centrage) encodé dans coverUrl via #af=scale,x,y. On repart
-  // toujours de la base (fragment retiré) ; défaut (1,0,0) → URL propre.
+  // Framing (zoom/centering) encoded in coverUrl as #af=scale,x,y. Always
+  // rebuilt from the bare URL; the default (1,0,0) writes no fragment.
   async setCoverFrame(
     userId: number,
     listId: number,
@@ -306,8 +304,8 @@ export class ListsService {
     return this.toSummary(list);
   }
 
-  // coverUrl = /api/uploads/list-covers/<file> — ne supprime que dans le dossier
-  // dédié. split('#') : ignore un éventuel fragment.
+  // coverUrl = /api/uploads/list-covers/<file>; only ever deletes inside that
+  // directory. split('#') drops any framing fragment first.
   async deleteCoverFile(coverUrl: string): Promise<void> {
     const filePath = join(LIST_COVERS_DIR, basename(coverUrl.split('#')[0]));
     if (filePath.startsWith(LIST_COVERS_DIR) && existsSync(filePath)) {
@@ -315,7 +313,7 @@ export class ListsService {
     }
   }
 
-  // @@unique([userId, name]) violé → 409 avec un message clair
+  // @@unique([userId, name]) violation -> 409 with a clear message
   private rethrowDuplicateName(e: unknown) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
       return new ConflictException('Tu as déjà une liste avec ce nom.');

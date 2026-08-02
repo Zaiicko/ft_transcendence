@@ -3,8 +3,8 @@ import { NotificationType, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsGateway } from './notifications.gateway';
 
-// Instantané dénormalisé stocké dans payload Json : la notification reste
-// lisible même si l'acteur ou la review disparaissent ensuite
+// Denormalised snapshot stored in the Json payload, so a notification stays
+// readable even after the actor or the review disappears
 type ReviewPayload = {
   actorId: number;
   actorUsername: string;
@@ -25,13 +25,13 @@ export class NotificationsService {
     private readonly gateway: NotificationsGateway,
   ) {}
 
-  // Appelé par ReviewsService après un like — jamais bloquant pour l'action
+  // Called by ReviewsService after a like — never blocks the action
   async reviewLiked(actorId: number, reviewId: number): Promise<void> {
     try {
       const review = await this.reviewFor(reviewId);
       if (!review || review.userId === null || review.userId === actorId) return;
-      // Anti-spam du toggle like/unlike : une seule notification par
-      // (destinataire, acteur, review), même déjà lue
+      // Anti-spam for the like/unlike toggle: one notification per
+      // (recipient, actor, review), even once read
       const existing = await this.prisma.notification.findFirst({
         where: {
           userId: review.userId,
@@ -52,7 +52,7 @@ export class NotificationsService {
     }
   }
 
-  // Appelé par ReviewCommentsService après un commentaire ou une réponse
+  // Called by ReviewCommentsService after a comment or a reply
   async commentPosted(
     actorId: number,
     reviewId: number,
@@ -101,7 +101,7 @@ export class NotificationsService {
   }
 
   async markRead(userId: number, id: number): Promise<void> {
-    // updateMany filtré par userId : marquer la notification d'un autre = 404
+    // updateMany filtered on userId: marking someone else's notification 404s
     const { count } = await this.prisma.notification.updateMany({
       where: { id, userId, readAt: null },
       data: { readAt: new Date() },
@@ -119,7 +119,7 @@ export class NotificationsService {
     });
   }
 
-  // Vide toutes les notifications de l'utilisateur (bouton « clear »).
+  // Empties the user's notifications (the "clear" button).
   async clearAll(userId: number): Promise<void> {
     await this.prisma.notification.deleteMany({ where: { userId } });
   }
@@ -156,7 +156,7 @@ export class NotificationsService {
     type: NotificationType,
     payload: Record<string, unknown>,
   ) {
-    // Respecte les préférences du destinataire (opt-out par type)
+    // Honours the recipient's preferences (per-type opt-out)
     if (!(await this.wants(userId, type))) return;
     const notification = await this.prisma.notification.create({
       data: { userId, type, payload: payload as Prisma.InputJsonValue },
@@ -164,7 +164,7 @@ export class NotificationsService {
     this.gateway.emitToUser(userId, 'notification:new', notification);
   }
 
-  // ---- Notifications d'amitié (appelées par FriendsService) ----
+  // ---- Friendship notifications (called by FriendsService) ----
 
   async friendRequested(actorId: number, recipientId: number): Promise<void> {
     try {
@@ -194,7 +194,7 @@ export class NotificationsService {
     }
   }
 
-  // Succès « maison » débloqué par l'utilisateur lui-même (auto-notification).
+  // In-house achievement the user unlocked themselves (self-notification).
   async achievementUnlocked(userId: number, key: string): Promise<void> {
     try {
       await this.deliver(userId, NotificationType.ACHIEVEMENT, { achievementKey: key });
@@ -215,9 +215,9 @@ export class NotificationsService {
     };
   }
 
-  // ---- Préférences (opt-out par type) ----
+  // ---- Preferences (per-type opt-out) ----
 
-  // Types que l'utilisateur peut activer/désactiver (NEW_MESSAGE géré par le chat)
+  // Types the user can toggle (NEW_MESSAGE is handled by the chat)
   static readonly CUSTOMIZABLE: NotificationType[] = [
     NotificationType.FRIEND_REQUEST,
     NotificationType.FRIEND_ACCEPT,
@@ -234,10 +234,10 @@ export class NotificationsService {
       select: { notificationPrefs: true },
     });
     const prefs = (user?.notificationPrefs ?? {}) as Record<string, boolean>;
-    return prefs[type] !== false; // absent/true = activé
+    return prefs[type] !== false; // absent or true means enabled
   }
 
-  // Renvoie l'état (activé/désactivé) de chaque type personnalisable
+  // Enabled/disabled state of every customisable type
   async getPreferences(userId: number): Promise<Record<string, boolean>> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -249,7 +249,7 @@ export class NotificationsService {
     );
   }
 
-  // Fusionne des changements (uniquement des types connus) dans les prefs
+  // Merges changes into the prefs, keeping only known types
   async updatePreferences(
     userId: number,
     changes: Record<string, boolean>,

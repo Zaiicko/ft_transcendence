@@ -6,14 +6,13 @@ describe('Classements — popular, discussed, highlights', () => {
   let app: NestExpressApplication;
   let prisma: PrismaService;
   let gameId: number;
-  let companyId: number;
 
   beforeAll(async () => {
     app = await createApp();
     prisma = app.get(PrismaService);
     await resetDb(prisma);
     gameId = (await prisma.game.create({ data: { igdbId: 20, title: 'Rank Game' } })).id;
-    companyId = (await prisma.company.create({ data: { igdbId: 21, name: 'Rank Studio' } })).id;
+    await prisma.company.create({ data: { igdbId: 21, name: 'Rank Studio' } });
   });
 
   afterAll(() => app.close());
