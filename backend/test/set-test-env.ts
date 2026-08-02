@@ -1,9 +1,9 @@
-// Chargé avant chaque fichier de spec : bascule Prisma sur la base de TEST.
-// Les tests créent/suppriment des données librement — jamais sur la base de dev.
+// Loaded before every spec file: points Prisma at the TEST database, so specs
+// can create and delete data freely and never touch the dev one.
 //
-// IDEMPOTENT : Jest ré-exécute ce fichier pour chaque spec (registre de
-// modules réinitialisé) alors que process.env persiste — sans le nettoyage
-// des suffixes, l'URL deviendrait saveboxd_test_test_test…
+// IDEMPOTENT: Jest re-runs this per spec (the module registry is reset) while
+// process.env persists — without stripping the suffix the URL would grow into
+// saveboxd_test_test_test.
 export function testDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error('DATABASE_URL is not set');

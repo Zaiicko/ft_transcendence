@@ -56,7 +56,7 @@ describe('Classements — popular, discussed, highlights', () => {
         .send({ title: 'ancienne', rating: 5, text: 'b' })
         .expect(201)
     ).body.id as number;
-    // RA (récente) : 2 lignes en base mais 1 seule visible (tombale + réponse)
+    // RA (recent): 2 rows in the DB but only 1 visible (tombstone + reply)
     const ra = (
       await recent
         .post(`/api/games/${g}/reviews`)
@@ -77,7 +77,7 @@ describe('Classements — popular, discussed, highlights', () => {
     await recent.post(`/api/reviews/${rb}/comments`).send({ text: 'com 2' }).expect(201);
 
     const { body } = await anonymous(app).get(`/api/games/${g}/reviews?sort=discussed`).expect(200);
-    // sans le filtre, égalité 2-2 et RA (plus récente) passerait devant
+    // without the filter it would tie 2-2 and RA, being newer, would win
     expect(body.map((r: { id: number }) => r.id)).toEqual([rb, ra]);
     expect(body[0]._count.comments).toBe(2);
     expect(body[1]._count.comments).toBe(1);
@@ -103,8 +103,8 @@ describe('Classements — popular, discussed, highlights', () => {
         .send({ title: 'sur studio', rating: 8, text: 'récente' })
         .expect(201)
     ).body.id as number;
-    // vieille review (45 jours) insérée directement : hors fenêtre par défaut.
-    // userId 2 = hlDeux (RESTART IDENTITY au reset), qui n'a pas reviewé ce jeu
+    // 45-day-old review inserted directly: outside the default window.
+    // userId 2 is hlDeux (RESTART IDENTITY on reset), who hasn't reviewed this game
     const oldReview = await prisma.review.create({
       data: {
         userId: 2,
@@ -121,7 +121,7 @@ describe('Classements — popular, discussed, highlights', () => {
     expect(feed[0].game.title).toBe('HL Game');
     expect(feed[1].company.name).toBe('HL Studio');
 
-    // fenêtre élargie : la vieille review entre (net 0, plus vieille → dernière)
+    // widened window: the old review makes it in (net 0, oldest so last)
     const wide = (await anonymous(app).get('/api/reviews/highlights?days=60').expect(200)).body;
     expect(wide.map((r: { id: number }) => r.id)).toEqual([
       gameReview,
@@ -136,7 +136,7 @@ describe('Classements — popular, discussed, highlights', () => {
 
     await anonymous(app).get('/api/reviews/highlights?days=0').expect(400);
 
-    // une review supprimée sort du feed immédiatement
+    // a deleted review leaves the feed immediately
     await u1.delete(`/api/reviews/${gameReview}`).expect(204);
     const after = (await anonymous(app).get('/api/reviews/highlights').expect(200)).body;
     expect(after.some((r: { id: number }) => r.id === gameReview)).toBe(false);

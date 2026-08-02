@@ -37,8 +37,8 @@ describe('Temps réel — rooms et évènements Socket.IO', () => {
   });
 
   it('une socket anonyme reste connectée (le gateway presence ne doit pas l’éjecter)', async () => {
-    // garde anti-régression : serveur Socket.IO partagé avec PresenceGateway,
-    // la lecture des reviews est publique donc pas de kick des non-authentifiés
+    // Regression guard: the Socket.IO server is shared with PresenceGateway,
+    // and reading reviews is public, so anonymous sockets must not be kicked
     await sleep(300);
     expect(client.connected).toBe(true);
   });
@@ -57,7 +57,7 @@ describe('Temps réel — rooms et évènements Socket.IO', () => {
       .expect(201);
     expect((await created).id).toBe(review.id);
 
-    // l'évènement de réaction porte les compteurs à jour (pas de re-fetch)
+    // the reaction event carries fresh counters, so no re-fetch is needed
     const reaction = waitForEvent<{ reviewId: number; likes: number; dislikes: number }>(
       client,
       'review:reaction',

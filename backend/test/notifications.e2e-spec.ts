@@ -36,9 +36,9 @@ describe('Notifications — création, dédup, lecture, temps réel', () => {
   });
 
   afterAll(async () => {
-    // La déconnexion d'une socket authentifiée déclenche un écrit Prisma
-    // (lastSeenAt, gateway presence) : on le laisse finir avant de couper
-    // l'app, sinon rejet non géré pendant le shutdown
+    // Disconnecting an authenticated socket triggers a Prisma write
+    // (lastSeenAt, presence gateway). Let it finish before closing the app,
+    // otherwise the shutdown produces an unhandled rejection.
     await new Promise((r) => setTimeout(r, 300));
     await app.close();
   });
@@ -74,7 +74,7 @@ describe('Notifications — création, dédup, lecture, temps réel', () => {
       .post(`/api/reviews/${reviewId}/comments`)
       .send({ text: 'com de bob' })
       .expect(201);
-    // alice répond à bob : c'est BOB qui doit être notifié, pas alice
+    // alice replies to bob: BOB must be notified, not alice
     await alice
       .post(`/api/reviews/${reviewId}/comments`)
       .send({ text: 'réponse d’alice', parentId: bobCom.id })
@@ -96,7 +96,7 @@ describe('Notifications — création, dédup, lecture, temps réel', () => {
     const unread = (await alice.get('/api/notifications?unread=true').expect(200)).body;
     expect(unread.every((n: { readAt: string | null }) => n.readAt === null)).toBe(true);
 
-    // marquer la notification d'un autre → 404 (updateMany filtré par userId)
+    // marking someone else's notification 404s (updateMany filtered on userId)
     await bob.patch(`/api/notifications/${unread[0].id}/read`).expect(404);
     await alice.patch(`/api/notifications/${unread[0].id}/read`).expect(204);
 

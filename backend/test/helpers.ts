@@ -8,8 +8,8 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
-// Réplique la config globale de main.ts — un test e2e doit traverser les
-// mêmes pipes/adapters que la prod, sinon il ne teste pas la vraie API
+// Mirrors main.ts's global setup: an e2e test must go through the same pipes
+// and adapters as production, or it isn't testing the real API
 export async function createApp(): Promise<NestExpressApplication> {
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
   const app = moduleRef.createNestApplication<NestExpressApplication>();
@@ -19,7 +19,7 @@ export async function createApp(): Promise<NestExpressApplication> {
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
   );
-  // Vrai listen (port aléatoire) et pas juste init() : Socket.IO en a besoin
+  // A real listen on a random port, not just init(): Socket.IO needs it
   await app.listen(0);
   return app;
 }
@@ -28,7 +28,7 @@ export function appPort(app: NestExpressApplication): number {
   return (app.getHttpServer().address() as AddressInfo).port;
 }
 
-// Vide les tables touchées par les tests ; CASCADE emporte les dépendantes
+// Empties the tables the tests touch; CASCADE takes the dependants with them
 export async function resetDb(prisma: PrismaService): Promise<void> {
   await prisma.$executeRawUnsafe(
     'TRUNCATE "User", "Review", "ReviewComment", "Game", "Company" RESTART IDENTITY CASCADE',
@@ -37,14 +37,14 @@ export async function resetDb(prisma: PrismaService): Promise<void> {
 
 export const PASSWORD = 'SuperSecret42!';
 
-// Les cookies d'auth sont Secure (stack HTTPS via nginx) : le jar de
-// superagent refuse à juste titre de les renvoyer sur le HTTP des tests.
-// On extrait donc le cookie du Set-Cookie et on le pose nous-mêmes.
+// Auth cookies are Secure (the stack is HTTPS behind nginx), so superagent's
+// jar rightly refuses to send them over the tests' plain HTTP. The cookie is
+// pulled out of Set-Cookie and set by hand instead.
 function withCookie(app: NestExpressApplication, cookie: string) {
   const server = app.getHttpServer() as Parameters<typeof request>[0];
   const wrap = (req: request.Test) => (cookie ? req.set('Cookie', cookie) : req);
   return {
-    cookie, // exposé pour les tests WS (handshake Socket.IO authentifié)
+    cookie, // exposed for the WS tests (authenticated Socket.IO handshake)
     get: (url: string) => wrap(request(server).get(url)),
     post: (url: string) => wrap(request(server).post(url)),
     patch: (url: string) => wrap(request(server).patch(url)),

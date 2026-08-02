@@ -81,13 +81,13 @@ describe('Reviews — CRUD, réactions, anonymisation', () => {
     expect(r._count).toMatchObject({ likes: 1, dislikes: 0 });
     expect(r.myReaction).toBe('like');
 
-    // poser le dislike retire le like (atomique, même transaction)
+    // adding the dislike removes the like, atomically in one transaction
     await eve.post(`${url}/dislike`).expect(204);
     r = (await eve.get(url).expect(200)).body;
     expect(r._count).toMatchObject({ likes: 0, dislikes: 1 });
     expect(r.myReaction).toBe('dislike');
 
-    // idempotent : re-disliker ne change rien
+    // idempotent: disliking again changes nothing
     await eve.post(`${url}/dislike`).expect(204);
     r = (await eve.get(url).expect(200)).body;
     expect(r._count).toMatchObject({ likes: 0, dislikes: 1 });
@@ -127,14 +127,14 @@ describe('Reviews — CRUD, réactions, anonymisation', () => {
       .post(`/api/reviews/${review.id}/comments`)
       .send({ text: 'réponse du témoin', parentId: com.id })
       .expect(201);
-    // ghost like la review du témoin sur l'autre jeu pour vérifier la purge
+    // ghost likes the witness's review on the other game, to check the purge
     const { body: witnessReview } = await witness
       .post(`/api/games/${gameId}/reviews`)
       .send({ title: 'du témoin', rating: 5, text: 'w' })
       .expect(201);
     await ghost.post(`/api/reviews/${witnessReview.id}/like`).expect(204);
 
-    // le mot de passe est exigé (401 sans), puis 204
+    // the password is required (401 without it), then 204
     await ghost.delete('/api/users/me').expect(401);
     await ghost.delete('/api/users/me').send({ password: PASSWORD }).expect(204);
 

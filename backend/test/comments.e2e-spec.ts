@@ -33,7 +33,7 @@ describe('Commentaires — threads, profondeur, tombales', () => {
 
   it('profondeur limitée à 3 (400 au-delà)', async () => {
     let parentId: number | undefined;
-    // depth 0 (racine) puis réponses jusqu'à depth 3 : toutes acceptées
+    // depth 0 (root) then replies down to depth 3: all accepted
     for (let depth = 0; depth <= 3; depth++) {
       const res = await comment(alice, `depth ${depth}`, parentId).expect(201);
       parentId = res.body.id as number;
@@ -75,7 +75,7 @@ describe('Commentaires — threads, profondeur, tombales', () => {
     const review = (await anonymous(app).get(`/api/reviews/${reviewId}`).expect(200)).body;
     const list = (await anonymous(app).get(`/api/reviews/${reviewId}/comments`).expect(200)).body;
     const visibleRoots = list.filter((c: { deleted: boolean }) => !c.deleted).length;
-    // le compteur inclut aussi les réponses visibles, jamais les tombales
+    // the counter includes visible replies too, never tombstones
     expect(review._count.comments).toBeGreaterThanOrEqual(visibleRoots);
     const tombs = list.filter((c: { deleted: boolean }) => c.deleted).length;
     expect(tombs).toBeGreaterThan(0);
@@ -86,9 +86,9 @@ describe('Commentaires — threads, profondeur, tombales', () => {
   it('feuille : vraie suppression, et élagage de la chaîne de tombales', async () => {
     const c1 = (await comment(alice, 'racine').expect(201)).body.id as number;
     const r1 = (await comment(bob, 'seule réponse', c1).expect(201)).body.id as number;
-    await alice.delete(`/api/comments/${c1}`).expect(204); // tombale (a un enfant)
+    await alice.delete(`/api/comments/${c1}`).expect(204); // tombstone (has a child)
 
-    // bob supprime la feuille : la tombale n'a plus d'enfant → élaguée aussi
+    // bob deletes the leaf: the tombstone has no child left, so it is pruned too
     await bob.delete(`/api/comments/${r1}`).expect(204);
 
     const list = (await anonymous(app).get(`/api/reviews/${reviewId}/comments`).expect(200)).body;
