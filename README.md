@@ -198,7 +198,7 @@ Points: **Major = 2 pts**, **Minor = 1 pt**. Required minimum: **14**.
 
 | # | Module | Cat. | Type | Pts | How it's implemented | By |
 |---|---|---|---|---|---|---|
-| 1 | Frontend **and** backend frameworks | Web | Major | 2 | React (frontend) + NestJS (backend) | `meskrabe`, `nicleena`, `alama` |
+| 1 | Frontend **and** backend frameworks | Web | Major | 2 | React (frontend) + NestJS (backend) | `meskrabe`, `nicleena`, `alama`, `vpramann` |
 | 2 | Real-time features (WebSockets) | Web | Major | 2 | Socket.IO: presence, chat, feed, notifications; graceful (dis)connection | `meskrabe`, `alama` |
 | 3 | User interaction (chat + profile + friends) | Web | Major | 2 | Direct chat, public profiles, friends system | `meskrabe`, `alama` |
 | 4 | Standard user management | User Mgmt | Major | 2 | Profile edit, avatar (+default), friends + online status, profile page | `nicleena`, `alama` |
@@ -210,7 +210,7 @@ Points: **Major = 2 pts**, **Minor = 1 pt**. Required minimum: **14**.
 | 10 | Two-Factor Authentication | User Mgmt | Minor | 1 | TOTP (otplib) + QR | `nicleena` |
 | 11 | Notification system | Web | Minor | 1 | Notifications on create/update/delete-type actions | `meskrabe`, `alama` |
 | 12 | Gamification | Gaming & UX | Minor | 1 | ≥3 of the list: **achievements + badges + leaderboards**, persistent, with visual feedback | `meskrabe`, `nicleena` |
-| 13 | **GDPR compliance** | Data & Analytics | Minor | 1 | Self-service data **export** (structured JSON — right of access/portability), account **deletion** with password confirmation (reviews/comments anonymized), and **confirmation emails** on both operations | `alama` |
+| 13 | **GDPR compliance** | Data & Analytics | Minor | 1 | Self-service data **export** (structured JSON — right of access/portability), account **deletion** with password confirmation (reviews/comments anonymized), and **confirmation emails** on both operations | `alama`, `vpramann` |
 
 **Total claimed: 6 Major + 7 Minor = 19 points** (≥ 14, with margin).
 
