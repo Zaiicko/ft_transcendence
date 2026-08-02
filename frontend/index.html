@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- SVG en premier (fiable sur Firefox, contrairement au .ico), .ico en repli
-         pour les vieux navigateurs qui ne gèrent pas le favicon SVG. -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+         pour les vieux navigateurs qui ne gèrent pas le favicon SVG.
+         ?v=3 = cache-busting : les navigateurs cachent le favicon très
+         agressivement (hors cache de page) ; bumper ce numéro force le
+         rechargement du nouveau. À incrémenter si tu changes encore l'icône. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3" sizes="any" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=3" />
     <title>Saveboxd</title>
   </head>
   <body>
