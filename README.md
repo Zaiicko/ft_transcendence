@@ -9,6 +9,7 @@
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?logo=socketdotio&logoColor=white)](https://socket.io)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-All_Rights_Reserved-red)](#license)
 
 ## Introduction
 
@@ -116,6 +117,10 @@ make
 
 The app is served over **HTTPS** at **https://localhost:8443**
 (self-signed certificate — accept the browser warning).
+
+> The catalog boots instantly with **1,000 games** from a committed fixture
+> (works offline). Run `make catalog-import` once to load the **full 9,500+
+> game catalog** — no API keys needed.
 
 ### 3. Useful targets
 
@@ -301,11 +306,20 @@ author could not explain and defend.
 
 ---
 
+## License
+
+This project is **not open source** — Copyright © 2026
+[@Zaiicko](https://github.com/Zaiicko), [@FtAlama](https://github.com/FtAlama),
+[@SoLeQz](https://github.com/SoLeQz). **All rights reserved.**
+
+The code is published for consultation, evaluation and portfolio purposes
+only. No permission is granted to use, copy, modify or redistribute it, in
+whole or in part, without the authors' written consent. Submitting this code
+as your own in any academic context (including the 42 curriculum) constitutes
+plagiarism.
+
+---
+
 ## Screenshots
 
 <img width="214" height="188" alt="Capture d’écran 2024-08-02 à 03 04 46" src="https://github.com/user-attachments/assets/cc961eec-0b1a-42b1-b505-01172c95cea6" />
-
-### Landing (signed out)
-<img src="docs/screenshots/09-landing.png" width="100%" alt="Signed-out landing — value-prop hero, feature cards and live stats"/>
-
-
