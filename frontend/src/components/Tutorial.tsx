@@ -30,36 +30,30 @@ function targetOf(key: string): HTMLElement | null {
   return r.width > 0 && r.height > 0 ? el : null;
 }
 
-export default function Tutorial({ open, onClose }: { open: boolean; onClose: () => void }) {
+// Mounted only while the tour is open (see Layout): mount = start, unmount = reset.
+export default function Tutorial({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
-  const [steps, setSteps] = useState<string[]>([]);
+  // Steps whose target is visible, computed once at mount, starting from the first.
+  const [steps] = useState<string[]>(() => STEP_KEYS.filter((k) => targetOf(k)));
   const [i, setI] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const tipRef = useRef<HTMLDivElement>(null);
   const [tip, setTip] = useState<{ top: number; left: number; place: 'top' | 'bottom' } | null>(null);
 
-  // On open: list the steps whose target is visible and start from the first.
-  useEffect(() => {
-    if (!open) return;
-    setSteps(STEP_KEYS.filter((k) => targetOf(k)));
-    setI(0);
-  }, [open]);
-
   const key = steps[i];
 
-  const measure = useCallback(() => {
-    if (!key) return;
-    const el = targetOf(key);
-    if (!el) {
-      setRect(null);
-      return;
-    }
-    const r = el.getBoundingClientRect();
-    setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
-  }, [key]);
-
+  // Spotlight measurement: before paint (useLayoutEffect) to avoid a one-frame flash, then re-measured on resize/scroll.
   useLayoutEffect(() => {
-    if (!open) return;
+    if (!key) return;
+    const measure = () => {
+      const el = targetOf(key);
+      if (!el) {
+        setRect(null);
+        return;
+      }
+      const r = el.getBoundingClientRect();
+      setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+    };
     measure();
     window.addEventListener('resize', measure);
     window.addEventListener('scroll', measure, true);
@@ -67,7 +61,7 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
       window.removeEventListener('resize', measure);
       window.removeEventListener('scroll', measure, true);
     };
-  }, [open, measure]);
+  }, [key]);
 
   // Place the bubble below the target if there's room, else above, kept within the viewport.
   useLayoutEffect(() => {
@@ -102,7 +96,6 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
   const back = useCallback(() => setI((n) => Math.max(0, n - 1)), []);
 
   useEffect(() => {
-    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') finish();
       else if (e.key === 'ArrowRight') next();
@@ -110,9 +103,9 @@ export default function Tutorial({ open, onClose }: { open: boolean; onClose: ()
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, finish, next, back]);
+  }, [finish, next, back]);
 
-  if (!open || steps.length === 0 || !key) return null;
+  if (steps.length === 0 || !key) return null;
 
   const hole: Rect | null = rect
     ? {

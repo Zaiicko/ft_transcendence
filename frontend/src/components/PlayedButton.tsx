@@ -333,11 +333,13 @@ function Calendar({
   const anchorOf = (s: string) => (/^\d{4}-\d{2}-\d{2}$/.test(s) ? parseYmd(s) : null);
   const init = anchorOf(view) ?? anchorOf(max) ?? { y: new Date().getFullYear(), m: new Date().getMonth(), d: 1 };
   const [vs, setVs] = useState({ y: init.y, m: init.m });
-  // Follows the external anchor (user types a year/month) without breaking arrow navigation (unchanged view → effect doesn't re-fire).
-  useEffect(() => {
+  // Follows the external anchor (user types a year/month) without breaking arrow navigation: state adjusted during render, only when `view` actually changes.
+  const [prevView, setPrevView] = useState(view);
+  if (view !== prevView) {
+    setPrevView(view);
     const a = anchorOf(view);
     if (a) setVs({ y: a.y, m: a.m });
-  }, [view]);
+  }
 
   const weekStart = weekStartFor(lang);
   const weekdays = Array.from({ length: 7 }, (_, i) =>

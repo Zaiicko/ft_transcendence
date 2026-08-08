@@ -9,6 +9,7 @@
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?logo=socketdotio&logoColor=white)](https://socket.io)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![CI](https://github.com/Zaiicko/ft_transcendence/actions/workflows/ci.yml/badge.svg)](https://github.com/Zaiicko/ft_transcendence/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-All_Rights_Reserved-red)](#license)
 
 ## Introduction

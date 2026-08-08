@@ -26,18 +26,6 @@ export default function NotificationBell() {
       .catch(() => {});
   }, [user]);
 
-  // Opening the panel marks everything as read (the badge clears).
-  useEffect(() => {
-    if (!open) return;
-    apiFetch<AppNotification[]>('/notifications?page=1&limit=20')
-      .then((list) =>
-        setItems(list.map((n) => (n.readAt ? n : { ...n, readAt: new Date().toISOString() }))),
-      )
-      .catch(() => {});
-    setUnread(0);
-    apiFetch('/notifications/read-all', { method: 'PATCH' }).catch(() => {});
-  }, [open]);
-
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
@@ -61,6 +49,20 @@ export default function NotificationBell() {
 
   if (!user) return null;
 
+  // Opening the panel marks everything as read (the badge clears).
+  function toggle() {
+    const opening = !open;
+    setOpen(opening);
+    if (!opening) return;
+    apiFetch<AppNotification[]>('/notifications?page=1&limit=20')
+      .then((list) =>
+        setItems(list.map((n) => (n.readAt ? n : { ...n, readAt: new Date().toISOString() }))),
+      )
+      .catch(() => {});
+    setUnread(0);
+    apiFetch('/notifications/read-all', { method: 'PATCH' }).catch(() => {});
+  }
+
   function markRead(id: number) {
     setItems((cur) =>
       cur.map((n) => (n.id === id && !n.readAt ? { ...n, readAt: new Date().toISOString() } : n)),
@@ -79,7 +81,7 @@ export default function NotificationBell() {
     <div ref={ref} className="relative">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         aria-label={t('notifications.title')}
         aria-expanded={open}
         className="relative flex h-9 w-9 items-center justify-center rounded-full text-zinc-500 transition hover:text-accent dark:text-zinc-400"

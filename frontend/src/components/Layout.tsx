@@ -517,7 +517,7 @@ export default function Layout() {
       {user && <ChatWidget />}
 
       {/* Guided tour (auto after onboarding, or relaunched from settings). */}
-      {user && <Tutorial open={tourOpen} onClose={handleTutorialClose} />}
+      {user && tourOpen && <Tutorial onClose={handleTutorialClose} />}
     </div>
   );
 }

@@ -202,8 +202,12 @@ function ListCard({
   const [editing, setEditing] = useState(false);
   // Local coverUrl: updated immediately after framing (before the refetch).
   const [coverUrl, setCoverUrl] = useState(list.coverUrl);
-  // …but RESYNC when the parent returns fresh data (after reload): otherwise a removed/changed cover only shows on a manual reload.
-  useEffect(() => setCoverUrl(list.coverUrl), [list.coverUrl]);
+  // …but RESYNC when the parent returns fresh data (after reload): otherwise a removed/changed cover only shows on a manual reload. State adjusted during render, guarded to run only when the prop changes.
+  const [prevListCover, setPrevListCover] = useState(list.coverUrl);
+  if (list.coverUrl !== prevListCover) {
+    setPrevListCover(list.coverUrl);
+    setCoverUrl(list.coverUrl);
+  }
   const [coverOpen, setCoverOpen] = useState(false);
   const cover = coverUrl ? parseFrame(coverUrl) : null;
 

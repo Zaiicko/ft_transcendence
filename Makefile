@@ -28,7 +28,7 @@ up: .env
 	@i=0; \
 	while ! curl -sk $(URL)/api/health 2>/dev/null | grep -q '"ok"'; do \
 		i=$$((i + 1)); \
-		if [ $$i -gt 90 ]; then \
+		if [ $$i -gt 180 ]; then \
 			printf "\n$(BOLD)$(RED)Timeout — check 'make logs' ❌$(RESET)\n"; \
 			exit 1; \
 		fi; \
