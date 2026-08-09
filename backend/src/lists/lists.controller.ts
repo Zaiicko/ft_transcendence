@@ -17,7 +17,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { randomUUID } from 'crypto';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -30,7 +29,15 @@ import { ReorderListDto } from './dto/reorder-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 import { ListsService } from './lists.service';
 
-const ALLOWED_COVER_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+// Doubles as the extension whitelist — see the note on AVATAR_EXT_BY_MIME in
+// users.controller.ts: deriving the stored name from file.originalname would let
+// a client serve arbitrary HTML/JS from our origin under /api/uploads.
+const COVER_EXT_BY_MIME = new Map([
+  ['image/jpeg', '.jpg'],
+  ['image/png', '.png'],
+  ['image/webp', '.webp'],
+  ['image/gif', '.gif'],
+]);
 const MAX_COVER_BYTES = 4 * 1024 * 1024;
 
 @Controller('lists')
@@ -44,10 +51,11 @@ export class ListsController {
     FileInterceptor('cover', {
       storage: diskStorage({
         destination: LIST_COVERS_DIR,
+        // fileFilter runs first, so the mime type is always one of the four.
         filename: (_req, file, cb) =>
-          cb(null, `${randomUUID()}${extname(file.originalname).toLowerCase()}`),
+          cb(null, `${randomUUID()}${COVER_EXT_BY_MIME.get(file.mimetype) ?? ''}`),
       }),
-      fileFilter: (_req, file, cb) => cb(null, ALLOWED_COVER_MIME_TYPES.has(file.mimetype)),
+      fileFilter: (_req, file, cb) => cb(null, COVER_EXT_BY_MIME.has(file.mimetype)),
       limits: { fileSize: MAX_COVER_BYTES },
     }),
   )

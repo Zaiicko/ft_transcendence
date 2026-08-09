@@ -20,7 +20,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { randomUUID } from 'crypto';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtPayload } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -38,7 +37,17 @@ import { UsersService } from './users.service';
 // image/gif included: avatars are stored as-is (no re-encoding), so an animated
 // GIF stays animated in the <img>. 4MB stays under nginx's client_max_body_size
 // of 5m and is plenty for an avatar.
-const ALLOWED_AVATAR_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+//
+// Doubles as the extension whitelist, so the stored filename never derives from
+// file.originalname: a client can send Content-Type: image/png while naming the
+// file "x.html", and we'd serve attacker-controlled HTML from our own origin
+// under /api/uploads — stored XSS, since the CSP's script-src 'self' trusts it.
+const AVATAR_EXT_BY_MIME = new Map([
+  ['image/jpeg', '.jpg'],
+  ['image/png', '.png'],
+  ['image/webp', '.webp'],
+  ['image/gif', '.gif'],
+]);
 const MAX_AVATAR_BYTES = 4 * 1024 * 1024;
 
 @Controller('users')
@@ -201,9 +210,11 @@ export class UsersController {
     FileInterceptor('avatar', {
       storage: diskStorage({
         destination: AVATARS_DIR,
-        filename: (_req, file, cb) => cb(null, `${randomUUID()}${extname(file.originalname).toLowerCase()}`),
+        // fileFilter runs first, so the mime type is always one of the four.
+        filename: (_req, file, cb) =>
+          cb(null, `${randomUUID()}${AVATAR_EXT_BY_MIME.get(file.mimetype) ?? ''}`),
       }),
-      fileFilter: (_req, file, cb) => cb(null, ALLOWED_AVATAR_MIME_TYPES.has(file.mimetype)),
+      fileFilter: (_req, file, cb) => cb(null, AVATAR_EXT_BY_MIME.has(file.mimetype)),
       limits: { fileSize: MAX_AVATAR_BYTES },
     }),
   )
