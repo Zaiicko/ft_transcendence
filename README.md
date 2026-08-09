@@ -12,6 +12,8 @@
 [![CI](https://github.com/Zaiicko/ft_transcendence/actions/workflows/ci.yml/badge.svg)](https://github.com/Zaiicko/ft_transcendence/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-All_Rights_Reserved-red)](#license)
 
+<p align="center"><b>🌍 Live demo → <a href="https://saveboxd.com">saveboxd.com</a></b></p>
+
 ## Introduction
 
 **Saveboxd** is **the Letterboxd of video games** — a social platform to track, rate,
