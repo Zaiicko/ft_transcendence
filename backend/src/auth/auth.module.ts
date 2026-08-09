@@ -7,7 +7,6 @@ import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { DiscordStrategy } from './discord.strategy';
-import { FortyTwoStrategy } from './fortytwo.strategy';
 import { GoogleStrategy } from './google.strategy';
 import { JwtStrategy } from './jwt.strategy';
 
@@ -25,7 +24,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, FortyTwoStrategy, DiscordStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, DiscordStrategy],
   // JwtModule re-exported so PresenceModule can verify socket handshake cookies
   // without importing FriendsModule/UsersModule and creating a module cycle.
   // AuthService exported for the Steam account flow (issueTokens on login).

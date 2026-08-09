@@ -1,4 +1,4 @@
-export type AuthProvider = 'LOCAL' | 'FORTYTWO' | 'GOOGLE' | 'STEAM' | 'DISCORD';
+export type AuthProvider = 'LOCAL' | 'GOOGLE' | 'STEAM' | 'DISCORD';
 
 // Row returned by GET /games (list/search) — score = Bayesian blend of IGDB rating + user ratings (see docs/reviews-api.md).
 export interface GameSummary {
@@ -146,7 +146,9 @@ export interface AppNotification {
     gameId?: number | null;
     companyId?: number | null;
     commentId?: number;
-    // FRIEND_JOINED: which network this contact joined through
+    // FRIEND_JOINED: which network this contact joined through ('42' is
+    // legacy — only ever appears in notifications stored before the 42
+    // OAuth login was retired, kept here so old ones still render).
     via?: 'steam' | '42';
     // ACHIEVEMENT: key of the unlocked achievement
     achievementKey?: string;

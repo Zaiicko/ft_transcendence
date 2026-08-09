@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "使用 Google 继续",
-    "continueWithFortyTwo": "使用 42 继续",
     "continueWithSteam": "使用 Steam 继续",
     "continueWithDiscord": "使用 Discord 继续",
     "or": "或"
@@ -151,7 +150,6 @@
     "profileError": "无法保存资料",
     "signInVia": "您的账号未设置密码——目前通过 {{provider}} 登录。添加密码后即可同时使用邮箱登录。",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "在线与离线",
     "sentYouRequest": "向你发送了请求",
     "viaSteam": "来自 Steam",
-    "via42": "来自 42",
     "viaPsn": "来自 PSN"
   },
   "notifications": {

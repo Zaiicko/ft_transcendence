@@ -182,8 +182,8 @@ export class NotificationsService {
     }
   }
 
-  // Un contact (ami Steam / camarade 42) vient de s'inscrire
-  async friendJoined(actorId: number, recipientId: number, via: 'steam' | '42'): Promise<void> {
+  // Un ami Steam vient de s'inscrire
+  async friendJoined(actorId: number, recipientId: number, via: 'steam'): Promise<void> {
     try {
       await this.deliver(recipientId, NotificationType.FRIEND_JOINED, {
         ...(await this.actorPayload(actorId)),

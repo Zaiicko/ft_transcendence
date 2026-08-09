@@ -9,7 +9,6 @@ import Avatar from '../components/Avatar';
 import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
-import FortyTwoBadge from '../components/FortyTwoBadge';
 import AchievementsSection from '../components/AchievementsSection';
 import LeaderboardRankBadge from '../components/LeaderboardRankBadge';
 import PsnBadge from '../components/PsnBadge';
@@ -764,7 +763,6 @@ export default function PublicProfile() {
             <div className="min-w-0 flex-1">
               <h1 className="font-display flex flex-wrap items-center gap-2 text-2xl font-extrabold tracking-tight">
                 {profile.username}
-                {profile.provider === 'FORTYTWO' && <FortyTwoBadge />}
                 {profile.provider === 'DISCORD' && <DiscordBadge />}
                 {profile.steamId && <SteamBadge />}
                 {profile.psnLinked && <PsnBadge />}

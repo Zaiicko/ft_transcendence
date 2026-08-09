@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "Doorgaan met Google",
-    "continueWithFortyTwo": "Doorgaan met 42",
     "continueWithSteam": "Doorgaan met Steam",
     "continueWithDiscord": "Doorgaan met Discord",
     "or": "of"
@@ -151,7 +150,6 @@
     "profileError": "Kon profiel niet opslaan",
     "signInVia": "Je account heeft geen wachtwoord — je logt in via {{provider}}. Voeg er een toe om ook met je e-mail te kunnen inloggen.",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "Actief & offline",
     "sentYouRequest": "stuurde je een verzoek",
     "viaSteam": "via Steam",
-    "via42": "via 42",
     "viaPsn": "via PSN"
   },
   "notifications": {

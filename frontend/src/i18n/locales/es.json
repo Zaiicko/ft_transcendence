@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "Continuar con Google",
-    "continueWithFortyTwo": "Continuar con 42",
     "continueWithSteam": "Continuar con Steam",
     "continueWithDiscord": "Continuar con Discord",
     "or": "o"
@@ -151,7 +150,6 @@
     "profileError": "No se pudo guardar el perfil",
     "signInVia": "Tu cuenta no tiene contraseña — inicias sesión a través de {{provider}}. Añade una para también poder iniciar sesión con tu correo.",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "Activos y desconectados",
     "sentYouRequest": "te envió una solicitud",
     "viaSteam": "vía Steam",
-    "via42": "vía 42",
     "viaPsn": "vía PSN"
   },
   "notifications": {

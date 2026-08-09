@@ -6,7 +6,6 @@ import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import AvatarFramer from '../components/AvatarFramer';
 import DiscordBadge from '../components/DiscordBadge';
-import FortyTwoBadge from '../components/FortyTwoBadge';
 import LinkedAccounts from '../components/LinkedAccounts';
 import NotificationSettings from '../components/NotificationSettings';
 import SectionHead from '../components/SectionHead';
@@ -28,6 +27,7 @@ function secretFromOtpauthUrl(otpauthUrl: string): string {
 }
 
 // Displayed provider name for "you sign in through {{provider}}" (OAuth-only accounts).
+// Only called for password-less (OAuth) accounts, so `provider` is never 'LOCAL' in practice.
 function providerLabel(provider: AuthProvider, t: TFunction): string {
   switch (provider) {
     case 'STEAM':
@@ -37,7 +37,7 @@ function providerLabel(provider: AuthProvider, t: TFunction): string {
     case 'DISCORD':
       return t('settings.providerDiscord');
     default:
-      return t('settings.providerFortyTwo');
+      return '';
   }
 }
 
@@ -292,7 +292,6 @@ export default function Settings() {
               <div className="min-w-0">
                 <p className="flex items-center gap-2 font-medium">
                   {user.username}
-                  {user.provider === 'FORTYTWO' && <FortyTwoBadge />}
                   {user.provider === 'DISCORD' && <DiscordBadge />}
                   {user.steamId && <SteamBadge />}
                 </p>

@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "Google ile devam et",
-    "continueWithFortyTwo": "42 ile devam et",
     "continueWithSteam": "Steam ile devam et",
     "continueWithDiscord": "Discord ile devam et",
     "or": "veya"
@@ -151,7 +150,6 @@
     "profileError": "Profil kaydedilemedi",
     "signInVia": "Hesabının şifresi yok — {{provider}} ile giriş yapıyorsun. E-postanla da giriş yapabilmek için bir şifre ekle.",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "Aktif ve çevrimdışı",
     "sentYouRequest": "sana istek gönderdi",
     "viaSteam": "Steam üzerinden",
-    "via42": "42 üzerinden",
     "viaPsn": "PSN üzerinden"
   },
   "notifications": {

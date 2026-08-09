@@ -6,7 +6,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AuthProvider, FriendshipStatus, User } from '@prisma/client';
+import { FriendshipStatus, User } from '@prisma/client';
 import { AchievementsService } from '../achievements/achievements.service';
 import { ChatGateway } from '../chat/chat.gateway';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -19,7 +19,7 @@ const SUGGESTION_LIMIT = 20;
 
 export interface FriendSuggestion {
   user: User;
-  via: 'steam' | '42' | 'psn';
+  via: 'steam' | 'psn';
 }
 
 @Injectable()
@@ -150,7 +150,7 @@ export class FriendsService {
     try {
       const nu = await this.prisma.user.findUnique({
         where: { id: newUserId },
-        select: { steamId: true, provider: true },
+        select: { steamId: true },
       });
       if (!nu) return;
 
@@ -170,23 +170,9 @@ export class FriendsService {
         }
       }
 
-      const fortytwoRecipients = new Set<number>();
-      if (nu.provider === AuthProvider.FORTYTWO) {
-        const users = await this.prisma.user.findMany({
-          where: { provider: AuthProvider.FORTYTWO, id: { not: newUserId } },
-          select: { id: true },
-        });
-        for (const u of users) if (!steamRecipients.has(u.id)) fortytwoRecipients.add(u.id);
-      }
-
-      await Promise.all([
-        ...[...steamRecipients].map((id) =>
-          this.notifications.friendJoined(newUserId, id, 'steam'),
-        ),
-        ...[...fortytwoRecipients].map((id) =>
-          this.notifications.friendJoined(newUserId, id, '42'),
-        ),
-      ]);
+      await Promise.all(
+        [...steamRecipients].map((id) => this.notifications.friendJoined(newUserId, id, 'steam')),
+      );
     } catch {
       // Never blocks the signup
     }
@@ -241,18 +227,6 @@ export class FriendsService {
       } catch {
         // PSN session down or friend list private: skip the PSN suggestions
       }
-    }
-
-    if (me.provider === AuthProvider.FORTYTWO) {
-      const users = await this.prisma.user.findMany({
-        where: {
-          provider: AuthProvider.FORTYTWO,
-          id: { notIn: [...excludeIds, ...suggestions.keys()] },
-        },
-        take: SUGGESTION_LIMIT,
-        orderBy: { createdAt: 'desc' },
-      });
-      for (const user of users) suggestions.set(user.id, { user, via: '42' });
     }
 
     return [...suggestions.values()].slice(0, SUGGESTION_LIMIT);

@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "Kontynuuj z Google",
-    "continueWithFortyTwo": "Kontynuuj z 42",
     "continueWithSteam": "Kontynuuj ze Steam",
     "continueWithDiscord": "Kontynuuj z Discordem",
     "or": "lub"
@@ -151,7 +150,6 @@
     "profileError": "Nie udało się zapisać profilu",
     "signInVia": "Twoje konto nie ma hasła — logujesz się przez {{provider}}. Dodaj hasło, aby móc logować się też e-mailem.",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "Aktywni i offline",
     "sentYouRequest": "wysłał(a) Ci zaproszenie",
     "viaSteam": "przez Steam",
-    "via42": "przez 42",
     "viaPsn": "przez PSN"
   },
   "notifications": {

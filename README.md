@@ -55,7 +55,7 @@ frontend, backend, database, real-time layer and external integrations.
 
 ### 👥 Social
 - Friends system with **online presence** and smart friend suggestions
-  (your Steam/PSN friends already on Saveboxd, fellow 42 students…)
+  (your Steam/PSN friends already on Saveboxd)
 - Real-time **direct chat** (Socket.IO) — share games, reviews and profiles straight into a conversation
 - **Public profiles**: stats, favorites, reviews, lists and achievements tabs
 - Activity **feed** of what your friends play, review and achieve, with filter tabs

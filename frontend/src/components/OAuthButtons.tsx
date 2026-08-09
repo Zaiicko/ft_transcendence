@@ -46,16 +46,6 @@ export default function OAuthButtons() {
       </a>
 
       <a
-        href="/api/auth/42"
-        onClick={rememberOrigin}
-        title={t('oauth.continueWithFortyTwo')}
-        aria-label={t('oauth.continueWithFortyTwo')}
-        className={`${BASE} border-black bg-black text-base font-bold text-white`}
-      >
-        42
-      </a>
-
-      <a
         href="/api/auth/steam"
         onClick={rememberOrigin}
         title={t('oauth.continueWithSteam')}

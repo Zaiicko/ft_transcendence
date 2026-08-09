@@ -207,16 +207,6 @@ export class AuthController {
     await this.completeOAuth(AuthProvider.GOOGLE, req.user as OAuthProfile, res);
   }
 
-  @Get('42')
-  @UseGuards(AuthGuard('fortytwo'))
-  fortyTwoLogin() {}
-
-  @Get('42/callback')
-  @UseGuards(AuthGuard('fortytwo'))
-  async fortyTwoCallback(@Req() req: Request, @Res() res: Response) {
-    await this.completeOAuth(AuthProvider.FORTYTWO, req.user as OAuthProfile, res);
-  }
-
   @Get('discord')
   @UseGuards(AuthGuard('discord'))
   discordLogin() {}
@@ -322,11 +312,8 @@ export class AuthController {
   private hasOtherLoginMethod(user: User, excluding: AuthProvider): boolean {
     if (user.passwordHash) return true;
     if (excluding !== AuthProvider.STEAM && user.steamId) return true;
-    // Google/42 stay usable through provider/providerId — they have no own column
-    if (
-      (user.provider === AuthProvider.GOOGLE || user.provider === AuthProvider.FORTYTWO) &&
-      user.providerId
-    ) {
+    // Google stays usable through provider/providerId — it has no own column
+    if (user.provider === AuthProvider.GOOGLE && user.providerId) {
       return true;
     }
     return false;

@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "Google で続ける",
-    "continueWithFortyTwo": "42 で続ける",
     "continueWithSteam": "Steam で続ける",
     "continueWithDiscord": "Discord で続ける",
     "or": "または"
@@ -151,7 +150,6 @@
     "profileError": "プロフィールを保存できませんでした",
     "signInVia": "このアカウントにはパスワードが設定されていません。{{provider}} でサインインしています。パスワードを追加するとメールアドレスでもログインできます。",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "オンラインとオフライン",
     "sentYouRequest": "あなたにリクエストを送りました",
     "viaSteam": "Steam経由",
-    "via42": "42経由",
     "viaPsn": "PSN経由"
   },
   "notifications": {

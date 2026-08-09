@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import EmptyState, { UsersIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
-import FortyTwoBadge from '../components/FortyTwoBadge';
 import PsnBadge from '../components/PsnBadge';
 import SectionHead from '../components/SectionHead';
 import Skeleton from '../components/Skeleton';
@@ -26,7 +25,7 @@ interface FriendRequestRow {
 }
 
 // Suggested by the backend: your Steam friends on Saveboxd, or fellow 42 students.
-type Suggestion = PublicUser & { via: 'steam' | '42' | 'psn' };
+type Suggestion = PublicUser & { via: 'steam' | 'psn' };
 
 export default function Friends() {
   const { t } = useTranslation();
@@ -389,7 +388,6 @@ function ProviderBadges({
 }) {
   return (
     <>
-      {u.provider === 'FORTYTWO' && <FortyTwoBadge />}
       {u.provider === 'DISCORD' && <DiscordBadge />}
       {u.steamId && <SteamBadge />}
       {u.psnLinked && <PsnBadge />}
@@ -400,7 +398,5 @@ function ProviderBadges({
 
 // Suggestion provenance label (which network found it).
 function suggestionVia(via: Suggestion['via'], t: ReturnType<typeof useTranslation>['t']): string {
-  if (via === 'steam') return t('friends.viaSteam');
-  if (via === 'psn') return t('friends.viaPsn');
-  return t('friends.via42');
+  return via === 'steam' ? t('friends.viaSteam') : t('friends.viaPsn');
 }

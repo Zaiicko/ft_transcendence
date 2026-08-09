@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "Google로 계속하기",
-    "continueWithFortyTwo": "42로 계속하기",
     "continueWithSteam": "Steam으로 계속하기",
     "continueWithDiscord": "Discord로 계속하기",
     "or": "또는"
@@ -151,7 +150,6 @@
     "profileError": "프로필을 저장할 수 없습니다",
     "signInVia": "계정에 비밀번호가 설정되어 있지 않습니다. {{provider}}로 로그인하고 있습니다. 비밀번호를 추가하면 이메일로도 로그인할 수 있습니다.",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "접속 및 오프라인",
     "sentYouRequest": "님이 요청을 보냈습니다",
     "viaSteam": "Steam 통해",
-    "via42": "42 통해",
     "viaPsn": "PSN 통해"
   },
   "notifications": {

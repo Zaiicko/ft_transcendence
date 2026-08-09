@@ -51,7 +51,6 @@
   },
   "oauth": {
     "continueWithGoogle": "Продолжить с Google",
-    "continueWithFortyTwo": "Продолжить с 42",
     "continueWithSteam": "Продолжить со Steam",
     "continueWithDiscord": "Продолжить с Discord",
     "or": "или"
@@ -151,7 +150,6 @@
     "profileError": "Не удалось сохранить профиль",
     "signInVia": "У твоего аккаунта нет пароля — ты входишь через {{provider}}. Добавь пароль, чтобы также входить по email.",
     "providerGoogle": "Google",
-    "providerFortyTwo": "42",
     "providerSteam": "Steam",
     "providerDiscord": "Discord",
     "twoFactor": {
@@ -297,7 +295,6 @@
     "eyeFriends": "В сети и офлайн",
     "sentYouRequest": "отправил(а) вам запрос",
     "viaSteam": "через Steam",
-    "via42": "через 42",
     "viaPsn": "через PSN"
   },
   "notifications": {
