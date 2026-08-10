@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "登录后成为第一个评价这款游戏的人。",
     "emptyDescCompanyGuest": "登录后成为第一个评价这个工作室的人。",
     "deletedUser": "[已删除的用户]",
+    "deleteConfirmTitle": "删除这条评价？",
+    "deleteConfirmBody": "此操作无法撤销。",
     "edit": "编辑",
     "delete": "删除",
     "loading": "加载中…",

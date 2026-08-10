@@ -10,6 +10,7 @@ import { ApiError, apiFetch } from '../lib/api';
 import Avatar from './Avatar';
 import EmptyState, { PencilIcon } from './EmptyState';
 import LeaderboardRankBadge from './LeaderboardRankBadge';
+import Modal from './Modal';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import ReviewComments from './ReviewComments';
 import ShareButton from './ShareButton';
@@ -72,6 +73,8 @@ export default function ReviewsSection({
   const [openThreads, setOpenThreads] = useState<Set<number>>(new Set());
   const [commentVersions, setCommentVersions] = useState<Record<number, number>>({});
   const [editingId, setEditingId] = useState<number | null>(null);
+  // Id of the review pending a delete confirmation (null = no confirm dialog open).
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   // The review form is collapsed by default, opened by a button.
   const [showForm, setShowForm] = useState(false);
   const reviewRef = useRef<HTMLElement>(null);
@@ -496,7 +499,7 @@ export default function ReviewsSection({
                           </button>
                           <button
                             type="button"
-                            onClick={() => removeOwn(r)}
+                            onClick={() => setConfirmDeleteId(r.id)}
                             className="transition hover:text-red-400"
                           >
                             {t('reviews.delete')}
@@ -529,6 +532,31 @@ export default function ReviewsSection({
             </button>
           )}
         </div>
+      )}
+      {confirmDeleteId !== null && (
+        <Modal title={t('reviews.deleteConfirmTitle')} onClose={() => setConfirmDeleteId(null)}>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">{t('reviews.deleteConfirmBody')}</p>
+          <div className="mt-5 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setConfirmDeleteId(null)}
+              className="rounded-full border border-zinc-400/60 px-4 py-2 text-sm font-semibold transition hover:opacity-70 dark:border-zinc-600"
+            >
+              {t('reviews.cancel')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const review = reviews.find((x) => x.id === confirmDeleteId);
+                setConfirmDeleteId(null);
+                if (review) removeOwn(review);
+              }}
+              className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
+            >
+              {t('reviews.delete')}
+            </button>
+          </div>
+        </Modal>
       )}
     </section>
   );

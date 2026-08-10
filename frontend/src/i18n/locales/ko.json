@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "로그인하고 이 게임을 가장 먼저 평가해보세요.",
     "emptyDescCompanyGuest": "로그인하고 이 스튜디오를 가장 먼저 평가해보세요.",
     "deletedUser": "[삭제된 사용자]",
+    "deleteConfirmTitle": "이 리뷰를 삭제하시겠습니까?",
+    "deleteConfirmBody": "이 작업은 되돌릴 수 없습니다.",
     "edit": "수정",
     "delete": "삭제",
     "loading": "불러오는 중…",

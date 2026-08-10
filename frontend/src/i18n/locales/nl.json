@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Log in om deze game als eerste te beoordelen.",
     "emptyDescCompanyGuest": "Log in om deze studio als eerste te beoordelen.",
     "deletedUser": "[verwijderde gebruiker]",
+    "deleteConfirmTitle": "Deze recensie verwijderen?",
+    "deleteConfirmBody": "Deze actie kan niet ongedaan worden gemaakt.",
     "edit": "Bewerken",
     "delete": "Verwijderen",
     "loading": "Laden…",

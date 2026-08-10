@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Inicia sessão para seres o primeiro a avaliar este jogo.",
     "emptyDescCompanyGuest": "Inicia sessão para seres o primeiro a avaliar este estúdio.",
     "deletedUser": "[utilizador eliminado]",
+    "deleteConfirmTitle": "Eliminar esta análise?",
+    "deleteConfirmBody": "Esta ação não pode ser anulada.",
     "edit": "Editar",
     "delete": "Eliminar",
     "loading": "A carregar…",

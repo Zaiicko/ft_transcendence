@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Bu oyunu ilk değerlendiren olmak için giriş yap.",
     "emptyDescCompanyGuest": "Bu stüdyoyu ilk değerlendiren olmak için giriş yap.",
     "deletedUser": "[silinmiş kullanıcı]",
+    "deleteConfirmTitle": "Bu inceleme silinsin mi?",
+    "deleteConfirmBody": "Bu işlem geri alınamaz.",
     "edit": "Düzenle",
     "delete": "Sil",
     "loading": "Yükleniyor…",

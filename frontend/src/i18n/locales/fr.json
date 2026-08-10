@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Connecte-toi pour être le premier à noter ce jeu.",
     "emptyDescCompanyGuest": "Connecte-toi pour être le premier à noter ce studio.",
     "deletedUser": "[utilisateur supprimé]",
+    "deleteConfirmTitle": "Supprimer cette critique ?",
+    "deleteConfirmBody": "Cette action est irréversible.",
     "edit": "Modifier",
     "delete": "Supprimer",
     "loading": "Chargement…",

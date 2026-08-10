@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Accedi per essere il primo a valutare questo gioco.",
     "emptyDescCompanyGuest": "Accedi per essere il primo a valutare questo studio.",
     "deletedUser": "[utente eliminato]",
+    "deleteConfirmTitle": "Eliminare questa recensione?",
+    "deleteConfirmBody": "Questa azione non può essere annullata.",
     "edit": "Modifica",
     "delete": "Elimina",
     "loading": "Caricamento…",

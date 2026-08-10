@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Melde dich an, um dieses Spiel als Erster zu bewerten.",
     "emptyDescCompanyGuest": "Melde dich an, um dieses Studio als Erster zu bewerten.",
     "deletedUser": "[gelöschter Benutzer]",
+    "deleteConfirmTitle": "Diese Rezension löschen?",
+    "deleteConfirmBody": "Diese Aktion kann nicht rückgängig gemacht werden.",
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "loading": "Wird geladen…",

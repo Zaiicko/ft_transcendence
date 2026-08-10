@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Войдите, чтобы первым оценить эту игру.",
     "emptyDescCompanyGuest": "Войдите, чтобы первым оценить эту студию.",
     "deletedUser": "[удалённый пользователь]",
+    "deleteConfirmTitle": "Удалить этот обзор?",
+    "deleteConfirmBody": "Это действие нельзя отменить.",
     "edit": "Изменить",
     "delete": "Удалить",
     "loading": "Загрузка…",

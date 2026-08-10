@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Inicia sesión para ser el primero en valorar este juego.",
     "emptyDescCompanyGuest": "Inicia sesión para ser el primero en valorar este estudio.",
     "deletedUser": "[usuario eliminado]",
+    "deleteConfirmTitle": "¿Eliminar esta reseña?",
+    "deleteConfirmBody": "Esta acción no se puede deshacer.",
     "edit": "Editar",
     "delete": "Eliminar",
     "loading": "Cargando…",

@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "ログインして、このゲームを最初に評価しましょう。",
     "emptyDescCompanyGuest": "ログインして、このスタジオを最初に評価しましょう。",
     "deletedUser": "[削除されたユーザー]",
+    "deleteConfirmTitle": "このレビューを削除しますか？",
+    "deleteConfirmBody": "この操作は取り消せません。",
     "edit": "編集",
     "delete": "削除",
     "loading": "読み込み中…",

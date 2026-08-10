@@ -479,6 +479,8 @@
     "emptyDescGameGuest": "Log in to be the first to rate this game.",
     "emptyDescCompanyGuest": "Log in to be the first to rate this studio.",
     "deletedUser": "[deleted user]",
+    "deleteConfirmTitle": "Delete this review?",
+    "deleteConfirmBody": "This action can't be undone.",
     "edit": "Edit",
     "delete": "Delete",
     "loading": "Loading…",
