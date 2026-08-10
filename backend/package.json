@@ -13,6 +13,7 @@
     "catalog:export": "ts-node src/catalog-export.ts",
     "catalog:import": "ts-node src/catalog-import.ts",
     "companies:logos": "ts-node src/companies-logos.ts",
+    "time-to-beat:sync": "ts-node src/game-time-to-beat.ts",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio --hostname 0.0.0.0 --browser none",
     "lint": "eslint src",

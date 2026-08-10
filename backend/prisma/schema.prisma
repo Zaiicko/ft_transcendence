@@ -234,6 +234,10 @@ model Game {
   // what lets the catalog score dampen near-empty ratings
   steamScore       Float?
   steamRatingCount Int?
+  // IGDB "time to beat, normally" (game_time_to_beats), in minutes. Fallback
+  // signal for platforms where achievements/trophies are private or absent —
+  // playtime past this average is our best guess at "finished".
+  avgCompletionMinutes Int?
   // DLC system: DLCs/expansions point to their base game and are hidden from
   // the catalog list — they appear (and are reviewable) on the parent's page
   gameType GameType @default(MAIN)

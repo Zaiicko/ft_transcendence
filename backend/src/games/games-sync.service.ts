@@ -133,6 +133,38 @@ export class GamesSyncService {
     return games.length;
   }
 
+  // Backfill "average time to complete" (IGDB game_time_to_beats, `normally`
+  // field) for every catalog game that doesn't have it yet. Standalone —
+  // `npm run time-to-beat:sync` — since it only enriches existing rows and
+  // doesn't need to run on every catalog sync.
+  async syncTimeToBeat(): Promise<number> {
+    const missing = await this.prisma.game.findMany({
+      where: { avgCompletionMinutes: null },
+      select: { id: true, igdbId: true },
+    });
+    this.logger.log(`Fetching time-to-beat for ${missing.length} games...`);
+    let updated = 0;
+    for (let i = 0; i < missing.length; i += PAGE_SIZE) {
+      const batch = missing.slice(i, i + PAGE_SIZE);
+      const rows = await this.igdb.query<{ game_id: number; normally?: number }>(
+        'game_time_to_beats',
+        `fields game_id, normally; where game_id = (${batch.map((g) => g.igdbId).join(',')}); limit ${PAGE_SIZE};`,
+      );
+      const minutesByIgdbId = new Map(
+        rows.filter((r) => r.normally && r.normally > 0).map((r) => [r.game_id, Math.round(r.normally! / 60)]),
+      );
+      for (const g of batch) {
+        const minutes = minutesByIgdbId.get(g.igdbId);
+        if (!minutes) continue;
+        await this.prisma.game.update({ where: { id: g.id }, data: { avgCompletionMinutes: minutes } });
+        updated++;
+      }
+      this.logger.log(`Time-to-beat sync progress: ${Math.min(i + PAGE_SIZE, missing.length)}/${missing.length}`);
+      await new Promise((r) => setTimeout(r, PAGE_DELAY_MS));
+    }
+    return updated;
+  }
+
   private async upsertFromIgdb(raw: IgdbGame) {
     const companies = (raw.involved_companies ?? [])
       .map((ic) => ic.company)

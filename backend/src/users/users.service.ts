@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { basename, join } from 'path';
 import { AVATARS_DIR } from '../common/uploads';
+import { VERIFIED_COMPLETION_PLATFORMS } from '../common/completion-platforms';
 import { ALL_ACHIEVEMENTS } from '../achievements/achievements.catalog';
 import { ListsService } from '../lists/lists.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -295,10 +296,12 @@ export class UsersService {
       completions: dedupeByGame(
         completedRaw.map((c) => ({ playedAt: c.completedAt, game: c.game })),
       ),
-      // Green calendar series: games at 100% on a platform (Steam/Xbox/PSN).
+      // Green calendar series: games at a VERIFIED 100% on a platform (real
+      // achievement/trophy data — excludes 'manual' and playtime-estimated
+      // completions, which only count toward the amber series above).
       perfectGames: dedupeByGame(
         completedRaw
-          .filter((c) => c.platform !== 'manual')
+          .filter((c) => (VERIFIED_COMPLETION_PLATFORMS as readonly string[]).includes(c.platform))
           .map((c) => ({ playedAt: c.completedAt, game: c.game })),
       ),
       friendState,
@@ -325,9 +328,9 @@ export class UsersService {
         distinct: ['gameId'],
         select: { gameId: true },
       }),
-      // Distinct games at 100% on a platform: green series.
+      // Distinct games at a VERIFIED 100% on a platform: green series.
       this.prisma.gameCompletion.findMany({
-        where: { userId, platform: { not: 'manual' } },
+        where: { userId, platform: { in: [...VERIFIED_COMPLETION_PLATFORMS] } },
         distinct: ['gameId'],
         select: { gameId: true },
       }),

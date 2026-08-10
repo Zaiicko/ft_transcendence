@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { VERIFIED_COMPLETION_PLATFORMS } from '../common/completion-platforms';
 import { FeedGateway } from '../feed/feed.gateway';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -73,7 +74,7 @@ export class AchievementsService implements OnModuleInit {
       case 'perfect':
         return (
           await this.prisma.gameCompletion.findMany({
-            where: { userId, platform: { not: 'manual' } },
+            where: { userId, platform: { in: [...VERIFIED_COMPLETION_PLATFORMS] } },
             distinct: ['gameId'],
             select: { gameId: true },
           })

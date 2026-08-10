@@ -69,6 +69,7 @@ export class SteamController {
         igdbRating: true,
         steamScore: true,
         releaseDate: true,
+        avgCompletionMinutes: true,
         // What the user already marked, so the frontend can show it
         playedBy: {
           where: { userId: current.sub },
@@ -144,6 +145,18 @@ export class SteamController {
         };
       });
     await this.feed.syncCompletions(current.sub, 'steam', completed);
+
+    // Fallback for games whose achievements we can't read at all (private
+    // profile setting, or the game simply has none — Steam's API collapses
+    // both into the same empty response, so we can't tell them apart): if
+    // playtime already clears the IGDB "average time to beat", treat it as
+    // done too. Kept on its own platform tag so it never counts as a
+    // verified "100%" (green) — only as "Fait" (amber), same as a manual mark.
+    const estimated = matched
+      .filter((m) => !m.achievements && m.avgCompletionMinutes && m.playtimeMinutes >= m.avgCompletionMinutes)
+      .map((m) => ({ gameId: m.id }));
+    await this.feed.syncCompletions(current.sub, 'steam_estimated', estimated);
+
     void this.achievements.evaluate(current.sub, ['completions', 'perfect', 'genres']);
 
     return {
