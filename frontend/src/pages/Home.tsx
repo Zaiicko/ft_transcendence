@@ -715,25 +715,21 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
         aria-label={t('home.viewGame', { title: game.title })}
         className={`group relative block overflow-hidden rounded-3xl border border-zinc-900/10 shadow-2xl shadow-black/30 dark:border-zinc-100/10 ${compact ? 'h-full' : ''}`}
       >
+        {/* Background fills the card (absolute) instead of dictating its height: the card's
+            real height now comes from the content wrapper below (`min-h`, not `max-h`), so a
+            long title that wraps to 3 lines grows the card instead of climbing up and
+            overlapping the "featured" badge pinned at the top. */}
         {banner ? (
           <img
             data-anim="hero-bg"
             src={banner}
             alt=""
-            className={
-              compact
-                ? 'h-full min-h-[36vh] w-full scale-110 object-cover'
-                : 'h-[46vh] max-h-[66vw] w-full scale-110 object-cover md:h-[56vh]'
-            }
+            className="absolute inset-0 h-full w-full scale-110 object-cover"
           />
         ) : (
           <div
             data-anim="hero-bg"
-            className={
-              compact
-                ? 'h-full min-h-[36vh] scale-125 bg-cover bg-center opacity-60 blur-2xl'
-                : 'h-[46vh] max-h-[66vw] scale-125 bg-cover bg-center opacity-60 blur-2xl md:h-[56vh]'
-            }
+            className="absolute inset-0 scale-125 bg-cover bg-center opacity-60 blur-2xl"
             style={game.coverUrl ? { backgroundImage: `url(${game.coverUrl})` } : undefined}
           />
         )}
@@ -743,7 +739,11 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
         <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-zinc-100/20 bg-zinc-950/40 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-100 backdrop-blur">
           <span className="text-accent">✦</span> {t('home.featuredBadge')}
         </span>
-        <div className={`absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent ${compact ? 'p-5 md:p-6' : 'p-6 md:p-10'}`}>
+        <div
+          className={`relative flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent ${
+            compact ? 'min-h-[36vh] p-5 md:p-6' : 'min-h-[46vh] p-6 md:min-h-[56vh] md:p-10'
+          }`}
+        >
           {game.coverUrl && (
             <img
               src={game.coverUrl}
