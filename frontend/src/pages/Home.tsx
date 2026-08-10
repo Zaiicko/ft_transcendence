@@ -343,7 +343,7 @@ export default function Home() {
           )
         ) : (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {visibleHighlights.map((r) => (
                 <ReviewCard key={r.id} review={r} />
               ))}
@@ -532,11 +532,21 @@ function LandingStats({ data }: { data: HomeLanding }) {
   return (
     <div className="grid grid-cols-3 gap-3 sm:gap-4">
       {items.map((it) => (
-        <div key={it.label} className="card !rounded-2xl p-4 text-center sm:p-5">
-          <div className="font-display text-3xl font-extrabold tabular-nums tracking-tight text-accent sm:text-4xl">
+        <div
+          key={it.label}
+          className="card !rounded-2xl p-3 text-center [container-type:inline-size] sm:p-5"
+        >
+          {/* Font size is tied to the card's own measured width (cqw), not a viewport
+              breakpoint: a 3-column grid gives each card a different width depending on
+              screen size AND where this component ends up used, so a fixed text-3xl/4xl
+              pair can't guarantee the digits fit — this scales continuously instead. */}
+          <div
+            className="font-display font-extrabold tabular-nums tracking-tight text-accent"
+            style={{ fontSize: 'clamp(1.125rem, 13cqw, 2.5rem)' }}
+          >
             {fmt(it.value)}
           </div>
-          <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
+          <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-400 sm:text-[11px]">
             {it.label}
           </div>
         </div>
@@ -705,25 +715,21 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
         aria-label={t('home.viewGame', { title: game.title })}
         className={`group relative block overflow-hidden rounded-3xl border border-zinc-900/10 shadow-2xl shadow-black/30 dark:border-zinc-100/10 ${compact ? 'h-full' : ''}`}
       >
+        {/* Background fills the card (absolute) instead of dictating its height: the card's
+            real height now comes from the content wrapper below (`min-h`, not `max-h`), so a
+            long title that wraps to 3 lines grows the card instead of climbing up and
+            overlapping the "featured" badge pinned at the top. */}
         {banner ? (
           <img
             data-anim="hero-bg"
             src={banner}
             alt=""
-            className={
-              compact
-                ? 'h-full min-h-[36vh] w-full scale-110 object-cover'
-                : 'h-[46vh] max-h-[66vw] w-full scale-110 object-cover md:h-[56vh]'
-            }
+            className="absolute inset-0 h-full w-full scale-110 object-cover"
           />
         ) : (
           <div
             data-anim="hero-bg"
-            className={
-              compact
-                ? 'h-full min-h-[36vh] scale-125 bg-cover bg-center opacity-60 blur-2xl'
-                : 'h-[46vh] max-h-[66vw] scale-125 bg-cover bg-center opacity-60 blur-2xl md:h-[56vh]'
-            }
+            className="absolute inset-0 scale-125 bg-cover bg-center opacity-60 blur-2xl"
             style={game.coverUrl ? { backgroundImage: `url(${game.coverUrl})` } : undefined}
           />
         )}
@@ -733,7 +739,11 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
         <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-zinc-100/20 bg-zinc-950/40 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-100 backdrop-blur">
           <span className="text-accent">✦</span> {t('home.featuredBadge')}
         </span>
-        <div className={`absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent ${compact ? 'p-5 md:p-6' : 'p-6 md:p-10'}`}>
+        <div
+          className={`relative flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent ${
+            compact ? 'min-h-[36vh] p-5 md:p-6' : 'min-h-[46vh] p-6 md:min-h-[56vh] md:p-10'
+          }`}
+        >
           {game.coverUrl && (
             <img
               src={game.coverUrl}
@@ -752,9 +762,13 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
           </div>
         </div>
       </a>
-      {/* Actions (connectés) posées par-dessus le lien de la carte */}
+      {/* Actions (connectés), en dehors du <a> (un lien ne peut pas contenir de liens/boutons
+          imbriqués). En dessous de `sm`, ce même seuil où la jaquette miniature est déjà masquée
+          faute de place, elles passent sous la carte en flux normal plutôt qu'en overlay :
+          l'overlay bas-droite occupe alors presque toute la largeur de la carte et rentre en
+          collision avec le score/genre en bas-gauche, quelle que soit la longueur du titre. */}
       {user && (
-        <div className="absolute bottom-6 right-6 flex items-center gap-3 md:bottom-10 md:right-10">
+        <div className="mt-3 flex items-center justify-center gap-3 sm:absolute sm:inset-x-auto sm:bottom-6 sm:right-6 sm:mt-0 sm:justify-end md:bottom-10 md:right-10">
           <PlayedButton gameId={game.id} releaseDate={game.releaseDate} onDark />
           <a
             href={`${gameHref(game.id)}#review`}
@@ -867,17 +881,29 @@ function StatTile({
   return (
     <div
       data-anim="stat"
-      className="card relative overflow-hidden !rounded-2xl p-4"
+      className="card relative overflow-hidden !rounded-2xl p-4 [container-type:inline-size]"
     >
       <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
         {label}
       </div>
-      <div className={`font-display mt-1.5 text-3xl font-extrabold tabular-nums tracking-tight ${valueColor}`}>
-        {value}
-        {suffix && <span className="text-base font-bold text-zinc-400">{suffix}</span>}
+      {/* Ring sits next to the value instead of the label: the label is a single
+          unbroken word ("Achievements"), so it has no space to wrap at — reserving
+          padding for the ring there just overflowed straight through it. As a flex
+          sibling of the value it can never be overlapped, and the label stays intact. */}
+      <div className="flex items-center justify-between gap-2">
+        {/* Size tied to the tile's own measured width (cqw), not a viewport breakpoint —
+            this grid runs 2/3/5 columns depending on screen size, so a fixed text-3xl
+            can't guarantee a value like "48/62" fits at every column count. */}
+        <div
+          className={`font-display mt-1.5 min-w-0 truncate font-extrabold tabular-nums tracking-tight ${valueColor}`}
+          style={{ fontSize: 'clamp(1.125rem, 11cqw, 2.25rem)' }}
+        >
+          {value}
+          {suffix && <span className="text-[0.5em] font-bold text-zinc-400">{suffix}</span>}
+        </div>
+        {ring !== undefined && <ProgressRing pct={ring} />}
       </div>
       {caption && <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{caption}</div>}
-      {ring !== undefined && <ProgressRing pct={ring} />}
     </div>
   );
 }
@@ -887,7 +913,7 @@ function ProgressRing({ pct }: { pct: number }) {
   const r = 15;
   const c = 2 * Math.PI * r;
   return (
-    <svg className="absolute right-3 top-3" width="32" height="32" viewBox="0 0 36 36" aria-hidden="true">
+    <svg className="shrink-0" width="32" height="32" viewBox="0 0 36 36" aria-hidden="true">
       <circle cx="18" cy="18" r={r} fill="none" stroke="currentColor" strokeWidth="4" className="text-zinc-900/10 dark:text-zinc-100/10" />
       <circle
         cx="18"
@@ -1056,7 +1082,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
     <a
       href={target.href}
       data-anim="card"
-      className="card flex flex-col gap-2.5 p-4 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600"
+      className="card flex min-w-0 flex-col gap-2.5 p-4 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600"
     >
       <div className="flex items-center gap-2.5">
         {target.cover && (

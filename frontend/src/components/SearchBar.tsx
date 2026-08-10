@@ -11,7 +11,14 @@ type CompanyHit = { id: number; name: string; logoUrl: string | null };
 const MIN_CHARS = 2;
 const DEBOUNCE_MS = 300;
 
-export default function SearchBar() {
+export default function SearchBar({
+  autoFocus = false,
+  onNavigate,
+}: {
+  autoFocus?: boolean;
+  // Called right after a search result/submit navigates away — lets a mobile overlay wrapper close itself.
+  onNavigate?: () => void;
+}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -22,6 +29,11 @@ export default function SearchBar() {
   const [searched, setSearched] = useState(false);
   const [importing, setImporting] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus();
+  }, [autoFocus]);
 
   const trimmed = query.trim();
 
@@ -90,6 +102,7 @@ export default function SearchBar() {
     setCompanies([]);
     navigate(`/games?q=${encodeURIComponent(trimmed)}`);
     setQuery('');
+    onNavigate?.();
   }
 
   function goTo(id: number) {
@@ -98,6 +111,7 @@ export default function SearchBar() {
     setResults([]);
     setCompanies([]);
     navigate(gameHref(id));
+    onNavigate?.();
   }
 
   function goToCompany(id: number) {
@@ -106,6 +120,7 @@ export default function SearchBar() {
     setResults([]);
     setCompanies([]);
     navigate(companyHref(id));
+    onNavigate?.();
   }
 
   async function randomGame() {
@@ -115,6 +130,7 @@ export default function SearchBar() {
     const page = 1 + Math.floor(Math.random() * total);
     const { data } = await apiFetch<{ data: GameSummary[] }>(`/games?page=${page}&limit=1`);
     if (data[0]) navigate(gameHref(data[0].id));
+    onNavigate?.();
   }
 
   const disc = useRef<SVGSVGElement>(null);
@@ -138,6 +154,7 @@ export default function SearchBar() {
     <div ref={boxRef} className="relative min-w-0 flex-1">
       <div className="flex gap-2">
         <input
+          ref={inputRef}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setOpen(true)}

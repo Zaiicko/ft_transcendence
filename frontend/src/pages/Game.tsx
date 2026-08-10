@@ -232,9 +232,15 @@ export default function Game() {
       <div ref={heroRef}>
         {banner ? (
           <div className="relative overflow-hidden rounded-2xl border border-zinc-900/10 shadow-xl dark:border-zinc-100/10">
-            <img src={banner} alt="" className="h-[40vh] w-full object-cover md:h-[48vh]" />
+            {/* Image fills whatever height the content box below ends up needing (min-height as a
+                floor, not a cap) — a fixed height on the image itself clipped the title off games
+                with enough genre/studio/platform tags to wrap past that height on narrow screens. */}
+            <img src={banner} alt="" className="absolute inset-0 h-full w-full object-cover" />
             <div className="pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full bg-accent/25 blur-3xl" />
-            <div className="absolute inset-x-0 bottom-0 flex items-end gap-5 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-transparent p-6 md:p-9">
+            {/* Stronger, taller fade than a plain 2-stop gradient: mobile wraps genres/platforms into
+                more rows, so that text needs the dark base to reach further up the image, not just
+                the very bottom sliver — a busy/bright screenshot behind it made tags unreadable. */}
+            <div className="relative flex min-h-[300px] items-end gap-5 bg-gradient-to-t from-zinc-950/95 from-15% via-zinc-950/80 via-50% to-transparent p-6 md:min-h-[48vh] md:p-9">
               {game.coverUrl && (
                 <img src={game.coverUrl} alt="" className="hidden h-40 w-auto shrink-0 rounded-xl border border-zinc-100/15 shadow-2xl sm:block md:h-52" />
               )}
