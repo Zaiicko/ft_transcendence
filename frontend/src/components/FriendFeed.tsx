@@ -131,13 +131,16 @@ export default function FriendFeed() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2">
+      {/* overflow-x-auto + shrink-0 : same fix as the profile tabs — 5 filters at full
+          padding don't always fit on narrow phones, so the row scrolls instead of the
+          last button(s) running off the edge of the card. */}
+      <div className="flex gap-2 overflow-x-auto pb-1">
         {TAB_KEYS.map((tab) => (
           <button
             key={tab.key}
             type="button"
             onClick={() => setFilter(tab.key)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
               filter === tab.key
                 ? 'bg-accent text-zinc-950'
                 : 'border border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
