@@ -444,6 +444,25 @@ export class FeedService {
           })),
           skipDuplicates: true,
         });
+        // Completing implies playing (same rule as the manual "done" button):
+        // upgrade to PLAYED so the library/played calendar agree with the new
+        // completion instead of showing it as never played.
+        await this.prisma.$transaction(
+          newItems.map((c) =>
+            this.prisma.playedGame.upsert({
+              where: { userId_gameId: { userId, gameId: c.gameId } },
+              // Upgrade PLAYING/BACKLOG to PLAYED, same as the manual button;
+              // never touch an existing playedAt, only set it on first creation.
+              update: { status: PlayStatus.PLAYED },
+              create: {
+                userId,
+                gameId: c.gameId,
+                status: PlayStatus.PLAYED,
+                playedAt: c.completedAt ?? new Date(),
+              },
+            }),
+          ),
+        );
       }
 
       // Backfill: rows stored before we could read the real date carry an

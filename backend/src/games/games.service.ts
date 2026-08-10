@@ -293,10 +293,11 @@ export class GamesService {
             select: { status: true, playedAt: true },
           })
         : null,
-      // Did the viewer mark this game completed by hand?
+      // Did the viewer complete this game — by hand, or synced at 100% from a
+      // linked Steam/Xbox/PSN library?
       viewerId
-        ? this.prisma.gameCompletion.findUnique({
-            where: { userId_gameId_platform: { userId: viewerId, gameId, platform: 'manual' } },
+        ? this.prisma.gameCompletion.findFirst({
+            where: { userId: viewerId, gameId },
             select: { id: true },
           })
         : null,

@@ -290,11 +290,10 @@ export class UsersService {
         .filter((r) => r.game)
         .map((r) => ({ rating: r.rating, game: r.game! })),
       recentReviews,
-      // Amber calendar series: games marked done by hand.
+      // Amber calendar series: every completion, whichever way it was reached
+      // (marked done by hand, or 100% on a linked Steam/Xbox/PSN library).
       completions: dedupeByGame(
-        completedRaw
-          .filter((c) => c.platform === 'manual')
-          .map((c) => ({ playedAt: c.completedAt, game: c.game })),
+        completedRaw.map((c) => ({ playedAt: c.completedAt, game: c.game })),
       ),
       // Green calendar series: games at 100% on a platform (Steam/Xbox/PSN).
       perfectGames: dedupeByGame(
@@ -319,9 +318,10 @@ export class UsersService {
         _count: { _all: true },
         _avg: { rating: true },
       }),
-      // Distinct games marked done by hand: amber calendar series.
+      // Distinct games done: amber calendar series — any completion, hand-marked
+      // or synced at 100% from a linked Steam/Xbox/PSN library.
       this.prisma.gameCompletion.findMany({
-        where: { userId, platform: 'manual' },
+        where: { userId },
         distinct: ['gameId'],
         select: { gameId: true },
       }),
