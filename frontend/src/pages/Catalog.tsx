@@ -324,7 +324,10 @@ export default function Catalog() {
         </p>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-8 3xl:grid-cols-10 4xl:grid-cols-12 5xl:grid-cols-[repeat(16,minmax(0,1fr))]">
+          {/* Covers are already a fixed 3:4 crop straight from IGDB (verified: even their
+              "original" size is 3:4, nothing extra to reveal) — 4 tiles/row left titles/logos
+              too small to read on a phone; 3 gives each ~40% more width for the same reason. */}
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-5 lg:grid-cols-8 3xl:grid-cols-10 4xl:grid-cols-12 5xl:grid-cols-[repeat(16,minmax(0,1fr))]">
             {games.map((g) => (
               <GameCard key={g.id} game={g} />
             ))}
