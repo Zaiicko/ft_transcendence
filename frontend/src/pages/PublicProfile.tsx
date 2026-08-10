@@ -158,7 +158,7 @@ function ReviewPreviewCard({ review }: { review: ProfileReview }) {
         isCompany: true,
       };
   return (
-    <Link to={target.href} className="card flex flex-col gap-3 p-5 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600">
+    <Link to={target.href} className="card flex min-w-0 flex-col gap-3 p-5 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600">
       <div className="flex items-center gap-3">
         {target.cover && (
           <img
@@ -846,13 +846,15 @@ export default function PublicProfile() {
       </div>
 
       {/* ---- Onglets ---- */}
-      <div className="mt-6 flex gap-1 border-b border-zinc-900/10 dark:border-zinc-100/10">
+      {/* overflow-x-auto + shrink-0 : 4 tabs at full padding don't always fit under ~380px,
+          especially with longer translated labels — scrolls instead of pushing "Lists" off-screen. */}
+      <div className="mt-6 flex gap-1 overflow-x-auto border-b border-zinc-900/10 dark:border-zinc-100/10">
         {tabs.map((tb) => (
           <button
             key={tb.key}
             type="button"
             onClick={() => setTab(tb.key)}
-            className={`relative px-4 py-2.5 text-sm font-semibold transition ${
+            className={`relative shrink-0 whitespace-nowrap px-4 py-2.5 text-sm font-semibold transition ${
               tab === tb.key
                 ? 'text-zinc-900 dark:text-zinc-100'
                 : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
@@ -911,7 +913,7 @@ export default function PublicProfile() {
                     </button>
                   )}
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {profile.recentReviews.slice(0, 2).map((r) => (
                     <ReviewPreviewCard key={r.id} review={r} />
                   ))}

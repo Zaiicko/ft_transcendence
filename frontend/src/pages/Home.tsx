@@ -343,7 +343,7 @@ export default function Home() {
           )
         ) : (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {visibleHighlights.map((r) => (
                 <ReviewCard key={r.id} review={r} />
               ))}
@@ -1056,7 +1056,7 @@ function ReviewCard({ review }: { review: ReviewHighlight }) {
     <a
       href={target.href}
       data-anim="card"
-      className="card flex flex-col gap-2.5 p-4 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600"
+      className="card flex min-w-0 flex-col gap-2.5 p-4 transition hover:-translate-y-1 hover:border-zinc-400 dark:hover:border-zinc-600"
     >
       <div className="flex items-center gap-2.5">
         {target.cover && (

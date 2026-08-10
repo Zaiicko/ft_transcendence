@@ -323,16 +323,19 @@ export default function Layout() {
               <SearchBar />
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-1.5 text-sm sm:gap-4">
+          {/* min-w-0 (not shrink-0): on the narrowest phones combined with a long translated
+              "Sign up" label, this group must be able to give way — the Link below truncates
+              instead, so the gear button never gets pushed past the viewport edge. */}
+          <div className="flex min-w-0 items-center gap-1.5 text-sm sm:gap-4">
             {user ? (
               <>
-                <span data-tour="notifications" className="flex items-center">
+                <span data-tour="notifications" className="flex shrink-0 items-center">
                   <NotificationBell />
                 </span>
                 <Link
                   data-tour="profile"
                   to={`/u/${user.username}`}
-                  className="flex min-w-0 items-center gap-2 hover:opacity-70"
+                  className="flex min-w-0 shrink items-center gap-2 hover:opacity-70"
                 >
                   <Avatar username={user.username} avatarUrl={user.avatarUrl} size={24} />
                   <span className="hidden max-w-[8rem] truncate md:inline">{user.username}</span>
@@ -343,13 +346,13 @@ export default function Layout() {
                 <Link
                   to="/login"
                   state={{ from: location.pathname + location.search }}
-                  className="hidden text-zinc-500 transition hover:text-zinc-900 sm:inline dark:text-zinc-400 dark:hover:text-zinc-100"
+                  className="hidden shrink-0 text-zinc-500 transition hover:text-zinc-900 sm:inline dark:text-zinc-400 dark:hover:text-zinc-100"
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/signup"
-                  className="rounded-full border border-zinc-400/60 px-3 py-1.5 transition hover:border-accent hover:text-accent sm:px-4 dark:border-zinc-600"
+                  className="min-w-0 shrink truncate rounded-full border border-zinc-400/60 px-3 py-1.5 transition hover:border-accent hover:text-accent sm:px-4 dark:border-zinc-600"
                 >
                   {t('nav.signup')}
                 </Link>
@@ -357,7 +360,7 @@ export default function Layout() {
             )}
 
             {/* Gear dropdown: day/night toggle for everyone; settings + logout when signed in */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 data-tour="menu"
                 type="button"
