@@ -467,9 +467,12 @@ function CompletionCalendar({
         )}
       </div>
 
-      {/* Responsive : les colonnes (semaines) sont en flex-1 → toute l'année
-          tient dans la largeur dispo, sans scroll horizontal. Hauteur de ligne
-          fixe (0.7rem) pour aligner trivialement les libellés de jour/mois. */}
+      {/* Cellules à taille fixe (0.7rem, carrées) au lieu de flex-1 : sur mobile,
+          compresser 52 colonnes dans ~280px les réduisait à des slivers de
+          quelques pixels, illisibles et impossibles à taper (et l'anneau de
+          sélection étiré sur une colonne sub-pixel produisait une fausse ligne
+          verticale). La grille défile maintenant horizontalement à la place ;
+          les libellés de jour restent fixes hors de la zone de scroll. */}
       <div className="pb-1" onMouseLeave={() => setHoveredKey(null)}>
         <div className="flex gap-1 text-[10px] leading-none text-zinc-400 dark:text-zinc-500">
           {/* Colonne des jours de semaine (Lun/Mer/Ven), alignée aux lignes */}
@@ -481,22 +484,22 @@ function CompletionCalendar({
             ))}
           </div>
 
-          <div className="min-w-0 flex-1">
-            {/* Labels de mois : un slot flex-1 par semaine (débordent à droite) */}
+          <div className="min-w-0 flex-1 overflow-x-auto pb-1">
+            {/* Labels de mois : un slot fixe par semaine (débordent à droite) */}
             <div className="mb-1 flex h-3 gap-[2px]">
               {monthCols.map((label, i) => (
-                <span key={i} className="min-w-0 flex-1 whitespace-nowrap">
+                <span key={i} className="w-[0.7rem] shrink-0 whitespace-nowrap">
                   {label ?? ''}
                 </span>
               ))}
             </div>
 
-            {/* Grille : colonnes = semaines (flex-1), 7 lignes (dim → sam) */}
+            {/* Grille : colonnes = semaines (largeur fixe), 7 lignes (dim → sam) */}
             <div className="flex gap-[2px]">
               {weeks.map((w, wi) => (
                 <div
                   key={wi}
-                  className="grid min-w-0 flex-1 gap-[2px]"
+                  className="grid w-[0.7rem] shrink-0 gap-[2px]"
                   style={{ gridTemplateRows: 'repeat(7, 0.7rem)' }}
                 >
                   {w.map((d, di) => {
