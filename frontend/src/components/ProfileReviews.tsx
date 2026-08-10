@@ -147,8 +147,8 @@ function ReviewCard({ r }: { r: ProfileReview }) {
         <span className="block h-16 w-11 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
       )}
       <div className="min-w-0 flex-1">
-        <div className="flex items-center justify-between gap-2">
-          <span className="truncate font-medium">{name}</span>
+        <span className="block truncate font-medium">{name}</span>
+        <div className="mt-1">
           <Stars rating={r.rating} />
         </div>
         {r.title && <p className="mt-1 text-sm font-medium">{r.title}</p>}

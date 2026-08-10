@@ -101,6 +101,7 @@ export default function Layout() {
   const [navOpen, setNavOpen] = useState(false);
   const [notifPrefsOpen, setNotifPrefsOpen] = useState(false);
   const [languagePickerOpen, setLanguagePickerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
   // Prevents the tour from auto-restarting in the same session after it's closed (tutorialSeen only turns true after the POST).
   const tourAutoStarted = useRef(false);
@@ -110,6 +111,7 @@ export default function Layout() {
   if (location.pathname !== lastPathname) {
     setLastPathname(location.pathname);
     setNavOpen(false);
+    setSearchOpen(false);
   }
 
   // Sync <html>'s .dark class (and localStorage) with React state.
@@ -132,6 +134,7 @@ export default function Layout() {
       setNavOpen(false);
       setNotifPrefsOpen(false);
       setLanguagePickerOpen(false);
+      setSearchOpen(false);
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -172,7 +175,7 @@ export default function Layout() {
         {t('a11y.skipToContent')}
       </a>
       <header className="app-header sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/90 px-4 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/90">
-        <nav className="mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-3 sm:gap-6">
+        <nav className="relative mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-3 sm:gap-6">
           {/* Burger: nav links on small/medium screens (the inline bar is hidden < lg). */}
           <div className="relative shrink-0 lg:hidden">
             <button
@@ -242,15 +245,26 @@ export default function Layout() {
                       </NavLink>
                     </>
                   )}
+                  {!user && (
+                    <NavLink
+                      to="/login"
+                      state={{ from: location.pathname + location.search }}
+                      role="menuitem"
+                      onClick={() => setNavOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 sm:hidden dark:hover:bg-zinc-100/10"
+                    >
+                      {t('nav.login')}
+                    </NavLink>
+                  )}
                 </div>
               </>
             )}
           </div>
-          <Link data-tour="home" to="/" className="font-display flex shrink-0 items-baseline gap-2 text-xl font-bold tracking-tight">
+          <Link data-tour="home" to="/" className="font-display flex shrink-0 items-baseline gap-2 text-lg font-bold tracking-tight sm:text-xl">
             <span>
               <span className="text-accent">Save</span>boxd
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+            <span className="hidden text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500 sm:inline">
               beta
             </span>
           </Link>
@@ -275,8 +289,39 @@ export default function Layout() {
               </>
             )}
           </div>
-          <div data-tour="search" className="ml-auto w-32 min-w-0 sm:w-44 lg:w-56">
-            <SearchBar />
+          <div data-tour="search" className="ml-auto flex items-center">
+            {/* < sm: icon that opens a full-width search overlay below the header. */}
+            <button
+              type="button"
+              onClick={() => setSearchOpen((o) => !o)}
+              aria-haspopup="true"
+              aria-expanded={searchOpen}
+              aria-label={t('catalog.searchNav')}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent sm:hidden dark:border-zinc-600 dark:text-zinc-400"
+            >
+              <Icon className="h-4 w-4">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </Icon>
+            </button>
+            {searchOpen && (
+              <>
+                <button
+                  type="button"
+                  aria-label={t('menu.closeMenu')}
+                  tabIndex={-1}
+                  onClick={() => setSearchOpen(false)}
+                  className="fixed inset-0 z-10 cursor-default sm:hidden"
+                />
+                <div className="absolute inset-x-0 top-full z-20 mt-2 sm:hidden">
+                  <SearchBar autoFocus onNavigate={() => setSearchOpen(false)} />
+                </div>
+              </>
+            )}
+            {/* >= sm: the inline bar, room enough not to need the overlay. */}
+            <div className="hidden w-44 min-w-0 sm:block lg:w-56">
+              <SearchBar />
+            </div>
           </div>
           <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
             {user ? (
@@ -298,13 +343,13 @@ export default function Layout() {
                 <Link
                   to="/login"
                   state={{ from: location.pathname + location.search }}
-                  className="text-zinc-500 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                  className="hidden text-zinc-500 transition hover:text-zinc-900 sm:inline dark:text-zinc-400 dark:hover:text-zinc-100"
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/signup"
-                  className="rounded-full border border-zinc-400/60 px-4 py-1.5 transition hover:border-accent hover:text-accent dark:border-zinc-600"
+                  className="rounded-full border border-zinc-400/60 px-3 py-1.5 transition hover:border-accent hover:text-accent sm:px-4 dark:border-zinc-600"
                 >
                   {t('nav.signup')}
                 </Link>
