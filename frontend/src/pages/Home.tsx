@@ -883,26 +883,25 @@ function StatTile({
       data-anim="stat"
       className="card relative overflow-hidden !rounded-2xl p-4 [container-type:inline-size]"
     >
-      {/* Ring is a real flex sibling, not an absolute overlay: the label is a single
-          unbroken word ("Achievements"), so it has no space to wrap at and reserving
-          padding for the ring did nothing — it just overflowed straight through. As a
-          flex item the ring can never be overlapped by its sibling; `truncate` on the
-          label is the fallback if a translation ever runs long instead of wrapping. */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 truncate text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
-          {label}
+      <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
+        {label}
+      </div>
+      {/* Ring sits next to the value instead of the label: the label is a single
+          unbroken word ("Achievements"), so it has no space to wrap at — reserving
+          padding for the ring there just overflowed straight through it. As a flex
+          sibling of the value it can never be overlapped, and the label stays intact. */}
+      <div className="flex items-center justify-between gap-2">
+        {/* Size tied to the tile's own measured width (cqw), not a viewport breakpoint —
+            this grid runs 2/3/5 columns depending on screen size, so a fixed text-3xl
+            can't guarantee a value like "48/62" fits at every column count. */}
+        <div
+          className={`font-display mt-1.5 min-w-0 truncate font-extrabold tabular-nums tracking-tight ${valueColor}`}
+          style={{ fontSize: 'clamp(1.125rem, 11cqw, 2.25rem)' }}
+        >
+          {value}
+          {suffix && <span className="text-[0.5em] font-bold text-zinc-400">{suffix}</span>}
         </div>
         {ring !== undefined && <ProgressRing pct={ring} />}
-      </div>
-      {/* Size tied to the tile's own measured width (cqw), not a viewport breakpoint —
-          this grid runs 2/3/5 columns depending on screen size, so a fixed text-3xl
-          can't guarantee a value like "48/62" fits at every column count. */}
-      <div
-        className={`font-display mt-1.5 font-extrabold tabular-nums tracking-tight ${valueColor}`}
-        style={{ fontSize: 'clamp(1.125rem, 11cqw, 2.25rem)' }}
-      >
-        {value}
-        {suffix && <span className="text-[0.5em] font-bold text-zinc-400">{suffix}</span>}
       </div>
       {caption && <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{caption}</div>}
     </div>
