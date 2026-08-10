@@ -444,11 +444,17 @@ export class FeedService {
           })),
           skipDuplicates: true,
         });
-        // Completing implies playing (same rule as the manual "done" button):
-        // upgrade to PLAYED so the library/played calendar agree with the new
-        // completion instead of showing it as never played.
+      }
+
+      // Completing implies playing (same rule as the manual "done" button):
+      // upgrade to PLAYED so the library/played calendar agree with every
+      // currently-100% game. Runs over the FULL `completed` list, not just
+      // newItems — completions recorded by an earlier sync (before this rule
+      // existed, or from a sync that ran between deploys) still get caught up
+      // here instead of being stuck un-upgraded forever.
+      if (completed.length > 0) {
         await this.prisma.$transaction(
-          newItems.map((c) =>
+          completed.map((c) =>
             this.prisma.playedGame.upsert({
               where: { userId_gameId: { userId, gameId: c.gameId } },
               // Upgrade PLAYING/BACKLOG to PLAYED, same as the manual button;
