@@ -228,33 +228,48 @@ export class GamesSyncService {
   // never read or written, so nobody's local test accounts or reviews are at
   // risk of being wiped or having their game references corrupted.
 
+  // Paginated: the include below joins 3 many-to-many relations, and Prisma
+  // binds one parameter per row to resolve them, which blows past Postgres's
+  // 32,767-bind-variable ceiling once the catalog passes ~10k games.
   async exportCatalog(): Promise<CatalogGameRecord[]> {
-    const games = await this.prisma.game.findMany({
-      include: {
-        genres: { select: { igdbId: true, name: true } },
-        platforms: { select: { igdbId: true, name: true } },
-        companies: { select: { igdbId: true, name: true } },
-        parent: { select: { igdbId: true } },
-      },
-    });
-    return games.map((g) => ({
-      igdbId: g.igdbId,
-      title: g.title,
-      summary: g.summary,
-      releaseDate: g.releaseDate?.toISOString() ?? null,
-      coverUrl: g.coverUrl,
-      screenshots: g.screenshots,
-      igdbRating: g.igdbRating,
-      igdbRatingCount: g.igdbRatingCount,
-      steamAppId: g.steamAppId,
-      steamScore: g.steamScore,
-      steamRatingCount: g.steamRatingCount,
-      gameType: g.gameType,
-      parentIgdbId: g.parent?.igdbId ?? null,
-      genres: g.genres,
-      platforms: g.platforms,
-      companies: g.companies,
-    }));
+    const CHUNK = 5000;
+    const out: CatalogGameRecord[] = [];
+    for (let skip = 0; ; skip += CHUNK) {
+      const games = await this.prisma.game.findMany({
+        skip,
+        take: CHUNK,
+        orderBy: { id: 'asc' },
+        include: {
+          genres: { select: { igdbId: true, name: true } },
+          platforms: { select: { igdbId: true, name: true } },
+          companies: { select: { igdbId: true, name: true } },
+          parent: { select: { igdbId: true } },
+        },
+      });
+      if (games.length === 0) break;
+      out.push(
+        ...games.map((g) => ({
+          igdbId: g.igdbId,
+          title: g.title,
+          summary: g.summary,
+          releaseDate: g.releaseDate?.toISOString() ?? null,
+          coverUrl: g.coverUrl,
+          screenshots: g.screenshots,
+          igdbRating: g.igdbRating,
+          igdbRatingCount: g.igdbRatingCount,
+          steamAppId: g.steamAppId,
+          steamScore: g.steamScore,
+          steamRatingCount: g.steamRatingCount,
+          gameType: g.gameType,
+          parentIgdbId: g.parent?.igdbId ?? null,
+          genres: g.genres,
+          platforms: g.platforms,
+          companies: g.companies,
+        })),
+      );
+      if (games.length < CHUNK) break;
+    }
+    return out;
   }
 
   // Resolves a Genre/Platform/Company by its REAL igdbId (same key the live
