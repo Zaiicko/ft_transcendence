@@ -175,7 +175,7 @@ export default function Layout() {
         {t('a11y.skipToContent')}
       </a>
       <header className="app-header sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/90 px-3 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/90">
-        <nav className="relative mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-3 sm:gap-6">
+        <nav className="relative mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-2.5 sm:gap-6">
           {/* Burger: nav links on small/medium screens (the inline bar is hidden < lg). */}
           <div className="relative shrink-0 lg:hidden">
             <button
@@ -332,10 +332,15 @@ export default function Layout() {
                 <span data-tour="notifications" className="flex shrink-0 items-center">
                   <NotificationBell />
                 </span>
+                {/* shrink-0 below md: the username span is hidden there, so the only content
+                    is the fixed-size 24px avatar — letting the link itself shrink smaller than
+                    that just made the avatar spill out over the gear button instead of helping.
+                    Shrink (+truncate) only kicks in at md+, once the username text is showing
+                    and can actually give up room safely. */}
                 <Link
                   data-tour="profile"
                   to={`/u/${user.username}`}
-                  className="flex min-w-0 shrink items-center gap-2 hover:opacity-70"
+                  className="flex shrink-0 items-center gap-2 hover:opacity-70 md:min-w-0 md:shrink"
                 >
                   <Avatar username={user.username} avatarUrl={user.avatarUrl} size={24} />
                   <span className="hidden max-w-[8rem] truncate md:inline">{user.username}</span>
