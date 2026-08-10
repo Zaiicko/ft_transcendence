@@ -53,6 +53,10 @@ model User {
   id               Int          @id @default(autoincrement())
   email            String       @unique
   username         String       @unique
+  // Lowercased mirror of `username`, kept in sync on every write: makes
+  // lookup/uniqueness case-insensitive ("Alice" and "alice" are the same
+  // account) while `username` itself still stores the case the user chose.
+  usernameLower    String       @unique
   // Null for OAuth-only accounts
   passwordHash     String?
   avatarUrl        String?

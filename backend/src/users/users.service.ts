@@ -31,9 +31,10 @@ export class UsersService {
     private readonly lists: ListsService,
   ) {}
 
-  // Used by AuthModule (local signup + OAuth provisioning)
-  create(data: Prisma.UserCreateInput) {
-    return this.prisma.user.create({ data });
+  // Used by AuthModule (local signup + OAuth provisioning). usernameLower is
+  // derived here, never passed in by callers.
+  create(data: Omit<Prisma.UserCreateInput, 'usernameLower'>) {
+    return this.prisma.user.create({ data: { ...data, usernameLower: data.username.toLowerCase() } });
   }
 
   findById(id: number) {
@@ -44,11 +45,15 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
+  // Case-insensitive: "Alice" and "alice" resolve to the same account.
   findByUsername(username: string) {
-    return this.prisma.user.findUnique({ where: { username } });
+    return this.prisma.user.findUnique({ where: { usernameLower: username.toLowerCase() } });
   }
 
   update(id: number, data: Prisma.UserUpdateInput) {
+    if (typeof data.username === 'string') {
+      data = { ...data, usernameLower: data.username.toLowerCase() };
+    }
     return this.prisma.user.update({ where: { id }, data });
   }
 
@@ -206,7 +211,7 @@ export class UsersService {
   // recent activity. Never exposes email / 2FA / provider ids. `viewerId` (the
   // optionally-authenticated caller) only drives the friend-action state.
   async getPublicProfile(username: string, viewerId?: number) {
-    const user = await this.prisma.user.findUnique({ where: { username } });
+    const user = await this.prisma.user.findUnique({ where: { usernameLower: username.toLowerCase() } });
     if (!user) return null;
 
     const [
@@ -378,7 +383,7 @@ export class UsersService {
   // the profile payload itself only carries the dated subset (calendar).
   async playedGamesOf(username: string) {
     const user = await this.prisma.user.findUnique({
-      where: { username },
+      where: { usernameLower: username.toLowerCase() },
       select: { id: true },
     });
     if (!user) return null;

@@ -9,6 +9,7 @@ export type PublicUser = Omit<
   | 'xboxXuid'
   | 'onboardedAt'
   | 'tutorialSeenAt'
+  | 'usernameLower'
 > & {
   // Lets the frontend offer "add a password" (provider accounts without one)
   // vs "change my password" — the hash itself never leaves the backend.
@@ -64,6 +65,7 @@ export function toPublicUser(user: User): PublicUser {
     xboxXuid,
     onboardedAt,
     tutorialSeenAt,
+    usernameLower,
     ...publicUser
   } = user;
   return {

@@ -261,7 +261,7 @@ export class ReviewsService {
     viewerId?: number,
   ) {
     const user = await this.prisma.user.findUnique({
-      where: { username },
+      where: { usernameLower: username.toLowerCase() },
       select: { id: true },
     });
     if (!user) return [];
