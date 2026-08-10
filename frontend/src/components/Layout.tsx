@@ -174,7 +174,7 @@ export default function Layout() {
       >
         {t('a11y.skipToContent')}
       </a>
-      <header className="app-header sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/90 px-4 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/90">
+      <header className="app-header sticky top-0 z-40 border-b border-zinc-900/10 bg-zinc-50/90 px-3 pb-4 pt-5 backdrop-blur-md sm:px-6 dark:border-zinc-100/10 dark:bg-zinc-950/90">
         <nav className="relative mx-auto flex max-w-6xl 2xl:max-w-7xl 3xl:max-w-[100rem] 4xl:max-w-[130rem] 5xl:max-w-[180rem] items-center gap-3 sm:gap-6">
           {/* Burger: nav links on small/medium screens (the inline bar is hidden < lg). */}
           <div className="relative shrink-0 lg:hidden">
@@ -323,7 +323,7 @@ export default function Layout() {
               <SearchBar />
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
+          <div className="flex shrink-0 items-center gap-1.5 text-sm sm:gap-4">
             {user ? (
               <>
                 <span data-tour="notifications" className="flex items-center">
