@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "Inloggen",
-      "emailPlaceholder": "E-mail",
+      "identifierPlaceholder": "E-mail of gebruikersnaam",
       "passwordPlaceholder": "Wachtwoord",
       "submit": "Inloggen",
       "submitting": "Bezig met inloggen…",

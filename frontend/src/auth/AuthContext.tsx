@@ -20,7 +20,7 @@ type LoginResult = PublicUser | { requiresTwoFactor: true };
 interface AuthContextValue {
   user: PublicUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ requiresTwoFactor: true } | void>;
+  login: (identifier: string, password: string) => Promise<{ requiresTwoFactor: true } | void>;
   completeTwoFactorLogin: (code: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -61,10 +61,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [applyUser]);
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (identifier: string, password: string) => {
       const result = await apiFetch<LoginResult>('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ identifier, password }),
       });
       if (isTwoFactorChallenge(result)) return result;
       applyUser(result);

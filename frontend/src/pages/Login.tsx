@@ -23,7 +23,7 @@ export default function Login() {
     ? (OAUTH_ERROR_MESSAGES[oauthError] ?? t('auth.login.errorGeneric'))
     : null;
 
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [needsTwoFactor, setNeedsTwoFactor] = useState(false);
   const [code, setCode] = useState('');
@@ -39,7 +39,7 @@ export default function Login() {
     setError(null);
     setSubmitting(true);
     try {
-      const result = await login(email, password);
+      const result = await login(identifier, password);
       if (result?.requiresTwoFactor) {
         setNeedsTwoFactor(true);
       } else {
@@ -110,13 +110,16 @@ export default function Login() {
         </p>
       )}
       <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-3">
+        {/* type="text", not "email": a username isn't a valid email address, so
+            the browser's built-in email validation would block submitting one. */}
         <input
-          type="email"
+          type="text"
+          autoComplete="username"
           required
-          placeholder={t('auth.login.emailPlaceholder')}
-          aria-label={t('auth.login.emailPlaceholder')}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t('auth.login.identifierPlaceholder')}
+          aria-label={t('auth.login.identifierPlaceholder')}
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
           className="field px-4 py-2.5"
         />
         <input

@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "Accedi",
-      "emailPlaceholder": "Email",
+      "identifierPlaceholder": "Email o nome utente",
       "passwordPlaceholder": "Password",
       "submit": "Accedi",
       "submitting": "Accesso in corso…",

@@ -100,10 +100,13 @@ export class AuthService {
   }
 
   async validateLocalLogin(dto: LoginDto): Promise<User> {
-    const user = await this.users.findByEmail(dto.email);
+    // Usernames never contain '@' (enforced at signup), so this is unambiguous.
+    const user = dto.identifier.includes('@')
+      ? await this.users.findByEmail(dto.identifier)
+      : await this.users.findByUsername(dto.identifier);
     const valid = user?.passwordHash ? await verifyPassword(user.passwordHash, dto.password) : false;
     if (!valid || !user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Invalid email/username or password');
     }
     return user;
   }

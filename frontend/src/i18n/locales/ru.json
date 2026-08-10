@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "Войти",
-      "emailPlaceholder": "Email",
+      "identifierPlaceholder": "Email или имя пользователя",
       "passwordPlaceholder": "Пароль",
       "submit": "Войти",
       "submitting": "Вход…",

@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "Anmelden",
-      "emailPlaceholder": "E-Mail",
+      "identifierPlaceholder": "E-Mail oder Benutzername",
       "passwordPlaceholder": "Passwort",
       "submit": "Anmelden",
       "submitting": "Anmeldung läuft…",

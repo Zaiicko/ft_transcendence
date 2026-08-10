@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "Giriş yap",
-      "emailPlaceholder": "E-posta",
+      "identifierPlaceholder": "E-posta veya kullanıcı adı",
       "passwordPlaceholder": "Şifre",
       "submit": "Giriş yap",
       "submitting": "Giriş yapılıyor…",

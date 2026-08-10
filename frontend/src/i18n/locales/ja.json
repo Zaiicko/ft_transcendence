@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "ログイン",
-      "emailPlaceholder": "メールアドレス",
+      "identifierPlaceholder": "メールアドレスまたはユーザー名",
       "passwordPlaceholder": "パスワード",
       "submit": "ログイン",
       "submitting": "ログイン中…",

@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "Iniciar sessão",
-      "emailPlaceholder": "Email",
+      "identifierPlaceholder": "Email ou nome de utilizador",
       "passwordPlaceholder": "Palavra-passe",
       "submit": "Iniciar sessão",
       "submitting": "A iniciar sessão…",

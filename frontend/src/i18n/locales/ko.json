@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "로그인",
-      "emailPlaceholder": "이메일",
+      "identifierPlaceholder": "이메일 또는 사용자 이름",
       "passwordPlaceholder": "비밀번호",
       "submit": "로그인",
       "submitting": "로그인 중…",

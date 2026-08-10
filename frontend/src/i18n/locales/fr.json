@@ -58,7 +58,7 @@
   "auth": {
     "login": {
       "title": "Connexion",
-      "emailPlaceholder": "Email",
+      "identifierPlaceholder": "Email ou pseudo",
       "passwordPlaceholder": "Mot de passe",
       "submit": "Se connecter",
       "submitting": "Connexion…",
