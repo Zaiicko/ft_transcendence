@@ -169,12 +169,15 @@ export default function Friends() {
           </div>
 
           <form onSubmit={handleSendRequest} className="mt-6 flex gap-2 sm:gap-3">
+            {/* min-w-0: a text input has its own browser-default min-width (~170px) that
+                flex-1 alone doesn't override — unlike a div, it doesn't shrink to 0 by
+                default, so on narrow screens it was pushing the shrink-0 button off-edge. */}
             <input
               type="text"
               placeholder={t('friends.addPlaceholder')}
               value={targetUsername}
               onChange={(e) => setTargetUsername(e.target.value)}
-              className="field flex-1 px-4 py-2.5"
+              className="field min-w-0 flex-1 px-4 py-2.5"
             />
             <button
               type="submit"
