@@ -532,11 +532,21 @@ function LandingStats({ data }: { data: HomeLanding }) {
   return (
     <div className="grid grid-cols-3 gap-3 sm:gap-4">
       {items.map((it) => (
-        <div key={it.label} className="card !rounded-2xl p-4 text-center sm:p-5">
-          <div className="font-display text-3xl font-extrabold tabular-nums tracking-tight text-accent sm:text-4xl">
+        <div
+          key={it.label}
+          className="card !rounded-2xl p-3 text-center [container-type:inline-size] sm:p-5"
+        >
+          {/* Font size is tied to the card's own measured width (cqw), not a viewport
+              breakpoint: a 3-column grid gives each card a different width depending on
+              screen size AND where this component ends up used, so a fixed text-3xl/4xl
+              pair can't guarantee the digits fit — this scales continuously instead. */}
+          <div
+            className="font-display font-extrabold tabular-nums tracking-tight text-accent"
+            style={{ fontSize: 'clamp(1.125rem, 13cqw, 2.5rem)' }}
+          >
             {fmt(it.value)}
           </div>
-          <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
+          <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-400 sm:text-[11px]">
             {it.label}
           </div>
         </div>
@@ -867,14 +877,20 @@ function StatTile({
   return (
     <div
       data-anim="stat"
-      className="card relative overflow-hidden !rounded-2xl p-4"
+      className="card relative overflow-hidden !rounded-2xl p-4 [container-type:inline-size]"
     >
       <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
         {label}
       </div>
-      <div className={`font-display mt-1.5 text-3xl font-extrabold tabular-nums tracking-tight ${valueColor}`}>
+      {/* Size tied to the tile's own measured width (cqw), not a viewport breakpoint —
+          this grid runs 2/3/5 columns depending on screen size, so a fixed text-3xl
+          can't guarantee a value like "48/62" fits at every column count. */}
+      <div
+        className={`font-display mt-1.5 font-extrabold tabular-nums tracking-tight ${valueColor}`}
+        style={{ fontSize: 'clamp(1.125rem, 11cqw, 2.25rem)' }}
+      >
         {value}
-        {suffix && <span className="text-base font-bold text-zinc-400">{suffix}</span>}
+        {suffix && <span className="text-[0.5em] font-bold text-zinc-400">{suffix}</span>}
       </div>
       {caption && <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{caption}</div>}
       {ring !== undefined && <ProgressRing pct={ring} />}

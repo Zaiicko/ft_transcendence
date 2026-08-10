@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -18,6 +18,32 @@ export default function NotificationBell() {
   const [items, setItems] = useState<AppNotification[]>([]);
   const [unread, setUnread] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number; width: number } | null>(null);
+
+  // Panel is positioned from a live measurement of the button, not a CSS anchor:
+  // the bell sits mid-row (not at the screen edge), so a fixed-offset dropdown
+  // clips off the left edge of the viewport on narrow screens. Clamping to the
+  // viewport here keeps it fully visible at any width or button position.
+  useLayoutEffect(() => {
+    if (!open) return;
+    const MARGIN = 12;
+    const PANEL_WIDTH = 320;
+    function computePos() {
+      const btn = btnRef.current;
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const width = Math.min(PANEL_WIDTH, window.innerWidth - MARGIN * 2);
+      const left = Math.min(
+        Math.max(rect.right - width, MARGIN),
+        window.innerWidth - width - MARGIN,
+      );
+      setPos({ top: rect.bottom + 8, left, width });
+    }
+    computePos();
+    window.addEventListener('resize', computePos);
+    return () => window.removeEventListener('resize', computePos);
+  }, [open]);
 
   useEffect(() => {
     if (!user) return;
@@ -80,6 +106,7 @@ export default function NotificationBell() {
   return (
     <div ref={ref} className="relative">
       <button
+        ref={btnRef}
         type="button"
         onClick={toggle}
         aria-label={t('notifications.title')}
@@ -95,8 +122,11 @@ export default function NotificationBell() {
         )}
       </button>
 
-      {open && (
-        <div className="absolute right-0 z-30 mt-2 w-80 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+      {open && pos && (
+        <div
+          style={{ top: pos.top, left: pos.left, width: pos.width }}
+          className="fixed z-30 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
+        >
           <header className="flex items-center justify-between border-b border-zinc-200 px-4 py-2.5 dark:border-zinc-700">
             <h2 className="text-sm font-semibold">{t('notifications.title')}</h2>
             {items.length > 0 && (
