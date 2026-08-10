@@ -326,7 +326,7 @@ export default function Layout() {
           {/* min-w-0 (not shrink-0): on the narrowest phones combined with a long translated
               "Sign up" label, this group must be able to give way — the Link below truncates
               instead, so the gear button never gets pushed past the viewport edge. */}
-          <div className="flex min-w-0 items-center gap-1.5 text-sm sm:gap-4">
+          <div className="flex min-w-0 items-center gap-2.5 text-sm sm:gap-4">
             {user ? (
               <>
                 <span data-tour="notifications" className="flex shrink-0 items-center">
