@@ -762,9 +762,13 @@ function Hero({ game, compact = false }: { game: GameSummary; compact?: boolean 
           </div>
         </div>
       </a>
-      {/* Actions (connectés) posées par-dessus le lien de la carte */}
+      {/* Actions (connectés), en dehors du <a> (un lien ne peut pas contenir de liens/boutons
+          imbriqués). En dessous de `sm`, ce même seuil où la jaquette miniature est déjà masquée
+          faute de place, elles passent sous la carte en flux normal plutôt qu'en overlay :
+          l'overlay bas-droite occupe alors presque toute la largeur de la carte et rentre en
+          collision avec le score/genre en bas-gauche, quelle que soit la longueur du titre. */}
       {user && (
-        <div className="absolute bottom-6 right-6 flex items-center gap-3 md:bottom-10 md:right-10">
+        <div className="mt-3 flex items-center justify-center gap-3 sm:absolute sm:inset-x-auto sm:bottom-6 sm:right-6 sm:mt-0 sm:justify-end md:bottom-10 md:right-10">
           <PlayedButton gameId={game.id} releaseDate={game.releaseDate} onDark />
           <a
             href={`${gameHref(game.id)}#review`}
