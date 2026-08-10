@@ -883,8 +883,16 @@ function StatTile({
       data-anim="stat"
       className="card relative overflow-hidden !rounded-2xl p-4 [container-type:inline-size]"
     >
-      <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
-        {label}
+      {/* Ring is a real flex sibling, not an absolute overlay: the label is a single
+          unbroken word ("Achievements"), so it has no space to wrap at and reserving
+          padding for the ring did nothing — it just overflowed straight through. As a
+          flex item the ring can never be overlapped by its sibling; `truncate` on the
+          label is the fallback if a translation ever runs long instead of wrapping. */}
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 truncate text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 dark:text-zinc-400">
+          {label}
+        </div>
+        {ring !== undefined && <ProgressRing pct={ring} />}
       </div>
       {/* Size tied to the tile's own measured width (cqw), not a viewport breakpoint —
           this grid runs 2/3/5 columns depending on screen size, so a fixed text-3xl
@@ -897,7 +905,6 @@ function StatTile({
         {suffix && <span className="text-[0.5em] font-bold text-zinc-400">{suffix}</span>}
       </div>
       {caption && <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{caption}</div>}
-      {ring !== undefined && <ProgressRing pct={ring} />}
     </div>
   );
 }
@@ -907,7 +914,7 @@ function ProgressRing({ pct }: { pct: number }) {
   const r = 15;
   const c = 2 * Math.PI * r;
   return (
-    <svg className="absolute right-3 top-3" width="32" height="32" viewBox="0 0 36 36" aria-hidden="true">
+    <svg className="shrink-0" width="32" height="32" viewBox="0 0 36 36" aria-hidden="true">
       <circle cx="18" cy="18" r={r} fill="none" stroke="currentColor" strokeWidth="4" className="text-zinc-900/10 dark:text-zinc-100/10" />
       <circle
         cx="18"
