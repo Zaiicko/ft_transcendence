@@ -376,7 +376,12 @@ export default function ReviewsSection({
               id={`review-${r.id}`}
               className="card scroll-mt-24 p-5 transition target:ring-2 target:ring-accent"
             >
-              <div className="flex items-center gap-3">
+              {/* flex-wrap: avatar+username+badge and the stars/score group are separate
+                  flex items sharing one row — without wrap, the score group (fixed-size,
+                  no shrink) simply refuses to give up room, so the username (the only
+                  shrinkable item) gets crushed down to a couple of characters on narrow
+                  cards instead of the layout giving the score its own line. */}
+              <div className="flex flex-wrap items-center gap-3">
                 {r.user ? (
                   <>
                     <Link
@@ -437,7 +442,10 @@ export default function ReviewsSection({
                         : t('reviews.showOriginal')}
                     </button>
                   )}
-                  <div className="mt-3 flex items-center gap-2 text-xs">
+                  {/* flex-wrap: like/dislike/comment/share + the ml-auto edit/delete/date
+                      group don't fit on one line on narrow cards — without wrap they just
+                      ran past the card's right edge instead of dropping to a second line. */}
+                  <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
                     <button
                       type="button"
                       onClick={() => react(r, 'like')}
