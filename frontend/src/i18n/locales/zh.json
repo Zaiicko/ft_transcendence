@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "排行榜",
     "subtitle": "看看谁在排行榜上名列前茅——通关数、已玩游戏和评测。",
-    "metricCompletions": "通关数",
-    "metricPlayed": "已玩游戏",
+    "metricCompletions": "100%",
+    "metricPlayed": "通关数",
     "metricReviews": "评测",
     "scopeFriends": "好友",
     "scopeGlobal": "全球",

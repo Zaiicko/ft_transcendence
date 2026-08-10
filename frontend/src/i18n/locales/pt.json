@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Classificação",
     "subtitle": "Vê quem lidera a classificação — jogos completados, jogados e análises.",
-    "metricCompletions": "Completados",
-    "metricPlayed": "Jogos jogados",
+    "metricCompletions": "100%",
+    "metricPlayed": "Completados",
     "metricReviews": "Análises",
     "scopeFriends": "Amigos",
     "scopeGlobal": "Global",

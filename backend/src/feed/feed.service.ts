@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FriendshipStatus, PlayStatus, Prisma } from '@prisma/client';
+import { VERIFIED_COMPLETION_PLATFORMS } from '../common/completion-platforms';
 import {
   LeaderboardMetric,
   LeaderboardService,
@@ -387,9 +388,6 @@ export class FeedService {
   // it — the review stands for it.
   async onGamePlayed(userId: number, gameId: number): Promise<void> {
     try {
-      // Still counts for the "played" metric even with a review, so milestone
-      // detection runs independently of the card below.
-      await this.onRankAction(userId, 'played');
       const hasReview = await this.prisma.review.findFirst({
         where: { userId, gameId },
         select: { id: true },
@@ -511,8 +509,13 @@ export class FeedService {
         if (!row.user) continue;
         await this.broadcast(row.user.id, this.completedItem(row));
       }
-      // One milestone check for the whole batch.
-      await this.onRankAction(userId, 'completions');
+      // One milestone check for the whole batch: "played" (any platform, i.e.
+      // "Fait") always applies; "completions" (100%) only for a verified
+      // platform — 'manual' and '*_estimated' never count toward it.
+      await this.onRankAction(userId, 'played');
+      if ((VERIFIED_COMPLETION_PLATFORMS as readonly string[]).includes(platform)) {
+        await this.onRankAction(userId, 'completions');
+      }
     } catch (err) {
       this.logger.warn(`syncCompletions failed: ${(err as Error).message}`);
     }
@@ -522,7 +525,9 @@ export class FeedService {
   // friends' feeds plus a rank milestone. Mirrors onGamePlayed.
   async onGameCompleted(userId: number, gameId: number): Promise<void> {
     try {
-      await this.onRankAction(userId, 'completions');
+      // Manual mark is never a verified platform, so it only counts toward
+      // "played" (Fait), never toward the 100%-only "completions" metric.
+      await this.onRankAction(userId, 'played');
       const row = await this.prisma.gameCompletion.findFirst({
         where: { userId, gameId, platform: 'manual' },
         select: completionSelect,

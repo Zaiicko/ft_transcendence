@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Ranking",
     "subtitle": "Zobacz, kto jest na szczycie rankingu — ukończenia, zagrane gry i recenzje.",
-    "metricCompletions": "Ukończenia",
-    "metricPlayed": "Zagrane gry",
+    "metricCompletions": "100%",
+    "metricPlayed": "Ukończenia",
     "metricReviews": "Recenzje",
     "scopeFriends": "Znajomi",
     "scopeGlobal": "Globalnie",

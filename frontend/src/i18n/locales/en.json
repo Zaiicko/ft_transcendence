@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Leaderboard",
     "subtitle": "See who tops the rankings — completions, games played and reviews.",
-    "metricCompletions": "Completions",
-    "metricPlayed": "Games played",
+    "metricCompletions": "100%",
+    "metricPlayed": "Completions",
     "metricReviews": "Reviews",
     "scopeFriends": "Friends",
     "scopeGlobal": "Global",

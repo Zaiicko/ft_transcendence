@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { FriendshipStatus, Prisma } from '@prisma/client';
+import { VERIFIED_COMPLETION_PLATFORMS } from '../common/completion-platforms';
 import { PrismaService } from '../prisma/prisma.service';
 
-// Three leaderboards, each a per-user count: completions (GameCompletion),
-// played (PlayedGame with status PLAYED), reviews (Review).
+// Three leaderboards, each a per-user count: completions (GameCompletion,
+// platform-verified 100% only), played (GameCompletion, any platform — i.e.
+// every "Fait" game, verified or not), reviews (Review).
 export type LeaderboardMetric = 'completions' | 'played' | 'reviews';
 // Friends (me + accepted friends) or site-wide.
 export type LeaderboardScope = 'friends' | 'global';
@@ -20,9 +22,16 @@ const actorSelect = { id: true, username: true, avatarUrl: true } as const;
 // Prisma.raw — safe only because it never comes from user input.
 const TABLE: Record<LeaderboardMetric, string> = {
   completions: 'GameCompletion',
-  played: 'PlayedGame',
+  played: 'GameCompletion',
   reviews: 'Review',
 };
+
+// completions/played share the GameCompletion table, which allows several rows
+// per game (one per platform — e.g. a manual mark later confirmed by a verified
+// Steam sync). Counting rows would double-count that game, so those two count
+// distinct games instead; reviews has one row per review and counts rows as-is.
+const scoreExpr = (metric: LeaderboardMetric): Prisma.Sql =>
+  metric === 'reviews' ? Prisma.sql`COUNT(*)` : Prisma.sql`COUNT(DISTINCT "gameId")`;
 
 export interface LeaderboardRow {
   rank: number;
@@ -74,7 +83,9 @@ export class LeaderboardService {
     since: Date | undefined,
   ): Prisma.Sql {
     const parts: Prisma.Sql[] = [];
-    if (metric === 'played') parts.push(Prisma.sql`"status"::text = 'PLAYED'`);
+    if (metric === 'completions') {
+      parts.push(Prisma.sql`"platform" = ANY(${[...VERIFIED_COMPLETION_PLATFORMS]})`);
+    }
     if (metric === 'reviews') parts.push(Prisma.sql`"userId" IS NOT NULL`);
     if (userIds) parts.push(Prisma.sql`"userId" = ANY(${userIds})`);
     if (since) parts.push(Prisma.sql`"createdAt" >= ${since}`);
@@ -102,7 +113,7 @@ export class LeaderboardService {
     // Sorted and truncated by Postgres — every user is never loaded in memory.
     // Ties go to whoever reached the score first, hence MAX("createdAt") ASC.
     const raw = await this.prisma.$queryRaw<{ userId: number; score: number }[]>(Prisma.sql`
-      SELECT "userId", COUNT(*)::int AS "score"
+      SELECT "userId", ${scoreExpr(metric)}::int AS "score"
       FROM ${table}
       WHERE ${where}
       GROUP BY "userId"
@@ -123,7 +134,7 @@ export class LeaderboardService {
       rows.push({ rank: i + 1, user: u, score: raw[i].score });
     }
 
-    const me = await this.computeMyRank(viewerId, table, where);
+    const me = await this.computeMyRank(viewerId, metric, table, where);
     return { metric, scope, window, rows, me };
   }
 
@@ -135,7 +146,7 @@ export class LeaderboardService {
     const where = this.whereSql(metric, undefined, undefined);
 
     const raw = await this.prisma.$queryRaw<{ userId: number; score: number }[]>(Prisma.sql`
-      SELECT "userId", COUNT(*)::int AS "score"
+      SELECT "userId", ${scoreExpr(metric)}::int AS "score"
       FROM ${table}
       WHERE ${where}
       GROUP BY "userId"
@@ -166,7 +177,7 @@ export class LeaderboardService {
     for (const metric of metrics) {
       const table = Prisma.raw(`"${TABLE[metric]}"`);
       const where = this.whereSql(metric, undefined, undefined);
-      const me = await this.computeMyRank(userId, table, where);
+      const me = await this.computeMyRank(userId, metric, table, where);
       if (me && me.rank <= 3) badges.push({ metric, rank: me.rank });
     }
     return badges;
@@ -182,9 +193,11 @@ export class LeaderboardService {
     const table = Prisma.raw(`"${TABLE[metric]}"`);
     const where = this.whereSql(metric, undefined, undefined);
 
+    const score_ = scoreExpr(metric);
+
     // Subject's score and last occurrence. Ties: the earliest MAX(createdAt) wins.
     const mine = await this.prisma.$queryRaw<{ score: number; lastAt: Date | null }[]>(Prisma.sql`
-      SELECT COUNT(*)::int AS "score", MAX("createdAt") AS "lastAt"
+      SELECT ${score_}::int AS "score", MAX("createdAt") AS "lastAt"
       FROM ${table} WHERE ${where} AND "userId" = ${subjectId}
     `);
     const score = mine[0]?.score ?? 0;
@@ -197,7 +210,7 @@ export class LeaderboardService {
     const aboveGlobal = await this.prisma.$queryRaw<{ above: number }[]>(Prisma.sql`
       SELECT COUNT(*)::int AS "above" FROM (
         SELECT "userId" FROM ${table} WHERE ${where} GROUP BY "userId"
-        HAVING COUNT(*) > ${score} OR (COUNT(*) = ${score} AND MAX("createdAt") < ${lastAt})
+        HAVING ${score_} > ${score} OR (${score_} = ${score} AND MAX("createdAt") < ${lastAt})
       ) t
     `);
     const globalRank = (aboveGlobal[0]?.above ?? 0) + 1;
@@ -211,7 +224,7 @@ export class LeaderboardService {
     // the subject is already global top 3, so both cards can fire.
     const hits = await this.prisma.$queryRaw<{ viewer: number; rank: number }[]>(Prisma.sql`
       WITH scores AS (
-        SELECT "userId" AS uid, COUNT(*)::int AS sc, MAX("createdAt") AS last
+        SELECT "userId" AS uid, ${score_}::int AS sc, MAX("createdAt") AS last
         FROM ${table} WHERE ${where} GROUP BY "userId"
       ),
       viewers AS (
@@ -292,11 +305,13 @@ export class LeaderboardService {
   // same tie-break as the top N. `where` already carries scope/window/metric.
   private async computeMyRank(
     viewerId: number,
+    metric: LeaderboardMetric,
     table: Prisma.Sql,
     where: Prisma.Sql,
   ): Promise<{ rank: number; score: number } | null> {
+    const score_ = scoreExpr(metric);
     const mine = await this.prisma.$queryRaw<{ score: number; lastAt: Date | null }[]>(Prisma.sql`
-      SELECT COUNT(*)::int AS "score", MAX("createdAt") AS "lastAt"
+      SELECT ${score_}::int AS "score", MAX("createdAt") AS "lastAt"
       FROM ${table}
       WHERE ${where} AND "userId" = ${viewerId}
     `);
@@ -311,8 +326,8 @@ export class LeaderboardService {
         FROM ${table}
         WHERE ${where}
         GROUP BY "userId"
-        HAVING COUNT(*) > ${myScore}
-            OR (COUNT(*) = ${myScore} AND MAX("createdAt") < ${myLastAt})
+        HAVING ${score_} > ${myScore}
+            OR (${score_} = ${myScore} AND MAX("createdAt") < ${myLastAt})
       ) t
     `);
     return { rank: (above[0]?.above ?? 0) + 1, score: myScore };

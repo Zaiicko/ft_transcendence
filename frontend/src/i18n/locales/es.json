@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Clasificación",
     "subtitle": "Descubre quién encabeza la clasificación: juegos completados, jugados y reseñas.",
-    "metricCompletions": "Completados",
-    "metricPlayed": "Juegos jugados",
+    "metricCompletions": "100%",
+    "metricPlayed": "Completados",
     "metricReviews": "Reseñas",
     "scopeFriends": "Amigos",
     "scopeGlobal": "Global",

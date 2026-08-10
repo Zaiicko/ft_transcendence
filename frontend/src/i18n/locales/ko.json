@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "순위표",
     "subtitle": "누가 순위표 정상에 있는지 확인하세요 — 완료, 플레이한 게임, 리뷰.",
-    "metricCompletions": "완료",
-    "metricPlayed": "플레이한 게임",
+    "metricCompletions": "100%",
+    "metricPlayed": "완료",
     "metricReviews": "리뷰",
     "scopeFriends": "친구",
     "scopeGlobal": "전체",

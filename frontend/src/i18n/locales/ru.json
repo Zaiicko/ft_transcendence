@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Рейтинг",
     "subtitle": "Узнайте, кто возглавляет рейтинг — прохождения, сыгранные игры и рецензии.",
-    "metricCompletions": "Прохождения",
-    "metricPlayed": "Сыгранные игры",
+    "metricCompletions": "100%",
+    "metricPlayed": "Прохождения",
     "metricReviews": "Рецензии",
     "scopeFriends": "Друзья",
     "scopeGlobal": "Общий",

@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Sıralama",
     "subtitle": "Sıralamada kimin başı çektiğini gör — tamamlamalar, oynanan oyunlar ve incelemeler.",
-    "metricCompletions": "Tamamlamalar",
-    "metricPlayed": "Oynanan oyunlar",
+    "metricCompletions": "%100",
+    "metricPlayed": "Tamamlamalar",
     "metricReviews": "İncelemeler",
     "scopeFriends": "Arkadaşlar",
     "scopeGlobal": "Küresel",

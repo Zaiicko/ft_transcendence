@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Ranglijst",
     "subtitle": "Ontdek wie bovenaan de ranglijst staat — voltooiingen, gespeelde games en reviews.",
-    "metricCompletions": "Voltooiingen",
-    "metricPlayed": "Gespeelde games",
+    "metricCompletions": "100%",
+    "metricPlayed": "Voltooiingen",
     "metricReviews": "Reviews",
     "scopeFriends": "Vrienden",
     "scopeGlobal": "Globaal",

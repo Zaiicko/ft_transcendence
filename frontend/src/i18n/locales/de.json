@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Rangliste",
     "subtitle": "Sieh, wer die Rangliste anführt — Abschlüsse, gespielte Spiele und Rezensionen.",
-    "metricCompletions": "Abschlüsse",
-    "metricPlayed": "Gespielte Spiele",
+    "metricCompletions": "100%",
+    "metricPlayed": "Abschlüsse",
     "metricReviews": "Rezensionen",
     "scopeFriends": "Freunde",
     "scopeGlobal": "Global",

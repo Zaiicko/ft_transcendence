@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "Classifica",
     "subtitle": "Scopri chi domina la classifica: completamenti, giochi giocati e recensioni.",
-    "metricCompletions": "Completamenti",
-    "metricPlayed": "Giochi giocati",
+    "metricCompletions": "100%",
+    "metricPlayed": "Completamenti",
     "metricReviews": "Recensioni",
     "scopeFriends": "Amici",
     "scopeGlobal": "Globale",

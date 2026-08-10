@@ -449,8 +449,8 @@
   "leaderboard": {
     "title": "ランキング",
     "subtitle": "ランキングの首位は誰か——コンプリート、プレイしたゲーム、レビューで競おう。",
-    "metricCompletions": "コンプリート",
-    "metricPlayed": "プレイしたゲーム",
+    "metricCompletions": "100%",
+    "metricPlayed": "コンプリート",
     "metricReviews": "レビュー",
     "scopeFriends": "フレンド",
     "scopeGlobal": "全体",
