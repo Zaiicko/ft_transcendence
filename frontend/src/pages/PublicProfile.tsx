@@ -467,12 +467,13 @@ function CompletionCalendar({
         )}
       </div>
 
-      {/* Cellules à taille fixe (0.7rem, carrées) au lieu de flex-1 : sur mobile,
-          compresser 52 colonnes dans ~280px les réduisait à des slivers de
-          quelques pixels, illisibles et impossibles à taper (et l'anneau de
-          sélection étiré sur une colonne sub-pixel produisait une fausse ligne
-          verticale). La grille défile maintenant horizontalement à la place ;
-          les libellés de jour restent fixes hors de la zone de scroll. */}
+      {/* flex-1 + min-w-[0.7rem] (floor, not a fixed width): columns still stretch to
+          fill the full card on wide screens like before, but can no longer shrink past
+          a legible size — once 52 of them hit that floor on a narrow phone, the row
+          overflows its own box and the wrapper's overflow-x-auto scrolls instead of
+          squishing every column into an illegible, untappable sliver (which is also
+          what produced the fake vertical line: a selection ring stretched over a
+          sub-pixel-wide column). Day labels stay fixed outside the scroll area. */}
       <div className="pb-1" onMouseLeave={() => setHoveredKey(null)}>
         <div className="flex gap-1 text-[10px] leading-none text-zinc-400 dark:text-zinc-500">
           {/* Colonne des jours de semaine (Lun/Mer/Ven), alignée aux lignes */}
@@ -488,18 +489,18 @@ function CompletionCalendar({
             {/* Labels de mois : un slot fixe par semaine (débordent à droite) */}
             <div className="mb-1 flex h-3 gap-[2px]">
               {monthCols.map((label, i) => (
-                <span key={i} className="w-[0.7rem] shrink-0 whitespace-nowrap">
+                <span key={i} className="min-w-[0.7rem] flex-1 whitespace-nowrap">
                   {label ?? ''}
                 </span>
               ))}
             </div>
 
-            {/* Grille : colonnes = semaines (largeur fixe), 7 lignes (dim → sam) */}
+            {/* Grille : colonnes = semaines (flex-1, plancher 0.7rem), 7 lignes (dim → sam) */}
             <div className="flex gap-[2px]">
               {weeks.map((w, wi) => (
                 <div
                   key={wi}
-                  className="grid w-[0.7rem] shrink-0 gap-[2px]"
+                  className="grid min-w-[0.7rem] flex-1 gap-[2px]"
                   style={{ gridTemplateRows: 'repeat(7, 0.7rem)' }}
                 >
                   {w.map((d, di) => {
