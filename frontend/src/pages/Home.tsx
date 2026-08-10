@@ -618,7 +618,10 @@ function AchievementsShowcase() {
       <p className="-mt-2 mb-4 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
         {t('home.landing.achSubtitle')}
       </p>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {/* 1 column below ~420px: at 2 columns, a 320px phone only leaves ~130px per card
+          for icon+text, which cuts names like "Linked accounts" or "Games finished" down
+          to a couple of characters. `truncate` stays as a safety net, not the plan. */}
+      <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-4">
         {families.map((f) => (
           <div key={f} className="card flex items-center gap-3 !rounded-2xl p-3.5">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">

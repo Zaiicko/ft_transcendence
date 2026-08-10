@@ -83,7 +83,10 @@ export default function AchievementsSection({ userId }: { userId: number }) {
         </span>
       </div>
 
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      {/* 1 column below ~420px, same reasoning as the landing page's family teaser:
+          a 44px icon plus tier count leaves too little width per card at 2 columns on
+          a narrow phone to show full family names like "Linked accounts". */}
+      <ul className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {groups.map((g) => {
           const isOpen = selected === g.family;
           return (
