@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Res,
   UnauthorizedException,
   UploadedFile,
@@ -83,6 +84,13 @@ export class UsersController {
   @Get('me/home-stats')
   homeStats(@CurrentUser() current: JwtPayload) {
     return this.usersService.getHomeStats(current.sub);
+  }
+
+  // Player search by username for the main search bar. Declared before ':id'
+  // so "search" isn't parsed as an id.
+  @Get('search')
+  search(@Query('q') q?: string) {
+    return this.usersService.search(q?.trim() ?? '');
   }
 
   // Public lookup by id: MINIMAL view (identity + badges). Never another user's

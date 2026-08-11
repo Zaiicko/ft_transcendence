@@ -8,6 +8,7 @@ import { VERIFIED_COMPLETION_PLATFORMS } from '../common/completion-platforms';
 import { ALL_ACHIEVEMENTS } from '../achievements/achievements.catalog';
 import { ListsService } from '../lists/lists.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { toPublicUserLite } from './public-user';
 
 // Viewer's relationship with the profile owner, so the frontend can show the
 // right friend action (or none)
@@ -48,6 +49,18 @@ export class UsersService {
   // Case-insensitive: "Alice" and "alice" resolve to the same account.
   findByUsername(username: string) {
     return this.prisma.user.findUnique({ where: { usernameLower: username.toLowerCase() } });
+  }
+
+  // Player search by username for the search bar, alphabetical for a stable
+  // order. Mirrors CompaniesService.search: minimal fields for the row.
+  async search(term: string) {
+    if (!term) return { data: [] };
+    const users = await this.prisma.user.findMany({
+      where: { username: { contains: term, mode: 'insensitive' } },
+      orderBy: { username: 'asc' },
+      take: 8,
+    });
+    return { data: users.map(toPublicUserLite) };
   }
 
   update(id: number, data: Prisma.UserUpdateInput) {

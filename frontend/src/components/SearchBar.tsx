@@ -4,10 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { GameSummary } from '../lib/types';
+import Avatar from './Avatar';
 
 const gameHref = (id: number) => `/game/${id}`;
 const companyHref = (id: number) => `/company/${id}`;
+const playerHref = (username: string) => `/u/${username}`;
 type CompanyHit = { id: number; name: string; logoUrl: string | null };
+type PlayerHit = { id: number; username: string; avatarUrl: string | null };
 const MIN_CHARS = 2;
 const DEBOUNCE_MS = 300;
 
@@ -24,6 +27,7 @@ export default function SearchBar({
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GameSummary[]>([]);
   const [companies, setCompanies] = useState<CompanyHit[]>([]);
+  const [players, setPlayers] = useState<PlayerHit[]>([]);
   const [open, setOpen] = useState(false);
   // searched: a local search completed for the current input (distinguishes "not searched" from "0 results").
   const [searched, setSearched] = useState(false);
@@ -44,20 +48,25 @@ export default function SearchBar({
       if (trimmed.length < MIN_CHARS) {
         setResults([]);
         setCompanies([]);
+        setPlayers([]);
         setSearched(false);
         return;
       }
       try {
-        // Games + studios in parallel; a failing studio search must not break the whole (catch → empty).
-        const [gameRes, companyRes] = await Promise.all([
+        // Games + studios + players in parallel; a failing studio/player search must not break the whole (catch → empty).
+        const [gameRes, companyRes, playerRes] = await Promise.all([
           apiFetch<{ data: GameSummary[] }>(`/games/search?q=${encodeURIComponent(trimmed)}`),
           apiFetch<{ data: CompanyHit[] }>(
             `/companies/search?q=${encodeURIComponent(trimmed)}`,
           ).catch(() => ({ data: [] as CompanyHit[] })),
+          apiFetch<{ data: PlayerHit[] }>(
+            `/users/search?q=${encodeURIComponent(trimmed)}`,
+          ).catch(() => ({ data: [] as PlayerHit[] })),
         ]);
         if (cancelled) return;
         setResults(gameRes.data.slice(0, 8));
         setCompanies(companyRes.data.slice(0, 5));
+        setPlayers(playerRes.data.slice(0, 5));
         setSearched(true);
         setOpen(true);
       } catch {
@@ -100,6 +109,7 @@ export default function SearchBar({
     setOpen(false);
     setResults([]);
     setCompanies([]);
+    setPlayers([]);
     navigate(`/games?q=${encodeURIComponent(trimmed)}`);
     setQuery('');
     onNavigate?.();
@@ -110,6 +120,7 @@ export default function SearchBar({
     setQuery('');
     setResults([]);
     setCompanies([]);
+    setPlayers([]);
     navigate(gameHref(id));
     onNavigate?.();
   }
@@ -119,7 +130,18 @@ export default function SearchBar({
     setQuery('');
     setResults([]);
     setCompanies([]);
+    setPlayers([]);
     navigate(companyHref(id));
+    onNavigate?.();
+  }
+
+  function goToPlayer(username: string) {
+    setOpen(false);
+    setQuery('');
+    setResults([]);
+    setCompanies([]);
+    setPlayers([]);
+    navigate(playerHref(username));
     onNavigate?.();
   }
 
@@ -148,7 +170,8 @@ export default function SearchBar({
     'rounded-full border border-zinc-400/40 bg-zinc-900/5 dark:border-zinc-100/10 dark:bg-zinc-100/5';
 
   const showMenu = open && trimmed.length >= MIN_CHARS;
-  const noResults = searched && results.length === 0 && companies.length === 0;
+  const noResults =
+    searched && results.length === 0 && companies.length === 0 && players.length === 0;
 
   return (
     <div ref={boxRef} className="relative min-w-0 flex-1">
@@ -201,7 +224,7 @@ export default function SearchBar({
       </div>
 
       {showMenu && (results.length > 0 || searched || importing) && (
-        <div className="animate-dropdown absolute z-20 mt-2 w-full overflow-hidden rounded-lg border border-zinc-300 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+        <div className="animate-dropdown absolute z-20 mt-2 max-h-[60vh] w-full overflow-y-auto overflow-x-hidden rounded-lg border border-zinc-300 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
           {results.length > 0 && (
             <ul>
               {results.map((g) => (
@@ -247,6 +270,32 @@ export default function SearchBar({
                       </span>
                     )}
                     <span className="truncate text-sm">{c.name}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {players.length > 0 && (
+            <ul
+              className={
+                results.length > 0 || companies.length > 0
+                  ? 'border-t border-zinc-200 dark:border-zinc-800'
+                  : ''
+              }
+            >
+              <li className="px-4 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
+                {t('catalog.players')}
+              </li>
+              {players.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    onClick={() => goToPlayer(p.username)}
+                    className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  >
+                    <Avatar username={p.username} avatarUrl={p.avatarUrl} size={28} />
+                    <span className="truncate text-sm">{p.username}</span>
                   </button>
                 </li>
               ))}
