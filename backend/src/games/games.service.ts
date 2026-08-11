@@ -317,13 +317,15 @@ export class GamesService {
       select: { status: true },
     });
     const when = playedAt ?? new Date();
+    // A manual click always claims the row (source: null) — even a game a
+    // platform sync had already marked PLAYED now survives that platform's unlink.
     const row = await this.prisma.playedGame.upsert({
       where: { userId_gameId: { userId, gameId } },
       update:
         playedAt || current?.status !== PlayStatus.PLAYED
-          ? { status: PlayStatus.PLAYED, playedAt: when }
-          : {},
-      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when },
+          ? { status: PlayStatus.PLAYED, playedAt: when, source: null }
+          : { source: null },
+      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when, source: null },
     });
     // Fresh transition to played -> push to friends' feed (best-effort; the
     // service skips it when a review already exists)
@@ -361,11 +363,15 @@ export class GamesService {
     });
     const when = completedAt ?? new Date();
     // Completing implies playing: if not marked yet, set PLAYED on the same
-    // date as the completion so both calendars agree.
+    // date as the completion so both calendars agree. Manual, so it also
+    // claims the row (source: null) same as markPlayed.
     await this.prisma.playedGame.upsert({
       where: { userId_gameId: { userId, gameId } },
-      update: current?.status === PlayStatus.PLAYED ? {} : { status: PlayStatus.PLAYED, playedAt: when },
-      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when },
+      update:
+        current?.status === PlayStatus.PLAYED
+          ? { source: null }
+          : { status: PlayStatus.PLAYED, playedAt: when, source: null },
+      create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when, source: null },
     });
     const before = await this.prisma.gameCompletion.findUnique({
       where: { userId_gameId_platform: { userId, gameId, platform: 'manual' } },

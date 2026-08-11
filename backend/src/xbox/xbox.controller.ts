@@ -74,10 +74,17 @@ export class XboxController {
   async unlink(@CurrentUser() current: JwtPayload) {
     const user = await this.users.findById(current.sub);
     if (!user) throw new UnauthorizedException();
-    await this.prisma.user.update({
-      where: { id: current.sub },
-      data: { xboxXuid: null, xboxGamertag: null, xboxLibrary: Prisma.DbNull },
-    });
+    // Also drops the 100%-completions and PLAYED marks this platform's sync
+    // produced (never ones the user set by hand or another linked platform
+    // confirmed — see PlayedGame.source).
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: current.sub },
+        data: { xboxXuid: null, xboxGamertag: null, xboxLibrary: Prisma.DbNull },
+      }),
+      this.prisma.gameCompletion.deleteMany({ where: { userId: current.sub, platform: 'xbox' } }),
+      this.prisma.playedGame.deleteMany({ where: { userId: current.sub, source: 'xbox' } }),
+    ]);
   }
 
   // Xbox library: played titles matched to our catalog by name, with per-game

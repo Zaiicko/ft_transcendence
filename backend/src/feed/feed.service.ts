@@ -457,12 +457,14 @@ export class FeedService {
               where: { userId_gameId: { userId, gameId: c.gameId } },
               // Upgrade PLAYING/BACKLOG to PLAYED, same as the manual button;
               // never touch an existing playedAt, only set it on first creation.
-              update: { status: PlayStatus.PLAYED },
+              // source: platform so unlinking can clean up only what it wrote.
+              update: { status: PlayStatus.PLAYED, source: platform },
               create: {
                 userId,
                 gameId: c.gameId,
                 status: PlayStatus.PLAYED,
                 playedAt: c.completedAt ?? new Date(),
+                source: platform,
               },
             }),
           ),

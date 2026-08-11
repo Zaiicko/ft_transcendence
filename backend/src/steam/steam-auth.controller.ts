@@ -203,9 +203,21 @@ export class SteamAuthController {
         'Add a password first — Steam is currently your only way to sign in',
       );
     }
-    await this.prisma.user.update({
-      where: { id: current.sub },
-      data: { steamId: null, steamAchievements: Prisma.DbNull },
-    });
+    // Also drops the 100%-completions and PLAYED marks Steam's sync produced
+    // (never ones the user set by hand or another linked platform confirmed —
+    // see PlayedGame.source). Steam syncs under two platform tags: verified
+    // ('steam') and Steam-only estimated completions ('steam_estimated').
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: current.sub },
+        data: { steamId: null, steamAchievements: Prisma.DbNull },
+      }),
+      this.prisma.gameCompletion.deleteMany({
+        where: { userId: current.sub, platform: { in: ['steam', 'steam_estimated'] } },
+      }),
+      this.prisma.playedGame.deleteMany({
+        where: { userId: current.sub, source: { in: ['steam', 'steam_estimated'] } },
+      }),
+    ]);
   }
 }

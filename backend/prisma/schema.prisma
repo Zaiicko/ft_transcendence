@@ -449,6 +449,11 @@ model PlayedGame {
   // When the action happened, distinct from the user-chosen playedAt: orders
   // the friends' activity feed
   createdAt DateTime @default(now())
+  // Who last set this row PLAYED: a platform ('steam' | 'xbox' | 'psn') when a
+  // library sync did it, null for a manual mark/click. Lets unlinking a
+  // platform clean up only the PLAYED rows it created, without touching ones
+  // the user set by hand or that another still-linked platform also confirmed.
+  source String?
 
   @@unique([userId, gameId])
   @@index([userId, createdAt])

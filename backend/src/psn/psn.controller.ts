@@ -88,10 +88,17 @@ export class PsnController {
   async unlink(@CurrentUser() current: JwtPayload) {
     const user = await this.users.findById(current.sub);
     if (!user) throw new UnauthorizedException();
-    await this.prisma.user.update({
-      where: { id: current.sub },
-      data: { psnAccountId: null, psnOnlineId: null, psnLibrary: Prisma.DbNull },
-    });
+    // Also drops the 100%-completions and PLAYED marks this platform's sync
+    // produced (never ones the user set by hand or another linked platform
+    // confirmed — see PlayedGame.source).
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: current.sub },
+        data: { psnAccountId: null, psnOnlineId: null, psnLibrary: Prisma.DbNull },
+      }),
+      this.prisma.gameCompletion.deleteMany({ where: { userId: current.sub, platform: 'psn' } }),
+      this.prisma.playedGame.deleteMany({ where: { userId: current.sub, source: 'psn' } }),
+    ]);
   }
 
   // PSN library: played trophy titles matched to our catalog by name, with
