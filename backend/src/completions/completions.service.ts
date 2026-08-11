@@ -26,6 +26,9 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 // Same normalisation as the Xbox/PSN controllers (lowercase, alphanumeric).
 const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
+// Same PSN "<Game> Trophies" quirk as PsnController — see its comment.
+const stripTrophySuffix = (s: string) => s.replace(/\s+troph(?:y|ies)(?:\s+set)?$/i, '');
+
 type PlatformKey = 'steam' | 'xbox' | 'psn';
 interface Job {
   userId: number;
@@ -239,7 +242,7 @@ export class CompletionsService {
     });
     const completed = await this.matchCompleted(
       titles,
-      (t) => t.trophyTitleName,
+      (t) => stripTrophySuffix(t.trophyTitleName),
       (t) => t.progress === 100 || (t.earnedTrophies?.platinum ?? 0) >= 1,
       // PSN: date of the last trophy, standing in for the 100%/platinum date.
       (t) => (t.lastUpdatedDateTime ? new Date(t.lastUpdatedDateTime) : undefined),

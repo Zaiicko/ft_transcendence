@@ -34,8 +34,15 @@ interface PsnCache {
 }
 
 // Normalises a title for PSN/catalog matching: lowercase, letters and digits
-// only (drops ™®©, spaces, punctuation, edition suffixes).
+// only (drops ™®©, spaces, punctuation).
 const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+// PSN often lists a game's trophy list as its own "<Game> Trophies" (or
+// "Trophy Set") entry rather than the base title — stripped BEFORE normalize
+// so it still resolves to the catalog's base-game title instead of matching
+// nothing (verified against real linked libraries: God of War, FIFA 23,
+// Mortal Kombat 11, EA SPORTS FC 24-26, MultiVersus, Aragami all hit this).
+const stripTrophySuffix = (s: string) => s.replace(/\s+troph(?:y|ies)(?:\s+set)?$/i, '');
 
 @UseGuards(JwtAuthGuard)
 @Controller('psn')
@@ -205,7 +212,7 @@ export class PsnController {
     // normalised name -> best PSN title (highest progress)
     const byNorm = new Map<string, TrophyTitle>();
     for (const t of titles) {
-      const n = normalize(t.trophyTitleName);
+      const n = normalize(stripTrophySuffix(t.trophyTitleName));
       if (!n) continue;
       const prev = byNorm.get(n);
       if (!prev || t.progress > prev.progress) byNorm.set(n, t);
