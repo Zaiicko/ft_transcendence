@@ -69,6 +69,7 @@
       "errorEmailInUse": "Er bestaat al een account met dit e-mailadres. Log in met je wachtwoord, of gebruik een ander e-mailadres voor die provider.",
       "errorGeneric": "Er ging iets mis bij het inloggen — probeer het opnieuw.",
       "steamFailed": "Inloggen met Steam mislukt — probeer het opnieuw",
+      "sessionExpired": "Je sessie is verlopen — log opnieuw in",
       "subtitle": "Pak je speeldagboek weer op waar je gebleven was."
     },
     "twoFactor": {

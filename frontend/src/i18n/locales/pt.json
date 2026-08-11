@@ -69,6 +69,7 @@
       "errorEmailInUse": "Já existe uma conta com este email. Inicia sessão com a tua palavra-passe, ou usa um email diferente para esse fornecedor.",
       "errorGeneric": "Ocorreu um erro ao iniciar sessão — tenta novamente.",
       "steamFailed": "Falha no início de sessão com a Steam — tenta novamente",
+      "sessionExpired": "A tua sessão expirou — inicia sessão novamente",
       "subtitle": "Retoma o teu diário de jogo onde o deixaste."
     },
     "twoFactor": {

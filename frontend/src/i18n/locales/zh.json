@@ -69,6 +69,7 @@
       "errorEmailInUse": "该邮箱已被注册。请改用密码登录，或为该登录方式使用其他邮箱。",
       "errorGeneric": "登录时出现问题，请重试。",
       "steamFailed": "Steam 登录失败，请重试",
+      "sessionExpired": "你的会话已过期，请重新登录",
       "subtitle": "从上次离开的地方继续你的游戏日志。"
     },
     "twoFactor": {

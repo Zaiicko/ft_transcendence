@@ -69,6 +69,7 @@
       "errorEmailInUse": "Un compte existe déjà avec cet email. Connecte-toi avec ton mot de passe, ou utilise un email différent pour ce fournisseur.",
       "errorGeneric": "Une erreur est survenue pendant la connexion — réessaie.",
       "steamFailed": "La connexion Steam a échoué — réessaie",
+      "sessionExpired": "Ta session a expiré — reconnecte-toi",
       "subtitle": "Reprends ton journal de jeu là où tu l'as laissé."
     },
     "twoFactor": {

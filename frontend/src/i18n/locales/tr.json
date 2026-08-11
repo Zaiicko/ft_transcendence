@@ -69,6 +69,7 @@
       "errorEmailInUse": "Bu e-posta ile zaten bir hesap var. Şifrenle giriş yap ya da bu sağlayıcı için farklı bir e-posta kullan.",
       "errorGeneric": "Giriş yapılırken bir şeyler ters gitti — lütfen tekrar dene.",
       "steamFailed": "Steam ile giriş başarısız oldu — lütfen tekrar dene",
+      "sessionExpired": "Oturumun sona erdi — lütfen tekrar giriş yap",
       "subtitle": "Oyun günlüğüne kaldığın yerden devam et."
     },
     "twoFactor": {

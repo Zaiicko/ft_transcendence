@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import i18n, { LanguageCode, loadLanguage, SUPPORTED_LANGUAGES } from '../i18n';
-import { apiFetch } from '../lib/api';
+import { apiFetch, refreshSession, SESSION_EXPIRED_EVENT } from '../lib/api';
 import type { PublicUser } from '../lib/types';
 
 // Apply the language saved on the profile (roams across devices); 'en' is ignored so browser/localStorage detection wins for a brand-new account.
@@ -36,29 +37,58 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const applyUser = useCallback((me: PublicUser) => {
     setUser(me);
     applyUserLanguage(me);
   }, []);
 
+  // /auth/me only reads the short-lived (15min) access token cookie and
+  // returns null once it's lapsed — even with a valid 30-day refresh token
+  // still sitting in the cookies. Falling back to a refresh here means a
+  // page reload after 15 minutes doesn't look like a logout.
+  const meOrRefresh = useCallback(async (): Promise<PublicUser | null> => {
+    const me = await apiFetch<PublicUser | null>('/auth/me');
+    return me ?? (await refreshSession<PublicUser>());
+  }, []);
+
   const refreshUser = useCallback(async () => {
     try {
-      const me = await apiFetch<PublicUser | null>('/auth/me');
+      const me = await meOrRefresh();
       if (me) applyUser(me);
       else setUser(null);
     } catch {
       setUser(null);
     }
-  }, [applyUser]);
+  }, [applyUser, meOrRefresh]);
 
   useEffect(() => {
-    // setState only in the async callbacks, never in the effect body (react-hooks/set-state-in-effect); /auth/me returns the user or null (200).
-    apiFetch<PublicUser | null>('/auth/me')
+    // setState only in the async callbacks, never in the effect body (react-hooks/set-state-in-effect).
+    meOrRefresh()
       .then((me) => (me ? applyUser(me) : setUser(null)))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
-  }, [applyUser]);
+  }, [applyUser, meOrRefresh]);
+
+  // Fired by apiFetch when a 401 survives a refresh attempt — the refresh
+  // token itself is gone, so this is a real logout, not a transient blip.
+  // Only redirect with a message if we actually thought we were signed in,
+  // so an anonymous visit hitting some optionally-authenticated endpoint
+  // doesn't bounce anyone. A ref (not `user` in the closure) keeps the
+  // listener itself stable across renders.
+  const userRef = useRef<PublicUser | null>(null);
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
+  useEffect(() => {
+    function onExpired() {
+      if (userRef.current) navigate('/login?sessionExpired=1', { replace: true });
+      setUser(null);
+    }
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired);
+  }, [navigate]);
 
   const login = useCallback(
     async (identifier: string, password: string) => {

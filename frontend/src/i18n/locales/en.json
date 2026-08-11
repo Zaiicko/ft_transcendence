@@ -69,6 +69,7 @@
       "errorEmailInUse": "An account already exists with this email. Log in with your password instead, or use a different email for that provider.",
       "errorGeneric": "Something went wrong signing in — please try again.",
       "steamFailed": "Steam sign-in failed — please try again",
+      "sessionExpired": "Your session has expired — please log in again",
       "subtitle": "Pick up your game journal right where you left off."
     },
     "twoFactor": {

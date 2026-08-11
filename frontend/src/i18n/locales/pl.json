@@ -69,6 +69,7 @@
       "errorEmailInUse": "Konto z tym adresem e-mail już istnieje. Zaloguj się hasłem albo użyj innego adresu e-mail dla tego dostawcy.",
       "errorGeneric": "Coś poszło nie tak podczas logowania — spróbuj ponownie.",
       "steamFailed": "Logowanie przez Steam nie powiodło się — spróbuj ponownie",
+      "sessionExpired": "Twoja sesja wygasła — zaloguj się ponownie",
       "subtitle": "Wróć do swojego dziennika gier tam, gdzie skończyłeś."
     },
     "twoFactor": {

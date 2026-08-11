@@ -69,6 +69,7 @@
       "errorEmailInUse": "Es existiert bereits ein Konto mit dieser E-Mail-Adresse. Melde dich stattdessen mit deinem Passwort an oder nutze für diesen Anbieter eine andere E-Mail-Adresse.",
       "errorGeneric": "Bei der Anmeldung ist etwas schiefgelaufen — versuch es bitte erneut.",
       "steamFailed": "Anmeldung mit Steam fehlgeschlagen — bitte versuch es erneut",
+      "sessionExpired": "Deine Sitzung ist abgelaufen — bitte melde dich erneut an",
       "subtitle": "Setze dein Spieltagebuch dort fort, wo du aufgehört hast."
     },
     "twoFactor": {

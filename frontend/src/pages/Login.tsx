@@ -28,10 +28,14 @@ export default function Login() {
   const [needsTwoFactor, setNeedsTwoFactor] = useState(false);
   const [code, setCode] = useState('');
   // The Steam callback lands here with ?steam=failed when OpenID verification
-  // fails (cancelled login, bad assertion…)
-  const [error, setError] = useState<string | null>(() =>
-    new URLSearchParams(location.search).get('steam') === 'failed' ? t('auth.login.steamFailed') : null,
-  );
+  // fails (cancelled login, bad assertion…); AuthContext lands here with
+  // ?sessionExpired=1 when a refresh attempt itself failed (see api.ts).
+  const [error, setError] = useState<string | null>(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('steam') === 'failed') return t('auth.login.steamFailed');
+    if (params.get('sessionExpired') === '1') return t('auth.login.sessionExpired');
+    return null;
+  });
   const [submitting, setSubmitting] = useState(false);
 
   async function handlePasswordSubmit(e: FormEvent) {
