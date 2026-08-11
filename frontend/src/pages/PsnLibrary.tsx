@@ -6,6 +6,7 @@ import EmptyState, { GamepadIcon } from '../components/EmptyState';
 import SectionHead from '../components/SectionHead';
 import Skeleton from '../components/Skeleton';
 import { apiFetch, ApiError } from '../lib/api';
+import { runPsnRelay, type PsnRelayCall } from '../lib/psnRelay';
 
 interface TrophyCounts {
   bronze: number;
@@ -84,11 +85,23 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
   const [error, setError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
 
-  // Resync the library from PSN (?refresh=true) — after playing new games or making the profile public.
+  // Resync from PSN: the actual Sony calls run in THIS browser (see
+  // lib/psnRelay.ts) — the backend only tells us what to fetch and parses the
+  // raw result we relay back. After playing new games or making the profile public.
   async function refreshLibrary() {
     setSyncing(true);
     try {
-      setLibrary(await apiFetch<LibraryResponse>('/psn/library?refresh=true'));
+      const prepared = await apiFetch<{ accessToken: string; calls: PsnRelayCall[] }>(
+        '/psn/library/prepare',
+        { method: 'POST' },
+      );
+      const results = await runPsnRelay(prepared.calls, prepared.accessToken);
+      setLibrary(
+        await apiFetch<LibraryResponse>('/psn/library/sync', {
+          method: 'POST',
+          body: JSON.stringify({ results }),
+        }),
+      );
     } catch {
       // silencieux : on garde l'affichage courant
     } finally {
@@ -101,12 +114,16 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
     apiFetch<LibraryResponse>('/psn/library')
       .then((lib) => {
         setLibrary(lib);
+        // Never synced yet (fresh link, empty cache): run the relay sync once
+        // automatically instead of showing an empty page.
+        if (lib.syncedAt === null) return refreshLibrary();
       })
       .catch((err: unknown) => {
         setError(err instanceof ApiError ? err.message : t('psn.loadError'));
       })
       .finally(() => setLoading(false));
-    // t is only read in the catch — adding it would re-fetch on every language change.
+    // t/refreshLibrary are only read in the catch/first-sync path — adding
+    // them would re-fetch on every language change or re-render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [psnLinked]);
 

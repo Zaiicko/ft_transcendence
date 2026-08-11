@@ -7,12 +7,13 @@ import {
   Get,
   HttpCode,
   Inject,
+  Logger,
   NotFoundException,
   Post,
-  Query,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { Prisma } from '@prisma/client';
 import type { TrophyTitle } from 'psn-api';
 import { JwtPayload } from '../auth/auth.service';
@@ -24,14 +25,28 @@ import { PrismaService } from '../prisma/prisma.service';
 import { toPublicUserLite } from '../users/public-user';
 import { UsersService } from '../users/users.service';
 import { LinkPsnDto } from './dto/link-psn.dto';
-import { PsnApiService, PsnTrophySummary } from './psn-api.service';
+import { LinkPsnRelayDto, SubmitPsnRelayDto } from './dto/psn-relay.dto';
+import { PsnApiService, PsnRelayResult, PsnTrophySummary } from './psn-api.service';
 
-// Shape of the cache stored in User.psnLibrary.
+// Shape of the cache stored in User.psnLibrary. completedGameIds is our own
+// record of what was 100%/platinum as of the last sync — the anomaly check
+// below diffs against it rather than re-deriving it from raw PSN titles.
 interface PsnCache {
   syncedAt: string;
   titles: TrophyTitle[];
   summary: PsnTrophySummary | null;
+  completedGameIds?: number[];
 }
+
+// A resync (not the first one) that suddenly adds more newly-100% games than
+// this in one go gets logged — plausible for a first sync (a whole existing
+// library shows up at once) but suspicious afterwards. This can't PROVE
+// tampering (nothing stops a determined user from editing the relayed JSON in
+// devtools — see psn-api.service.ts's relay note), it's a deterrent/audit
+// trail only, same trust level the manual "Fait" button already has.
+const ANOMALY_THRESHOLD = 3;
+
+const RELAY_THROTTLE = { default: { limit: 6, ttl: 60_000 } };
 
 // Normalises a title for PSN/catalog matching: lowercase, letters and digits
 // only (drops ™®©, spaces, punctuation, edition suffixes).
@@ -40,6 +55,8 @@ const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 @UseGuards(JwtAuthGuard)
 @Controller('psn')
 export class PsnController {
+  private readonly logger = new Logger(PsnController.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly users: UsersService,
@@ -58,12 +75,26 @@ export class PsnController {
     return user.psnAccountId;
   }
 
-  // Links a PlayStation account: resolves the declared PSN Online ID to an
-  // accountId through the service session, then stores both (no per-user
-  // token). The profile must be public to be found.
+  private result(results: PsnRelayResult[], id: string): PsnRelayResult {
+    return results.find((r) => r.id === id) ?? { id, ok: false, body: null };
+  }
+
+  // Step 1 of linking: hands the browser the Sony search call + a short-lived
+  // access token. See psn-api.service.ts's relay note for why this can't run
+  // server-side.
+  @Post('link/prepare')
+  @Throttle(RELAY_THROTTLE)
+  async prepareLink(@Body() dto: LinkPsnDto) {
+    return this.api.searchRelay(dto.onlineId.trim());
+  }
+
+  // Step 2: the browser reports back what Sony's search answered. Resolves
+  // the declared PSN Online ID to an accountId and stores both (no per-user
+  // token, still). The profile must be public to be found.
   @Post('link')
-  async link(@CurrentUser() current: JwtPayload, @Body() dto: LinkPsnDto) {
-    const account = await this.api.resolveOnlineId(dto.onlineId.trim());
+  @Throttle(RELAY_THROTTLE)
+  async link(@CurrentUser() current: JwtPayload, @Body() dto: LinkPsnRelayDto) {
+    const account = this.api.parseSearchResult(this.result(dto.results, 'search'), dto.onlineId.trim());
     if (!account) {
       throw new NotFoundException('Aucun compte PlayStation public trouvé pour cet Online ID');
     }
@@ -94,47 +125,71 @@ export class PsnController {
     });
   }
 
-  // PSN library: played trophy titles matched to our catalog by name, with
-  // per-game trophy progress and the global trophy summary. Mirrors
-  // GET /steam/library.
+  // Cached view only — never fetches Sony live (see relay note). Empty/stale
+  // until the frontend runs prepareLibrary -> Sony -> syncLibrary once.
   @Get('library')
-  async library(@CurrentUser() current: JwtPayload, @Query('refresh') refresh?: string) {
+  async library(@CurrentUser() current: JwtPayload) {
     const user = await this.users.findById(current.sub);
     if (!user) throw new UnauthorizedException();
     if (!user.psnAccountId) {
       throw new BadRequestException('Aucun compte PlayStation lié — lie-le d’abord dans les réglages');
     }
-    const accountId = user.psnAccountId;
-
     const cached = user.psnLibrary as PsnCache | null;
-    let titles: TrophyTitle[];
-    let summary: PsnTrophySummary | null;
-    let syncedAt: string;
-    if (cached?.titles && refresh !== 'true') {
-      ({ titles, summary, syncedAt } = cached);
-    } else {
-      const [fetched, fetchedSummary] = await Promise.all([
-        this.api.getTitles(accountId),
-        this.api.getTrophySummary(accountId),
-      ]);
-      if (fetched === null) {
-        // Private profile OR transient error: never blank the page when a cache
-        // exists — serve it again. Only report "private" without one.
-        if (!cached?.titles) {
-          return { private: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: fetchedSummary, syncedAt: null };
-        }
-        ({ titles, summary, syncedAt } = cached);
-      } else {
-        titles = fetched;
-        summary = fetchedSummary;
-        syncedAt = new Date().toISOString();
-        await this.prisma.user.update({
-          where: { id: current.sub },
-          data: { psnLibrary: { syncedAt, titles, summary } as unknown as Prisma.InputJsonValue },
-        });
+    if (!cached?.titles) {
+      return { private: false, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
+    }
+    const matched = await this.matchTitles(current.sub, cached.titles);
+    return {
+      private: false,
+      totalPlayed: cached.titles.length,
+      matched,
+      unmatchedCount: cached.titles.length - matched.length,
+      summary: cached.summary,
+      syncedAt: cached.syncedAt,
+    };
+  }
+
+  // Step 1 of a (re)sync: hands the browser the trophy titles + summary calls.
+  @Post('library/prepare')
+  @Throttle(RELAY_THROTTLE)
+  async prepareLibrary(@CurrentUser() current: JwtPayload) {
+    const accountId = await this.requireAccountId(current.sub);
+    return this.api.libraryRelay(accountId);
+  }
+
+  // Step 2: the browser reports back Sony's trophy titles + summary. Mirrors
+  // the previous (blocked) server-side GET /psn/library behaviour, plus the
+  // anomaly check described above ANOMALY_THRESHOLD.
+  @Post('library/sync')
+  @Throttle(RELAY_THROTTLE)
+  async syncLibrary(@CurrentUser() current: JwtPayload, @Body() dto: SubmitPsnRelayDto) {
+    const user = await this.users.findById(current.sub);
+    if (!user) throw new UnauthorizedException();
+    if (!user.psnAccountId) {
+      throw new BadRequestException('Aucun compte PlayStation lié — lie-le d’abord dans les réglages');
+    }
+    const cached = user.psnLibrary as PsnCache | null;
+
+    const titles = this.api.parseTitles(this.result(dto.results, 'titles'));
+    const summary = this.api.parseTrophySummary(this.result(dto.results, 'summary'));
+    if (titles === null) {
+      // Private profile OR the browser's relay failed: never blank the page
+      // when a cache exists — serve it again. Only report "private" without one.
+      if (!cached?.titles) {
+        return { private: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary, syncedAt: null };
       }
+      const matched = await this.matchTitles(current.sub, cached.titles);
+      return {
+        private: false,
+        totalPlayed: cached.titles.length,
+        matched,
+        unmatchedCount: cached.titles.length - matched.length,
+        summary: cached.summary,
+        syncedAt: cached.syncedAt,
+      };
     }
 
+    const syncedAt = new Date().toISOString();
     const matched = await this.matchTitles(current.sub, titles);
 
     // Catalog games at 100%: every trophy earned, or a platinum unlocked — a
@@ -146,6 +201,27 @@ export class PsnController {
         const d = m.lastUpdatedDateTime ? new Date(m.lastUpdatedDateTime) : null;
         return { gameId: m.id, completedAt: d && !isNaN(d.getTime()) ? d : undefined };
       });
+    const completedIds = completed.map((c) => c.gameId);
+
+    // Anomaly check: skipped on the very first sync (the whole library
+    // legitimately shows up at once then).
+    if (cached?.titles) {
+      const previouslyCompleted = new Set(cached.completedGameIds ?? []);
+      const newlyCompleted = completedIds.filter((id) => !previouslyCompleted.has(id));
+      if (newlyCompleted.length > ANOMALY_THRESHOLD) {
+        this.logger.warn(
+          `Sync PSN suspecte — user ${current.sub}: ${newlyCompleted.length} nouveaux jeux à 100% d'un coup (ids: ${newlyCompleted.join(',')})`,
+        );
+      }
+    }
+
+    await this.prisma.user.update({
+      where: { id: current.sub },
+      data: {
+        psnLibrary: { syncedAt, titles, summary, completedGameIds: completedIds } as unknown as Prisma.InputJsonValue,
+      },
+    });
+
     await this.feed.syncCompletions(current.sub, 'psn', completed);
     void this.achievements.evaluate(current.sub, ['completions', 'perfect', 'genres']);
 
@@ -160,7 +236,8 @@ export class PsnController {
   }
 
   // PSN friends already on Saveboxd who aren't friends (or pending) with the
-  // current user. Mirrors GET /steam/friends/suggestions.
+  // current user. Not relayed (see psn-api.service.ts): quietly returns
+  // {private:true} wherever m.np.playstation.com is blocked.
   @Get('friends/suggestions')
   async friendSuggestions(@CurrentUser() current: JwtPayload) {
     const accountId = await this.requireAccountId(current.sub);

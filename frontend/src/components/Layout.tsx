@@ -9,6 +9,7 @@ import NotificationBell from './NotificationBell';
 import { BellIcon, NotificationPrefsList } from './NotificationSettings';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
 import { apiFetch } from '../lib/api';
+import { runPsnRelay, type PsnRelayCall } from '../lib/psnRelay';
 import SearchBar from './SearchBar';
 import Tutorial from './Tutorial';
 
@@ -105,6 +106,8 @@ export default function Layout() {
   const [tourOpen, setTourOpen] = useState(false);
   // Prevents the tour from auto-restarting in the same session after it's closed (tutorialSeen only turns true after the POST).
   const tourAutoStarted = useRef(false);
+  // One attempt per app load — see the PSN auto-sync effect below.
+  const psnAutoSyncTried = useRef(false);
 
   // Close the burger menu on each page change — compared during render, not in an effect (react-hooks/set-state-in-effect).
   const [lastPathname, setLastPathname] = useState(location.pathname);
@@ -144,6 +147,35 @@ export default function Layout() {
     await logout();
     navigate('/');
   }
+
+  // Silently keeps a linked PSN library fresh. Unlike Steam/Xbox, PSN has no
+  // working server-side background resync — Sony's WAF blocks the VPS's IP
+  // outright but allows the browser's own (see lib/psnRelay.ts) — so instead
+  // we opportunistically resync from THIS browser whenever a PSN-linked user
+  // shows up and their cache is stale, using the same 6h window as the
+  // Steam/Xbox server cron (backend/src/completions/completions.service.ts).
+  // One attempt per app load; never surfaces errors, at worst the user's own
+  // visit to /library resyncs it instead.
+  useEffect(() => {
+    if (loading || !user || !user.psnLinked || psnAutoSyncTried.current) return;
+    psnAutoSyncTried.current = true;
+    const STALE_MS = 6 * 60 * 60 * 1000;
+    (async () => {
+      try {
+        const cached = await apiFetch<{ syncedAt: string | null }>('/psn/library');
+        const stale = !cached.syncedAt || Date.now() - new Date(cached.syncedAt).getTime() > STALE_MS;
+        if (!stale) return;
+        const prepared = await apiFetch<{ accessToken: string; calls: PsnRelayCall[] }>(
+          '/psn/library/prepare',
+          { method: 'POST' },
+        );
+        const results = await runPsnRelay(prepared.calls, prepared.accessToken);
+        await apiFetch('/psn/library/sync', { method: 'POST', body: JSON.stringify({ results }) });
+      } catch {
+        // best-effort, see comment above
+      }
+    })();
+  }, [loading, user]);
 
   // Auto-start the guided tour once onboarding is done and it hasn't been seen; once per session (tourAutoStarted guard), not on the wizard itself.
   useEffect(() => {
