@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch, ApiError } from '../lib/api';
-import { runPsnRelay, type PsnRelayCall } from '../lib/psnRelay';
 import Modal from './Modal';
 
 // PlayStation link modal ("just the ID" model): user types their public PSN Online ID, resolved by the backend's service session.
@@ -20,14 +19,9 @@ export default function PsnConnectModal({ onClose }: { onClose: () => void }) {
     setError(null);
     setBusy(true);
     try {
-      const prepared = await apiFetch<{ accessToken: string; call: PsnRelayCall }>(
-        '/psn/link/prepare',
-        { method: 'POST', body: JSON.stringify({ onlineId: id }) },
-      );
-      const results = await runPsnRelay([prepared.call], prepared.accessToken);
       const res = await apiFetch<{ onlineId: string }>('/psn/link', {
         method: 'POST',
-        body: JSON.stringify({ onlineId: id, results }),
+        body: JSON.stringify({ onlineId: id }),
       });
       setLinked(res.onlineId || id);
       await refreshUser();
