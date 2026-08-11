@@ -467,6 +467,9 @@
     "eyebrow": "최고의 플레이어",
     "you": "나"
   },
+  "founderBadge": {
+    "tooltip": "창립자 — 최초 {{count}}명의 회원"
+  },
   "reviews": {
     "sortPopular": "인기",
     "sortRecent": "최신",

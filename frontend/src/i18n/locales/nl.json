@@ -467,6 +467,9 @@
     "eyebrow": "De beste spelers",
     "you": "jij"
   },
+  "founderBadge": {
+    "tooltip": "Oprichter — bij de eerste {{count}} leden"
+  },
   "reviews": {
     "sortPopular": "Populair",
     "sortRecent": "Recent",

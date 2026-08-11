@@ -10,6 +10,7 @@ import ShareButton from '../components/ShareButton';
 import EmptyState, { CalendarIcon } from '../components/EmptyState';
 import DiscordBadge from '../components/DiscordBadge';
 import AchievementsSection from '../components/AchievementsSection';
+import FounderBadge from '../components/FounderBadge';
 import LeaderboardRankBadge from '../components/LeaderboardRankBadge';
 import PsnBadge from '../components/PsnBadge';
 import XboxBadge from '../components/XboxBadge';
@@ -771,6 +772,7 @@ export default function PublicProfile() {
                 {profile.steamId && <SteamBadge />}
                 {profile.psnLinked && <PsnBadge />}
                 {profile.xboxLinked && <XboxBadge />}
+                <FounderBadge userId={profile.id} />
                 <LeaderboardRankBadge userId={profile.id} />
               </h1>
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">

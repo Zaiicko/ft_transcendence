@@ -9,6 +9,7 @@ import { ReviewTargetKind, useReviewSocket } from '../games/useReviewSocket';
 import { ApiError, apiFetch } from '../lib/api';
 import Avatar from './Avatar';
 import EmptyState, { PencilIcon } from './EmptyState';
+import FounderBadge from './FounderBadge';
 import LeaderboardRankBadge from './LeaderboardRankBadge';
 import Modal from './Modal';
 import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
@@ -396,6 +397,7 @@ export default function ReviewsSection({
                         <div className="truncate text-sm font-semibold">{r.user.username}</div>
                       </div>
                     </Link>
+                    <FounderBadge userId={r.user.id} />
                     <LeaderboardRankBadge userId={r.user.id} />
                   </>
                 ) : (

@@ -467,6 +467,9 @@
     "eyebrow": "Die besten Spieler",
     "you": "du"
   },
+  "founderBadge": {
+    "tooltip": "Gründer — unter den ersten {{count}} Mitgliedern"
+  },
   "reviews": {
     "sortPopular": "Beliebt",
     "sortRecent": "Neueste",

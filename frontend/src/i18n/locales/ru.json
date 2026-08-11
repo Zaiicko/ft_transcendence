@@ -467,6 +467,9 @@
     "eyebrow": "Лучшие игроки",
     "you": "вы"
   },
+  "founderBadge": {
+    "tooltip": "Основатель — среди первых {{count}} участников"
+  },
   "reviews": {
     "sortPopular": "Популярные",
     "sortRecent": "Недавние",

@@ -467,6 +467,9 @@
     "eyebrow": "トッププレイヤー",
     "you": "あなた"
   },
+  "founderBadge": {
+    "tooltip": "創設者 — 最初の{{count}}人のメンバー"
+  },
   "reviews": {
     "sortPopular": "人気",
     "sortRecent": "新着",

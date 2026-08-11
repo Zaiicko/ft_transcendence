@@ -467,6 +467,9 @@
     "eyebrow": "I migliori giocatori",
     "you": "tu"
   },
+  "founderBadge": {
+    "tooltip": "Fondatore — tra i primi {{count}} membri"
+  },
   "reviews": {
     "sortPopular": "Popolari",
     "sortRecent": "Recenti",

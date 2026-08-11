@@ -467,6 +467,9 @@
     "eyebrow": "En iyi oyuncular",
     "you": "sen"
   },
+  "founderBadge": {
+    "tooltip": "Kurucu — ilk {{count}} üye arasında"
+  },
   "reviews": {
     "sortPopular": "Popüler",
     "sortRecent": "En yeni",

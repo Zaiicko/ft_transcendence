@@ -467,6 +467,9 @@
     "eyebrow": "最强玩家",
     "you": "你"
   },
+  "founderBadge": {
+    "tooltip": "创始人 — 最早的 {{count}} 位成员之一"
+  },
   "reviews": {
     "sortPopular": "热门",
     "sortRecent": "最新",
