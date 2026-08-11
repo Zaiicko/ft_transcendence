@@ -3,14 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import {
   exchangeAccessCodeForAuthTokens,
   exchangeNpssoForAccessCode,
-  getUserFriendsAccountIds,
-  getUserTitles,
-  getUserTrophyProfileSummary,
-  makeUniversalSearch,
   type AuthorizationPayload,
   type TrophyCounts,
   type TrophyTitle,
 } from 'psn-api';
+import { ProxyAgent } from 'undici';
 
 export interface PsnAccount {
   accountId: string;
@@ -28,6 +25,18 @@ export interface PsnTrophySummary {
 // PSN has no public API and no open OAuth. "infinitebacklog" model: the backend
 // holds ONE PSN session (a service NPSSO token, PSN_SERVICE_NPSSO) and reads the
 // PUBLIC profiles users declare by their Online ID. No per-user token.
+//
+// PROXY NOTE: m.np.playstation.com sits behind an Akamai WAF that blocks
+// datacenter/hosting IP ranges outright (403 "Access Denied", verified live —
+// our VPS never even reaches Sony's app logic). ca.account.sony.com (the
+// NPSSO -> access token exchange, serviceAuth() below) is NOT blocked. So
+// every call that actually reads PSN data goes through sonyFetch(), which
+// routes through PSN_PROXY_URL (a residential proxy) when configured — with
+// it unset (e.g. local dev, where the direct connection already works fine),
+// it just calls Sony directly. This is why these 3 calls are hand-rolled
+// instead of using the psn-api library's own request functions: they don't
+// accept a custom dispatcher/agent, so there'd be no way to route only these
+// through a proxy without it.
 @Injectable()
 export class PsnApiService {
   private readonly logger = new Logger(PsnApiService.name);
@@ -37,7 +46,18 @@ export class PsnApiService {
   private auth: AuthorizationPayload | null = null;
   private authExpiresAt = 0;
 
+  // undefined = not resolved yet, null = no proxy configured. Built once.
+  private agent: ProxyAgent | null | undefined;
+
   constructor(private readonly config: ConfigService) {}
+
+  private proxyAgent(): ProxyAgent | undefined {
+    if (this.agent === undefined) {
+      const url = this.config.get<string>('PSN_PROXY_URL');
+      this.agent = url ? new ProxyAgent(url) : null;
+    }
+    return this.agent ?? undefined;
+  }
 
   private npsso(): string {
     const npsso = this.config.get<string>('PSN_SERVICE_NPSSO');
@@ -73,22 +93,49 @@ export class PsnApiService {
     }
   }
 
+  // Authenticated call to a Sony endpoint, through the residential proxy when
+  // configured. Throws on a non-2xx response (private profile vs a real
+  // failure is sorted out by each caller's try/catch, same as before).
+  private async sonyFetch<T>(url: string, body?: unknown): Promise<T> {
+    const auth = await this.serviceAuth();
+    const dispatcher = this.proxyAgent();
+    const res = await fetch(url, {
+      method: body ? 'POST' : 'GET',
+      headers: {
+        Authorization: `Bearer ${auth.accessToken}`,
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      // Node's fetch (undici) accepts a per-request dispatcher; not in the
+      // standard lib.dom RequestInit type, hence the cast.
+      ...(dispatcher ? ({ dispatcher } as Record<string, unknown>) : {}),
+    } as RequestInit);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<T>;
+  }
+
   // Resolves a public PSN Online ID to { accountId, onlineId, avatar }.
   // null when no account matches exactly.
   async resolveOnlineId(onlineId: string): Promise<PsnAccount | null> {
-    const auth = await this.serviceAuth();
-    let res;
+    let res: {
+      domainResponses?: { results?: { socialMetadata?: Record<string, unknown> }[] }[];
+    };
     try {
-      res = await makeUniversalSearch(auth, onlineId, 'SocialAllAccounts');
+      res = await this.sonyFetch('https://m.np.playstation.com/api/search/v1/universalSearch', {
+        searchTerm: onlineId,
+        domainRequests: [{ domain: 'SocialAllAccounts' }],
+      });
     } catch (e) {
-      this.logger.warn(`Recherche PSN échouée: ${e instanceof Error ? e.message : e}`);
+      this.logger.warn(`Recherche PSN échouée: ${this.msg(e)}`);
       throw new ServiceUnavailableException('Recherche PlayStation indisponible');
     }
 
     const wanted = onlineId.trim().toLowerCase();
     for (const domain of res.domainResponses ?? []) {
       for (const result of domain.results ?? []) {
-        const meta = result.socialMetadata;
+        const meta = result.socialMetadata as
+          | { onlineId?: string; accountId?: string; avatarUrl?: string }
+          | undefined;
         if (meta?.onlineId?.toLowerCase() === wanted && meta.accountId) {
           return {
             accountId: meta.accountId,
@@ -104,9 +151,11 @@ export class PsnApiService {
   // An account's played trophy titles, most recently unlocked first.
   // null when the games/trophies aren't public.
   async getTitles(accountId: string): Promise<TrophyTitle[] | null> {
-    const auth = await this.serviceAuth();
     try {
-      const res = await getUserTitles(auth, accountId, { limit: 800 });
+      const id = encodeURIComponent(accountId);
+      const res = await this.sonyFetch<{ trophyTitles?: TrophyTitle[] }>(
+        `https://m.np.playstation.com/api/trophy/v1/users/${id}/trophyTitles?limit=800`,
+      );
       return res.trophyTitles ?? [];
     } catch (e) {
       this.logger.warn(`getUserTitles(${accountId}) échoué (profil privé ?): ${this.msg(e)}`);
@@ -116,15 +165,20 @@ export class PsnApiService {
 
   // Trophy summary (level, tier, progress, counts per grade). null when private.
   async getTrophySummary(accountId: string): Promise<PsnTrophySummary | null> {
-    const auth = await this.serviceAuth();
     try {
-      const s = await getUserTrophyProfileSummary(auth, accountId);
+      const id = encodeURIComponent(accountId);
+      const s = await this.sonyFetch<{
+        trophyLevel?: string | number;
+        tier?: number;
+        progress?: number;
+        earnedTrophies?: TrophyCounts;
+      }>(`https://m.np.playstation.com/api/trophy/v1/users/${id}/trophySummary`);
       const level = Number(s.trophyLevel);
       return {
         level: Number.isFinite(level) ? level : 0,
-        tier: s.tier,
-        progress: s.progress,
-        earned: s.earnedTrophies,
+        tier: s.tier ?? 0,
+        progress: s.progress ?? 0,
+        earned: s.earnedTrophies ?? { bronze: 0, silver: 0, gold: 0, platinum: 0 },
       };
     } catch (e) {
       this.logger.warn(`getUserTrophyProfileSummary(${accountId}) échoué: ${this.msg(e)}`);
@@ -134,9 +188,11 @@ export class PsnApiService {
 
   // accountIds of an account's PSN friends. null when the list isn't public.
   async getFriendAccountIds(accountId: string): Promise<string[] | null> {
-    const auth = await this.serviceAuth();
     try {
-      const res = await getUserFriendsAccountIds(auth, accountId, { limit: 1000 });
+      const id = encodeURIComponent(accountId);
+      const res = await this.sonyFetch<{ friends?: string[] }>(
+        `https://m.np.playstation.com/api/userProfile/v1/internal/users/${id}/friends?limit=1000`,
+      );
       return res.friends ?? [];
     } catch (e) {
       this.logger.warn(`getUserFriendsAccountIds(${accountId}) échoué: ${this.msg(e)}`);
