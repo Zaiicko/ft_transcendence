@@ -7,7 +7,7 @@ import {
   type TrophyCounts,
   type TrophyTitle,
 } from 'psn-api';
-import { ProxyAgent } from 'undici';
+import { fetch, ProxyAgent } from 'undici';
 
 export interface PsnAccount {
   accountId: string;
@@ -96,9 +96,15 @@ export class PsnApiService {
   // Authenticated call to a Sony endpoint, through the residential proxy when
   // configured. Throws on a non-2xx response (private profile vs a real
   // failure is sorted out by each caller's try/catch, same as before).
+  //
+  // Uses undici's OWN fetch, not Node's global one: Node's built-in fetch
+  // bundles its own (older) internal copy of undici, and handing it a
+  // ProxyAgent built from the npm undici package throws ("invalid
+  // onRequestStart method") — the two copies' internal Dispatcher interfaces
+  // don't match. Importing fetch from 'undici' alongside ProxyAgent keeps
+  // both on the same version, verified live against the proxy.
   private async sonyFetch<T>(url: string, body?: unknown): Promise<T> {
     const auth = await this.serviceAuth();
-    const dispatcher = this.proxyAgent();
     const res = await fetch(url, {
       method: body ? 'POST' : 'GET',
       headers: {
@@ -106,10 +112,8 @@ export class PsnApiService {
         ...(body ? { 'Content-Type': 'application/json' } : {}),
       },
       body: body ? JSON.stringify(body) : undefined,
-      // Node's fetch (undici) accepts a per-request dispatcher; not in the
-      // standard lib.dom RequestInit type, hence the cast.
-      ...(dispatcher ? ({ dispatcher } as Record<string, unknown>) : {}),
-    } as RequestInit);
+      dispatcher: this.proxyAgent(),
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<T>;
   }
