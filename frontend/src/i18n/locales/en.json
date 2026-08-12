@@ -1133,7 +1133,12 @@
     "link": "Link",
     "visibilityTitle": "Visible to others",
     "visibilityOnDesc": "Other players can view your library from your profile.",
-    "visibilityOffDesc": "Only you can see your library."
+    "visibilityOffDesc": "Only you can see your library.",
+    "filterAll": "All ({{count}})",
+    "filterDone": "Done ({{count}})",
+    "filterTodo": "To do ({{count}})",
+    "filterNoneDoneTitle": "No completed games yet",
+    "filterNoneTodoTitle": "Everything's done!"
   },
   "playerLibrary": {
     "title": "{{username}}'s library",

@@ -1061,7 +1061,12 @@
     "link": "关联",
     "visibilityTitle": "对其他人可见",
     "visibilityOnDesc": "其他玩家可以在你的主页查看你的游戏库。",
-    "visibilityOffDesc": "只有你自己能看到你的游戏库。"
+    "visibilityOffDesc": "只有你自己能看到你的游戏库。",
+    "filterAll": "全部 ({{count}})",
+    "filterDone": "已完成 ({{count}})",
+    "filterTodo": "未完成 ({{count}})",
+    "filterNoneDoneTitle": "还没有已完成的游戏",
+    "filterNoneTodoTitle": "全部完成！"
   },
   "playerLibrary": {
     "title": "{{username}} 的游戏库",

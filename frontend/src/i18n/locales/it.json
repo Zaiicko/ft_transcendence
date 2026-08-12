@@ -1061,7 +1061,12 @@
     "link": "Collega",
     "visibilityTitle": "Visibile agli altri",
     "visibilityOnDesc": "Gli altri giocatori possono vedere la tua libreria dal tuo profilo.",
-    "visibilityOffDesc": "Solo tu puoi vedere la tua libreria."
+    "visibilityOffDesc": "Solo tu puoi vedere la tua libreria.",
+    "filterAll": "Tutti ({{count}})",
+    "filterDone": "Fatti ({{count}})",
+    "filterTodo": "Da fare ({{count}})",
+    "filterNoneDoneTitle": "Nessun gioco completato per ora",
+    "filterNoneTodoTitle": "Tutto fatto!"
   },
   "playerLibrary": {
     "title": "Libreria di {{username}}",

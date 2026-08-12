@@ -1061,7 +1061,12 @@
     "link": "Привязать",
     "visibilityTitle": "Видна другим",
     "visibilityOnDesc": "Другие игроки могут видеть твою библиотеку на твоём профиле.",
-    "visibilityOffDesc": "Только ты можешь видеть свою библиотеку."
+    "visibilityOffDesc": "Только ты можешь видеть свою библиотеку.",
+    "filterAll": "Все ({{count}})",
+    "filterDone": "Пройдено ({{count}})",
+    "filterTodo": "Не пройдено ({{count}})",
+    "filterNoneDoneTitle": "Пока нет пройденных игр",
+    "filterNoneTodoTitle": "Всё пройдено!"
   },
   "playerLibrary": {
     "title": "Библиотека {{username}}",

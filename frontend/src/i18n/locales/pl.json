@@ -1061,7 +1061,12 @@
     "link": "Połącz",
     "visibilityTitle": "Widoczna dla innych",
     "visibilityOnDesc": "Inni gracze mogą zobaczyć twoją bibliotekę z poziomu twojego profilu.",
-    "visibilityOffDesc": "Tylko ty widzisz swoją bibliotekę."
+    "visibilityOffDesc": "Tylko ty widzisz swoją bibliotekę.",
+    "filterAll": "Wszystkie ({{count}})",
+    "filterDone": "Ukończone ({{count}})",
+    "filterTodo": "Do ukończenia ({{count}})",
+    "filterNoneDoneTitle": "Brak ukończonych gier",
+    "filterNoneTodoTitle": "Wszystko ukończone!"
   },
   "playerLibrary": {
     "title": "Biblioteka gracza {{username}}",

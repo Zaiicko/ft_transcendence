@@ -1061,7 +1061,12 @@
     "link": "Bağla",
     "visibilityTitle": "Diğerlerine görünür",
     "visibilityOnDesc": "Diğer oyuncular profilinden kütüphaneni görebilir.",
-    "visibilityOffDesc": "Kütüphaneni yalnızca sen görebilirsin."
+    "visibilityOffDesc": "Kütüphaneni yalnızca sen görebilirsin.",
+    "filterAll": "Tümü ({{count}})",
+    "filterDone": "Tamamlandı ({{count}})",
+    "filterTodo": "Kalan ({{count}})",
+    "filterNoneDoneTitle": "Henüz tamamlanmış oyun yok",
+    "filterNoneTodoTitle": "Her şey tamamlandı!"
   },
   "playerLibrary": {
     "title": "{{username}} kütüphanesi",

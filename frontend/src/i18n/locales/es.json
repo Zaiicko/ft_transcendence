@@ -1061,7 +1061,12 @@
     "link": "Vincular",
     "visibilityTitle": "Visible para otros",
     "visibilityOnDesc": "Otros jugadores pueden ver tu biblioteca desde tu perfil.",
-    "visibilityOffDesc": "Solo tú puedes ver tu biblioteca."
+    "visibilityOffDesc": "Solo tú puedes ver tu biblioteca.",
+    "filterAll": "Todos ({{count}})",
+    "filterDone": "Hechos ({{count}})",
+    "filterTodo": "Pendientes ({{count}})",
+    "filterNoneDoneTitle": "Aún no hay juegos completados",
+    "filterNoneTodoTitle": "¡Todo hecho!"
   },
   "playerLibrary": {
     "title": "Biblioteca de {{username}}",

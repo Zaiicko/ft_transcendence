@@ -1061,7 +1061,12 @@
     "link": "Koppelen",
     "visibilityTitle": "Zichtbaar voor anderen",
     "visibilityOnDesc": "Andere spelers kunnen je bibliotheek bekijken via je profiel.",
-    "visibilityOffDesc": "Alleen jij kunt je bibliotheek zien."
+    "visibilityOffDesc": "Alleen jij kunt je bibliotheek zien.",
+    "filterAll": "Alle ({{count}})",
+    "filterDone": "Gedaan ({{count}})",
+    "filterTodo": "Nog te doen ({{count}})",
+    "filterNoneDoneTitle": "Nog geen voltooide games",
+    "filterNoneTodoTitle": "Alles gedaan!"
   },
   "playerLibrary": {
     "title": "Bibliotheek van {{username}}",

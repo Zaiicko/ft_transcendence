@@ -1061,7 +1061,12 @@
     "link": "Associar",
     "visibilityTitle": "Visível para os outros",
     "visibilityOnDesc": "Outros jogadores podem ver a tua biblioteca a partir do teu perfil.",
-    "visibilityOffDesc": "Só tu podes ver a tua biblioteca."
+    "visibilityOffDesc": "Só tu podes ver a tua biblioteca.",
+    "filterAll": "Todos ({{count}})",
+    "filterDone": "Concluídos ({{count}})",
+    "filterTodo": "Por concluir ({{count}})",
+    "filterNoneDoneTitle": "Ainda nenhum jogo concluído",
+    "filterNoneTodoTitle": "Tudo concluído!"
   },
   "playerLibrary": {
     "title": "Biblioteca de {{username}}",

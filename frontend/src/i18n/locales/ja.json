@@ -1061,7 +1061,12 @@
     "link": "連携",
     "visibilityTitle": "他のユーザーに公開",
     "visibilityOnDesc": "他のプレイヤーはあなたのプロフィールからライブラリを閲覧できます。",
-    "visibilityOffDesc": "ライブラリを見られるのはあなただけです。"
+    "visibilityOffDesc": "ライブラリを見られるのはあなただけです。",
+    "filterAll": "すべて ({{count}})",
+    "filterDone": "クリア済み ({{count}})",
+    "filterTodo": "未クリア ({{count}})",
+    "filterNoneDoneTitle": "まだクリアしたゲームがありません",
+    "filterNoneTodoTitle": "すべて完了しました!"
   },
   "playerLibrary": {
     "title": "{{username}}のライブラリ",

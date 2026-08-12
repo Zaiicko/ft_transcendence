@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -74,6 +74,31 @@ function TrophyTally({ counts, className = '' }: { counts: TrophyCounts; classNa
   );
 }
 
+// Same filter chip as XboxLibrary/SteamLibrary.tsx — kept in sync by hand.
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        active
+          ? 'rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-zinc-950'
+          : 'rounded-full border border-zinc-300 px-3 py-1.5 text-xs text-zinc-600 transition hover:border-accent hover:text-accent dark:border-zinc-700 dark:text-zinc-400'
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
 // `embedded`: rendered inside the unified "My libraries" page (hides the h1).
 export default function PsnLibrary({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
@@ -84,6 +109,7 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
   const [loading, setLoading] = useState(psnLinked);
   const [error, setError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'done' | 'todo'>('all');
 
   // Resync the library from PSN (?refresh=true) — after playing new games or making the profile public.
   async function refreshLibrary() {
@@ -229,9 +255,47 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
             })}
           </p>
 
-          {library && library.matched.length > 0 ? (
+          {library && library.matched.length > 0 && (
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <FilterChip active={filter === 'all'} onClick={() => setFilter('all')}>
+                {t('library.filterAll', { count: library.matched.length })}
+              </FilterChip>
+              <FilterChip active={filter === 'done'} onClick={() => setFilter('done')}>
+                {t('library.filterDone', { count: library.matched.filter((g) => g.completed).length })}
+              </FilterChip>
+              <FilterChip active={filter === 'todo'} onClick={() => setFilter('todo')}>
+                {t('library.filterTodo', { count: library.matched.filter((g) => !g.completed).length })}
+              </FilterChip>
+            </div>
+          )}
+
+          {(() => {
+            const visible =
+              library?.matched.filter((g) =>
+                filter === 'all' ? true : filter === 'done' ? g.completed : !g.completed,
+              ) ?? [];
+            if (!library || library.matched.length === 0) {
+              return (
+                <EmptyState
+                  className="mb-10"
+                  icon={<GamepadIcon />}
+                  title={t('psn.noMatchedTitle')}
+                  description={t('psn.noMatchedDesc')}
+                />
+              );
+            }
+            if (visible.length === 0) {
+              return (
+                <EmptyState
+                  className="mb-10"
+                  icon={<GamepadIcon />}
+                  title={filter === 'done' ? t('library.filterNoneDoneTitle') : t('library.filterNoneTodoTitle')}
+                />
+              );
+            }
+            return (
             <ul className="mb-10 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
-              {library.matched.map((game) => (
+              {visible.map((game) => (
                 <li key={game.id} className="card flex flex-col overflow-hidden">
                   <Link to={`/game/${game.id}`} className="group flex flex-1 flex-col">
                     {game.coverUrl ? (
@@ -312,14 +376,8 @@ export default function PsnLibrary({ embedded = false }: { embedded?: boolean })
                 </li>
               ))}
             </ul>
-          ) : (
-            <EmptyState
-              className="mb-10"
-              icon={<GamepadIcon />}
-              title={t('psn.noMatchedTitle')}
-              description={t('psn.noMatchedDesc')}
-            />
-          )}
+            );
+          })()}
         </>
       )}
     </div>
