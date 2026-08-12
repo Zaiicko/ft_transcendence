@@ -38,6 +38,15 @@ export class OgController {
     return `${this.siteUrl()}/api/og/image/${path}`;
   }
 
+  // Self-hosted avatars are stored/returned as a path relative to our own
+  // origin (e.g. "/api/uploads/avatars/...") — fine for an <img> in the SPA,
+  // but satori requires an absolute URL to fetch it. OAuth-provider avatars
+  // (Google/Discord/Steam) are already absolute and pass through untouched.
+  private absolutize(url: string | null): string | null {
+    if (!url) return null;
+    return /^https?:\/\//.test(url) ? url : `${this.siteUrl()}${url.startsWith('/') ? '' : '/'}${url}`;
+  }
+
   // ---- Meta-tag documents ----
 
   @Get('game/:id')
@@ -195,7 +204,7 @@ export class OgController {
         companyName: review.company?.name ?? null,
         coverUrl: review.game?.coverUrl ?? review.company?.logoUrl ?? null,
         username: review.user?.username ?? '?',
-        avatarUrl: review.user?.avatarUrl ?? null,
+        avatarUrl: this.absolutize(review.user?.avatarUrl ?? null),
         rating: review.rating,
         text: review.text,
         title: review.title,
@@ -210,7 +219,7 @@ export class OgController {
       if (!profile) throw new Error('not found');
       return profileCard({
         username: profile.username,
-        avatarUrl: profile.avatarUrl,
+        avatarUrl: this.absolutize(profile.avatarUrl),
         reviewCount: profile.reviewCount,
         playedCount: profile.playedCount,
         rank: profile.rank?.rank ?? null,

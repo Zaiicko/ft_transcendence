@@ -280,6 +280,18 @@ export function companyCard(input: { name: string; logoUrl: string | null; gameC
   ]);
 }
 
+// The review's own text is the point of this card — size it down as it gets
+// longer so a two-line comment and a five-paragraph essay both read well
+// instead of one fixed size either clipping long text or looking tiny on a
+// short one.
+function bodyScale(len: number): { fontSize: number; lineClamp: number; maxChars: number } {
+  if (len <= 80) return { fontSize: 40, lineClamp: 4, maxChars: 80 };
+  if (len <= 160) return { fontSize: 33, lineClamp: 5, maxChars: 160 };
+  if (len <= 280) return { fontSize: 27, lineClamp: 6, maxChars: 280 };
+  if (len <= 450) return { fontSize: 22, lineClamp: 7, maxChars: 450 };
+  return { fontSize: 18, lineClamp: 8, maxChars: 620 };
+}
+
 // ---------- Review card ----------
 export function reviewCard(input: {
   gameTitle: string | null;
@@ -293,26 +305,47 @@ export function reviewCard(input: {
 }): SatoriNode {
   const { gameTitle, companyName, coverUrl, username, avatarUrl, rating, text, title } = input;
   const target = gameTitle ?? companyName ?? '';
-  const excerpt = (title ?? text ?? '').slice(0, 220);
+  const body = text ?? title ?? '';
+  const scale = bodyScale(body.length);
+  const excerpt = body.slice(0, scale.maxChars);
   return el('div', { style: { ...background(), flexDirection: 'column', justifyContent: 'space-between' } }, [
-    el('div', { style: { display: 'flex', alignItems: 'center', gap: 22 } }, [
-      coverNode(coverUrl, 90, 126),
-      el('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } }, [
-        el(
-          'div',
-          {
-            style: {
-              display: 'flex',
-              fontSize: 15,
-              fontWeight: 700,
-              letterSpacing: 2,
-              textTransform: 'uppercase',
-              color: ACCENT,
+    el('div', { style: { display: 'flex', flexDirection: 'column', gap: 16 } }, [
+      el('div', { style: { display: 'flex', alignItems: 'center', gap: 22 } }, [
+        coverNode(coverUrl, 78, 109),
+        el('div', { style: { display: 'flex', flexDirection: 'column', gap: 6 } }, [
+          el(
+            'div',
+            {
+              style: {
+                display: 'flex',
+                fontSize: 14,
+                fontWeight: 700,
+                letterSpacing: 2,
+                textTransform: 'uppercase',
+                color: ACCENT,
+              },
             },
-          },
-          'Critique',
-        ),
-        el('div', { style: { display: 'flex', fontSize: 30, fontWeight: 700, color: INK } }, target),
+            'Critique',
+          ),
+          el('div', { style: { display: 'flex', fontSize: 27, fontWeight: 700, color: INK } }, target),
+          title
+            ? el(
+                'div',
+                {
+                  style: {
+                    display: 'flex',
+                    fontSize: 18,
+                    fontWeight: 600,
+                    color: INK_DIM,
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  },
+                },
+                `« ${title} »`,
+              )
+            : el('div', { style: { display: 'flex' } }),
+        ]),
       ]),
     ]),
     el(
@@ -320,16 +353,18 @@ export function reviewCard(input: {
       {
         style: {
           display: 'flex',
-          fontSize: 40,
+          flex: 1,
+          alignItems: 'center',
+          fontSize: scale.fontSize,
           fontWeight: 600,
           color: INK,
           lineHeight: 1.35,
-          WebkitLineClamp: 4,
+          WebkitLineClamp: scale.lineClamp,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
         },
       },
-      `“${excerpt}${excerpt.length >= 220 ? '…' : ''}”`,
+      `“${excerpt}${excerpt.length < body.length ? '…' : ''}”`,
     ),
     el('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } }, [
       el('div', { style: { display: 'flex', alignItems: 'center', gap: 16 } }, [
