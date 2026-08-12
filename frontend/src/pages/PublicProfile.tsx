@@ -791,21 +791,9 @@ export default function PublicProfile() {
                   to={`/u/${profile.username}/library`}
                   title={t('profile.viewLibrary')}
                   aria-label={t('profile.viewLibrary')}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-400/60 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
+                  className="flex h-9 items-center justify-center rounded-full border border-zinc-400/60 px-3.5 text-xs font-bold text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4 fill-none stroke-current"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M6 12h4M8 10v4" />
-                    <circle cx="15" cy="11" r="0.6" fill="currentColor" stroke="none" />
-                    <circle cx="17.5" cy="13.5" r="0.6" fill="currentColor" stroke="none" />
-                    <path d="M17.32 5H6.68a4 4 0 0 0-3.94 3.32l-1.2 7A3 3 0 0 0 4.5 19c1 0 1.5-.5 2-1l1-1.5h5l1 1.5c.5.5 1 1 2 1a3 3 0 0 0 2.96-3.68l-1.2-7A4 4 0 0 0 17.32 5z" />
-                  </svg>
+                  {t('profile.viewLibrary')}
                 </Link>
               )}
               {user && (

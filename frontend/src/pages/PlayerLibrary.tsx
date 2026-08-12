@@ -271,7 +271,7 @@ export default function PlayerLibrary() {
             </div>
           )}
 
-          {active && <PlatformPanel username={profile.username} platform={active} />}
+          {active && <PlatformPanel key={active} username={profile.username} platform={active} />}
         </>
       )}
     </div>
