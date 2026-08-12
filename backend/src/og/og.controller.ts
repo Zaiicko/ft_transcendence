@@ -2,10 +2,12 @@ import { Controller, Get, Logger, Param, ParseIntPipe, Query, Res } from '@nestj
 import { ConfigService } from '@nestjs/config';
 import type { Response } from 'express';
 import { CompaniesService } from '../companies/companies.service';
+import { GameSort, ListGamesDto, SortDir } from '../games/dto/list-games.dto';
 import { GamesService } from '../games/games.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { ReviewsService } from '../reviews/reviews.service';
 import { UsersService } from '../users/users.service';
-import { companyCard, fallbackCard, gameCard, profileCard, reviewCard } from './og-cards';
+import { catalogCard, companyCard, fallbackCard, gameCard, hubCard, profileCard, reviewCard } from './og-cards';
 import { metaHtml } from './og-meta';
 import { OgRenderService, SatoriNode } from './og-render.service';
 
@@ -25,7 +27,16 @@ export class OgController {
     private readonly users: UsersService,
     private readonly render: OgRenderService,
     private readonly config: ConfigService,
+    private readonly prisma: PrismaService,
   ) {}
+
+  // Top N games by IGDB notoriety — used as decorative cover art on cards
+  // that have no single subject (homepage, catalog).
+  private popularCovers(limit: number): Promise<string[]> {
+    return this.games
+      .list({ page: 1, limit, sort: GameSort.POPULAR, dir: SortDir.DESC } as ListGamesDto)
+      .then((r) => r.data.map((g) => g.coverUrl).filter((c): c is string => !!c));
+  }
 
   private siteUrl(): string {
     return (this.config.get<string>('FRONTEND_URL') ?? 'https://localhost:8443').replace(/\/$/, '');
@@ -48,6 +59,36 @@ export class OgController {
   }
 
   // ---- Meta-tag documents ----
+
+  @Get('hub')
+  async hubMeta(@Res() res: Response) {
+    try {
+      const games = await this.prisma.game.count();
+      this.sendMeta(res, {
+        title: 'Saveboxd — Le Letterboxd du jeu vidéo',
+        description: `Synchronise tes bibliothèques Steam, PlayStation et Xbox, note tes jeux, débloque des succès et grimpe au classement global. ${games.toLocaleString('fr-FR')} jeux déjà au catalogue.`,
+        imageUrl: this.imageUrl('hub'),
+        canonicalUrl: this.siteUrl(),
+      });
+    } catch {
+      this.sendFallback(res);
+    }
+  }
+
+  @Get('catalog')
+  async catalogMeta(@Res() res: Response) {
+    try {
+      const total = await this.prisma.game.count();
+      this.sendMeta(res, {
+        title: `Catalogue — ${total.toLocaleString('fr-FR')} jeux · Saveboxd`,
+        description: 'Explore, note et critique des milliers de jeux sur Saveboxd.',
+        imageUrl: this.imageUrl('catalog'),
+        canonicalUrl: `${this.siteUrl()}/games`,
+      });
+    } catch {
+      this.sendFallback(res);
+    }
+  }
 
   @Get('game/:id')
   async gameMeta(
@@ -225,6 +266,35 @@ export class OgController {
         rank: profile.rank?.rank ?? null,
         topCovers: profile.topGames.map((t) => t.game.coverUrl).filter((c): c is string => !!c),
       });
+    });
+  }
+
+  @Get('image/hub')
+  async hubImage(@Res() res: Response) {
+    this.sendPng(res, 'hub', async () => {
+      const [games, reviews, players, covers] = await Promise.all([
+        this.prisma.game.count(),
+        this.prisma.review.count(),
+        this.prisma.user.count(),
+        this.popularCovers(6),
+      ]);
+      return hubCard({
+        title: 'Ta bibliothèque. Notée, critiquée, partagée.',
+        subtitle:
+          'Synchronise tes bibliothèques Steam, PlayStation et Xbox, note tes jeux, débloque des succès et grimpe au classement global.',
+        games,
+        reviews,
+        players,
+        covers,
+      });
+    });
+  }
+
+  @Get('image/catalog')
+  async catalogImage(@Res() res: Response) {
+    this.sendPng(res, 'catalog', async () => {
+      const [total, covers] = await Promise.all([this.prisma.game.count(), this.popularCovers(8)]);
+      return catalogCard({ total, covers });
     });
   }
 

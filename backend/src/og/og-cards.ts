@@ -21,6 +21,12 @@ const W = 1200;
 const H = 630;
 const PAD = 64;
 
+// Thousands separator as a plain space — NOT toLocaleString('fr-FR'), whose
+// narrow no-break space (U+202F) has no glyph in Sora and renders as tofu.
+function fmtCount(n: number): string {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
 // Deterministic pseudo hash -> hue, mirrors frontend/src/components/Avatar.tsx
 // hueFor() exactly so a fallback avatar here matches what the app itself shows.
 function hueFor(username: string): number {
@@ -443,6 +449,160 @@ function statChip(n: string, label: string): SatoriNode {
       'div',
       { style: { display: 'flex', fontSize: 14, color: INK_FAINT, textTransform: 'uppercase', letterSpacing: 1 } },
       label,
+    ),
+  ]);
+}
+
+// ---------- Hub card (homepage) ----------
+export function hubCard(input: {
+  title: string;
+  subtitle: string;
+  games: number;
+  reviews: number;
+  players: number;
+  covers: string[];
+}): SatoriNode {
+  const { title, subtitle, games, reviews, players, covers } = input;
+  return el('div', { style: { ...background(), flexDirection: 'column', justifyContent: 'space-between' } }, [
+    el('div', { style: { display: 'flex', flexDirection: 'column', gap: 18, width: 760 } }, [
+      el(
+        'div',
+        {
+          style: {
+            display: 'flex',
+            fontSize: 16,
+            fontWeight: 700,
+            letterSpacing: 2,
+            textTransform: 'uppercase',
+            color: ACCENT,
+          },
+        },
+        'Le Letterboxd du jeu vidéo',
+      ),
+      el(
+        'div',
+        {
+          style: {
+            display: 'flex',
+            fontSize: 52,
+            fontWeight: 800,
+            color: INK,
+            lineHeight: 1.15,
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          },
+        },
+        title,
+      ),
+      el(
+        'div',
+        {
+          style: {
+            display: 'flex',
+            fontSize: 21,
+            color: INK_DIM,
+            lineHeight: 1.4,
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          },
+        },
+        subtitle,
+      ),
+      el('div', { style: { display: 'flex', gap: 36, marginTop: 8 } }, [
+        statChip(fmtCount(games), 'jeux'),
+        statChip(fmtCount(reviews), 'critiques'),
+        statChip(fmtCount(players), 'joueurs'),
+      ]),
+    ]),
+    el('div', { style: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' } }, [
+      el(
+        'div',
+        { style: { display: 'flex', gap: 10 } },
+        covers.slice(0, 6).map((src) =>
+          el('img', {
+            src,
+            width: 84,
+            height: 118,
+            style: { borderRadius: 10, objectFit: 'cover', border: '1px solid rgba(244,241,234,0.15)' },
+          }),
+        ),
+      ),
+      wordmark(),
+    ]),
+  ]);
+}
+
+// ---------- Catalog card ----------
+export function catalogCard(input: { total: number; covers: string[] }): SatoriNode {
+  const { total, covers } = input;
+  const top = covers.slice(0, 4);
+  const bottom = covers.slice(4, 8);
+  const cell = (src: string) =>
+    el(
+      'div',
+      { style: { display: 'flex', flex: 1, overflow: 'hidden' } },
+      el('img', { src, style: { width: '100%', height: '100%', objectFit: 'cover' } }),
+    );
+  return el('div', { style: { display: 'flex', width: W, height: H, position: 'relative' } }, [
+    el(
+      'div',
+      { style: { display: 'flex', flexDirection: 'column', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } },
+      [
+        el('div', { style: { display: 'flex', flex: 1 } }, top.map(cell)),
+        el('div', { style: { display: 'flex', flex: 1 } }, bottom.map(cell)),
+      ],
+    ),
+    el('div', {
+      style: {
+        display: 'flex',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background:
+          'linear-gradient(180deg, rgba(12,12,14,0.2) 0%, rgba(12,12,14,0.55) 45%, rgba(12,12,14,0.95) 100%)',
+      },
+    }),
+    el(
+      'div',
+      {
+        style: {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: PAD,
+        },
+      },
+      [
+        el(
+          'div',
+          {
+            style: {
+              display: 'flex',
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: 2,
+              textTransform: 'uppercase',
+              color: ACCENT,
+            },
+          },
+          'Catalogue',
+        ),
+        el(
+          'div',
+          { style: { display: 'flex', fontSize: 50, fontWeight: 800, color: INK, marginTop: 8 } },
+          `${fmtCount(total)} jeux à explorer`,
+        ),
+        el('div', { style: { display: 'flex', marginTop: 22 } }, wordmark()),
+      ],
     ),
   ]);
 }
