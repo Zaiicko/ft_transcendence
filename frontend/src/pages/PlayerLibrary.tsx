@@ -67,16 +67,69 @@ function TrophyTally({ counts }: { counts: TrophyCounts }) {
   );
 }
 
+// Same crest as XboxLibrary.tsx's GamerscoreIcon — kept in sync by hand.
+function GamerscoreIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" className="stroke-current" strokeWidth="2" />
+      <path
+        d="M14.5 9.2A3.5 3.5 0 1 0 15 14h-3"
+        className="stroke-current"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// Same star as SteamLibrary.tsx's StarIcon — kept in sync by hand.
+function StarIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M12 2l2.9 6.26L21.5 9.2l-4.75 4.63L17.8 21 12 17.5 6.2 21l1.05-7.17L2.5 9.2l6.6-.94z" />
+    </svg>
+  );
+}
+
+// Per-platform detail shown under the progress line: PSN's trophy grades,
+// Xbox's Gamerscore, Steam's unlocked/total — each mirroring its owner-only
+// library page (PsnLibrary/XboxLibrary/SteamLibrary.tsx) so the numbers look
+// familiar wherever they're seen.
+type Detail =
+  | { kind: 'psn'; counts: TrophyCounts }
+  | { kind: 'xbox'; gamerscore: number; totalGamerscore: number }
+  | { kind: 'steam'; unlocked: number; total: number };
+
+function DetailRow({ detail }: { detail: Detail }) {
+  if (detail.kind === 'psn') return <TrophyTally counts={detail.counts} />;
+  if (detail.kind === 'xbox') {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs tabular-nums text-zinc-400">
+        <GamerscoreIcon className="h-3.5 w-3.5 text-[#107c10]" />
+        {detail.gamerscore.toLocaleString()}
+        <span className="text-zinc-600">/ {detail.totalGamerscore.toLocaleString()}</span>
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-xs tabular-nums text-zinc-400">
+      <StarIcon className={`h-3 w-3 ${detail.unlocked === detail.total ? 'text-amber-500' : 'text-zinc-400'}`} />
+      {detail.unlocked}/{detail.total}
+    </span>
+  );
+}
+
 // One catalog game as shown in the read-only grid, normalised from whichever
 // platform shape it came from (trophy grades / Gamerscore / Steam
-// achievements all reduce to a single progress line here — PSN additionally
-// keeps its trophy breakdown for the tally under the progress line).
+// achievements all reduce to a single progress line here, plus a per-platform
+// `detail` row underneath).
 interface Item {
   id: number;
   title: string;
   coverUrl: string | null;
   progress: string;
-  trophies?: TrophyCounts;
+  detail?: Detail;
 }
 
 interface PsnMatch {
@@ -89,7 +142,7 @@ interface XboxMatch {
   id: number;
   title: string;
   coverUrl: string | null;
-  achievements: { progress: number };
+  achievements: { earned: number; gamerscore: number; totalGamerscore: number; progress: number };
 }
 interface SteamMatch {
   id: number;
@@ -166,12 +219,18 @@ function PlatformPanel({ username, platform }: { username: string; platform: Pla
         title: p.title,
         coverUrl: p.coverUrl,
         progress: t('playerLibrary.progress', { count: p.trophies.progress }),
-        trophies: p.trophies.earned,
+        detail: { kind: 'psn', counts: p.trophies.earned },
       };
     }
     if (platform === 'xbox') {
       const x = m as XboxMatch;
-      return { id: x.id, title: x.title, coverUrl: x.coverUrl, progress: t('playerLibrary.progress', { count: x.achievements.progress }) };
+      return {
+        id: x.id,
+        title: x.title,
+        coverUrl: x.coverUrl,
+        progress: t('playerLibrary.progress', { count: x.achievements.progress }),
+        detail: { kind: 'xbox', gamerscore: x.achievements.gamerscore, totalGamerscore: x.achievements.totalGamerscore },
+      };
     }
     const s = m as SteamMatch;
     const pct = s.achievements && s.achievements.total > 0 ? Math.round((100 * s.achievements.unlocked) / s.achievements.total) : null;
@@ -180,6 +239,7 @@ function PlatformPanel({ username, platform }: { username: string; platform: Pla
       title: s.title,
       coverUrl: s.coverUrl,
       progress: pct === null ? t('playerLibrary.owned') : t('playerLibrary.progress', { count: pct }),
+      detail: s.achievements ? { kind: 'steam', unlocked: s.achievements.unlocked, total: s.achievements.total } : undefined,
     };
   });
 
@@ -208,12 +268,12 @@ function PlatformPanel({ username, platform }: { username: string; platform: Pla
               <div className="aspect-[3/4] w-full bg-zinc-800" />
             )}
             <p className="p-2 pb-0.5 text-sm font-medium leading-tight">{g.title}</p>
-            <p className={`px-2 pt-0.5 text-xs tabular-nums text-zinc-400 ${g.trophies ? '' : 'pb-2'}`}>
+            <p className={`px-2 pt-0.5 text-xs tabular-nums text-zinc-400 ${g.detail ? '' : 'pb-2'}`}>
               {g.progress}
             </p>
-            {g.trophies && (
+            {g.detail && (
               <div className="px-2 pb-2 pt-1">
-                <TrophyTally counts={g.trophies} />
+                <DetailRow detail={g.detail} />
               </div>
             )}
           </Link>
