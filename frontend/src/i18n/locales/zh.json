@@ -488,6 +488,7 @@
     "loading": "加载中…",
     "loadMore": "加载更多",
     "shareReview": "把这条评价分享给好友",
+    "copyLink": "复制这条评价的链接",
     "ratingLabel": "评分：",
     "ratingAria": "{{n}}/10",
     "titlePlaceholder": "评价标题",

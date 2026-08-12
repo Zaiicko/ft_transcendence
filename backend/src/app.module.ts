@@ -15,6 +15,7 @@ import { GamesModule } from './games/games.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ListsModule } from './lists/lists.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { OgModule } from './og/og.module';
 import { PresenceModule } from './presence/presence.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ReviewsModule } from './reviews/reviews.module';
@@ -55,6 +56,7 @@ import { UsersModule } from './users/users.module';
     CompletionsModule,
     LeaderboardModule,
     AchievementsModule,
+    OgModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

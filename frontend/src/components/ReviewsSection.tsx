@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SectionHead from './SectionHead';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import { emitCommentReaction } from '../games/commentBus';
@@ -12,7 +12,7 @@ import EmptyState, { PencilIcon } from './EmptyState';
 import FounderBadge from './FounderBadge';
 import LeaderboardRankBadge from './LeaderboardRankBadge';
 import Modal from './Modal';
-import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
+import { CheckIcon, CommentIcon, LinkIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import ReviewComments from './ReviewComments';
 import ShareButton from './ShareButton';
 import Stars from './Stars';
@@ -63,6 +63,14 @@ export default function ReviewsSection({
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
   const { hash } = useLocation();
+  const [searchParams] = useSearchParams();
+  // A review link shared outside the app (Discord, X, ...) uses ?review=<id>,
+  // not #review-<id>: fragments never reach the server, so they can't drive
+  // the Open Graph card for that specific review (see backend/src/og). Once
+  // the SPA takes over client-side, both forms point at the exact same
+  // pin-and-scroll behaviour below.
+  const reviewParam = searchParams.get('review');
+  const pinHash = hash.startsWith('#review') ? hash : reviewParam ? `#review-${reviewParam}` : '';
 
   const [reviews, setReviews] = useState<ReviewT[]>([]);
   const [sort, setSort] = useState<Sort>('popular');
@@ -79,6 +87,21 @@ export default function ReviewsSection({
   // The review form is collapsed by default, opened by a button.
   const [showForm, setShowForm] = useState(false);
   const reviewRef = useRef<HTMLElement>(null);
+
+  // Copy-link on a review: the only way to get a URL that identifies ONE
+  // review externally (?review=<id>, picked up by pinHash above) — needed
+  // for the Open Graph review card to have anything to point at.
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+  async function copyReviewLink(reviewId: number) {
+    const path = kind === 'game' ? `/game/${id}` : `/company/${id}`;
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}${path}?review=${reviewId}`);
+      setCopiedId(reviewId);
+      setTimeout(() => setCopiedId((cur) => (cur === reviewId ? null : cur)), 1500);
+    } catch {
+      // Clipboard permission denied/unavailable: no worse than not having the button.
+    }
+  }
 
   // Auto-translate reviews to the current language (batch on load). Local cache per (id, language). By default we SHOW the translation; `showOriginal` = reviews where "See original" was clicked. The button appears only if the translation differs from the original (else the review is already in your language).
   const [translations, setTranslations] = useState<Record<string, { title: string; text: string }>>(
@@ -174,7 +197,7 @@ export default function ReviewsSection({
   // Load / reload the first page (on mount, sort change, or arrival via a deep link).
   useEffect(() => {
     let cancelled = false;
-    const pinId = hash.startsWith('#review-') ? Number(hash.slice('#review-'.length)) : NaN;
+    const pinId = pinHash.startsWith('#review-') ? Number(pinHash.slice('#review-'.length)) : NaN;
     apiFetch<ReviewT[]>(`${base}/reviews?sort=${sort}&page=1&limit=${PAGE_SIZE}`)
       .then((list) => {
         if (cancelled) return;
@@ -200,19 +223,19 @@ export default function ReviewsSection({
     return () => {
       cancelled = true;
     };
-  }, [base, sort, hash, kind, id]);
+  }, [base, sort, pinHash, kind, id]);
 
-  // Arrival via a #review link (reviews block) or #review-<id> (a specific review, e.g. from the profile). We scroll once per hash, retrying when the list finishes loading (the anchor only exists then).
+  // Arrival via a #review link (reviews block), #review-<id> (a specific review, e.g. from the profile), or ?review=<id> (an externally-shared link, normalized to the same #review-<id> target above). We scroll once per hash, retrying when the list finishes loading (the anchor only exists then).
   const scrolledFor = useRef<string | null>(null);
   useEffect(() => {
-    if (!hash.startsWith('#review')) return;
-    if (scrolledFor.current === hash) return;
-    const el = document.getElementById(hash.slice(1));
-    const target = el ?? (hash === '#review' ? reviewRef.current : null);
+    if (!pinHash.startsWith('#review')) return;
+    if (scrolledFor.current === pinHash) return;
+    const el = document.getElementById(pinHash.slice(1));
+    const target = el ?? (pinHash === '#review' ? reviewRef.current : null);
     if (!target) return; // not mounted yet: retry on the next render
-    scrolledFor.current = hash;
-    target.scrollIntoView({ behavior: 'smooth', block: el && hash !== '#review' ? 'center' : 'start' });
-  }, [hash, reviews]);
+    scrolledFor.current = pinHash;
+    target.scrollIntoView({ behavior: 'smooth', block: el && pinHash !== '#review' ? 'center' : 'start' });
+  }, [pinHash, reviews]);
 
   // 👍/👎 exclusive and idempotent server-side (204, no payload). Optimistic patch BEFORE the await: otherwise the `review:reaction` socket event (absolute counter) arrives during the await and the patch stacks on it → double counting. The event then reconciles the counters to the server value.
   async function react(review: ReviewT, r: 'like' | 'dislike') {
@@ -489,6 +512,23 @@ export default function ReviewsSection({
                       title={t('reviews.shareReview')}
                       triggerClassName="inline-flex items-center justify-center rounded-full border border-zinc-400/60 px-2.5 py-1 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
                     />
+                    <button
+                      type="button"
+                      onClick={() => copyReviewLink(r.id)}
+                      title={t('reviews.copyLink')}
+                      aria-label={t('reviews.copyLink')}
+                      className={`inline-flex items-center justify-center rounded-full border px-2.5 py-1 transition ${
+                        copiedId === r.id
+                          ? 'border-accent text-accent'
+                          : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+                      }`}
+                    >
+                      {copiedId === r.id ? (
+                        <CheckIcon className="h-3.5 w-3.5" />
+                      ) : (
+                        <LinkIcon className="h-3.5 w-3.5" />
+                      )}
+                    </button>
                     <div className="ml-auto flex items-center gap-3 text-zinc-400 dark:text-zinc-500">
                       {user && r.user?.id === user.id && (
                         <>
