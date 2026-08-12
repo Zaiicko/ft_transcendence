@@ -161,6 +161,11 @@ interface PlatformResponse {
 // `embedded`: rendered inside the unified page (hides the h1); each panel
 // fetches its own read-only endpoint (cache only, no side effects — see
 // psn/xbox/steam controllers' `publicLibrary`) only once its tab is active.
+// Callers key this on `${username}-${platform}` so React remounts it (fresh
+// null state) instead of reusing the instance across a switch — reusing it
+// would render one frame with the OLD platform's data shape under the NEW
+// platform's field names (e.g. PSN's `.trophies` on Xbox's `.achievements`
+// data) and crash.
 function PlatformPanel({ username, platform }: { username: string; platform: PlatformKey }) {
   const { t } = useTranslation();
   const [data, setData] = useState<PlatformResponse | null>(null);
@@ -168,8 +173,6 @@ function PlatformPanel({ username, platform }: { username: string; platform: Pla
 
   useEffect(() => {
     let cancelled = false;
-    setData(null);
-    setError(null);
     apiFetch<PlatformResponse>(`/${platform}/library/${encodeURIComponent(username)}`)
       .then((d) => !cancelled && setData(d))
       .catch((err: unknown) => !cancelled && setError(err instanceof ApiError ? err.message : t('playerLibrary.loadError')));
@@ -382,7 +385,9 @@ export default function PlayerLibrary() {
             </div>
           )}
 
-          {active && <PlatformPanel key={active} username={profile.username} platform={active} />}
+          {active && (
+            <PlatformPanel key={`${profile.username}-${active}`} username={profile.username} platform={active} />
+          )}
         </>
       )}
     </div>
