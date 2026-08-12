@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SectionHead from './SectionHead';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import { emitCommentReaction } from '../games/commentBus';
@@ -58,11 +58,15 @@ export default function ReviewsSection({
 }) {
   const { kind, id } = target;
   const base = `/${kind === 'game' ? 'games' : 'companies'}/${id}`;
+  // The actual page route (singular), unlike the plural API base above —
+  // used for building/normalizing user-facing links (copy-link, address bar).
+  const pagePath = `/${kind === 'game' ? 'game' : 'company'}/${id}`;
 
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
   const { hash } = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   // A review link shared outside the app (Discord, X, ...) uses ?review=<id>,
   // not #review-<id>: fragments never reach the server, so they can't drive
@@ -93,9 +97,8 @@ export default function ReviewsSection({
   // for the Open Graph review card to have anything to point at.
   const [copiedId, setCopiedId] = useState<number | null>(null);
   async function copyReviewLink(reviewId: number) {
-    const path = kind === 'game' ? `/game/${id}` : `/company/${id}`;
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}${path}?review=${reviewId}`);
+      await navigator.clipboard.writeText(`${window.location.origin}${pagePath}?review=${reviewId}`);
       setCopiedId(reviewId);
       setTimeout(() => setCopiedId((cur) => (cur === reviewId ? null : cur)), 1500);
     } catch {
@@ -235,6 +238,15 @@ export default function ReviewsSection({
     if (!target) return; // not mounted yet: retry on the next render
     scrolledFor.current = pinHash;
     target.scrollIntoView({ behavior: 'smooth', block: el && pinHash !== '#review' ? 'center' : 'start' });
+    // Rewrite a raw #review-<id> hash (e.g. followed from the friend feed,
+    // or an old link) into the ?review=<id> form in the address bar itself —
+    // a fragment never reaches the server so it can never drive the Open
+    // Graph card, but a user who copies the URL bar after landing here has
+    // no way to know that. Skip when we already arrived via ?review=.
+    if (hash.startsWith('#review-') && !reviewParam) {
+      navigate(`${pagePath}?review=${hash.slice('#review-'.length)}`, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinHash, reviews]);
 
   // 👍/👎 exclusive and idempotent server-side (204, no payload). Optimistic patch BEFORE the await: otherwise the `review:reaction` socket event (absolute counter) arrives during the await and the patch stacks on it → double counting. The event then reconciles the counters to the server value.
