@@ -31,21 +31,59 @@ function BrandTile({ color, path }: { color: string; path: string }) {
   );
 }
 
+interface TrophyCounts {
+  bronze: number;
+  silver: number;
+  gold: number;
+  platinum: number;
+}
+
+// Same grades/colors as PsnLibrary.tsx — kept in sync by hand.
+const GRADES: { key: keyof TrophyCounts; color: string }[] = [
+  { key: 'platinum', color: '#8bb9e8' },
+  { key: 'gold', color: '#e6b53c' },
+  { key: 'silver', color: '#b9c2cc' },
+  { key: 'bronze', color: '#cd7f45' },
+];
+
+function TrophyIcon({ color, className = '' }: { color: string; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill={color} aria-hidden="true">
+      <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" />
+    </svg>
+  );
+}
+
+function TrophyTally({ counts }: { counts: TrophyCounts }) {
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      {GRADES.map(({ key, color }) => (
+        <span key={key} className="inline-flex items-center gap-0.5 text-[11px] tabular-nums">
+          <TrophyIcon color={color} className="h-3 w-3" />
+          {counts[key]}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 // One catalog game as shown in the read-only grid, normalised from whichever
 // platform shape it came from (trophy grades / Gamerscore / Steam
-// achievements all reduce to a single progress line here).
+// achievements all reduce to a single progress line here — PSN additionally
+// keeps its trophy breakdown for the tally under the progress line).
 interface Item {
   id: number;
   title: string;
   coverUrl: string | null;
   progress: string;
+  trophies?: TrophyCounts;
 }
 
 interface PsnMatch {
   id: number;
   title: string;
   coverUrl: string | null;
-  trophies: { progress: number };
+  trophies: { earned: TrophyCounts; progress: number };
 }
 interface XboxMatch {
   id: number;
@@ -123,7 +161,13 @@ function PlatformPanel({ username, platform }: { username: string; platform: Pla
   const items: Item[] = data.matched.map((m) => {
     if (platform === 'psn') {
       const p = m as PsnMatch;
-      return { id: p.id, title: p.title, coverUrl: p.coverUrl, progress: t('playerLibrary.progress', { count: p.trophies.progress }) };
+      return {
+        id: p.id,
+        title: p.title,
+        coverUrl: p.coverUrl,
+        progress: t('playerLibrary.progress', { count: p.trophies.progress }),
+        trophies: p.trophies.earned,
+      };
     }
     if (platform === 'xbox') {
       const x = m as XboxMatch;
@@ -164,7 +208,14 @@ function PlatformPanel({ username, platform }: { username: string; platform: Pla
               <div className="aspect-[3/4] w-full bg-zinc-800" />
             )}
             <p className="p-2 pb-0.5 text-sm font-medium leading-tight">{g.title}</p>
-            <p className="p-2 pt-0.5 text-xs tabular-nums text-zinc-400">{g.progress}</p>
+            <p className={`px-2 pt-0.5 text-xs tabular-nums text-zinc-400 ${g.trophies ? '' : 'pb-2'}`}>
+              {g.progress}
+            </p>
+            {g.trophies && (
+              <div className="px-2 pb-2 pt-1">
+                <TrophyTally counts={g.trophies} />
+              </div>
+            )}
           </Link>
         </li>
       ))}
