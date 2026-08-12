@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import EmptyState, { GamepadIcon } from '../components/EmptyState';
+import { apiFetch } from '../lib/api';
 import PsnLibrary from './PsnLibrary';
 import SteamLibrary from './SteamLibrary';
 import XboxLibrary from './XboxLibrary';
@@ -40,10 +42,25 @@ function BrandTile({ color, path }: { color: string; path: string }) {
 // Unified "My libraries" page: one tab per platform, only linked ones selectable.
 export default function Library() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [params, setParams] = useSearchParams();
+  const [visibilityBusy, setVisibilityBusy] = useState(false);
 
   if (!user) return null;
+
+  async function toggleVisibility() {
+    if (!user || visibilityBusy) return;
+    setVisibilityBusy(true);
+    try {
+      await apiFetch('/users/me/library-visibility', {
+        method: 'PATCH',
+        body: JSON.stringify({ public: !user.libraryPublic }),
+      });
+      await refreshUser();
+    } finally {
+      setVisibilityBusy(false);
+    }
+  }
 
   const platforms: Platform[] = [
     {
@@ -83,16 +100,43 @@ export default function Library() {
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
           <div className="absolute -left-12 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
         </div>
-        <div className="relative">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
-            <span className="text-accent">●</span> {t('library.eyebrow')}
+        <div className="relative flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+              <span className="text-accent">●</span> {t('library.eyebrow')}
+            </div>
+            <h1 className="font-display mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
+              {t('library.title')}
+            </h1>
+            <p className="mt-2 max-w-lg text-sm text-zinc-500 dark:text-zinc-400">
+              {t('library.subtitle')}
+            </p>
           </div>
-          <h1 className="font-display mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
-            {t('library.title')}
-          </h1>
-          <p className="mt-2 max-w-lg text-sm text-zinc-500 dark:text-zinc-400">
-            {t('library.subtitle')}
-          </p>
+          <div className="flex items-center gap-3 rounded-2xl border border-zinc-900/10 bg-white/60 px-4 py-3 dark:border-zinc-100/10 dark:bg-zinc-900/60">
+            <div className="min-w-0">
+              <p className="text-sm font-medium">{t('library.visibilityTitle')}</p>
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                {user.libraryPublic ? t('library.visibilityOnDesc') : t('library.visibilityOffDesc')}
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={user.libraryPublic}
+              aria-label={t('library.visibilityTitle')}
+              disabled={visibilityBusy}
+              onClick={toggleVisibility}
+              className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-50 ${
+                user.libraryPublic ? 'bg-accent' : 'bg-zinc-300 dark:bg-zinc-700'
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
+                  user.libraryPublic ? 'left-[1.375rem]' : 'left-0.5'
+                }`}
+              />
+            </button>
+          </div>
         </div>
       </header>
 

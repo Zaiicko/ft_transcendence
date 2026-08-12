@@ -97,6 +97,13 @@ model User {
   // view). Once fetched we store { syncedAt, titles: [...] } and only resync on
   // ?refresh=true. Cleared on (un)link. Counterpart of steamAchievements.
   xboxLibrary      Json?
+  // Whether OTHER users can view this account's linked libraries (the
+  // "View library" button on the public profile / GET .../library/:username
+  // endpoints). Never affects the owner's own view, nor the background
+  // completion sync — only what a visitor can see. Public by default: the
+  // underlying platform profile is public too (that's how we can read it at
+  // all), so this is an explicit opt-out, not an opt-in.
+  libraryPublic    Boolean      @default(true)
   twoFactorSecret  String?
   twoFactorEnabled Boolean      @default(false)
   language         String       @default("en")

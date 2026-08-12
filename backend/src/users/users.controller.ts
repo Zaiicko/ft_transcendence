@@ -31,6 +31,7 @@ import { MailerService } from '../mailer/mailer.service';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { AvatarFrameDto } from './dto/avatar-frame.dto';
+import { LibraryVisibilityDto } from './dto/library-visibility.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { toPublicUser, toPublicUserLite } from './public-user';
 import { UsersService } from './users.service';
@@ -112,6 +113,17 @@ export class UsersController {
       }
     }
     const updated = await this.usersService.update(current.sub, dto);
+    return toPublicUser(updated);
+  }
+
+  // Toggles whether other users can see this account's linked libraries (the
+  // "View library" button on the public profile). Never affects the owner's
+  // own view or the background completion sync — see PsnController /
+  // XboxController / SteamController `publicLibrary`.
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/library-visibility')
+  async setLibraryVisibility(@CurrentUser() current: JwtPayload, @Body() dto: LibraryVisibilityDto) {
+    const updated = await this.usersService.update(current.sub, { libraryPublic: dto.public });
     return toPublicUser(updated);
   }
 

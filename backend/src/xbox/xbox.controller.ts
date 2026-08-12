@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   NotFoundException,
+  Param,
   Post,
   Query,
   UnauthorizedException,
@@ -157,6 +158,47 @@ export class XboxController {
       unmatchedCount: titles.length - matched.length,
       summary,
       syncedAt,
+    };
+  }
+
+  // Read-only view of ANOTHER player's Xbox library, for the "view their
+  // library" button on a public profile. Cache only — never triggers a live
+  // OpenXBL fetch or the completions/achievements side effects, which stay
+  // owner-only (via the interactive sync above or the background cron in
+  // CompletionsService). `linked`/`synced` distinguish "no Xbox account" from
+  // "linked but nothing cached yet"; `hidden` when the owner opted out
+  // (libraryPublic) — bypassed when the viewer IS the owner. Mirrors
+  // PsnController.publicLibrary.
+  @Get('library/:username')
+  async publicLibrary(@CurrentUser() current: JwtPayload, @Param('username') username: string) {
+    const user = await this.users.findByUsername(username);
+    if (!user) throw new NotFoundException();
+    if (!user.xboxXuid) {
+      return { linked: false, synced: false, hidden: false, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
+    }
+    if (!user.libraryPublic && user.id !== current.sub) {
+      return { linked: true, synced: false, hidden: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
+    }
+    const cache = user.xboxLibrary as XboxCache | null;
+    if (!cache?.titles) {
+      return { linked: true, synced: false, hidden: false, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
+    }
+
+    const summary = {
+      gamerscore: cache.gamerscore ?? cache.titles.reduce((acc, t) => acc + t.currentGamerscore, 0),
+      games: cache.titles.length,
+      perfect: cache.titles.filter((t) => t.totalGamerscore > 0 && t.currentGamerscore === t.totalGamerscore).length,
+    };
+    const matched = await this.matchTitles(user.id, cache.titles);
+    return {
+      linked: true,
+      synced: true,
+      hidden: false,
+      totalPlayed: cache.titles.length,
+      matched,
+      unmatchedCount: cache.titles.length - matched.length,
+      summary,
+      syncedAt: cache.syncedAt,
     };
   }
 

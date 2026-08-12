@@ -8,6 +8,7 @@ import {
   HttpCode,
   Inject,
   NotFoundException,
+  Param,
   Post,
   Query,
   UnauthorizedException,
@@ -170,6 +171,42 @@ export class PsnController {
       unmatchedCount: titles.length - matched.length,
       summary,
       syncedAt,
+    };
+  }
+
+  // Read-only view of ANOTHER player's PSN library, for the "view their
+  // library" button on a public profile. Cache only — never triggers a live
+  // Sony fetch or the completions/achievements side effects, which stay
+  // owner-only (via the interactive sync above or the background cron in
+  // CompletionsService). `linked`/`synced` distinguish "no PSN account" from
+  // "linked but nothing cached yet"; `hidden` when the owner opted out
+  // (libraryPublic) — bypassed when the viewer IS the owner, so previewing
+  // your own page always works regardless of the setting.
+  @Get('library/:username')
+  async publicLibrary(@CurrentUser() current: JwtPayload, @Param('username') username: string) {
+    const target = await this.users.findByUsername(username);
+    if (!target) throw new NotFoundException();
+    if (!target.psnAccountId) {
+      return { linked: false, synced: false, hidden: false, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
+    }
+    if (!target.libraryPublic && target.id !== current.sub) {
+      return { linked: true, synced: false, hidden: true, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
+    }
+    const cache = target.psnLibrary as PsnCache | null;
+    if (!cache?.titles) {
+      return { linked: true, synced: false, hidden: false, totalPlayed: 0, matched: [], unmatchedCount: 0, summary: null, syncedAt: null };
+    }
+
+    const matched = await this.matchTitles(target.id, cache.titles);
+    return {
+      linked: true,
+      synced: true,
+      hidden: false,
+      totalPlayed: cache.titles.length,
+      matched,
+      unmatchedCount: cache.titles.length - matched.length,
+      summary: cache.summary,
+      syncedAt: cache.syncedAt,
     };
   }
 

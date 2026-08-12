@@ -542,6 +542,7 @@
     "couldNotLoad": "Nie udało się załadować profilu",
     "notFound": "Nie znaleziono profilu",
     "shareProfile": "Udostępnij ten profil znajomemu",
+    "viewLibrary": "Zobacz bibliotekę",
     "editProfile": "Edytuj profil",
     "topRated": "Najwyżej oceniane gry",
     "completionCalendar": "Kalendarz ukończeń",
@@ -1057,7 +1058,25 @@
     "eyebrow": "Twoje gry",
     "subtitle": "Twoje tytuły zaimportowane z połączonych kont.",
     "linked": "Połączone",
-    "link": "Połącz"
+    "link": "Połącz",
+    "visibilityTitle": "Widoczna dla innych",
+    "visibilityOnDesc": "Inni gracze mogą zobaczyć twoją bibliotekę z poziomu twojego profilu.",
+    "visibilityOffDesc": "Tylko ty widzisz swoją bibliotekę."
+  },
+  "playerLibrary": {
+    "title": "Biblioteka gracza {{username}}",
+    "hiddenTitle": "Prywatna biblioteka",
+    "hiddenDesc": "Ten gracz ustawił swoją bibliotekę jako prywatną.",
+    "backToProfile": "Powrót do profilu",
+    "notFound": "Nie znaleziono gracza",
+    "noneLinkedTitle": "Brak połączonego konta",
+    "notSyncedTitle": "Jeszcze nie zsynchronizowano",
+    "notSyncedDesc": "Ten gracz nie otworzył jeszcze swojej biblioteki na Saveboxd.",
+    "noneMatchedTitle": "Brak dopasowań w katalogu",
+    "noneMatchedDesc": "Żadna z gier tego gracza nie znajduje się jeszcze w naszym katalogu.",
+    "progress": "{{count}}%",
+    "owned": "Posiadana",
+    "loadError": "Nie udało się wczytać tej biblioteki"
   },
   "errors": {
     "notFound": {

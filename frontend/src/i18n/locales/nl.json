@@ -542,6 +542,7 @@
     "couldNotLoad": "Kon profiel niet laden",
     "notFound": "Profiel niet gevonden",
     "shareProfile": "Dit profiel met een vriend delen",
+    "viewLibrary": "Bibliotheek bekijken",
     "editProfile": "Profiel bewerken",
     "topRated": "Best beoordeelde games",
     "completionCalendar": "Voltooiingskalender",
@@ -1057,7 +1058,25 @@
     "eyebrow": "Jouw games",
     "subtitle": "Je titels geïmporteerd uit je gekoppelde accounts.",
     "linked": "Gekoppeld",
-    "link": "Koppelen"
+    "link": "Koppelen",
+    "visibilityTitle": "Zichtbaar voor anderen",
+    "visibilityOnDesc": "Andere spelers kunnen je bibliotheek bekijken via je profiel.",
+    "visibilityOffDesc": "Alleen jij kunt je bibliotheek zien."
+  },
+  "playerLibrary": {
+    "title": "Bibliotheek van {{username}}",
+    "hiddenTitle": "Privébibliotheek",
+    "hiddenDesc": "Deze speler heeft zijn bibliotheek privé gemaakt.",
+    "backToProfile": "Terug naar profiel",
+    "notFound": "Speler niet gevonden",
+    "noneLinkedTitle": "Geen account gekoppeld",
+    "notSyncedTitle": "Nog niet gesynchroniseerd",
+    "notSyncedDesc": "Deze speler heeft zijn bibliotheek nog niet geopend op Saveboxd.",
+    "noneMatchedTitle": "Geen overeenkomsten in de catalogus",
+    "noneMatchedDesc": "Geen van de spellen van deze speler staat al in onze catalogus.",
+    "progress": "{{count}}%",
+    "owned": "In bezit",
+    "loadError": "Kon deze bibliotheek niet laden"
   },
   "errors": {
     "notFound": {

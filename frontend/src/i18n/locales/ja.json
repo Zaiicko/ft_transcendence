@@ -542,6 +542,7 @@
     "couldNotLoad": "プロフィールを読み込めませんでした",
     "notFound": "プロフィールが見つかりません",
     "shareProfile": "このプロフィールを友達に共有",
+    "viewLibrary": "ライブラリを見る",
     "editProfile": "プロフィールを編集",
     "topRated": "高評価のゲーム",
     "completionCalendar": "クリアカレンダー",
@@ -1057,7 +1058,25 @@
     "eyebrow": "あなたのゲーム",
     "subtitle": "連携アカウントから取り込んだタイトル。",
     "linked": "連携済み",
-    "link": "連携"
+    "link": "連携",
+    "visibilityTitle": "他のユーザーに公開",
+    "visibilityOnDesc": "他のプレイヤーはあなたのプロフィールからライブラリを閲覧できます。",
+    "visibilityOffDesc": "ライブラリを見られるのはあなただけです。"
+  },
+  "playerLibrary": {
+    "title": "{{username}}のライブラリ",
+    "hiddenTitle": "非公開のライブラリ",
+    "hiddenDesc": "このプレイヤーはライブラリを非公開に設定しています。",
+    "backToProfile": "プロフィールに戻る",
+    "notFound": "プレイヤーが見つかりません",
+    "noneLinkedTitle": "連携済みのアカウントがありません",
+    "notSyncedTitle": "まだ同期されていません",
+    "notSyncedDesc": "このプレイヤーはまだSaveboxdでライブラリを開いていません。",
+    "noneMatchedTitle": "カタログに一致するものがありません",
+    "noneMatchedDesc": "このプレイヤーのゲームはまだカタログにありません。",
+    "progress": "{{count}}%",
+    "owned": "所有済み",
+    "loadError": "このライブラリを読み込めませんでした"
   },
   "errors": {
     "notFound": {

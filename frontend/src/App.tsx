@@ -17,6 +17,7 @@ const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const Login = lazy(() => import('./pages/Login'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
+const PlayerLibrary = lazy(() => import('./pages/PlayerLibrary'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const PublicProfile = lazy(() => import('./pages/PublicProfile'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
@@ -71,6 +72,7 @@ export default function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/library" element={<Library />} />
+              <Route path="/u/:username/library" element={<PlayerLibrary />} />
               <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />
               <Route path="/psn" element={<Navigate to="/library?platform=psn" replace />} />
             </Route>

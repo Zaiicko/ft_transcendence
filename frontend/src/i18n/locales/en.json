@@ -542,6 +542,7 @@
     "couldNotLoad": "Could not load profile",
     "notFound": "Profile not found",
     "shareProfile": "Share this profile with a friend",
+    "viewLibrary": "View library",
     "editProfile": "Edit profile",
     "topRated": "Top rated games",
     "completionCalendar": "Completion calendar",
@@ -1129,7 +1130,25 @@
     "eyebrow": "Your games",
     "subtitle": "Your titles imported from your linked accounts.",
     "linked": "Linked",
-    "link": "Link"
+    "link": "Link",
+    "visibilityTitle": "Visible to others",
+    "visibilityOnDesc": "Other players can view your library from your profile.",
+    "visibilityOffDesc": "Only you can see your library."
+  },
+  "playerLibrary": {
+    "title": "{{username}}'s library",
+    "hiddenTitle": "Private library",
+    "hiddenDesc": "This player has made their library private.",
+    "backToProfile": "Back to profile",
+    "notFound": "Player not found",
+    "noneLinkedTitle": "No linked account",
+    "notSyncedTitle": "Not synced yet",
+    "notSyncedDesc": "This player hasn't opened their library on Saveboxd yet.",
+    "noneMatchedTitle": "No matches in the catalog",
+    "noneMatchedDesc": "None of this player's games are in our catalog yet.",
+    "progress": "{{count}}%",
+    "owned": "Owned",
+    "loadError": "Could not load this library"
   },
   "errors": {
     "notFound": {

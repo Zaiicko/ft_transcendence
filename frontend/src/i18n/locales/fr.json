@@ -542,6 +542,7 @@
     "couldNotLoad": "Impossible de charger le profil",
     "notFound": "Profil introuvable",
     "shareProfile": "Partager ce profil à un ami",
+    "viewLibrary": "Voir la bibliothèque",
     "editProfile": "Modifier le profil",
     "topRated": "Jeux les mieux notés",
     "completionCalendar": "Calendrier de complétion",
@@ -1129,7 +1130,25 @@
     "eyebrow": "Tes jeux",
     "subtitle": "Tes titres importés depuis tes comptes liés.",
     "linked": "Lié",
-    "link": "Lier"
+    "link": "Lier",
+    "visibilityTitle": "Visible par les autres",
+    "visibilityOnDesc": "Les autres joueurs peuvent voir ta bibliothèque depuis ton profil.",
+    "visibilityOffDesc": "Toi seul peux voir ta bibliothèque."
+  },
+  "playerLibrary": {
+    "title": "Bibliothèque de {{username}}",
+    "hiddenTitle": "Bibliothèque privée",
+    "hiddenDesc": "Ce joueur a rendu sa bibliothèque privée.",
+    "backToProfile": "Retour au profil",
+    "notFound": "Joueur introuvable",
+    "noneLinkedTitle": "Aucun compte lié",
+    "notSyncedTitle": "Pas encore synchronisé",
+    "notSyncedDesc": "Ce joueur n'a pas encore ouvert sa bibliothèque sur Saveboxd.",
+    "noneMatchedTitle": "Aucune correspondance dans le catalogue",
+    "noneMatchedDesc": "Aucun des jeux de ce joueur n'est encore dans notre catalogue.",
+    "progress": "{{count}} %",
+    "owned": "Possédé",
+    "loadError": "Impossible de charger cette bibliothèque"
   },
   "errors": {
     "notFound": {

@@ -542,6 +542,7 @@
     "couldNotLoad": "无法加载主页",
     "notFound": "未找到主页",
     "shareProfile": "把这个主页分享给好友",
+    "viewLibrary": "查看游戏库",
     "editProfile": "编辑主页",
     "topRated": "评分最高的游戏",
     "completionCalendar": "通关日历",
@@ -1057,7 +1058,25 @@
     "eyebrow": "你的游戏",
     "subtitle": "从已关联账号导入的游戏。",
     "linked": "已关联",
-    "link": "关联"
+    "link": "关联",
+    "visibilityTitle": "对其他人可见",
+    "visibilityOnDesc": "其他玩家可以在你的主页查看你的游戏库。",
+    "visibilityOffDesc": "只有你自己能看到你的游戏库。"
+  },
+  "playerLibrary": {
+    "title": "{{username}} 的游戏库",
+    "hiddenTitle": "私密游戏库",
+    "hiddenDesc": "该玩家已将自己的游戏库设为私密。",
+    "backToProfile": "返回个人资料",
+    "notFound": "未找到该玩家",
+    "noneLinkedTitle": "未关联任何账号",
+    "notSyncedTitle": "尚未同步",
+    "notSyncedDesc": "该玩家尚未在 Saveboxd 上打开过自己的游戏库。",
+    "noneMatchedTitle": "目录中没有匹配的游戏",
+    "noneMatchedDesc": "该玩家的游戏目前均不在我们的目录中。",
+    "progress": "{{count}}%",
+    "owned": "已拥有",
+    "loadError": "无法加载该游戏库"
   },
   "errors": {
     "notFound": {

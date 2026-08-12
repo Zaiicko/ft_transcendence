@@ -377,6 +377,10 @@ export interface PublicUser {
   // Xbox linked via OpenXBL: the service key and XUID stay on the backend; only the linked state + gamertag are exposed. Mirror of psnLinked.
   xboxLinked: boolean;
   xboxGamertag: string | null;
+  // Whether other users can see this account's linked libraries via the
+  // "View library" button on the public profile. Never affects the owner's
+  // own view. Public by default (opt-out) — see backend/prisma/schema.prisma.
+  libraryPublic: boolean;
   hasPassword: boolean;
   // Onboarding wizard finished or explicitly skipped. While false, redirect to /welcome (see ProtectedRoute).
   onboarded: boolean;

@@ -4,6 +4,8 @@ import {
   forwardRef,
   Get,
   Inject,
+  NotFoundException,
+  Param,
   Query,
   UnauthorizedException,
   UseGuards,
@@ -165,6 +167,86 @@ export class SteamController {
       matched,
       unmatchedCount: owned.length - matched.length,
       achievements: summary,
+    };
+  }
+
+  // Read-only view of ANOTHER player's Steam library, for the "view their
+  // library" button on a public profile. The owned-games list has no cache
+  // anywhere in the app (see library() above), so this still makes ONE live
+  // Steam call for it — cheap, same call as any regular visit. What it does
+  // NOT do: fetch missing per-game achievements live (~1 Steam API call per
+  // game — fine for the account owner, far too heavy to trigger on every
+  // stranger's profile view). Games without a cached entry just show
+  // playtime, no achievement progress. No completions/achievements side
+  // effects either way — those stay owner-only. `hidden` when the owner
+  // opted out (libraryPublic) — bypassed when the viewer IS the owner.
+  @Get('library/:username')
+  async publicLibrary(@CurrentUser() current: JwtPayload, @Param('username') username: string) {
+    const user = await this.users.findByUsername(username);
+    if (!user) throw new NotFoundException();
+    if (!user.steamId) {
+      return { linked: false, synced: false, hidden: false, totalOwned: 0, matched: [], unmatchedCount: 0, achievements: null };
+    }
+    if (!user.libraryPublic && user.id !== current.sub) {
+      return { linked: true, synced: false, hidden: true, totalOwned: 0, matched: [], unmatchedCount: 0, achievements: null };
+    }
+
+    const owned = await this.webApi.getOwnedGames(user.steamId);
+    if (owned === null) {
+      return { linked: true, synced: false, hidden: false, totalOwned: 0, matched: [], unmatchedCount: 0, achievements: null };
+    }
+
+    const byAppId = new Map(owned.map((g) => [g.appid, g]));
+    const games = await this.prisma.game.findMany({
+      where: { steamAppId: { in: [...byAppId.keys()] } },
+      select: {
+        id: true,
+        title: true,
+        coverUrl: true,
+        gameType: true,
+        steamAppId: true,
+        playedBy: { where: { userId: user.id }, select: { status: true } },
+        reviews: { where: { userId: user.id }, select: { id: true }, take: 1 },
+      },
+    });
+
+    const cached = user.steamAchievements as
+      | { syncedAt: string; perGame: Record<string, [number, number, number]> }
+      | null;
+    const perGame = cached?.perGame ?? {};
+
+    const matched = games
+      .map(({ playedBy, reviews, ...game }) => {
+        const ach = game.steamAppId ? perGame[String(game.steamAppId)] : undefined;
+        return {
+          ...game,
+          playtimeMinutes: byAppId.get(game.steamAppId!)?.playtime_forever ?? 0,
+          playedStatus: playedBy[0]?.status ?? null,
+          reviewed: reviews.length > 0,
+          achievements: ach ? { unlocked: ach[0], total: ach[1] } : null,
+        };
+      })
+      .sort((a, b) => b.playtimeMinutes - a.playtimeMinutes);
+
+    const entries = Object.values(perGame);
+    const achievements = cached
+      ? {
+          unlocked: entries.reduce((n, [u]) => n + u, 0),
+          total: entries.reduce((n, [, t]) => n + t, 0),
+          games: entries.length,
+          perfect: entries.filter(([u, t]) => t > 0 && u === t).length,
+          syncedAt: cached.syncedAt,
+        }
+      : null;
+
+    return {
+      linked: true,
+      synced: true,
+      hidden: false,
+      totalOwned: owned.length,
+      matched,
+      unmatchedCount: owned.length - matched.length,
+      achievements,
     };
   }
 

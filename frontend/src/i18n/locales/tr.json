@@ -542,6 +542,7 @@
     "couldNotLoad": "Profil yüklenemedi",
     "notFound": "Profil bulunamadı",
     "shareProfile": "Bu profili bir arkadaşınla paylaş",
+    "viewLibrary": "Kütüphaneyi görüntüle",
     "editProfile": "Profili düzenle",
     "topRated": "En yüksek puanlı oyunlar",
     "completionCalendar": "Bitirme takvimi",
@@ -1057,7 +1058,25 @@
     "eyebrow": "Oyunların",
     "subtitle": "Bağlı hesaplarından içe aktarılan oyunların.",
     "linked": "Bağlı",
-    "link": "Bağla"
+    "link": "Bağla",
+    "visibilityTitle": "Diğerlerine görünür",
+    "visibilityOnDesc": "Diğer oyuncular profilinden kütüphaneni görebilir.",
+    "visibilityOffDesc": "Kütüphaneni yalnızca sen görebilirsin."
+  },
+  "playerLibrary": {
+    "title": "{{username}} kütüphanesi",
+    "hiddenTitle": "Gizli kütüphane",
+    "hiddenDesc": "Bu oyuncu kütüphanesini gizli yaptı.",
+    "backToProfile": "Profile dön",
+    "notFound": "Oyuncu bulunamadı",
+    "noneLinkedTitle": "Bağlı hesap yok",
+    "notSyncedTitle": "Henüz senkronize edilmedi",
+    "notSyncedDesc": "Bu oyuncu Saveboxd'de kütüphanesini henüz açmadı.",
+    "noneMatchedTitle": "Katalogda eşleşme yok",
+    "noneMatchedDesc": "Bu oyuncunun oyunlarından hiçbiri henüz katalogumuzda değil.",
+    "progress": "{{count}}%",
+    "owned": "Sahip olunan",
+    "loadError": "Bu kütüphane yüklenemedi"
   },
   "errors": {
     "notFound": {
