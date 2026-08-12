@@ -23,6 +23,7 @@ interface XboxGame {
   lastPlayed: string | null;
   playedStatus: string | null;
   reviewed: boolean;
+  completed: boolean;
 }
 
 interface XboxSummary {
@@ -92,15 +93,22 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
     }
   }
 
-  async function togglePlayed(game: XboxGame) {
-    const marked = game.playedStatus === 'PLAYED';
-    await apiFetch(`/games/${game.id}/played`, { method: marked ? 'DELETE' : 'PUT' });
+  // Same manual "Fait" toggle as the game page's PlayedButton (creates/removes
+  // a GameCompletion) — completing implies playing, so playedStatus follows.
+  async function toggleCompleted(game: XboxGame) {
+    const marked = game.completed;
+    await apiFetch(`/games/${game.id}/completed`, {
+      method: marked ? 'DELETE' : 'PUT',
+      ...(marked ? {} : { body: JSON.stringify({}) }),
+    });
     setLibrary((lib) =>
       lib
         ? {
             ...lib,
             matched: lib.matched.map((m) =>
-              m.id === game.id ? { ...m, playedStatus: marked ? null : 'PLAYED' } : m,
+              m.id === game.id
+                ? { ...m, completed: !marked, playedStatus: marked ? m.playedStatus : 'PLAYED' }
+                : m,
             ),
           }
         : lib,
@@ -248,11 +256,11 @@ export default function XboxLibrary({ embedded = false }: { embedded?: boolean }
                     <div className="mt-1 flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => togglePlayed(game)}
-                        title={game.playedStatus === 'PLAYED' ? t('game.markedTitle') : t('game.markTitle')}
-                        aria-label={game.playedStatus === 'PLAYED' ? t('game.unmarkAria') : t('game.markAria')}
+                        onClick={() => toggleCompleted(game)}
+                        title={game.completed ? t('game.markedTitle') : t('game.markTitle')}
+                        aria-label={game.completed ? t('game.unmarkAria') : t('game.markAria')}
                         className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
-                          game.playedStatus === 'PLAYED'
+                          game.completed
                             ? 'border-accent bg-accent text-zinc-950'
                             : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
                         }`}

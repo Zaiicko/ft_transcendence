@@ -235,9 +235,12 @@ export class XboxController {
       .map((n) => ({ game: gameByNorm.get(n), title: byNorm.get(n)! }))
       .filter((m): m is { game: (typeof rows)[number]; title: XboxTitle } => !!m.game);
 
-    // User state for these games (played / reviewed), in 2 batched queries
+    // User state for these games (played / reviewed / manually completed), in
+    // 3 batched queries. `completed` is the manual "Fait" toggle only — the
+    // same one as the game page's PlayedButton, so it means the same thing
+    // wherever it's clicked (Gamerscore/achievement progress still shown separately).
     const gameIds = matched.map((m) => m.game.id);
-    const [played, reviewed] = await Promise.all([
+    const [played, reviewed, completed] = await Promise.all([
       this.prisma.playedGame.findMany({
         where: { userId, gameId: { in: gameIds } },
         select: { gameId: true, status: true },
@@ -246,9 +249,14 @@ export class XboxController {
         where: { userId, gameId: { in: gameIds } },
         select: { gameId: true },
       }),
+      this.prisma.gameCompletion.findMany({
+        where: { userId, gameId: { in: gameIds }, platform: 'manual' },
+        select: { gameId: true },
+      }),
     ]);
     const playedBy = new Map(played.map((p) => [p.gameId, p]));
     const reviewedIds = new Set(reviewed.map((r) => r.gameId));
+    const completedIds = new Set(completed.map((c) => c.gameId));
 
     return matched
       .map(({ game, title }) => ({
@@ -267,6 +275,7 @@ export class XboxController {
         lastPlayed: title.lastPlayed,
         playedStatus: playedBy.get(game.id)?.status ?? null,
         reviewed: reviewedIds.has(game.id),
+        completed: completedIds.has(game.id),
       }))
       // most recently played first, then the furthest along
       .sort((a, b) => {

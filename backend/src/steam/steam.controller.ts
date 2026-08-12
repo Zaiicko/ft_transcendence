@@ -83,6 +83,13 @@ export class SteamController {
           select: { id: true },
           take: 1,
         },
+        // Manual "Fait" toggle — same one as the game page's PlayedButton, so
+        // it means the same thing wherever it's clicked (achievement % shown separately).
+        completions: {
+          where: { userId: current.sub, platform: 'manual' },
+          select: { id: true },
+          take: 1,
+        },
       },
     });
 
@@ -111,13 +118,14 @@ export class SteamController {
     }
 
     const matched = games
-      .map(({ playedBy, reviews, ...game }) => {
+      .map(({ playedBy, reviews, completions, ...game }) => {
         const ach = game.steamAppId ? perGame[String(game.steamAppId)] : undefined;
         return {
           ...game,
           playtimeMinutes: byAppId.get(game.steamAppId!)?.playtime_forever ?? 0,
           playedStatus: playedBy[0]?.status ?? null,
           reviewed: reviews.length > 0,
+          completed: completions.length > 0,
           achievements: ach ? { unlocked: ach[0], total: ach[1] } : null,
         };
       })
