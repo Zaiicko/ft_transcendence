@@ -51,13 +51,15 @@ const reviewTargetSelect = {
 export type FeedActor = { id: number; username: string; avatarUrl: string | null };
 
 // Optional feed filter (tabs at the top of the page). Absent = everything.
-export type FeedFilter = 'reviews' | 'played' | 'completed' | 'likes' | 'achievements';
+export type FeedFilter = 'reviews' | 'completed' | 'likes' | 'achievements';
 
 // One feed event. `at` drives both the chronological sort and the "load more"
 // cursor. `id` is prefixed per type so the front can dedupe real-time pushes.
+// No standalone "played" kind: marking a game played only ever surfaces here
+// through a review or a completion (manual "Fait" / platform 100%) — see
+// onGameCompleted below.
 export type FeedItem =
   | { id: string; kind: 'review'; at: string; review: unknown }
-  | { id: string; kind: 'played'; at: string; actor: FeedActor; game: unknown }
   | { id: string; kind: 'completed'; at: string; actor: FeedActor; game: unknown; platform: string }
   | { id: string; kind: 'review-like'; at: string; actor: FeedActor; review: unknown }
   | { id: string; kind: 'comment-like'; at: string; actor: FeedActor; comment: unknown }
@@ -108,7 +110,7 @@ export class FeedService {
   }
 
   // Cursor-paginated feed (ISO timestamp): items strictly older than `cursor`.
-  // Merges friends' reviews, played games and likes. `filter` narrows the
+  // Merges friends' reviews, completions and likes. `filter` narrows the
   // sources so pagination stays correct per tab.
   async getFeed(
     viewerId: number,
@@ -124,7 +126,6 @@ export class FeedService {
     const olderThan = before ? { createdAt: { lt: before } } : {};
     const take = limit + 1; // +1 per source to detect whether more remain
     const wantReviews = !filter || filter === 'reviews';
-    const wantPlayed = !filter || filter === 'played';
     const wantCompleted = !filter || filter === 'completed';
     const wantLikes = !filter || filter === 'likes';
     // Rank milestones: "all" tab only.
@@ -133,7 +134,7 @@ export class FeedService {
     const wantAchievement = !filter || filter === 'achievements';
 
     // Over-sample every requested source, then merge, sort and truncate.
-    const [reviews, playedRaw, completions, reviewLikes, commentLikes, milestones, achievements] =
+    const [reviews, completions, reviewLikes, commentLikes, milestones, achievements] =
       await Promise.all([
       wantReviews
         ? this.prisma.review.findMany({
@@ -141,21 +142,6 @@ export class FeedService {
             orderBy: { createdAt: 'desc' },
             take,
             select: reviewSelect,
-          })
-        : [],
-      wantPlayed
-        ? this.prisma.playedGame.findMany({
-            where: { userId: { in: friends }, status: PlayStatus.PLAYED, ...olderThan },
-            orderBy: { createdAt: 'desc' },
-            take,
-            select: {
-              id: true,
-              createdAt: true,
-              gameId: true,
-              userId: true,
-              user: { select: actorSelect },
-              game: { select: gameSelect },
-            },
           })
         : [],
       wantCompleted
@@ -243,13 +229,8 @@ export class FeedService {
         : [],
     ]);
 
-    // A played game the user also reviewed is hidden: the richer review card
-    // already stands for it.
-    const played = await this.dedupePlayed(playedRaw);
-
     const items: FeedItem[] = [
       ...reviews.map((r) => this.reviewItem(r)),
-      ...played.map((p) => this.playedItem(p)),
       ...completions.map((c) => this.completedItem(c)),
       ...reviewLikes.map((l) => this.reviewLikeItem(l)),
       ...commentLikes.map((l) => this.commentLikeItem(l)),
@@ -266,40 +247,10 @@ export class FeedService {
     return { items: page, nextCursor };
   }
 
-  private async dedupePlayed<T extends { userId: number; gameId: number }>(
-    rows: T[],
-  ): Promise<T[]> {
-    if (rows.length === 0) return rows;
-    const reviewed = await this.prisma.review.findMany({
-      where: {
-        userId: { in: rows.map((r) => r.userId) },
-        gameId: { in: rows.map((r) => r.gameId) },
-      },
-      select: { userId: true, gameId: true },
-    });
-    const seen = new Set(reviewed.map((r) => `${r.userId}:${r.gameId}`));
-    return rows.filter((r) => !seen.has(`${r.userId}:${r.gameId}`));
-  }
-
   // ---- Item builders (shared by getFeed and the real-time push) ----
 
   private reviewItem(r: { id: number; createdAt: Date }): FeedItem {
     return { id: `review-${r.id}`, kind: 'review', at: r.createdAt.toISOString(), review: r };
-  }
-
-  private playedItem(p: {
-    id: number;
-    createdAt: Date;
-    user: FeedActor;
-    game: unknown;
-  }): FeedItem {
-    return {
-      id: `played-${p.id}`,
-      kind: 'played',
-      at: p.createdAt.toISOString(),
-      actor: p.user,
-      game: p.game,
-    };
   }
 
   private completedItem(c: {
@@ -381,26 +332,6 @@ export class FeedService {
       await this.onRankAction(review.user.id, 'reviews');
     } catch (err) {
       this.logger.warn(`onReviewCreated failed: ${(err as Error).message}`);
-    }
-  }
-
-  // New "played" game (explicit button). No card when the user already reviewed
-  // it — the review stands for it.
-  async onGamePlayed(userId: number, gameId: number): Promise<void> {
-    try {
-      const hasReview = await this.prisma.review.findFirst({
-        where: { userId, gameId },
-        select: { id: true },
-      });
-      if (hasReview) return;
-      const row = await this.prisma.playedGame.findUnique({
-        where: { userId_gameId: { userId, gameId } },
-        select: { id: true, createdAt: true, user: { select: actorSelect }, game: { select: gameSelect } },
-      });
-      if (!row?.user) return;
-      await this.broadcast(row.user.id, this.playedItem(row));
-    } catch (err) {
-      this.logger.warn(`onGamePlayed failed: ${(err as Error).message}`);
     }
   }
 
@@ -524,7 +455,7 @@ export class FeedService {
   }
 
   // Manual completion ("Finished" button on the game page): real-time card in
-  // friends' feeds plus a rank milestone. Mirrors onGamePlayed.
+  // friends' feeds plus a rank milestone.
   async onGameCompleted(userId: number, gameId: number): Promise<void> {
     try {
       // Manual mark is never a verified platform, so it only counts toward

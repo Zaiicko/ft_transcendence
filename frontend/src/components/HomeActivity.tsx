@@ -36,6 +36,13 @@ const RANK_METRIC_LABEL: Record<string, string> = {
   reviews: 'leaderboard.metricReviews',
 };
 
+// A verified platform 100% (real achievement/trophy data) vs 'manual' or
+// '<platform>_estimated' (playtime guess) — same allow-list as FriendFeed.tsx
+// and the backend's VERIFIED_COMPLETION_PLATFORMS, kept in sync by hand.
+function isVerifiedPlatform(platform: string): boolean {
+  return platform === 'steam' || platform === 'xbox' || platform === 'psn';
+}
+
 // A review's target (game or studio) → label + deep link.
 function reviewTarget(
   game: { id: number; title: string } | null,
@@ -138,27 +145,13 @@ function Row({ item }: { item: FeedItem }) {
         </Link>
       );
     }
-    case 'played':
-      return (
-        <Link to={gameHref(item.game.id)} className={rowClass}>
-          <Dot tone="emerald" />
-          {line(
-            <Trans
-              i18nKey="feed.played"
-              values={{ user: item.actor.username, game: item.game.title }}
-              components={{ a: <span className={strong} />, s: <span className={strong} /> }}
-            />,
-            item.at,
-          )}
-        </Link>
-      );
     case 'completed':
       return (
         <Link to={gameHref(item.game.id)} className={rowClass}>
           <Dot tone="emerald" />
           {line(
             <Trans
-              i18nKey="feed.completed"
+              i18nKey={isVerifiedPlatform(item.platform) ? 'feed.completed' : 'feed.done'}
               values={{ user: item.actor.username, game: item.game.title }}
               components={{ a: <span className={strong} />, s: <span className={strong} /> }}
             />,

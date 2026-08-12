@@ -327,9 +327,6 @@ export class GamesService {
           : { source: null },
       create: { userId, gameId, status: PlayStatus.PLAYED, playedAt: when, source: null },
     });
-    // Fresh transition to played -> push to friends' feed (best-effort; the
-    // service skips it when a review already exists)
-    if (current?.status !== PlayStatus.PLAYED) void this.feed.onGamePlayed(userId, gameId);
     return { status: row.status, playedAt: row.playedAt };
   }
 
@@ -383,11 +380,8 @@ export class GamesService {
       update: completedAt ? { completedAt: when } : {},
       create: { userId, gameId, platform: 'manual', completedAt: when },
     });
-    // New completion -> feed (plus "played" if it wasn't marked yet)
-    if (!before) {
-      if (current?.status !== PlayStatus.PLAYED) void this.feed.onGamePlayed(userId, gameId);
-      void this.feed.onGameCompleted(userId, gameId);
-    }
+    // New completion -> feed
+    if (!before) void this.feed.onGameCompleted(userId, gameId);
     // Achievements: a manual completion feeds the completions / genres families.
     void this.achievements.evaluate(userId, ['completions', 'genres']);
     return { completedByMe: true };

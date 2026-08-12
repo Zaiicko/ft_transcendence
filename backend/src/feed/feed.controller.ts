@@ -4,14 +4,14 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtPayload } from '../auth/auth.service';
 import { FeedFilter, FeedService } from './feed.service';
 
-const FILTERS: FeedFilter[] = ['reviews', 'played', 'completed', 'likes', 'achievements'];
+const FILTERS: FeedFilter[] = ['reviews', 'completed', 'likes', 'achievements'];
 
 @UseGuards(JwtAuthGuard)
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feed: FeedService) {}
 
-  // Friends' activity feed (reviews, played games, likes), cursor-paginated.
+  // Friends' activity feed (reviews, completions, likes), cursor-paginated.
   // The optional `type` narrows it to one tab.
   @Get()
   getFeed(

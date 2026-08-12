@@ -29,6 +29,13 @@ const PLATFORM_LABEL: Record<string, string> = {
   psn: 'PlayStation',
 };
 
+// A verified platform 100% (real achievement/trophy data) vs 'manual' or
+// '<platform>_estimated' (playtime guess) — same allow-list as the backend's
+// VERIFIED_COMPLETION_PLATFORMS, kept in sync by hand.
+function isVerifiedPlatform(platform: string): boolean {
+  return platform === 'steam' || platform === 'xbox' || platform === 'psn';
+}
+
 // Bold reused in the <Trans> sentences (actor name / highlighted target).
 const strongClass = 'font-semibold text-zinc-900 dark:text-zinc-100';
 
@@ -47,12 +54,11 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString(i18n.language);
 }
 
-type Filter = 'all' | 'reviews' | 'played' | 'completed' | 'likes' | 'achievements';
+type Filter = 'all' | 'reviews' | 'completed' | 'likes' | 'achievements';
 
 const TAB_KEYS: { key: Filter; labelKey: string }[] = [
   { key: 'all', labelKey: 'feed.tabAll' },
   { key: 'reviews', labelKey: 'feed.tabReviews' },
-  { key: 'played', labelKey: 'feed.tabPlayed' },
   { key: 'completed', labelKey: 'feed.tabCompleted' },
   { key: 'likes', labelKey: 'feed.tabLikes' },
   { key: 'achievements', labelKey: 'feed.tabAchievements' },
@@ -62,7 +68,6 @@ const TAB_KEYS: { key: Filter; labelKey: string }[] = [
 function inFilter(kind: FeedItem['kind'], filter: Filter): boolean {
   if (filter === 'all') return true;
   if (filter === 'reviews') return kind === 'review';
-  if (filter === 'played') return kind === 'played';
   if (filter === 'completed') return kind === 'completed';
   if (filter === 'achievements') return kind === 'achievement';
   return kind === 'review-like' || kind === 'comment-like';
@@ -204,8 +209,6 @@ function renderItem(item: FeedItem): ReactNode {
   switch (item.kind) {
     case 'review':
       return <ReviewItem item={item} />;
-    case 'played':
-      return <PlayedItem item={item} />;
     case 'completed':
       return <CompletedItem item={item} />;
     case 'review-like':
@@ -222,7 +225,6 @@ function renderItem(item: FeedItem): ReactNode {
 // Timeline node per event type: a bordered circle (color = action direction) on the line, with a small outline icon at the center.
 const NODE: Record<FeedItem['kind'], { ring: string; icon: ReactNode }> = {
   review: { ring: 'border-accent text-accent', icon: <NodePencil /> },
-  played: { ring: 'border-zinc-300 text-zinc-400 dark:border-zinc-700', icon: <NodePlay /> },
   // `completed` is resolved by nodeFor (manual vs platform); value here = fallback.
   completed: { ring: 'border-accent text-accent', icon: <NodeCheck /> },
   'review-like': { ring: 'border-accent text-accent', icon: <NodeHeart /> },
@@ -234,9 +236,9 @@ const NODE: Record<FeedItem['kind'], { ring: string; icon: ReactNode }> = {
 // Actual node of an item: the manual "done" (amber check) and the real platform 100% (green trophy) share the `completed` type but differ here.
 function nodeFor(item: FeedItem): { ring: string; icon: ReactNode } {
   if (item.kind === 'completed') {
-    return item.platform === 'manual'
-      ? { ring: 'border-accent text-accent', icon: <NodeCheck /> }
-      : { ring: 'border-green-500/60 text-green-600 dark:text-green-500', icon: <NodeTrophy /> };
+    return isVerifiedPlatform(item.platform)
+      ? { ring: 'border-green-500/60 text-green-600 dark:text-green-500', icon: <NodeTrophy /> }
+      : { ring: 'border-accent text-accent', icon: <NodeCheck /> };
   }
   return NODE[item.kind];
 }
@@ -262,13 +264,6 @@ function NodePencil() {
   return (
     <svg viewBox="0 0 24 24" className={nodeSvg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
-    </svg>
-  );
-}
-function NodePlay() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden="true">
-      <path d="M6 4l14 8-14 8z" />
     </svg>
   );
 }
@@ -345,25 +340,6 @@ function ReviewItem({ item }: { item: Extract<FeedItem, { kind: 'review' }> }) {
           </span>
         </div>
       </div>
-    </Link>
-  );
-}
-
-function PlayedItem({ item }: { item: Extract<FeedItem, { kind: 'played' }> }) {
-  return (
-    <Link
-      to={gameHref(item.game.id)}
-      className="card flex items-center gap-3 p-4 transition hover:border-zinc-400 dark:hover:border-zinc-600"
-    >
-      {item.game.coverUrl && (
-        <img src={item.game.coverUrl} alt="" className="h-16 w-11 shrink-0 rounded object-cover" />
-      )}
-      <div className="min-w-0 flex-1">
-        <ActorLine actor={item.actor} at={item.at} action="played" strong={item.game.title} />
-      </div>
-      <span className="shrink-0 text-zinc-400" title={i18n.t('feed.gameCompleted')}>
-        <CheckIcon />
-      </span>
     </Link>
   );
 }
@@ -478,10 +454,9 @@ function HeartIcon() {
   );
 }
 
-// Label "X rated / played / completed <target>". The action and word order come from the key (feed.rated / feed.played / feed.completed).
-const ACTION_KEY: Record<'rated' | 'played' | 'completed' | 'done', string> = {
+// Label "X rated / completed <target>". The action and word order come from the key (feed.rated / feed.completed / feed.done).
+const ACTION_KEY: Record<'rated' | 'completed' | 'done', string> = {
   rated: 'feed.rated',
-  played: 'feed.played',
   completed: 'feed.completed',
   done: 'feed.done',
 };
@@ -494,7 +469,7 @@ function ActorLine({
 }: {
   actor: { username: string; avatarUrl: string | null } | null;
   at: string;
-  action: 'rated' | 'played' | 'completed' | 'done';
+  action: 'rated' | 'completed' | 'done';
   strong: string;
 }) {
   const { t } = useTranslation();
@@ -539,10 +514,10 @@ function PlatformMark({ platform }: { platform: string }) {
 }
 
 // Two distinct cases under the same `completed` type:
-//   • manual (platform 'manual') = game marked "done" by hand → "finished", a plain check (NOT "100%", which only applies to platforms).
-//   • platform (steam/xbox/psn) = real 100% → "completed 100%" + trophy.
+//   • not verified ('manual' or a platform's '*_estimated' guess) = "Fait" → a plain check (NOT "100%", which only applies to a real verified platform read).
+//   • verified (steam/xbox/psn, real achievement/trophy data) = "completed 100%" + trophy.
 function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }> }) {
-  const manual = item.platform === 'manual';
+  const verified = isVerifiedPlatform(item.platform);
   return (
     <Link
       to={gameHref(item.game.id)}
@@ -555,23 +530,23 @@ function CompletedItem({ item }: { item: Extract<FeedItem, { kind: 'completed' }
         <ActorLine
           actor={item.actor}
           at={item.at}
-          action={manual ? 'done' : 'completed'}
+          action={verified ? 'completed' : 'done'}
           strong={item.game.title}
         />
-        {!manual && (
+        {verified && (
           <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             <PlatformMark platform={item.platform} />
             <span>{PLATFORM_LABEL[item.platform] ?? item.platform}</span>
           </div>
         )}
       </div>
-      {manual ? (
-        <span className="shrink-0 text-zinc-400" title={i18n.t('feed.gameCompleted')}>
-          <CheckIcon />
-        </span>
-      ) : (
+      {verified ? (
         <span className="shrink-0 text-amber-500" title={i18n.t('feed.completedBadge')}>
           <TrophyIcon />
+        </span>
+      ) : (
+        <span className="shrink-0 text-zinc-400" title={i18n.t('feed.gameCompleted')}>
+          <CheckIcon />
         </span>
       )}
     </Link>
