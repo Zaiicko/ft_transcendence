@@ -318,10 +318,9 @@ export type FriendState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 
 export type GameRef = { id: number; title: string; coverUrl: string | null };
 
-// GET /users/profile/:username/played — every game the user has logged
+// GET /users/profile/:username/played — every game this user has completed
 export interface ProfilePlayedGame {
-  playedAt: string | null;
-  status: 'PLAYED' | 'PLAYING' | 'BACKLOG';
+  playedAt: string;
   game: GameRef;
 }
 

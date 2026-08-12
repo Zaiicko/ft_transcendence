@@ -733,7 +733,7 @@ export default function PublicProfile() {
   const tabs: { key: ProfileTab; label: string; n?: number }[] = [
     { key: 'overview', label: t('profile.tabOverview') },
     { key: 'reviews', label: t('profile.tabReviews'), n: profile.reviewCount },
-    { key: 'games', label: t('profile.tabGames'), n: profile.completions.length + profile.perfectGames.length },
+    { key: 'games', label: t('profile.tabGames'), n: profile.completions.length },
     { key: 'lists', label: t('profile.tabLists'), n: profile.listCount },
   ];
 

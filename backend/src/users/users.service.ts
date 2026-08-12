@@ -391,20 +391,23 @@ export class UsersService {
     return { rank: (above[0]?.above ?? 0) + 1 };
   }
 
-  // Full list of games this user has logged (any status), newest-played first
-  // (undated entries last). Backs the "games played" modal on the profile —
-  // the profile payload itself only carries the dated subset (calendar).
+  // Full list of games this user has COMPLETED (hand-marked or 100% on a
+  // linked platform), newest-completed first. Backs the "Jeux" tab on the
+  // profile — matches its "Terminé"/"Parfait" stat cards and badge count
+  // (both built from GameCompletion, see getPublicProfile above), not the
+  // broader played/playing/backlog library.
   async playedGamesOf(username: string) {
     const user = await this.prisma.user.findUnique({
       where: { usernameLower: username.toLowerCase() },
       select: { id: true },
     });
     if (!user) return null;
-    return this.prisma.playedGame.findMany({
+    const rows = await this.prisma.gameCompletion.findMany({
       where: { userId: user.id },
-      orderBy: [{ playedAt: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }],
-      select: { playedAt: true, status: true, game: gameRef },
+      orderBy: { completedAt: 'desc' },
+      select: { completedAt: true, game: gameRef },
     });
+    return dedupeByGame(rows.map((r) => ({ playedAt: r.completedAt, game: r.game })));
   }
 
   private async friendState(ownerId: number, viewerId?: number): Promise<FriendState> {
