@@ -488,6 +488,7 @@
     "loading": "Загрузка…",
     "loadMore": "Загрузить ещё",
     "shareReview": "Поделиться обзором с другом",
+    "copyLink": "Скопировать ссылку на этот обзор",
     "ratingLabel": "Оценка:",
     "ratingAria": "{{n}}/10",
     "titlePlaceholder": "Заголовок обзора",

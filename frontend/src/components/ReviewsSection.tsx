@@ -12,7 +12,7 @@ import EmptyState, { PencilIcon } from './EmptyState';
 import FounderBadge from './FounderBadge';
 import LeaderboardRankBadge from './LeaderboardRankBadge';
 import Modal from './Modal';
-import { CommentIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
+import { CheckIcon, CommentIcon, LinkIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
 import ReviewComments from './ReviewComments';
 import ShareButton from './ShareButton';
 import Stars from './Stars';
@@ -91,6 +91,20 @@ export default function ReviewsSection({
   // The review form is collapsed by default, opened by a button.
   const [showForm, setShowForm] = useState(false);
   const reviewRef = useRef<HTMLElement>(null);
+
+  // Copy-link on a review: the only way to get a URL that identifies ONE
+  // review externally (?review=<id>, picked up by pinHash above) — needed
+  // for the Open Graph review card to have anything to point at.
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+  async function copyReviewLink(reviewId: number) {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}${pagePath}?review=${reviewId}`);
+      setCopiedId(reviewId);
+      setTimeout(() => setCopiedId((cur) => (cur === reviewId ? null : cur)), 1500);
+    } catch {
+      // Clipboard permission denied/unavailable: no worse than not having the button.
+    }
+  }
 
   // Auto-translate reviews to the current language (batch on load). Local cache per (id, language). By default we SHOW the translation; `showOriginal` = reviews where "See original" was clicked. The button appears only if the translation differs from the original (else the review is already in your language).
   const [translations, setTranslations] = useState<Record<string, { title: string; text: string }>>(
@@ -510,6 +524,23 @@ export default function ReviewsSection({
                       title={t('reviews.shareReview')}
                       triggerClassName="inline-flex items-center justify-center rounded-full border border-zinc-400/60 px-2.5 py-1 text-zinc-500 transition hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400"
                     />
+                    <button
+                      type="button"
+                      onClick={() => copyReviewLink(r.id)}
+                      title={t('reviews.copyLink')}
+                      aria-label={t('reviews.copyLink')}
+                      className={`inline-flex items-center justify-center rounded-full border px-2.5 py-1 transition ${
+                        copiedId === r.id
+                          ? 'border-accent text-accent'
+                          : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+                      }`}
+                    >
+                      {copiedId === r.id ? (
+                        <CheckIcon className="h-3.5 w-3.5" />
+                      ) : (
+                        <LinkIcon className="h-3.5 w-3.5" />
+                      )}
+                    </button>
                     <div className="ml-auto flex items-center gap-3 text-zinc-400 dark:text-zinc-500">
                       {user && r.user?.id === user.id && (
                         <>

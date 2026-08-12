@@ -488,6 +488,7 @@
     "loading": "Cargando…",
     "loadMore": "Cargar más",
     "shareReview": "Compartir esta reseña con un amigo",
+    "copyLink": "Copiar enlace a esta reseña",
     "ratingLabel": "Nota:",
     "ratingAria": "{{n}}/10",
     "titlePlaceholder": "Título de tu reseña",

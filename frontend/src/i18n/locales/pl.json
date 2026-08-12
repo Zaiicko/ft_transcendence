@@ -488,6 +488,7 @@
     "loading": "Ładowanie…",
     "loadMore": "Załaduj więcej",
     "shareReview": "Udostępnij tę recenzję znajomemu",
+    "copyLink": "Skopiuj link do tej recenzji",
     "ratingLabel": "Ocena:",
     "ratingAria": "{{n}}/10",
     "titlePlaceholder": "Tytuł recenzji",
