@@ -205,6 +205,29 @@ export class AchievementsService implements OnModuleInit {
     }
   }
 
+  // Drops any unlocked tier that no longer holds once its metric drops back
+  // below the threshold — used when unlinking a platform (Steam/Xbox/PSN)
+  // deletes the GameCompletion rows or clears the linked-account field that
+  // had earned it. Unlike evaluate(), this can only remove rows, never add.
+  async revoke(userId: number, families: AchievementFamily[]): Promise<void> {
+    try {
+      const defs = ALL_ACHIEVEMENTS.filter((a) => families.includes(a.family));
+      if (defs.length === 0) return;
+
+      const values = new Map<AchievementFamily, number>();
+      await Promise.all(families.map(async (f) => values.set(f, await this.metric(userId, f))));
+
+      const stale = defs.filter((d) => (values.get(d.family) ?? 0) < d.threshold);
+      if (stale.length === 0) return;
+
+      await this.prisma.userAchievement.deleteMany({
+        where: { userId, key: { in: stale.map((d) => d.key) } },
+      });
+    } catch (err) {
+      this.logger.warn(`revoke failed: ${(err as Error).message}`);
+    }
+  }
+
   // Every catalog achievement with this user's state (unlocked + progress), for
   // the profile's "Achievements" section. Unlocked first, then by family.
   async getForUser(userId: number): Promise<AchievementsPayload> {

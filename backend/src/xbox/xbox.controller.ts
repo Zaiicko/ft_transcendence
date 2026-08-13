@@ -86,6 +86,8 @@ export class XboxController {
       this.prisma.gameCompletion.deleteMany({ where: { userId: current.sub, platform: 'xbox' } }),
       this.prisma.playedGame.deleteMany({ where: { userId: current.sub, source: 'xbox' } }),
     ]);
+    // Drops now-stale badges (100%, completions, genres, linked-accounts)
+    void this.achievements.revoke(current.sub, ['perfect', 'completions', 'genres', 'linked']);
   }
 
   // Xbox library: played titles matched to our catalog by name, with per-game

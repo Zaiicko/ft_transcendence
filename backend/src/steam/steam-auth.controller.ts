@@ -219,5 +219,10 @@ export class SteamAuthController {
         where: { userId: current.sub, source: { in: ['steam', 'steam_estimated'] } },
       }),
     ]);
+    // Drops now-stale badges (100%, completions, genres, linked-accounts),
+    // resolved lazily via moduleRef like the link callback above.
+    void this.moduleRef
+      .get(AchievementsService, { strict: false })
+      .revoke(current.sub, ['perfect', 'completions', 'genres', 'linked']);
   }
 }

@@ -107,6 +107,8 @@ export class PsnController {
       this.prisma.gameCompletion.deleteMany({ where: { userId: current.sub, platform: 'psn' } }),
       this.prisma.playedGame.deleteMany({ where: { userId: current.sub, source: 'psn' } }),
     ]);
+    // Drops now-stale badges (100%, completions, genres, linked-accounts)
+    void this.achievements.revoke(current.sub, ['perfect', 'completions', 'genres', 'linked']);
   }
 
   // PSN library: played trophy titles matched to our catalog by name, with
