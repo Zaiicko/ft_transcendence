@@ -6,6 +6,7 @@ import Skeleton from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
 import { CompanyDetail } from '../lib/types';
+import { useOgLangSync } from '../lib/useOgLangSync';
 
 const GAMES_STEP = 18;
 
@@ -13,6 +14,7 @@ export default function Company() {
   const { t } = useTranslation();
   const { id } = useParams();
   const companyId = Number(id);
+  useOgLangSync();
 
   // Result tagged by id: stale content ignored on studio change; company === null → 404.
   const [loaded, setLoaded] = useState<{ id: number; company: CompanyDetail | null } | null>(null);

@@ -6,6 +6,7 @@ import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import { emitCommentReaction } from '../games/commentBus';
 import { ReviewTargetKind, useReviewSocket } from '../games/useReviewSocket';
+import { apiLang } from '../i18n';
 import { ApiError, apiFetch } from '../lib/api';
 import Avatar from './Avatar';
 import EmptyState, { PencilIcon } from './EmptyState';
@@ -98,7 +99,9 @@ export default function ReviewsSection({
   const [copiedId, setCopiedId] = useState<number | null>(null);
   async function copyReviewLink(reviewId: number) {
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}${pagePath}?review=${reviewId}`);
+      const lang = apiLang();
+      const qs = `review=${reviewId}${lang ? `&lang=${lang}` : ''}`;
+      await navigator.clipboard.writeText(`${window.location.origin}${pagePath}?${qs}`);
       setCopiedId(reviewId);
       setTimeout(() => setCopiedId((cur) => (cur === reviewId ? null : cur)), 1500);
     } catch {
@@ -242,9 +245,13 @@ export default function ReviewsSection({
     // or an old link) into the ?review=<id> form in the address bar itself —
     // a fragment never reaches the server so it can never drive the Open
     // Graph card, but a user who copies the URL bar after landing here has
-    // no way to know that. Skip when we already arrived via ?review=.
+    // no way to know that. Skip when we already arrived via ?review=. Merges
+    // onto the current URL (via window.location, not the searchParams
+    // closure) so an already-present ?lang= from useOgLangSync survives.
     if (hash.startsWith('#review-') && !reviewParam) {
-      navigate(`${pagePath}?review=${hash.slice('#review-'.length)}`, { replace: true });
+      const params = new URLSearchParams(window.location.search);
+      params.set('review', hash.slice('#review-'.length));
+      navigate(`${pagePath}?${params.toString()}`, { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinHash, reviews]);

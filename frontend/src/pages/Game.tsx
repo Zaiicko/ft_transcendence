@@ -14,6 +14,7 @@ import { apiLang } from '../i18n';
 import { translateGenre } from '../lib/genres';
 import { scrambleText } from '../lib/textScramble';
 import { GameDlc, GameSummary } from '../lib/types';
+import { useOgLangSync } from '../lib/useOgLangSync';
 
 const screenshot1080 = (g: GameSummary) =>
   g.screenshots?.[0]?.replace(/t_[a-z0-9_]+/, 't_1080p') ?? null;
@@ -63,6 +64,7 @@ export default function Game() {
   const { id } = useParams();
   const gameId = Number(id);
   const { t, i18n } = useTranslation();
+  useOgLangSync();
 
   // Results tagged by id: on a game change, the old content is ignored without a setState in the effect (set-state-in-effect rule). game === null → 404; missing entry/different id → loading.
   const [loaded, setLoaded] = useState<{ id: number; game: GameSummary | null } | null>(null);

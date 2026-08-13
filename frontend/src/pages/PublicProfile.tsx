@@ -18,6 +18,7 @@ import ProfileLists from '../components/ProfileLists';
 import ProfilePlayedGames from '../components/ProfilePlayedGames';
 import ProfileReviews from '../components/ProfileReviews';
 import SectionHead from '../components/SectionHead';
+import { useOgLangSync } from '../lib/useOgLangSync';
 import Skeleton from '../components/Skeleton';
 import Stars, { StarIcon } from '../components/Stars';
 import SteamBadge from '../components/SteamBadge';
@@ -653,6 +654,7 @@ function FriendAction({
 
 export default function PublicProfile() {
   const { t } = useTranslation();
+  useOgLangSync();
   const { username = '' } = useParams();
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);

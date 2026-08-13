@@ -7,6 +7,7 @@ import { StarIcon } from '../components/Stars';
 import { apiFetch } from '../lib/api';
 import { translateGenre } from '../lib/genres';
 import { GameFacets, GameSummary } from '../lib/types';
+import { useOgLangSync } from '../lib/useOgLangSync';
 
 const PAGE_SIZE = 24;
 
@@ -44,6 +45,7 @@ let catalogCache: CatalogSnapshot | null = null;
 
 export default function Catalog() {
   const { t, i18n } = useTranslation();
+  useOgLangSync();
   // useSearchParams: read/write the URL query params (like a useState synced with the address bar).
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQ = searchParams.get('q') ?? '';

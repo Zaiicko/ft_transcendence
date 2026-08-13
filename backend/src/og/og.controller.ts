@@ -7,15 +7,25 @@ import { GamesService } from '../games/games.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ReviewsService } from '../reviews/reviews.service';
 import { UsersService } from '../users/users.service';
-import { catalogCard, companyCard, fallbackCard, gameCard, hubCard, profileCard, reviewCard } from './og-cards';
+import { catalogCard, companyCard, fallbackCard, fmtCount, gameCard, hubCard, profileCard, reviewCard } from './og-cards';
+import { OG_I18N, OgLang, resolveOgLang, reviewsCount } from './og-i18n';
 import { metaHtml } from './og-meta';
 import { OgRenderService, SatoriNode } from './og-render.service';
 
 // Server-rendered meta tags + PNG cards, for crawlers only (Discord, X,
-// Slack, iMessage, ...). Nginx routes bot user-agents on /game/:id, /company/:id
-// and /u/:username here instead of the SPA — real browsers never see this
-// controller. Because those crawlers never execute JS, the SPA's client-side
-// <title>/meta (which doesn't exist anyway) could never reach them.
+// Slack, iMessage, ...). Nginx routes bot user-agents on /game/:id, /company/:id,
+// /u/:username, / and /games here instead of the SPA — real browsers never
+// see this controller. Because those crawlers never execute JS, the SPA's
+// client-side <title>/meta (which doesn't exist anyway) could never reach
+// them.
+//
+// Language: a preview is fetched ONCE per URL by the crawler and cached by
+// the platform for everyone who later sees that message/embed — there is no
+// "current viewer" to adapt to. So localisation happens at SHARE time: the
+// frontend tags the URL with ?lang=<code> (the sharer's own active language,
+// see frontend/src/lib/useOgLangSync.ts), and that's what gets baked into
+// the resulting card. No ?lang= (or an unsupported one) → English, matching
+// the SPA's own fallbackLng.
 @Controller('og')
 export class OgController {
   private readonly logger = new Logger(OgController.name);
@@ -44,9 +54,10 @@ export class OgController {
 
   // The image sub-resource is fetched directly by the crawler from the
   // og:image URL — that request always hits nginx's plain /api passthrough,
-  // no user-agent sniffing needed there.
-  private imageUrl(path: string): string {
-    return `${this.siteUrl()}/api/og/image/${path}`;
+  // no user-agent sniffing needed there. Carries ?lang= along so the image
+  // matches the meta document that references it.
+  private imageUrl(path: string, lang: OgLang): string {
+    return `${this.siteUrl()}/api/og/image/${path}${lang !== 'en' ? `?lang=${lang}` : ''}`;
   }
 
   // Self-hosted avatars are stored/returned as a path relative to our own
@@ -61,32 +72,36 @@ export class OgController {
   // ---- Meta-tag documents ----
 
   @Get('hub')
-  async hubMeta(@Res() res: Response) {
+  async hubMeta(@Query('lang') langRaw: string | undefined, @Res() res: Response) {
+    const lang = resolveOgLang(langRaw);
+    const T = OG_I18N[lang];
     try {
       const games = await this.prisma.game.count();
       this.sendMeta(res, {
-        title: 'Saveboxd — Le Letterboxd du jeu vidéo',
-        description: `Synchronise tes bibliothèques Steam, PlayStation et Xbox, note tes jeux, débloque des succès et grimpe au classement global. ${games.toLocaleString('fr-FR')} jeux déjà au catalogue.`,
-        imageUrl: this.imageUrl('hub'),
+        title: `Saveboxd — ${T.eyebrowHub}`,
+        description: `${T.hubSubtitle} ${T.gamesInCatalog(fmtCount(games))}`,
+        imageUrl: this.imageUrl('hub', lang),
         canonicalUrl: this.siteUrl(),
       });
     } catch {
-      this.sendFallback(res);
+      this.sendFallback(res, lang);
     }
   }
 
   @Get('catalog')
-  async catalogMeta(@Res() res: Response) {
+  async catalogMeta(@Query('lang') langRaw: string | undefined, @Res() res: Response) {
+    const lang = resolveOgLang(langRaw);
+    const T = OG_I18N[lang];
     try {
       const total = await this.prisma.game.count();
       this.sendMeta(res, {
-        title: `Catalogue — ${total.toLocaleString('fr-FR')} jeux · Saveboxd`,
-        description: 'Explore, note et critique des milliers de jeux sur Saveboxd.',
-        imageUrl: this.imageUrl('catalog'),
+        title: `${T.eyebrowCatalog} — ${T.gamesToExplore(fmtCount(total))} · Saveboxd`,
+        description: `${T.gamesToExplore(fmtCount(total))} · Saveboxd`,
+        imageUrl: this.imageUrl('catalog', lang),
         canonicalUrl: `${this.siteUrl()}/games`,
       });
     } catch {
-      this.sendFallback(res);
+      this.sendFallback(res, lang);
     }
   }
 
@@ -94,24 +109,27 @@ export class OgController {
   async gameMeta(
     @Param('id', ParseIntPipe) id: number,
     @Query('review') reviewId: string | undefined,
+    @Query('lang') langRaw: string | undefined,
     @Res() res: Response,
   ) {
-    if (reviewId) return this.reviewMeta(Number(reviewId), res);
+    const lang = resolveOgLang(langRaw);
+    if (reviewId) return this.reviewMeta(Number(reviewId), lang, res);
+    const T = OG_I18N[lang];
     try {
-      const game = await this.games.findById(id);
+      const game = await this.games.findById(id, lang);
       const stats = await this.reviews.getAverageRating({ gameId: id });
       const description =
         stats._count > 0
-          ? `Noté ${(stats._avg.rating! / 2).toFixed(1)}/5 par ${stats._count} joueur${stats._count > 1 ? 's' : ''} sur Saveboxd.`
-          : (game.summary?.slice(0, 180) ?? 'Découvre ce jeu sur Saveboxd.');
+          ? `${(stats._avg.rating! / 2).toFixed(1)}/5 (${reviewsCount(stats._count, lang)}) · Saveboxd`
+          : (game.summary?.slice(0, 180) ?? T.discoverGame);
       this.sendMeta(res, {
         title: `${game.title} — Saveboxd`,
         description,
-        imageUrl: this.imageUrl(`game/${id}`),
+        imageUrl: this.imageUrl(`game/${id}`, lang),
         canonicalUrl: `${this.siteUrl()}/game/${id}`,
       });
     } catch {
-      this.sendFallback(res);
+      this.sendFallback(res, lang);
     }
   }
 
@@ -119,61 +137,72 @@ export class OgController {
   async companyMeta(
     @Param('id', ParseIntPipe) id: number,
     @Query('review') reviewId: string | undefined,
+    @Query('lang') langRaw: string | undefined,
     @Res() res: Response,
   ) {
-    if (reviewId) return this.reviewMeta(Number(reviewId), res);
+    const lang = resolveOgLang(langRaw);
+    if (reviewId) return this.reviewMeta(Number(reviewId), lang, res);
+    const T = OG_I18N[lang];
     try {
       const company = await this.companies.findById(id);
       const stats = await this.reviews.getAverageRating({ companyId: id });
-      const description = `${company._count.games} jeux · ${stats._count} avis sur Saveboxd.`;
+      const description = `${company._count.games} ${T.gamesWord} · ${reviewsCount(stats._count, lang)} · Saveboxd`;
       this.sendMeta(res, {
         title: `${company.name} — Saveboxd`,
         description,
-        imageUrl: this.imageUrl(`company/${id}`),
+        imageUrl: this.imageUrl(`company/${id}`, lang),
         canonicalUrl: `${this.siteUrl()}/company/${id}`,
       });
     } catch {
-      this.sendFallback(res);
+      this.sendFallback(res, lang);
     }
   }
 
   @Get('profile/:username')
-  async profileMeta(@Param('username') username: string, @Res() res: Response) {
+  async profileMeta(
+    @Param('username') username: string,
+    @Query('lang') langRaw: string | undefined,
+    @Res() res: Response,
+  ) {
+    const lang = resolveOgLang(langRaw);
+    const T = OG_I18N[lang];
     try {
       const profile = await this.users.getPublicProfile(username);
       if (!profile) throw new Error('not found');
-      const description = `${profile.playedCount} jeux faits · ${profile.reviewCount} critiques sur Saveboxd.`;
+      const description = `${profile.playedCount} ${T.playedWord} · ${reviewsCount(profile.reviewCount, lang)} · Saveboxd`;
       this.sendMeta(res, {
         title: `${profile.username} — Saveboxd`,
         description,
-        imageUrl: this.imageUrl(`profile/${encodeURIComponent(username)}`),
+        imageUrl: this.imageUrl(`profile/${encodeURIComponent(username)}`, lang),
         canonicalUrl: `${this.siteUrl()}/u/${profile.username}`,
         type: 'profile',
       });
     } catch {
-      this.sendFallback(res);
+      this.sendFallback(res, lang);
     }
   }
 
-  private async reviewMeta(reviewId: number, res: Response) {
-    if (!Number.isFinite(reviewId)) return this.sendFallback(res);
+  private async reviewMeta(reviewId: number, lang: OgLang, res: Response) {
+    const T = OG_I18N[lang];
+    if (!Number.isFinite(reviewId)) return this.sendFallback(res, lang);
     try {
       const review = await this.reviews.findOne(reviewId);
       const target = review.game ?? review.company;
       if (!target) throw new Error('orphan review');
       const base = review.game ? `game/${review.game.id}` : `company/${review.company!.id}`;
       const targetName = review.game?.title ?? review.company?.name ?? '';
-      const author = review.user?.username ?? 'un joueur supprimé';
-      const excerpt = (review.title ?? review.text ?? '').slice(0, 150);
+      const author = review.user?.username ?? T.deletedUser;
+      const translated = lang !== 'en' ? await this.reviews.translateReview(reviewId, lang).catch(() => null) : null;
+      const excerpt = (translated?.title ?? review.title ?? translated?.text ?? review.text ?? '').slice(0, 150);
       this.sendMeta(res, {
-        title: `${targetName} — critique de ${author} · Saveboxd`,
-        description: excerpt || `${author} a noté ${targetName} sur Saveboxd.`,
-        imageUrl: this.imageUrl(`review/${reviewId}`),
+        title: T.reviewTitle(targetName, author),
+        description: excerpt || T.reviewTitle(targetName, author),
+        imageUrl: this.imageUrl(`review/${reviewId}`, lang),
         canonicalUrl: `${this.siteUrl()}/${base}?review=${reviewId}`,
         type: 'article',
       });
     } catch {
-      this.sendFallback(res);
+      this.sendFallback(res, lang);
     }
   }
 
@@ -186,14 +215,15 @@ export class OgController {
     res.send(metaHtml(input));
   }
 
-  private sendFallback(res: Response) {
+  private sendFallback(res: Response, lang: OgLang) {
+    const T = OG_I18N[lang];
     res.set('Content-Type', 'text/html; charset=utf-8');
     res.status(404);
     res.send(
       metaHtml({
-        title: 'Introuvable — Saveboxd',
-        description: 'Ce contenu a été supprimé ou n’existe pas.',
-        imageUrl: this.imageUrl('fallback'),
+        title: T.notFoundTitle,
+        description: T.notFoundDescription,
+        imageUrl: this.imageUrl('fallback', lang),
         canonicalUrl: this.siteUrl(),
       }),
     );
@@ -202,29 +232,36 @@ export class OgController {
   // ---- PNG cards (1200x630) ----
 
   @Get('image/game/:id')
-  async gameImage(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
-    this.sendPng(
-      res,
-      `game-${id}`,
-      async () => {
-        const [game, stats] = await Promise.all([
-          this.games.findById(id),
-          this.reviews.getAverageRating({ gameId: id }),
-        ]);
-        return gameCard({
-          title: game.title,
-          coverUrl: game.coverUrl,
-          avg: stats._count > 0 ? stats._avg.rating! : null,
-          count: stats._count,
-          genres: game.genres.map((g) => g.name),
-        });
-      },
-    );
+  async gameImage(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('lang') langRaw: string | undefined,
+    @Res() res: Response,
+  ) {
+    const lang = resolveOgLang(langRaw);
+    this.sendPng(res, `game-${id}-${lang}`, async () => {
+      const [game, stats] = await Promise.all([
+        this.games.findById(id, lang),
+        this.reviews.getAverageRating({ gameId: id }),
+      ]);
+      return gameCard({
+        title: game.title,
+        coverUrl: game.coverUrl,
+        avg: stats._count > 0 ? stats._avg.rating! : null,
+        count: stats._count,
+        genres: game.genres.map((g) => g.name),
+        lang,
+      });
+    });
   }
 
   @Get('image/company/:id')
-  async companyImage(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
-    this.sendPng(res, `company-${id}`, async () => {
+  async companyImage(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('lang') langRaw: string | undefined,
+    @Res() res: Response,
+  ) {
+    const lang = resolveOgLang(langRaw);
+    this.sendPng(res, `company-${id}-${lang}`, async () => {
       const company = await this.companies.findById(id);
       const stats = await this.reviews.getAverageRating({ companyId: id });
       return companyCard({
@@ -232,14 +269,22 @@ export class OgController {
         logoUrl: company.logoUrl,
         gameCount: company._count.games,
         reviewCount: stats._count,
+        lang,
       });
     });
   }
 
   @Get('image/review/:id')
-  async reviewImage(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
-    this.sendPng(res, `review-${id}`, async () => {
+  async reviewImage(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('lang') langRaw: string | undefined,
+    @Res() res: Response,
+  ) {
+    const lang = resolveOgLang(langRaw);
+    this.sendPng(res, `review-${id}-${lang}`, async () => {
       const review = await this.reviews.findOne(id);
+      const translated =
+        lang !== 'en' ? await this.reviews.translateReview(id, lang).catch(() => null) : null;
       return reviewCard({
         gameTitle: review.game?.title ?? null,
         companyName: review.company?.name ?? null,
@@ -247,15 +292,21 @@ export class OgController {
         username: review.user?.username ?? '?',
         avatarUrl: this.absolutize(review.user?.avatarUrl ?? null),
         rating: review.rating,
-        text: review.text,
-        title: review.title,
+        text: translated?.text ?? review.text,
+        title: translated?.title ?? review.title,
+        lang,
       });
     });
   }
 
   @Get('image/profile/:username')
-  async profileImage(@Param('username') username: string, @Res() res: Response) {
-    this.sendPng(res, `profile-${username.toLowerCase()}`, async () => {
+  async profileImage(
+    @Param('username') username: string,
+    @Query('lang') langRaw: string | undefined,
+    @Res() res: Response,
+  ) {
+    const lang = resolveOgLang(langRaw);
+    this.sendPng(res, `profile-${username.toLowerCase()}-${lang}`, async () => {
       const profile = await this.users.getPublicProfile(username);
       if (!profile) throw new Error('not found');
       return profileCard({
@@ -265,36 +316,31 @@ export class OgController {
         playedCount: profile.playedCount,
         rank: profile.rank?.rank ?? null,
         topCovers: profile.topGames.map((t) => t.game.coverUrl).filter((c): c is string => !!c),
+        lang,
       });
     });
   }
 
   @Get('image/hub')
-  async hubImage(@Res() res: Response) {
-    this.sendPng(res, 'hub', async () => {
+  async hubImage(@Query('lang') langRaw: string | undefined, @Res() res: Response) {
+    const lang = resolveOgLang(langRaw);
+    this.sendPng(res, `hub-${lang}`, async () => {
       const [games, reviews, players, covers] = await Promise.all([
         this.prisma.game.count(),
         this.prisma.review.count(),
         this.prisma.user.count(),
         this.popularCovers(6),
       ]);
-      return hubCard({
-        title: 'Ta bibliothèque. Notée, critiquée, partagée.',
-        subtitle:
-          'Synchronise tes bibliothèques Steam, PlayStation et Xbox, note tes jeux, débloque des succès et grimpe au classement global.',
-        games,
-        reviews,
-        players,
-        covers,
-      });
+      return hubCard({ games, reviews, players, covers, lang });
     });
   }
 
   @Get('image/catalog')
-  async catalogImage(@Res() res: Response) {
-    this.sendPng(res, 'catalog', async () => {
+  async catalogImage(@Query('lang') langRaw: string | undefined, @Res() res: Response) {
+    const lang = resolveOgLang(langRaw);
+    this.sendPng(res, `catalog-${lang}`, async () => {
       const [total, covers] = await Promise.all([this.prisma.game.count(), this.popularCovers(8)]);
-      return catalogCard({ total, covers });
+      return catalogCard({ total, covers, lang });
     });
   }
 

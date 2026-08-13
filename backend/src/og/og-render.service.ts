@@ -17,15 +17,38 @@ const WEIGHTS = [400, 600, 700, 800] as const;
 // not the variable file). See assets/fonts/README for how to refresh them.
 const FONT_DIR = join(process.cwd(), 'assets', 'fonts');
 
+// Sora is Latin-only (no Cyrillic, no CJK) — text in ru/zh/ja/ko renders as
+// tofu without a fallback. Each card sets a CSS font-family STACK
+// ("Sora, NotoJP") per language (see og-cards.ts's background()); satori
+// walks the stack per-glyph, falling through to whichever entry actually
+// covers that codepoint. Single consolidated Noto Sans <script> files
+// (fetched from the Google Fonts CSS2 API with a plain UA, which returns one
+// un-subsetted file instead of the browser's unicode-range-split chunks),
+// weight 700 only, reused across every requested weight — full weight
+// fidelity doesn't matter for a rarely-hit glyph fallback the way legibility
+// does. See assets/fonts/README for how to refresh them.
+const FALLBACK_FONTS: { name: string; file: string }[] = [
+  { name: 'NotoCyrillic', file: 'noto-sans-cyrillic-700.woff' },
+  { name: 'NotoSC', file: 'noto-sans-sc-700.woff' },
+  { name: 'NotoJP', file: 'noto-sans-jp-700.woff' },
+  { name: 'NotoKR', file: 'noto-sans-kr-700.woff' },
+];
+
 @Injectable()
 export class OgRenderService {
   private readonly logger = new Logger(OgRenderService.name);
-  private readonly fonts = WEIGHTS.map((weight) => ({
-    name: 'Sora',
-    weight,
-    style: 'normal' as const,
-    data: readFileSync(join(FONT_DIR, `sora-${weight}.woff`)),
-  }));
+  private readonly fonts = [
+    ...WEIGHTS.map((weight) => ({
+      name: 'Sora',
+      weight,
+      style: 'normal' as const,
+      data: readFileSync(join(FONT_DIR, `sora-${weight}.woff`)),
+    })),
+    ...FALLBACK_FONTS.flatMap(({ name, file }) => {
+      const data = readFileSync(join(FONT_DIR, file));
+      return WEIGHTS.map((weight) => ({ name, weight, style: 'normal' as const, data }));
+    }),
+  ];
 
   // Short-lived in-memory cache: bots (esp. Discord) re-fetch the same image
   // repeatedly to refresh their own cache. The VPS is small (2 vCores) —

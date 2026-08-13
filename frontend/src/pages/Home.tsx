@@ -16,6 +16,7 @@ import { FAMILY_NAME_KEY } from '../lib/achievements';
 import { apiFetch } from '../lib/api';
 import { translateGenre } from '../lib/genres';
 import { imageSize } from '../lib/theme';
+import { useOgLangSync } from '../lib/useOgLangSync';
 import {
   AchievementFamily,
   GameSummary,
@@ -53,6 +54,7 @@ function pickRandom<T>(pool: T[], n: number): T[] {
 
 export default function Home() {
   const { t } = useTranslation();
+  useOgLangSync();
   const { user } = useAuth();
   const [popular, setPopular] = useState<GameSummary[]>([]);
   const [featured, setFeatured] = useState<GameSummary | null>(null);

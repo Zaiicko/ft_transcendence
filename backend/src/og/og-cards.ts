@@ -1,3 +1,4 @@
+import { OG_I18N, OgLang, reviewsCount } from './og-i18n';
 import type { SatoriNode } from './og-render.service';
 
 // Plain-object tree builder for satori (no JSX/React dep in the backend).
@@ -23,7 +24,7 @@ const PAD = 64;
 
 // Thousands separator as a plain space — NOT toLocaleString('fr-FR'), whose
 // narrow no-break space (U+202F) has no glyph in Sora and renders as tofu.
-function fmtCount(n: number): string {
+export function fmtCount(n: number): string {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
@@ -136,14 +137,28 @@ function coverNode(coverUrl: string | null, w: number, h: number): SatoriNode {
   });
 }
 
-function background(): Record<string, unknown> {
+// Sora has no Cyrillic/CJK glyphs — a CSS font-family stack per script lets
+// satori fall through to the matching Noto Sans cut per-glyph (registered in
+// OgRenderService), while every other language stays on Sora alone.
+const FALLBACK_STACK: Partial<Record<OgLang, string>> = {
+  ru: 'Sora, NotoCyrillic',
+  zh: 'Sora, NotoSC',
+  ja: 'Sora, NotoJP',
+  ko: 'Sora, NotoKR',
+};
+
+function fontStack(lang: OgLang): string {
+  return FALLBACK_STACK[lang] ?? 'Sora';
+}
+
+function background(lang: OgLang): Record<string, unknown> {
   return {
     display: 'flex',
     width: W,
     height: H,
     padding: PAD,
     background: `radial-gradient(120% 90% at 100% 0%, rgba(224,163,85,0.16), transparent 55%), ${BG}`,
-    fontFamily: 'Sora',
+    fontFamily: fontStack(lang),
   };
 }
 
@@ -154,9 +169,11 @@ export function gameCard(input: {
   avg: number | null;
   count: number;
   genres: string[];
+  lang: OgLang;
 }): SatoriNode {
-  const { title, coverUrl, avg, count, genres } = input;
-  return el('div', { style: { ...background(), alignItems: 'stretch', gap: 56 } }, [
+  const { title, coverUrl, avg, count, genres, lang } = input;
+  const T = OG_I18N[lang];
+  return el('div', { style: { ...background(lang), alignItems: 'stretch', gap: 56 } }, [
     coverNode(coverUrl, 300, 420),
     el(
       'div',
@@ -175,7 +192,7 @@ export function gameCard(input: {
                 color: ACCENT,
               },
             },
-            'Fiche jeu',
+            T.eyebrowGame,
           ),
           el(
             'div',
@@ -199,10 +216,10 @@ export function gameCard(input: {
                 el(
                   'div',
                   { style: { display: 'flex', fontSize: 22, color: INK_DIM } },
-                  `${(avg / 2).toFixed(1)}/5 · ${count} avis`,
+                  `${(avg / 2).toFixed(1)}/5 · ${reviewsCount(count, lang)}`,
                 ),
               ])
-            : el('div', { style: { display: 'flex', fontSize: 22, color: INK_FAINT } }, 'Pas encore noté'),
+            : el('div', { style: { display: 'flex', fontSize: 22, color: INK_FAINT } }, T.notYetRated),
           genres.length > 0
             ? el(
                 'div',
@@ -234,9 +251,16 @@ export function gameCard(input: {
 }
 
 // ---------- Company card ----------
-export function companyCard(input: { name: string; logoUrl: string | null; gameCount: number; reviewCount: number }): SatoriNode {
-  const { name, logoUrl, gameCount, reviewCount } = input;
-  return el('div', { style: { ...background(), alignItems: 'center', gap: 56 } }, [
+export function companyCard(input: {
+  name: string;
+  logoUrl: string | null;
+  gameCount: number;
+  reviewCount: number;
+  lang: OgLang;
+}): SatoriNode {
+  const { name, logoUrl, gameCount, reviewCount, lang } = input;
+  const T = OG_I18N[lang];
+  return el('div', { style: { ...background(lang), alignItems: 'center', gap: 56 } }, [
     logoUrl
       ? el('img', {
           src: logoUrl,
@@ -271,13 +295,13 @@ export function companyCard(input: { name: string; logoUrl: string | null; gameC
                 color: ACCENT,
               },
             },
-            'Studio',
+            T.eyebrowStudio,
           ),
           el('div', { style: { display: 'flex', fontSize: 52, fontWeight: 800, color: INK, lineHeight: 1.15 } }, name),
           el(
             'div',
             { style: { display: 'flex', fontSize: 22, color: INK_DIM } },
-            `${gameCount} jeux · ${reviewCount} avis`,
+            `${gameCount} ${T.gamesWord} · ${reviewsCount(reviewCount, lang)}`,
           ),
         ]),
         wordmark(),
@@ -308,13 +332,15 @@ export function reviewCard(input: {
   rating: number;
   text: string | null;
   title: string | null;
+  lang: OgLang;
 }): SatoriNode {
-  const { gameTitle, companyName, coverUrl, username, avatarUrl, rating, text, title } = input;
+  const { gameTitle, companyName, coverUrl, username, avatarUrl, rating, text, title, lang } = input;
+  const T = OG_I18N[lang];
   const target = gameTitle ?? companyName ?? '';
   const body = text ?? title ?? '';
   const scale = bodyScale(body.length);
   const excerpt = body.slice(0, scale.maxChars);
-  return el('div', { style: { ...background(), flexDirection: 'column', justifyContent: 'space-between' } }, [
+  return el('div', { style: { ...background(lang), flexDirection: 'column', justifyContent: 'space-between' } }, [
     el('div', { style: { display: 'flex', flexDirection: 'column', gap: 16 } }, [
       el('div', { style: { display: 'flex', alignItems: 'center', gap: 22 } }, [
         coverNode(coverUrl, 78, 109),
@@ -331,7 +357,7 @@ export function reviewCard(input: {
                 color: ACCENT,
               },
             },
-            'Critique',
+            T.eyebrowReview,
           ),
           el('div', { style: { display: 'flex', fontSize: 27, fontWeight: 700, color: INK } }, target),
           title
@@ -396,9 +422,11 @@ export function profileCard(input: {
   playedCount: number;
   rank: number | null;
   topCovers: string[];
+  lang: OgLang;
 }): SatoriNode {
-  const { username, avatarUrl, reviewCount, playedCount, rank, topCovers } = input;
-  return el('div', { style: { ...background(), flexDirection: 'column', justifyContent: 'space-between' } }, [
+  const { username, avatarUrl, reviewCount, playedCount, rank, topCovers, lang } = input;
+  const T = OG_I18N[lang];
+  return el('div', { style: { ...background(lang), flexDirection: 'column', justifyContent: 'space-between' } }, [
     el('div', { style: { display: 'flex', alignItems: 'center', gap: 32 } }, [
       avatarNode(username, avatarUrl, 140),
       el('div', { style: { display: 'flex', flexDirection: 'column', gap: 14 } }, [
@@ -414,13 +442,13 @@ export function profileCard(input: {
               color: ACCENT,
             },
           },
-          'Profil Saveboxd',
+          T.eyebrowProfile,
         ),
         el('div', { style: { display: 'flex', fontSize: 54, fontWeight: 800, color: INK } }, username),
         el('div', { style: { display: 'flex', gap: 28 } }, [
-          statChip(`${playedCount}`, 'jeux faits'),
-          statChip(`${reviewCount}`, 'critiques'),
-          rank !== null ? statChip(`#${rank}`, 'classement') : el('div', { style: { display: 'flex' } }),
+          statChip(`${playedCount}`, T.playedWord),
+          statChip(`${reviewCount}`, T.reviewsWord),
+          rank !== null ? statChip(`#${rank}`, T.rankWord) : el('div', { style: { display: 'flex' } }),
         ]),
       ]),
     ]),
@@ -455,15 +483,15 @@ function statChip(n: string, label: string): SatoriNode {
 
 // ---------- Hub card (homepage) ----------
 export function hubCard(input: {
-  title: string;
-  subtitle: string;
   games: number;
   reviews: number;
   players: number;
   covers: string[];
+  lang: OgLang;
 }): SatoriNode {
-  const { title, subtitle, games, reviews, players, covers } = input;
-  return el('div', { style: { ...background(), flexDirection: 'column', justifyContent: 'space-between' } }, [
+  const { games, reviews, players, covers, lang } = input;
+  const T = OG_I18N[lang];
+  return el('div', { style: { ...background(lang), flexDirection: 'column', justifyContent: 'space-between' } }, [
     el('div', { style: { display: 'flex', flexDirection: 'column', gap: 18, width: 760 } }, [
       el(
         'div',
@@ -477,7 +505,7 @@ export function hubCard(input: {
             color: ACCENT,
           },
         },
-        'Le Letterboxd du jeu vidéo',
+        T.eyebrowHub,
       ),
       el(
         'div',
@@ -493,7 +521,7 @@ export function hubCard(input: {
             overflow: 'hidden',
           },
         },
-        title,
+        T.hubTitle,
       ),
       el(
         'div',
@@ -508,12 +536,12 @@ export function hubCard(input: {
             overflow: 'hidden',
           },
         },
-        subtitle,
+        T.hubSubtitle,
       ),
       el('div', { style: { display: 'flex', gap: 36, marginTop: 8 } }, [
-        statChip(fmtCount(games), 'jeux'),
-        statChip(fmtCount(reviews), 'critiques'),
-        statChip(fmtCount(players), 'joueurs'),
+        statChip(fmtCount(games), T.gamesWord),
+        statChip(fmtCount(reviews), T.reviewsWord),
+        statChip(fmtCount(players), T.playersWord),
       ]),
     ]),
     el('div', { style: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' } }, [
@@ -535,8 +563,9 @@ export function hubCard(input: {
 }
 
 // ---------- Catalog card ----------
-export function catalogCard(input: { total: number; covers: string[] }): SatoriNode {
-  const { total, covers } = input;
+export function catalogCard(input: { total: number; covers: string[]; lang: OgLang }): SatoriNode {
+  const { total, covers, lang } = input;
+  const T = OG_I18N[lang];
   const top = covers.slice(0, 4);
   const bottom = covers.slice(4, 8);
   const cell = (src: string) =>
@@ -545,7 +574,7 @@ export function catalogCard(input: { total: number; covers: string[] }): SatoriN
       { style: { display: 'flex', flex: 1, overflow: 'hidden' } },
       el('img', { src, style: { width: '100%', height: '100%', objectFit: 'cover' } }),
     );
-  return el('div', { style: { display: 'flex', width: W, height: H, position: 'relative' } }, [
+  return el('div', { style: { display: 'flex', width: W, height: H, position: 'relative', fontFamily: fontStack(lang) } }, [
     el(
       'div',
       { style: { display: 'flex', flexDirection: 'column', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } },
@@ -594,12 +623,12 @@ export function catalogCard(input: { total: number; covers: string[] }): SatoriN
               color: ACCENT,
             },
           },
-          'Catalogue',
+          T.eyebrowCatalog,
         ),
         el(
           'div',
           { style: { display: 'flex', fontSize: 50, fontWeight: 800, color: INK, marginTop: 8 } },
-          `${fmtCount(total)} jeux à explorer`,
+          T.gamesToExplore(fmtCount(total)),
         ),
         el('div', { style: { display: 'flex', marginTop: 22 } }, wordmark()),
       ],
@@ -608,10 +637,11 @@ export function catalogCard(input: { total: number; covers: string[] }): SatoriN
 }
 
 // ---------- Generic fallback (resource missing, or render error) ----------
+// Content is just the ASCII wordmark — no translation needed, always Sora.
 export function fallbackCard(): SatoriNode {
   return el(
     'div',
-    { style: { ...background(), alignItems: 'center', justifyContent: 'center' } },
+    { style: { ...background('en'), alignItems: 'center', justifyContent: 'center' } },
     el('div', { style: { display: 'flex', transform: 'scale(1.6)' } }, wordmark()),
   );
 }
