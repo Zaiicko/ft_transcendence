@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { apiLang } from '../i18n';
 
@@ -12,38 +11,53 @@ import { apiLang } from '../i18n';
 // link left the app. apiLang() returns '' for English (the fallback both
 // here and server-side), so an English visitor's URL stays clean.
 //
-// react-router-dom's setSearchParams(updater) closes over the *rendering
-// component's own* searchParams snapshot (a useMemo keyed on location.search
-// — see useSearchParams' source), not a fresh read at call time the way
-// useState's functional updater is. So when a sibling/child effect (e.g.
-// PublicProfile's ?tab= sync, ReviewsSection's ?review= sync) writes to the
-// URL in the very same commit, whichever effect's navigate() lands last wins
-// outright — the "updater form" does NOT protect against that the way it
-// would for plain React state.
+// Writes straight through window.history.replaceState, deliberately
+// bypassing react-router's setSearchParams/navigate. Two earlier attempts
+// went through react-router (first a plain navigate() off a manually-read
+// location snapshot, then setSearchParams' functional-updater form) on the
+// theory that a sibling URL-writing effect on the same page — PublicProfile's
+// ?tab= sync, ReviewsSection's ?review= sync — could race it in the same
+// commit and clobber a stale `prev`. Both were fixed for every repro that
+// theory predicted (verified with an isolated harness: real hooks, jsdom, no
+// mocks — including the exact React.lazy()+Suspense structure every route
+// actually uses), yet ?lang= still never appeared on landing on a profile
+// page in production, only after a live language change. Since the exact
+// mechanism defeating react-router's own state resolved every synthetic
+// repro but not the real one, this sidesteps react-router's location state
+// entirely for the write and re-asserts a few times right after mount to
+// absorb whatever, still unidentified, is overwriting it.
 //
-// Fix: depend on location.search too, so a write from anywhere else
-// re-triggers this effect on the next render, where it re-reads the
-// now-current params and re-applies ?lang= if it got dropped. This
-// self-heals within one or two extra renders regardless of effect order,
-// and is a no-op (doesn't call setSearchParams again) once ?lang= is
-// already correct, so it converges instead of looping.
+// Trade-off: react-router's own useLocation()/useSearchParams() elsewhere on
+// the page won't observe this change (no popstate fires for replaceState),
+// so a later react-router-driven navigation on the same mounted page could
+// drop ?lang= again until the next language-triggered re-run. Acceptable
+// here — the address bar being correct for copy/paste is the actual goal.
 export function useOgLangSync() {
   const { i18n } = useTranslation();
-  const location = useLocation();
-  const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const want = apiLang();
-    setSearchParams(
-      (prev) => {
-        if ((prev.get('lang') ?? '') === want) return prev;
-        const next = new URLSearchParams(prev);
-        if (want) next.set('lang', want);
-        else next.delete('lang');
-        return next;
-      },
-      { replace: true },
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.resolvedLanguage, i18n.language, location.search]);
+    let cancelled = false;
+
+    function apply() {
+      if (cancelled) return;
+      const params = new URLSearchParams(window.location.search);
+      if ((params.get('lang') ?? '') === want) return;
+      if (want) params.set('lang', want);
+      else params.delete('lang');
+      const qs = params.toString();
+      window.history.replaceState(
+        window.history.state,
+        '',
+        `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`,
+      );
+    }
+
+    apply();
+    const timers = [50, 150, 400, 800, 1500].map((ms) => setTimeout(apply, ms));
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+    };
+  }, [i18n.resolvedLanguage, i18n.language]);
 }

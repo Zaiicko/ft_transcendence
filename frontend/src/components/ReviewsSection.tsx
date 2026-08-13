@@ -67,7 +67,7 @@ export default function ReviewsSection({
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
   const { hash } = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   // A review link shared outside the app (Discord, X, ...) uses ?review=<id>,
   // not #review-<id>: fragments never reach the server, so they can't drive
   // the Open Graph card for that specific review (see backend/src/og). Once
@@ -248,30 +248,44 @@ export default function ReviewsSection({
   // card, but a user who copies the URL bar after landing here has no way
   // to know that. Skip when we already arrived via ?review=.
   //
-  // Deliberately NOT folded into the scroll-once effect above: react-router's
+  // Deliberately NOT folded into the scroll-once effect above, and
+  // deliberately NOT going through setSearchParams: react-router's
   // setSearchParams(updater) closes over THIS render's own searchParams (a
-  // memo keyed on location.search), not a fresh read at call time — so a
-  // sibling/parent effect writing to the URL in the very same commit (e.g.
+  // memo keyed on location.search), not a fresh read at call time — a
+  // sibling/parent effect writing to the URL in the same commit (e.g.
   // useOgLangSync's ?lang= sync one level up in Game.tsx/Company.tsx) can
-  // clobber this, or be clobbered by it, depending on firing order. Keeping
-  // this reactive to searchParams itself (no "already done" guard) means
-  // whichever one loses a given round gets re-triggered on the next render
-  // and re-applies — the pair converges within a render or two instead of
-  // one silently overwriting the other for good.
+  // clobber this or be clobbered by it. A prior fix made this reactive to
+  // searchParams so the loser of a given round gets retried on the next
+  // render — verified to converge in an isolated repro, yet ?lang= still
+  // never showed up on a real profile page in production. Since something
+  // about production defeats react-router's own state resolution here in a
+  // way no synthetic repro reproduced, this writes straight through
+  // window.history.replaceState (see useOgLangSync for the same call,
+  // same reasoning) and re-asserts a few times after mount instead.
   useEffect(() => {
     if (!hash.startsWith('#review-') || reviewParam) return;
     const reviewId = hash.slice('#review-'.length);
-    if (searchParams.get('review') === reviewId) return;
-    setSearchParams(
-      (prev) => {
-        if (prev.get('review') === reviewId) return prev;
-        const next = new URLSearchParams(prev);
-        next.set('review', reviewId);
-        return next;
-      },
-      { replace: true },
-    );
-  }, [hash, reviewParam, searchParams, setSearchParams]);
+    let cancelled = false;
+
+    function apply() {
+      if (cancelled) return;
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('review') === reviewId) return;
+      params.set('review', reviewId);
+      window.history.replaceState(
+        window.history.state,
+        '',
+        `${pagePath}?${params.toString()}`,
+      );
+    }
+
+    apply();
+    const timers = [50, 150, 400, 800, 1500].map((ms) => setTimeout(apply, ms));
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+    };
+  }, [hash, reviewParam, pagePath]);
 
   // 👍/👎 exclusive and idempotent server-side (204, no payload). Optimistic patch BEFORE the await: otherwise the `review:reaction` socket event (absolute counter) arrives during the await and the patch stacks on it → double counting. The event then reconciles the counters to the server value.
   async function react(review: ReviewT, r: 'like' | 'dislike') {
