@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SectionHead from './SectionHead';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import { emitCommentReaction } from '../games/commentBus';
@@ -67,8 +67,7 @@ export default function ReviewsSection({
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
   const { hash } = useLocation();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   // A review link shared outside the app (Discord, X, ...) uses ?review=<id>,
   // not #review-<id>: fragments never reach the server, so they can't drive
   // the Open Graph card for that specific review (see backend/src/og). Once
@@ -245,13 +244,22 @@ export default function ReviewsSection({
     // or an old link) into the ?review=<id> form in the address bar itself —
     // a fragment never reaches the server so it can never drive the Open
     // Graph card, but a user who copies the URL bar after landing here has
-    // no way to know that. Skip when we already arrived via ?review=. Merges
-    // onto the current URL (via window.location, not the searchParams
-    // closure) so an already-present ?lang= from useOgLangSync survives.
+    // no way to know that. Skip when we already arrived via ?review=. Goes
+    // through setSearchParams' functional-updater form (not a raw navigate()
+    // off a manually-read snapshot) so it resolves against whatever
+    // useOgLangSync's own ?lang= sync — which can fire in the very same
+    // commit, one level up in Game.tsx/Company.tsx — just applied, instead
+    // of clobbering it with a stale `prev`.
     if (hash.startsWith('#review-') && !reviewParam) {
-      const params = new URLSearchParams(window.location.search);
-      params.set('review', hash.slice('#review-'.length));
-      navigate(`${pagePath}?${params.toString()}`, { replace: true });
+      const reviewId = hash.slice('#review-'.length);
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set('review', reviewId);
+          return next;
+        },
+        { replace: true },
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinHash, reviews]);
