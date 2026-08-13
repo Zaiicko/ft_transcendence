@@ -240,29 +240,38 @@ export default function ReviewsSection({
     if (!target) return; // not mounted yet: retry on the next render
     scrolledFor.current = pinHash;
     target.scrollIntoView({ behavior: 'smooth', block: el && pinHash !== '#review' ? 'center' : 'start' });
-    // Rewrite a raw #review-<id> hash (e.g. followed from the friend feed,
-    // or an old link) into the ?review=<id> form in the address bar itself —
-    // a fragment never reaches the server so it can never drive the Open
-    // Graph card, but a user who copies the URL bar after landing here has
-    // no way to know that. Skip when we already arrived via ?review=. Goes
-    // through setSearchParams' functional-updater form (not a raw navigate()
-    // off a manually-read snapshot) so it resolves against whatever
-    // useOgLangSync's own ?lang= sync — which can fire in the very same
-    // commit, one level up in Game.tsx/Company.tsx — just applied, instead
-    // of clobbering it with a stale `prev`.
-    if (hash.startsWith('#review-') && !reviewParam) {
-      const reviewId = hash.slice('#review-'.length);
-      setSearchParams(
-        (prev) => {
-          const next = new URLSearchParams(prev);
-          next.set('review', reviewId);
-          return next;
-        },
-        { replace: true },
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinHash, reviews]);
+
+  // Rewrite a raw #review-<id> hash (e.g. followed from the friend feed, or
+  // an old link) into the ?review=<id> form in the address bar itself — a
+  // fragment never reaches the server so it can never drive the Open Graph
+  // card, but a user who copies the URL bar after landing here has no way
+  // to know that. Skip when we already arrived via ?review=.
+  //
+  // Deliberately NOT folded into the scroll-once effect above: react-router's
+  // setSearchParams(updater) closes over THIS render's own searchParams (a
+  // memo keyed on location.search), not a fresh read at call time — so a
+  // sibling/parent effect writing to the URL in the very same commit (e.g.
+  // useOgLangSync's ?lang= sync one level up in Game.tsx/Company.tsx) can
+  // clobber this, or be clobbered by it, depending on firing order. Keeping
+  // this reactive to searchParams itself (no "already done" guard) means
+  // whichever one loses a given round gets re-triggered on the next render
+  // and re-applies — the pair converges within a render or two instead of
+  // one silently overwriting the other for good.
+  useEffect(() => {
+    if (!hash.startsWith('#review-') || reviewParam) return;
+    const reviewId = hash.slice('#review-'.length);
+    if (searchParams.get('review') === reviewId) return;
+    setSearchParams(
+      (prev) => {
+        if (prev.get('review') === reviewId) return prev;
+        const next = new URLSearchParams(prev);
+        next.set('review', reviewId);
+        return next;
+      },
+      { replace: true },
+    );
+  }, [hash, reviewParam, searchParams, setSearchParams]);
 
   // 👍/👎 exclusive and idempotent server-side (204, no payload). Optimistic patch BEFORE the await: otherwise the `review:reaction` socket event (absolute counter) arrives during the await and the patch stacks on it → double counting. The event then reconciles the counters to the server value.
   async function react(review: ReviewT, r: 'like' | 'dislike') {

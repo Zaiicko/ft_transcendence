@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { apiLang } from '../i18n';
 
@@ -12,15 +12,24 @@ import { apiLang } from '../i18n';
 // link left the app. apiLang() returns '' for English (the fallback both
 // here and server-side), so an English visitor's URL stays clean.
 //
-// Goes through setSearchParams' functional-updater form — same as
-// PublicProfile's own ?tab= sync and ReviewsSection's ?review= sync — rather
-// than a raw navigate() built off a manually-read location snapshot. Several
-// of these URL-sync effects can fire in the very same commit (e.g. this hook
-// in Game.tsx's render alongside ReviewsSection's own effect one level down),
-// and only the updater form is guaranteed to resolve against each other's
-// just-applied change instead of clobbering it with a stale `prev`.
+// react-router-dom's setSearchParams(updater) closes over the *rendering
+// component's own* searchParams snapshot (a useMemo keyed on location.search
+// — see useSearchParams' source), not a fresh read at call time the way
+// useState's functional updater is. So when a sibling/child effect (e.g.
+// PublicProfile's ?tab= sync, ReviewsSection's ?review= sync) writes to the
+// URL in the very same commit, whichever effect's navigate() lands last wins
+// outright — the "updater form" does NOT protect against that the way it
+// would for plain React state.
+//
+// Fix: depend on location.search too, so a write from anywhere else
+// re-triggers this effect on the next render, where it re-reads the
+// now-current params and re-applies ?lang= if it got dropped. This
+// self-heals within one or two extra renders regardless of effect order,
+// and is a no-op (doesn't call setSearchParams again) once ?lang= is
+// already correct, so it converges instead of looping.
 export function useOgLangSync() {
   const { i18n } = useTranslation();
+  const location = useLocation();
   const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -36,5 +45,5 @@ export function useOgLangSync() {
       { replace: true },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.resolvedLanguage, i18n.language]);
+  }, [i18n.resolvedLanguage, i18n.language, location.search]);
 }
