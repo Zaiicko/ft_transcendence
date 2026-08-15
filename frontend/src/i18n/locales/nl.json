@@ -329,10 +329,7 @@
     "achievement": "Prestatie ontgrendeld: <b>{{name}}</b>",
     "prefAchievement": "Prestaties",
     "prefAchievementHint": "Wanneer je een prestatie ontgrendelt",
-    "clear": "Wissen",
-    "gameInvite": "<b>{{who}}</b> heeft je uitgenodigd voor een minigame",
-    "prefGameInvite": "Minigame-uitnodigingen",
-    "prefGameInviteHint": "Wanneer een vriend je uitnodigt om te spelen"
+    "clear": "Wissen"
   },
   "minigames": {
     "hub": {

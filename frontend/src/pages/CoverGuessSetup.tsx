@@ -6,6 +6,7 @@ import Avatar from '../components/Avatar';
 import SectionHead from '../components/SectionHead';
 import { ApiError, apiFetch } from '../lib/api';
 import type { PublicUser } from '../lib/types';
+import CoverGuessLogo from '../minigames/CoverGuessLogo';
 import type { CoverGuessDifficulty, CoverGuessRoundMode } from '../minigames/types';
 import CoverGuessLocalPlay from './CoverGuessLocalPlay';
 
@@ -110,6 +111,7 @@ export default function CoverGuessSetup() {
       <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('minigames.coverGuess.description')}</p>
 
       <div className="card flex flex-col gap-6 p-5">
+        <CoverGuessLogo className="aspect-[3/4] w-20 self-center" />
         <div>
           <p className="mb-2 text-sm font-semibold">{t('minigames.coverGuess.setup.mode')}</p>
           <div className="flex gap-2">

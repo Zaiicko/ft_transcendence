@@ -329,10 +329,7 @@
     "achievement": "Achievement unlocked: <b>{{name}}</b>",
     "prefAchievement": "Achievements",
     "prefAchievementHint": "When you unlock an achievement",
-    "clear": "Clear",
-    "gameInvite": "<b>{{who}}</b> invited you to a mini-game",
-    "prefGameInvite": "Mini-game invites",
-    "prefGameInviteHint": "When a friend invites you to play"
+    "clear": "Clear"
   },
   "minigames": {
     "hub": {

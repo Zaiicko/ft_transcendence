@@ -329,10 +329,7 @@
     "achievement": "Conquista desbloqueada: <b>{{name}}</b>",
     "prefAchievement": "Conquistas",
     "prefAchievementHint": "Quando você desbloqueia uma conquista",
-    "clear": "Limpar",
-    "gameInvite": "<b>{{who}}</b> convidou você para um minijogo",
-    "prefGameInvite": "Convites para minijogos",
-    "prefGameInviteHint": "Quando um amigo te convida para jogar"
+    "clear": "Limpar"
   },
   "minigames": {
     "hub": {

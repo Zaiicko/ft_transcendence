@@ -329,10 +329,7 @@
     "achievement": "Odblokowano osiągnięcie: <b>{{name}}</b>",
     "prefAchievement": "Osiągnięcia",
     "prefAchievementHint": "Gdy odblokujesz osiągnięcie",
-    "clear": "Wyczyść",
-    "gameInvite": "<b>{{who}}</b> zaprosił(a) Cię do minigry",
-    "prefGameInvite": "Zaproszenia do minigier",
-    "prefGameInviteHint": "Gdy znajomy zaprosi Cię do gry"
+    "clear": "Wyczyść"
   },
   "minigames": {
     "hub": {

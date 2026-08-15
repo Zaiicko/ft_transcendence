@@ -131,8 +131,7 @@ export type NotificationType =
   | 'COMMENT_REPLY'
   | 'NEW_MESSAGE'
   | 'FRIEND_JOINED'
-  | 'ACHIEVEMENT'
-  | 'GAME_INVITE';
+  | 'ACHIEVEMENT';
 
 // payload depends on type; all fields are therefore optional on the front
 export interface AppNotification {
@@ -153,11 +152,6 @@ export interface AppNotification {
     via?: 'steam' | '42';
     // ACHIEVEMENT: key of the unlocked achievement
     achievementKey?: string;
-    // GAME_INVITE: which mini-game match this invite targets. `game` is a
-    // stable i18n key (e.g. "cover-guess"), translated client-side.
-    matchId?: string;
-    game?: string;
-    difficulty?: string;
   };
   readAt: string | null;
   createdAt: string;

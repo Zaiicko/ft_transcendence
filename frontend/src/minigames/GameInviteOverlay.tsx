@@ -3,27 +3,27 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import { apiFetch } from '../lib/api';
-import { useNotificationSocket } from '../notifications/useNotificationSocket';
+import CoverGuessLogo from './CoverGuessLogo';
 import { minigameTitleKey } from './gameNames';
-import type { AppNotification } from '../lib/types';
+import { useCoverGuessInviteSocket } from './useCoverGuessInviteSocket';
+import type { CoverGuessInvite } from './types';
 
 // Full-screen blocking prompt for a cover-guess invite, on top of whatever
 // page the user is on — a bell notification wasn't enough since the user
 // explicitly wants it impossible to miss, and it only goes away once they
 // accept or decline (no click-outside/Escape dismiss, unlike the generic
-// Modal component).
+// Modal component). Driven by its own `coverguess:invite` socket event, not
+// the general notification pipeline — this overlay IS the notification.
 export default function GameInviteOverlay() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [invite, setInvite] = useState<AppNotification | null>(null);
+  const [invite, setInvite] = useState<CoverGuessInvite | null>(null);
   const [busy, setBusy] = useState(false);
 
-  useNotificationSocket((n) => {
-    if (n.type === 'GAME_INVITE') setInvite(n);
-  }, true);
+  useCoverGuessInviteSocket((i) => setInvite(i), true);
 
   if (!invite) return null;
-  const matchId = invite.payload.matchId;
+  const matchId = invite.matchId;
 
   async function respond(accept: boolean) {
     setBusy(true);
@@ -50,17 +50,14 @@ export default function GameInviteOverlay() {
         aria-modal="true"
         className="flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border border-zinc-900/10 bg-white p-6 text-center shadow-2xl dark:border-zinc-100/10 dark:bg-zinc-900"
       >
-        <Avatar
-          username={invite.payload.actorUsername ?? '?'}
-          avatarUrl={invite.payload.actorAvatarUrl ?? null}
-          size={56}
-        />
+        <CoverGuessLogo className="aspect-[3/4] w-20" />
+        <Avatar username={invite.actorUsername} avatarUrl={invite.actorAvatarUrl} size={56} />
         <p className="text-sm">
           <Trans
             i18nKey="minigames.coverGuess.invite.title"
             values={{
-              who: invite.payload.actorUsername ?? t('notifications.someone'),
-              game: t(minigameTitleKey(invite.payload.game)),
+              who: invite.actorUsername,
+              game: t(minigameTitleKey(invite.game)),
             }}
             components={{ b: <strong className="font-semibold" /> }}
           />

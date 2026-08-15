@@ -329,10 +329,7 @@
     "achievement": "Logro desbloqueado: <b>{{name}}</b>",
     "prefAchievement": "Logros",
     "prefAchievementHint": "Cuando desbloqueas un logro",
-    "clear": "Vaciar",
-    "gameInvite": "<b>{{who}}</b> te invitó a un minijuego",
-    "prefGameInvite": "Invitaciones a minijuegos",
-    "prefGameInviteHint": "Cuando un amigo te invita a jugar"
+    "clear": "Vaciar"
   },
   "minigames": {
     "hub": {

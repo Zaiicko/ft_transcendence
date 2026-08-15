@@ -329,10 +329,7 @@
     "achievement": "Başarım açıldı: <b>{{name}}</b>",
     "prefAchievement": "Başarımlar",
     "prefAchievementHint": "Bir başarım açtığında",
-    "clear": "Temizle",
-    "gameInvite": "<b>{{who}}</b> seni bir mini oyuna davet etti",
-    "prefGameInvite": "Mini oyun davetleri",
-    "prefGameInviteHint": "Bir arkadaşın seni oynamaya davet ettiğinde"
+    "clear": "Temizle"
   },
   "minigames": {
     "hub": {

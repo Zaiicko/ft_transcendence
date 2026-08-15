@@ -41,3 +41,18 @@ export interface CoverGuessMatchState {
   participants?: { userId: number; username: string; score: number }[];
   history?: { gameId: number; title: string; coverUrl: string }[];
 }
+
+// Pushed live via the `coverguess:invite` socket event — a dedicated
+// channel, not a persisted Notification: GameInviteOverlay is already a
+// full-screen blocking prompt the moment this arrives, so there's nothing
+// left for a bell entry to add.
+export interface CoverGuessInvite {
+  matchId: string;
+  // Stable i18n key (e.g. "cover-guess"), not a rendered title — translated
+  // client-side so it always matches the recipient's current language.
+  game: string;
+  difficulty: CoverGuessDifficulty;
+  actorId: number;
+  actorUsername: string;
+  actorAvatarUrl: string | null;
+}

@@ -329,10 +329,7 @@
     "achievement": "実績を解除：<b>{{name}}</b>",
     "prefAchievement": "実績",
     "prefAchievementHint": "実績を解除したとき",
-    "clear": "クリア",
-    "gameInvite": "<b>{{who}}</b>さんがミニゲームに招待しました",
-    "prefGameInvite": "ミニゲームの招待",
-    "prefGameInviteHint": "友達から対戦に招待されたとき"
+    "clear": "クリア"
   },
   "minigames": {
     "hub": {

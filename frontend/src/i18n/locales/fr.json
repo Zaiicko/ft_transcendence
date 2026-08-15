@@ -329,10 +329,7 @@
     "achievement": "Succès débloqué : <b>{{name}}</b>",
     "prefAchievement": "Succès",
     "prefAchievementHint": "Quand tu débloques un succès",
-    "clear": "Effacer",
-    "gameInvite": "<b>{{who}}</b> t'a invité à un mini-jeu",
-    "prefGameInvite": "Invitations aux mini-jeux",
-    "prefGameInviteHint": "Quand un ami t'invite à jouer"
+    "clear": "Effacer"
   },
   "minigames": {
     "hub": {

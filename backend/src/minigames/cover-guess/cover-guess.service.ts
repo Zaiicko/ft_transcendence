@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { FriendshipStatus, GameType, Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { NotificationsService } from '../../notifications/notifications.service';
 import { CreateCoverGuessMatchDto } from './dto/create-match.dto';
 import { CoverGuessGateway } from './cover-guess.gateway';
 import { BLUR_STEP_COUNT, CoverGuessDifficulty, CoverGuessRoundMode } from './cover-guess.types';
@@ -111,7 +110,6 @@ export class CoverGuessService implements OnModuleDestroy {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly notifications: NotificationsService,
     private readonly gateway: CoverGuessGateway,
   ) {
     this.sweepTimer = setInterval(() => this.sweep(), 60_000);
@@ -221,8 +219,19 @@ export class CoverGuessService implements OnModuleDestroy {
       data: { id, hostId, status: 'LOBBY', difficulty: dto.difficulty, targetScore: dto.targetScore },
     });
 
+    // A dedicated live event rather than the general notification pipeline:
+    // GameInviteOverlay is a full-screen blocking prompt already shown the
+    // moment this arrives, so there's nothing left for a bell entry to add —
+    // no Notification row, no unread badge, no opt-out preference.
     for (const u of invitees) {
-      void this.notifications.gameInvited(hostId, u.id, id, 'cover-guess', dto.difficulty);
+      this.gateway.emitToUser(u.id, 'coverguess:invite', {
+        matchId: id,
+        game: 'cover-guess',
+        difficulty: dto.difficulty,
+        actorId: hostId,
+        actorUsername: host.username,
+        actorAvatarUrl: host.avatarUrl,
+      });
     }
 
     return { matchId: id };

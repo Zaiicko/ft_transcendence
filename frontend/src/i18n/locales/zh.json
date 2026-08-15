@@ -329,10 +329,7 @@
     "achievement": "解锁成就：<b>{{name}}</b>",
     "prefAchievement": "成就",
     "prefAchievementHint": "当你解锁成就时",
-    "clear": "清空",
-    "gameInvite": "<b>{{who}}</b> 邀请你玩小游戏",
-    "prefGameInvite": "小游戏邀请",
-    "prefGameInviteHint": "当好友邀请你一起玩时"
+    "clear": "清空"
   },
   "minigames": {
     "hub": {

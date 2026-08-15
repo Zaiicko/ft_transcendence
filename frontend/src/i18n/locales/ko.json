@@ -329,10 +329,7 @@
     "achievement": "업적 달성: <b>{{name}}</b>",
     "prefAchievement": "업적",
     "prefAchievementHint": "업적을 달성했을 때",
-    "clear": "지우기",
-    "gameInvite": "<b>{{who}}</b>님이 미니게임에 초대했습니다",
-    "prefGameInvite": "미니게임 초대",
-    "prefGameInviteHint": "친구가 함께 플레이하자고 초대할 때"
+    "clear": "지우기"
   },
   "minigames": {
     "hub": {

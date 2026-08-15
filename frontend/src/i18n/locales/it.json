@@ -329,10 +329,7 @@
     "achievement": "Obiettivo sbloccato: <b>{{name}}</b>",
     "prefAchievement": "Obiettivi",
     "prefAchievementHint": "Quando sblocchi un obiettivo",
-    "clear": "Svuota",
-    "gameInvite": "<b>{{who}}</b> ti ha invitato a un minigioco",
-    "prefGameInvite": "Inviti ai minigiochi",
-    "prefGameInviteHint": "Quando un amico ti invita a giocare"
+    "clear": "Svuota"
   },
   "minigames": {
     "hub": {

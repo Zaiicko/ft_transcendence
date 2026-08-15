@@ -329,10 +329,7 @@
     "achievement": "Erfolg freigeschaltet: <b>{{name}}</b>",
     "prefAchievement": "Erfolge",
     "prefAchievementHint": "Wenn du einen Erfolg freischaltest",
-    "clear": "Leeren",
-    "gameInvite": "<b>{{who}}</b> hat dich zu einem Minispiel eingeladen",
-    "prefGameInvite": "Minispiel-Einladungen",
-    "prefGameInviteHint": "Wenn dich ein Freund zum Spielen einlädt"
+    "clear": "Leeren"
   },
   "minigames": {
     "hub": {

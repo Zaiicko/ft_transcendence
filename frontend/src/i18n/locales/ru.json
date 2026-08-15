@@ -329,10 +329,7 @@
     "achievement": "Достижение открыто: <b>{{name}}</b>",
     "prefAchievement": "Достижения",
     "prefAchievementHint": "Когда вы открываете достижение",
-    "clear": "Очистить",
-    "gameInvite": "<b>{{who}}</b> пригласил(а) вас в мини-игру",
-    "prefGameInvite": "Приглашения в мини-игры",
-    "prefGameInviteHint": "Когда друг приглашает вас поиграть"
+    "clear": "Очистить"
   },
   "minigames": {
     "hub": {
