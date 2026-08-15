@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "猜游戏截图",
-      "description": "根据游戏内截图猜游戏——截图一开始完全模糊，每次猜错后会稍微变清晰一点。",
+      "description": "根据游戏内截图猜游戏。",
       "setup": {
         "mode": "模式",
         "modeLocal": "本地",
@@ -466,9 +466,11 @@
           "off": "无模糊"
         },
         "blurHint": {
-          "on": "截图一开始是模糊的，每次尝试后会变清晰，和平常一样。",
+          "on": "截图一开始是模糊的，每次尝试后会变清晰。",
           "off": "截图从一开始就完全清晰显示——难度更高，因为截图几乎从不显示标题或标志。每位玩家在本回合只有一次尝试机会。"
         },
+        "maxAttempts": "最大尝试次数",
+        "maxAttemptsHint": "回合结束前允许的错误猜测总次数——分配在玩家的轮次之间（或在\"抢先猜对\"模式下由所有人共用）。",
         "answerTimeLabel": {
           "TURNS": "回答时间",
           "RACE": "揭晓间隔"
@@ -483,6 +485,7 @@
         "opponentTurn": "等待 {{name}}…",
         "racePromptOnline": "抢在别人之前猜出来！",
         "nextBlurIn": "{{count}}秒后进一步揭晓",
+        "attemptsLeft": "剩余 {{count}} 次尝试",
         "buzzerOpen": "点击你的名字来回答！",
         "buzzedTurn": "{{name}}，轮到你回答了！",
         "cancelBuzz": "不是这个——放弃抢答",

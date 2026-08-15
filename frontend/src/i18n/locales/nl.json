@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Raad de screenshot",
-      "description": "Raad de game aan de hand van een screenshot uit het spel — die begint helemaal wazig en wordt na elke foute poging iets duidelijker.",
+      "description": "Raad de game aan de hand van een screenshot uit het spel.",
       "setup": {
         "mode": "Modus",
         "modeLocal": "Lokaal",
@@ -466,9 +466,11 @@
           "off": "Zonder vervaging"
         },
         "blurHint": {
-          "on": "De screenshot begint wazig en wordt bij elke poging duidelijker, zoals gebruikelijk.",
+          "on": "De screenshot begint wazig en wordt bij elke poging duidelijker.",
           "off": "De screenshot wordt vanaf het begin volledig scherp getoond — veel moeilijker, want screenshots tonen bijna nooit een titel of logo. Elke speler krijgt maar één poging voor de ronde."
         },
+        "maxAttempts": "Max. pogingen",
+        "maxAttemptsHint": "Totaal aantal foute pogingen dat is toegestaan voordat de ronde eindigt — verdeeld over de beurten van de spelers (of gedeeld door iedereen in de modus 'eerste die het raadt').",
         "answerTimeLabel": {
           "TURNS": "Antwoordtijd",
           "RACE": "Interval tussen onthullingen"
@@ -483,6 +485,7 @@
         "opponentTurn": "Wachten op {{name}}…",
         "racePromptOnline": "Raad het vóór de anderen!",
         "nextBlurIn": "Volgende onthulling over {{count}}s",
+        "attemptsLeft": "Nog {{count}} poging(en)",
         "buzzerOpen": "Tik op je naam om te antwoorden!",
         "buzzedTurn": "{{name}}, jij mag antwoorden!",
         "cancelBuzz": "Toch niet — beurt loslaten",

@@ -66,6 +66,9 @@ export interface ScreenshotGuessRoundState {
   currentTurnUserId: number | null;
   resolved: boolean;
   turnDeadline: number | null;
+  // Only set when the match is running without blur — the shared/per-turn
+  // wrong-guess budget left before the round ends unresolved.
+  attemptsLeft: number | null;
   answerGameId?: number;
   answerTitle?: string;
 }
@@ -79,6 +82,8 @@ export interface ScreenshotGuessMatchState {
   // false = "no blur" mode — the screenshot is shown fully clear from the
   // start.
   blur?: boolean;
+  // Only meaningful when blur is false — see CreateScreenshotGuessMatchDto.
+  maxAttempts?: number;
   targetScore: number;
   answerTimeSec: number;
   players: ScreenshotGuessPlayerState[];

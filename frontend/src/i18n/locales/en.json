@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Guess the Screenshot",
-      "description": "Guess the game from an in-game screenshot — it starts fully blurred and clears a little after every wrong guess.",
+      "description": "Guess the game from an in-game screenshot.",
       "setup": {
         "mode": "Mode",
         "modeLocal": "Local",
@@ -466,9 +466,11 @@
           "off": "No blur"
         },
         "blurHint": {
-          "on": "The screenshot starts blurred and clears with each attempt, same as usual.",
+          "on": "The screenshot starts blurred and clears with each attempt.",
           "off": "The screenshot is shown fully clear from the start — much harder, since screenshots rarely show a title or logo. Each player gets a single attempt for the round instead."
         },
+        "maxAttempts": "Max attempts",
+        "maxAttemptsHint": "Total number of wrong guesses allowed before the round ends — shared across every player's turn (or across everyone at once in \"first to guess\" mode).",
         "answerTimeLabel": {
           "TURNS": "Answer time",
           "RACE": "Reveal interval"
@@ -483,6 +485,7 @@
         "opponentTurn": "Waiting for {{name}}…",
         "racePromptOnline": "Guess before the others!",
         "nextBlurIn": "Next reveal in {{count}}s",
+        "attemptsLeft": "{{count}} attempt(s) left",
         "buzzerOpen": "Tap your name to answer!",
         "buzzedTurn": "{{name}}, it's your turn — guess!",
         "cancelBuzz": "Not it — let go",

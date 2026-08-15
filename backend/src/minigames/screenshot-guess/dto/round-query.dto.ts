@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsIn, IsInt, IsOptional, Min } from 'class-validator';
+import { IsArray, IsBoolean, IsIn, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { ScreenshotGuessDifficulty } from '../screenshot-guess.types';
 
 export class RoundQueryDto {
@@ -27,14 +27,14 @@ export class RoundQueryDto {
   @IsBoolean()
   blur = true;
 
-  // Only meaningful when blur is false and the local client is running
-  // TURNS mode: how many total attempts (= player count) the round gets
-  // before it's considered lost, since there's no blur budget to spend
-  // instead. Unused by RACE (still unlimited attempts, only the timer ends
-  // the round) and ignored when blur is true.
+  // Only meaningful when blur is false: how many total wrong-guess attempts
+  // the round gets before it's considered lost, since there's no blur budget
+  // to spend instead. Host-configurable at setup (not tied to player count).
+  // Ignored when blur is true.
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Max(10)
   @Type(() => Number)
   attempts?: number;
 }

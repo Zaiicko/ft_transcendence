@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Screenshot erraten",
-      "description": "Errate das Spiel anhand eines Screenshots aus dem Spiel — er startet komplett unscharf und wird nach jedem falschen Versuch etwas klarer.",
+      "description": "Errate das Spiel anhand eines Screenshots aus dem Spiel.",
       "setup": {
         "mode": "Modus",
         "modeLocal": "Lokal",
@@ -466,9 +466,11 @@
           "off": "Ohne Unschärfe"
         },
         "blurHint": {
-          "on": "Der Screenshot startet unscharf und wird mit jedem Versuch klarer, wie gewohnt.",
+          "on": "Der Screenshot startet unscharf und wird mit jedem Versuch klarer.",
           "off": "Der Screenshot wird von Anfang an vollständig klar gezeigt — viel schwerer, da Screenshots kaum je einen Titel oder ein Logo zeigen. Jeder Spieler hat nur einen einzigen Versuch pro Runde."
         },
+        "maxAttempts": "Max. Versuche",
+        "maxAttemptsHint": "Gesamtzahl falscher Versuche, bevor die Runde endet — verteilt auf die Spielzüge (oder von allen gemeinsam genutzt im Modus „Wer zuerst rät“).",
         "answerTimeLabel": {
           "TURNS": "Antwortzeit",
           "RACE": "Abstand zwischen den Enthüllungen"
@@ -483,6 +485,7 @@
         "opponentTurn": "Warten auf {{name}}…",
         "racePromptOnline": "Errate es vor den anderen!",
         "nextBlurIn": "Nächste Enthüllung in {{count}}s",
+        "attemptsLeft": "Noch {{count}} Versuch(e)",
         "buzzerOpen": "Tippe auf deinen Namen, um zu antworten!",
         "buzzedTurn": "{{name}}, du bist dran zu antworten!",
         "cancelBuzz": "Doch nicht — Buzzer freigeben",

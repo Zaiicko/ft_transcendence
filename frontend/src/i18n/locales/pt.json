@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Adivinhe a captura de tela",
-      "description": "Adivinhe o jogo por uma captura de tela do próprio jogo — ela começa totalmente borrada e clareia um pouco a cada tentativa errada.",
+      "description": "Adivinhe o jogo por uma captura de tela do próprio jogo.",
       "setup": {
         "mode": "Modo",
         "modeLocal": "Local",
@@ -466,9 +466,11 @@
           "off": "Sem desfoque"
         },
         "blurHint": {
-          "on": "A captura começa borrada e clareia a cada tentativa, como de costume.",
+          "on": "A captura começa borrada e clareia a cada tentativa.",
           "off": "A captura é mostrada totalmente nítida desde o início — bem mais difícil, já que capturas quase nunca mostram um título ou logo. Cada jogador tem apenas uma tentativa na rodada."
         },
+        "maxAttempts": "Tentativas máximas",
+        "maxAttemptsHint": "Número total de respostas erradas permitidas antes de a rodada terminar — dividido entre os turnos dos jogadores (ou compartilhado por todos no modo \"o primeiro que acertar\").",
         "answerTimeLabel": {
           "TURNS": "Tempo de resposta",
           "RACE": "Intervalo de revelação"
@@ -483,6 +485,7 @@
         "opponentTurn": "Aguardando {{name}}…",
         "racePromptOnline": "Adivinhe antes dos outros!",
         "nextBlurIn": "Próxima revelação em {{count}}s",
+        "attemptsLeft": "{{count}} tentativa(s) restante(s)",
         "buzzerOpen": "Toque no seu nome para responder!",
         "buzzedTurn": "{{name}}, sua vez de responder!",
         "cancelBuzz": "Não era essa — solto a vez",

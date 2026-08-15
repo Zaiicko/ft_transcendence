@@ -18,12 +18,14 @@ interface LocalRound {
   roundToken: string;
   screenshotUrl: string;
   blurStepIndex: number;
+  attemptsLeft?: number;
 }
 
 interface LocalOutcome {
   correct: boolean;
   resolved: boolean;
   blurStepIndex: number;
+  attemptsLeft?: number;
   answerGameId?: number;
   answerTitle?: string;
 }
@@ -38,6 +40,7 @@ export default function ScreenshotGuessLocalPlay({
   difficulty,
   roundMode,
   blur,
+  maxAttempts,
   targetScore,
   answerTimeSec,
   playerNames,
@@ -46,6 +49,7 @@ export default function ScreenshotGuessLocalPlay({
   difficulty: ScreenshotGuessDifficulty;
   roundMode: ScreenshotGuessRoundMode;
   blur: boolean;
+  maxAttempts: number;
   targetScore: number;
   answerTimeSec: number;
   playerNames: string[];
@@ -78,7 +82,7 @@ export default function ScreenshotGuessLocalPlay({
       setResolution(null);
       setBuzzedIndex(null);
       try {
-        const attemptsParam = blur ? '' : `&blur=false&attempts=${playerNames.length}`;
+        const attemptsParam = blur ? '' : `&blur=false&attempts=${maxAttempts}`;
         const r = await apiFetch<LocalRound>(
           `/minigames/screenshot-guess/round?difficulty=${difficulty}&exclude=${excludeIds.join(',')}${attemptsParam}`,
         );
@@ -94,7 +98,7 @@ export default function ScreenshotGuessLocalPlay({
         setLoading(false);
       }
     },
-    [difficulty, blur, playerNames.length, t],
+    [difficulty, blur, maxAttempts, playerNames.length, t],
   );
 
   useEffect(() => {
@@ -144,10 +148,22 @@ export default function ScreenshotGuessLocalPlay({
       });
 
       if (isRace) {
-        // A wrong RACE guess never resolves the round (the cover only
-        // advances via the automatic tick below) — just reopen the buzzer.
-        if (outcome.correct) applyResolution(outcome, buzzedIndex);
-        else setBuzzedIndex(null);
+        if (outcome.correct) {
+          applyResolution(outcome, buzzedIndex);
+          return;
+        }
+        if (outcome.resolved) {
+          // No blur: a wrong guess spends the shared attempts budget instead
+          // of the cover advancing via a tick — out of attempts ends the
+          // round unresolved.
+          applyResolution(outcome, null);
+          return;
+        }
+        // Blur mode: the cover only advances via the automatic tick below,
+        // so a wrong guess just reopens the buzzer. No blur: also update the
+        // remaining attempts budget the wrong guess just spent.
+        setRound((prev) => (prev ? { ...prev, attemptsLeft: outcome.attemptsLeft } : prev));
+        setBuzzedIndex(null);
         return;
       }
 
@@ -182,7 +198,7 @@ export default function ScreenshotGuessLocalPlay({
         return;
       }
 
-      setRound({ ...round, blurStepIndex: outcome.blurStepIndex });
+      setRound({ ...round, blurStepIndex: outcome.blurStepIndex, attemptsLeft: outcome.attemptsLeft });
       setTurnPointer((p) => (p + 1) % turnOrder.length);
       setTurnCounter((c) => c + 1);
     } catch (err) {
@@ -224,6 +240,10 @@ export default function ScreenshotGuessLocalPlay({
   // players, and both modes re-arm it themselves by bumping turnCounter.
   useEffect(() => {
     if (!round || resolution || loading) return;
+    // No blur in RACE means nothing to reveal on a schedule — the round
+    // instead resolves via the attempts budget spent on real guesses, so
+    // there's no timer to run here at all.
+    if (isRace && !blur) return;
     const start = Date.now();
     let interval: ReturnType<typeof setInterval>;
     // Deferred a tick so the setRemaining calls don't run synchronously
@@ -245,7 +265,7 @@ export default function ScreenshotGuessLocalPlay({
       clearInterval(interval);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [turnCounter, resolution, loading, answerTimeSec]);
+  }, [turnCounter, resolution, loading, answerTimeSec, isRace, blur]);
 
   if (winner) {
     const ranked = [...players].sort((a, b) => b.score - a.score);
@@ -361,9 +381,17 @@ export default function ScreenshotGuessLocalPlay({
               {buzzedIndex != null
                 ? t('minigames.screenshotGuess.play.buzzedTurn', { name: players[buzzedIndex].name })
                 : t('minigames.screenshotGuess.play.buzzerOpen')}
-              <span className="ml-2 font-normal text-zinc-400">
-                {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
-              </span>
+              {blur ? (
+                <span className="ml-2 font-normal text-zinc-400">
+                  {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
+                </span>
+              ) : (
+                round?.attemptsLeft != null && (
+                  <span className="ml-2 font-normal text-zinc-400">
+                    {t('minigames.screenshotGuess.play.attemptsLeft', { count: round.attemptsLeft })}
+                  </span>
+                )
+              )}
             </p>
             {buzzedIndex == null ? (
               <div className="flex flex-wrap justify-center gap-2">
@@ -399,6 +427,11 @@ export default function ScreenshotGuessLocalPlay({
             <p className="text-sm font-medium">
               {t('minigames.screenshotGuess.play.yourTurn', { name: activePlayerName })}
               <span className="ml-2 font-normal text-zinc-400">{remaining}s</span>
+              {!blur && round?.attemptsLeft != null && (
+                <span className="ml-2 font-normal text-zinc-400">
+                  {t('minigames.screenshotGuess.play.attemptsLeft', { count: round.attemptsLeft })}
+                </span>
+              )}
             </p>
             <div className="w-full max-w-sm">
               <CoverGuessInput disabled={loading || busy} onGuess={(id) => void submitGuess(id)} />

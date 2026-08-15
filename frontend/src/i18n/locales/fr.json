@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Devine la capture d'écran",
-      "description": "Devine le jeu à partir d'une capture d'écran en jeu — elle est totalement floutée au départ et se defloute un peu après chaque mauvaise réponse.",
+      "description": "Devine le jeu à partir d'une capture d'écran en jeu.",
       "setup": {
         "mode": "Mode",
         "modeLocal": "Local",
@@ -466,9 +466,11 @@
           "off": "Sans flou"
         },
         "blurHint": {
-          "on": "La capture démarre floutée et se dévoile à chaque essai, comme d'habitude.",
+          "on": "La capture démarre floutée et se dévoile à chaque essai.",
           "off": "La capture est affichée nette dès le début — bien plus dur, car les captures ne montrent presque jamais de titre ou de logo. Chaque joueur n'a plus qu'un seul essai pour la manche."
         },
+        "maxAttempts": "Essais max",
+        "maxAttemptsHint": "Nombre total de mauvaises réponses autorisées avant la fin de la manche — réparti entre les tours des joueurs (ou partagé entre tous en mode « premier qui trouve »).",
         "answerTimeLabel": {
           "TURNS": "Temps de réponse",
           "RACE": "Intervalle de dévoilement"
@@ -483,6 +485,7 @@
         "opponentTurn": "En attente de {{name}}…",
         "racePromptOnline": "Devine avant les autres !",
         "nextBlurIn": "Prochain flou dans {{count}}s",
+        "attemptsLeft": "{{count}} essai(s) restant(s)",
         "buzzerOpen": "Appuie sur ton nom pour répondre !",
         "buzzedTurn": "{{name}}, à toi de répondre !",
         "cancelBuzz": "Pas ça — je laisse la main",

@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Indovina lo screenshot",
-      "description": "Indovina il gioco da uno screenshot di gioco — inizia completamente sfocato e si schiarisce un po' a ogni tentativo sbagliato.",
+      "description": "Indovina il gioco da uno screenshot di gioco.",
       "setup": {
         "mode": "Modalità",
         "modeLocal": "Locale",
@@ -466,9 +466,11 @@
           "off": "Senza sfocatura"
         },
         "blurHint": {
-          "on": "Lo screenshot parte sfocato e si schiarisce a ogni tentativo, come al solito.",
+          "on": "Lo screenshot parte sfocato e si schiarisce a ogni tentativo.",
           "off": "Lo screenshot viene mostrato completamente nitido fin dall'inizio — molto più difficile, perché gli screenshot quasi mai mostrano un titolo o un logo. Ogni giocatore ha un solo tentativo per il round."
         },
+        "maxAttempts": "Tentativi massimi",
+        "maxAttemptsHint": "Numero totale di risposte sbagliate consentite prima che il round finisca — distribuito tra i turni dei giocatori (o condiviso da tutti in modalità «il primo che indovina»).",
         "answerTimeLabel": {
           "TURNS": "Tempo di risposta",
           "RACE": "Intervallo di rivelazione"
@@ -483,6 +485,7 @@
         "opponentTurn": "In attesa di {{name}}…",
         "racePromptOnline": "Indovina prima degli altri!",
         "nextBlurIn": "Prossima rivelazione tra {{count}}s",
+        "attemptsLeft": "{{count}} tentativo/i rimasto/i",
         "buzzerOpen": "Tocca il tuo nome per rispondere!",
         "buzzedTurn": "{{name}}, tocca a te rispondere!",
         "cancelBuzz": "Non era quello — lascio il turno",

@@ -52,9 +52,9 @@ interface PendingLocalRound {
   screenshotUrl: string;
   blurStepIndex: number;
   blur: boolean;
-  // No-blur TURNS only: attempts left across the whole round before it's
-  // considered lost (there's no blur budget to spend instead). Unused in
-  // RACE mode (still unlimited attempts) or when blur is enabled.
+  // No blur only (TURNS or RACE): attempts left across the whole round
+  // before it's considered lost (there's no blur budget to spend instead).
+  // Unused when blur is enabled.
   attemptsLeft?: number;
   expiresAt: number;
 }
@@ -82,7 +82,7 @@ interface ScreenshotGuessRound {
   // Epoch ms the current turn auto-passes at — purely informational for the
   // client's countdown; the server enforces it via `turnTimer` below.
   turnDeadline: number;
-  // No-blur TURNS only — see PendingLocalRound.attemptsLeft.
+  // No blur only (TURNS or RACE) — see PendingLocalRound.attemptsLeft.
   attemptsLeft?: number;
 }
 
@@ -93,6 +93,8 @@ interface ScreenshotGuessMatchSession {
   roundMode: ScreenshotGuessRoundMode;
   // false = "no blur" mode — see CreateScreenshotGuessMatchDto.blur.
   blur: boolean;
+  // Only used when blur is false — see CreateScreenshotGuessMatchDto.maxAttempts.
+  maxAttempts: number;
   targetScore: number;
   // Seconds a player gets before their turn is auto-passed.
   answerTimeSec: number;
@@ -141,34 +143,28 @@ export class ScreenshotGuessService implements OnModuleDestroy {
     const roundToken = randomUUID();
     // No blur = shown fully clear from the start, nothing to reveal.
     const blurStepIndex = blur ? 0 : BLUR_STEP_COUNT - 1;
+    const attemptsLeft = blur ? undefined : (attempts ?? 1);
     this.localRounds.set(roundToken, {
       gameId: game.id,
       title: game.title,
       screenshotUrl: game.screenshotUrl,
       blurStepIndex,
       blur,
-      attemptsLeft: blur ? undefined : (attempts ?? 1),
+      attemptsLeft,
       expiresAt: Date.now() + LOCAL_ROUND_TTL_MS,
     });
-    return { roundToken, screenshotUrl: game.screenshotUrl, blurStepIndex };
+    return { roundToken, screenshotUrl: game.screenshotUrl, blurStepIndex, attemptsLeft };
   }
 
   guessLocal(roundToken: string, catalogId: number | null, mode: ScreenshotGuessRoundMode = 'TURNS') {
     const round = this.localRounds.get(roundToken);
     if (!round) throw new NotFoundException('Manche introuvable ou expirée');
 
-    if (mode === 'RACE') {
-      // Unlimited real attempts in RACE regardless of blur — only the
-      // client's own reveal-schedule ticks (catalogId === null) ever
-      // mutate the round.
-      const outcome = this.resolveAttempt(round, catalogId, catalogId === null);
-      if (outcome.resolved) this.localRounds.delete(roundToken);
-      return outcome;
-    }
-
     if (!round.blur) {
-      // No blur budget to spend on a wrong TURNS guess — a fixed attempt
-      // count instead (see PendingLocalRound.attemptsLeft).
+      // No blur budget to spend on a wrong guess — a fixed attempts budget
+      // instead (see PendingLocalRound.attemptsLeft), for TURNS and RACE
+      // alike: without blur there's nothing to reveal between attempts
+      // either way, so a tick/timer-based schedule wouldn't mean anything.
       const correct = catalogId != null && catalogId === round.gameId;
       if (correct) {
         this.localRounds.delete(roundToken);
@@ -191,7 +187,15 @@ export class ScreenshotGuessService implements OnModuleDestroy {
           answerTitle: round.title,
         };
       }
-      return { correct: false, resolved: false, blurStepIndex: round.blurStepIndex };
+      return { correct: false, resolved: false, blurStepIndex: round.blurStepIndex, attemptsLeft: round.attemptsLeft };
+    }
+
+    if (mode === 'RACE') {
+      // Unlimited real attempts in RACE when blur is on — only the client's
+      // own reveal-schedule ticks (catalogId === null) ever mutate the round.
+      const outcome = this.resolveAttempt(round, catalogId, catalogId === null);
+      if (outcome.resolved) this.localRounds.delete(roundToken);
+      return outcome;
     }
 
     // TURNS + blur (existing behavior): every attempt (guess or pass)
@@ -258,6 +262,7 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       difficulty: dto.difficulty,
       roundMode: dto.roundMode,
       blur: dto.blur,
+      maxAttempts: dto.maxAttempts,
       targetScore: dto.targetScore,
       answerTimeSec: dto.answerTimeSec,
       status: 'LOBBY',
@@ -339,7 +344,11 @@ export class ScreenshotGuessService implements OnModuleDestroy {
     }
     const round = session.round;
 
-    if (session.roundMode === 'RACE') return this.guessRace(session, round, userId, catalogId);
+    if (session.roundMode === 'RACE') {
+      return session.blur
+        ? this.guessRace(session, round, userId, catalogId)
+        : this.guessRaceNoBlur(session, round, userId, catalogId);
+    }
 
     const currentTurnUserId = round.turnOrder[round.turnPointer];
     if (currentTurnUserId !== userId) throw new ForbiddenException("Ce n'est pas ton tour");
@@ -379,8 +388,9 @@ export class ScreenshotGuessService implements OnModuleDestroy {
 
   // TURNS + no blur: the screenshot was already shown fully clear from the
   // start, so a wrong guess has nothing to reveal — instead of a blur
-  // budget, the round gets a fixed attemptsLeft (seeded to the player count
-  // in startRound) and ends once everyone's had their one shot.
+  // budget, the round gets a fixed attemptsLeft (host-configured maxAttempts,
+  // seeded in startRound) and ends once it's spent, turns wrapping around the
+  // rotation as needed.
   private async guessTurnsNoBlur(
     session: ScreenshotGuessMatchSession,
     round: ScreenshotGuessRound,
@@ -399,7 +409,7 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       return this.toStateDto(session);
     }
 
-    round.attemptsLeft = (round.attemptsLeft ?? round.turnOrder.length) - 1;
+    round.attemptsLeft = (round.attemptsLeft ?? session.maxAttempts) - 1;
     if (round.attemptsLeft <= 0) {
       round.resolved = true;
       this.broadcastState(session);
@@ -413,10 +423,48 @@ export class ScreenshotGuessService implements OnModuleDestroy {
     return this.toStateDto(session);
   }
 
-  // RACE: any accepted player can attempt at any time, no turn to check.
-  // A wrong guess doesn't touch the round at all — the cover only clears via
-  // scheduleRaceDeblur's own timer — so there's nothing to broadcast for a
-  // miss, it just quietly tells the guesser themself "not that one".
+  // RACE + no blur: there's no reveal schedule to run (the screenshot is
+  // already fully clear), so unlike guessRace below, a wrong guess here
+  // spends a shared attempts budget instead — same pool for everyone, no
+  // turn to check. Once it hits zero the round ends unresolved, same as
+  // guessTurnsNoBlur but without the turn rotation.
+  private async guessRaceNoBlur(
+    session: ScreenshotGuessMatchSession,
+    round: ScreenshotGuessRound,
+    userId: number,
+    catalogId: number | null,
+  ) {
+    if (!this.activePlayers(session).some((p) => p.userId === userId)) throw new ForbiddenException();
+
+    const correct = catalogId != null && catalogId === round.gameId;
+    if (correct) {
+      round.resolved = true;
+      const player = session.players.get(userId)!;
+      player.score += 1;
+      this.broadcastState(session);
+      if (player.score >= session.targetScore) await this.finishMatch(session, userId);
+      else this.scheduleNextRound(session);
+      return this.toStateDto(session);
+    }
+
+    round.attemptsLeft = (round.attemptsLeft ?? session.maxAttempts) - 1;
+    if (round.attemptsLeft <= 0) {
+      round.resolved = true;
+      this.broadcastState(session);
+      this.scheduleNextRound(session);
+      return this.toStateDto(session);
+    }
+    // Broadcast so everyone sees the shared attempts budget tick down, even
+    // though nothing else about the round changed.
+    this.broadcastState(session);
+    return this.toStateDto(session);
+  }
+
+  // RACE + blur: any accepted player can attempt at any time, no turn to
+  // check. A wrong guess doesn't touch the round at all — the cover only
+  // clears via scheduleRaceDeblur's own timer — so there's nothing to
+  // broadcast for a miss, it just quietly tells the guesser themself "not
+  // that one".
   private async guessRace(
     session: ScreenshotGuessMatchSession,
     round: ScreenshotGuessRound,
@@ -579,10 +627,15 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       turnPointer: 0,
       resolved: false,
       turnDeadline: 0, // set by scheduleTurnTimer/scheduleRaceDeblur below
-      attemptsLeft: !session.blur && session.roundMode === 'TURNS' ? turnOrder.length : undefined,
+      attemptsLeft: !session.blur ? session.maxAttempts : undefined,
     };
-    if (session.roundMode === 'RACE') this.scheduleRaceDeblur(session);
-    else this.scheduleTurnTimer(session);
+    if (session.roundMode === 'RACE') {
+      // No-blur RACE has nothing to reveal on a schedule — it resolves via
+      // attemptsLeft in guessRaceNoBlur instead, so no timer to arm here.
+      if (session.blur) this.scheduleRaceDeblur(session);
+    } else {
+      this.scheduleTurnTimer(session);
+    }
     this.broadcastState(session);
   }
 
@@ -684,6 +737,7 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       difficulty: session.difficulty,
       roundMode: session.roundMode,
       blur: session.blur,
+      maxAttempts: session.maxAttempts,
       targetScore: session.targetScore,
       answerTimeSec: session.answerTimeSec,
       winnerId: session.winnerId ?? null,
@@ -702,6 +756,7 @@ export class ScreenshotGuessService implements OnModuleDestroy {
         currentTurnUserId: session.round.turnOrder[session.round.turnPointer] ?? null,
         resolved: session.round.resolved,
         turnDeadline: session.round.resolved ? null : session.round.turnDeadline,
+        attemptsLeft: session.round.attemptsLeft ?? null,
         ...(session.round.resolved
           ? { answerGameId: session.round.gameId, answerTitle: session.round.title }
           : {}),

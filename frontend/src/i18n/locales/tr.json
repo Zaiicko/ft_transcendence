@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Ekran Görüntüsünü Tahmin Et",
-      "description": "Oyunu, oyun içinden bir ekran görüntüsünden tahmin et — başlangıçta tamamen bulanıktır ve her yanlış denemeden sonra biraz netleşir.",
+      "description": "Oyunu, oyun içinden bir ekran görüntüsünden tahmin et.",
       "setup": {
         "mode": "Mod",
         "modeLocal": "Yerel",
@@ -466,9 +466,11 @@
           "off": "Bulanıklık olmadan"
         },
         "blurHint": {
-          "on": "Ekran görüntüsü bulanık başlar ve her denemede netleşir, her zamanki gibi.",
+          "on": "Ekran görüntüsü bulanık başlar ve her denemede netleşir.",
           "off": "Ekran görüntüsü baştan itibaren tamamen net gösterilir — çok daha zor, çünkü ekran görüntüleri neredeyse hiç başlık veya logo göstermez. Her oyuncunun tur için sadece tek bir denemesi olur."
         },
+        "maxAttempts": "Maks. deneme",
+        "maxAttemptsHint": "Tur bitmeden önce izin verilen toplam yanlış deneme sayısı — oyuncuların sıraları arasında paylaştırılır (veya \"ilk bulan kazanır\" modunda herkes arasında ortak kullanılır).",
         "answerTimeLabel": {
           "TURNS": "Cevap süresi",
           "RACE": "Netleşme aralığı"
@@ -483,6 +485,7 @@
         "opponentTurn": "{{name}} bekleniyor…",
         "racePromptOnline": "Diğerlerinden önce tahmin et!",
         "nextBlurIn": "Sonraki netleşme {{count}}s içinde",
+        "attemptsLeft": "{{count}} deneme kaldı",
         "buzzerOpen": "Cevaplamak için adına dokun!",
         "buzzedTurn": "{{name}}, cevaplama sırası sende!",
         "cancelBuzz": "O değildi — sırayı bırak",

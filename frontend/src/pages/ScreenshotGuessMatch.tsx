@@ -247,9 +247,14 @@ export default function ScreenshotGuessMatch() {
               <>
                 <p className="text-sm font-medium">
                   {t('minigames.screenshotGuess.play.racePromptOnline')}
-                  {remaining !== null && (
+                  {state.blur && remaining !== null && (
                     <span className="ml-2 font-normal text-zinc-400">
                       {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
+                    </span>
+                  )}
+                  {!state.blur && state.round.attemptsLeft != null && (
+                    <span className="ml-2 font-normal text-zinc-400">
+                      {t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft })}
                     </span>
                   )}
                 </p>
@@ -262,6 +267,11 @@ export default function ScreenshotGuessMatch() {
                 <p className="text-sm font-medium">
                   {t('minigames.screenshotGuess.play.yourTurnNow')}
                   {remaining !== null && <span className="ml-2 font-normal text-zinc-400">{remaining}s</span>}
+                  {!state.blur && state.round.attemptsLeft != null && (
+                    <span className="ml-2 font-normal text-zinc-400">
+                      {t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft })}
+                    </span>
+                  )}
                 </p>
                 <div className="w-full max-w-sm">
                   <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
@@ -281,6 +291,11 @@ export default function ScreenshotGuessMatch() {
                   name: state.players.find((p) => p.userId === state.round?.currentTurnUserId)?.username ?? '',
                 })}
                 {remaining !== null && <span className="ml-2 text-zinc-400">({remaining}s)</span>}
+                {!state.blur && state.round.attemptsLeft != null && (
+                  <span className="ml-2 text-zinc-400">
+                    {t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft })}
+                  </span>
+                )}
               </p>
             )}
           </div>

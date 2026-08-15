@@ -424,7 +424,7 @@
     },
     "screenshotGuess": {
       "title": "Zgadnij zrzut ekranu",
-      "description": "Zgadnij grę na podstawie zrzutu ekranu z rozgrywki — na start jest całkowicie rozmyty i staje się nieco wyraźniejszy po każdej błędnej próbie.",
+      "description": "Zgadnij grę na podstawie zrzutu ekranu z rozgrywki.",
       "setup": {
         "mode": "Tryb",
         "modeLocal": "Lokalny",
@@ -466,9 +466,11 @@
           "off": "Bez rozmycia"
         },
         "blurHint": {
-          "on": "Zrzut ekranu zaczyna się rozmyty i staje się wyraźniejszy z każdą próbą, jak zwykle.",
+          "on": "Zrzut ekranu zaczyna się rozmyty i staje się wyraźniejszy z każdą próbą.",
           "off": "Zrzut ekranu jest pokazany całkowicie wyraźnie od początku — dużo trudniej, bo zrzuty ekranu prawie nigdy nie pokazują tytułu ani logo. Każdy gracz ma tylko jedną próbę na rundę."
         },
+        "maxAttempts": "Maks. prób",
+        "maxAttemptsHint": "Łączna liczba błędnych prób dozwolona przed zakończeniem rundy — rozłożona na kolejki graczy (lub wspólna dla wszystkich w trybie „kto pierwszy zgadnie”).",
         "answerTimeLabel": {
           "TURNS": "Czas na odpowiedź",
           "RACE": "Odstęp między odsłonięciami"
@@ -483,6 +485,7 @@
         "opponentTurn": "Oczekiwanie na {{name}}…",
         "racePromptOnline": "Zgadnij przed innymi!",
         "nextBlurIn": "Następne odsłonięcie za {{count}}s",
+        "attemptsLeft": "Pozostało prób: {{count}}",
         "buzzerOpen": "Dotknij swojego imienia, aby odpowiedzieć!",
         "buzzedTurn": "{{name}}, twoja kolej na odpowiedź!",
         "cancelBuzz": "To nie to — oddaję kolejkę",
