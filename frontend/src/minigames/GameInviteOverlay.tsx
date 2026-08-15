@@ -50,7 +50,6 @@ export default function GameInviteOverlay() {
         aria-modal="true"
         className="flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border border-zinc-900/10 bg-white p-6 text-center shadow-2xl dark:border-zinc-100/10 dark:bg-zinc-900"
       >
-        <CoverGuessLogo className="aspect-[3/4] w-20" />
         <Avatar username={invite.actorUsername} avatarUrl={invite.actorAvatarUrl} size={56} />
         <p className="text-sm">
           <Trans
@@ -62,6 +61,7 @@ export default function GameInviteOverlay() {
             components={{ b: <strong className="font-semibold" /> }}
           />
         </p>
+        <CoverGuessLogo className="aspect-[3/4] w-20" />
         <div className="flex gap-3">
           <button
             type="button"

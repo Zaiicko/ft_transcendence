@@ -107,11 +107,17 @@ export default function CoverGuessSetup() {
       <Link to="/minigames" className="self-start text-sm text-zinc-500 hover:text-accent">
         ← {t('minigames.coverGuess.match.backToHub')}
       </Link>
-      <SectionHead eyebrow={t('minigames.hub.eyebrow')} title={t('minigames.coverGuess.title')} />
+      <div className="flex items-center gap-4">
+        <CoverGuessLogo className="aspect-[3/4] w-16 shrink-0" />
+        <SectionHead
+          className="mb-0"
+          eyebrow={t('minigames.hub.eyebrow')}
+          title={t('minigames.coverGuess.title')}
+        />
+      </div>
       <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('minigames.coverGuess.description')}</p>
 
       <div className="card flex flex-col gap-6 p-5">
-        <CoverGuessLogo className="aspect-[3/4] w-20 self-center" />
         <div>
           <p className="mb-2 text-sm font-semibold">{t('minigames.coverGuess.setup.mode')}</p>
           <div className="flex gap-2">
