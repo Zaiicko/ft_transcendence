@@ -387,7 +387,8 @@
         "winner": "¡{{name}} gana!",
         "backToHub": "Volver a minijuegos",
         "leave": "Abandonar partida",
-        "finished": "¡Partida terminada!"
+        "finished": "¡Partida terminada!",
+        "recap": "Juegos de esta partida"
       },
       "invite": {
         "accept": "Aceptar",

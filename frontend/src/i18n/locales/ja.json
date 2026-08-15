@@ -387,7 +387,8 @@
         "winner": "{{name}}さんの勝利！",
         "backToHub": "ミニゲームに戻る",
         "leave": "対戦を退出",
-        "finished": "対戦終了！"
+        "finished": "対戦終了！",
+        "recap": "この対戦で出たゲーム"
       },
       "invite": {
         "accept": "承諾",

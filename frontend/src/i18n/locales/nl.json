@@ -387,7 +387,8 @@
         "winner": "{{name}} wint!",
         "backToHub": "Terug naar minigames",
         "leave": "Wedstrijd verlaten",
-        "finished": "Wedstrijd afgelopen!"
+        "finished": "Wedstrijd afgelopen!",
+        "recap": "Spellen in deze wedstrijd"
       },
       "invite": {
         "accept": "Accepteren",

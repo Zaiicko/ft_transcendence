@@ -312,6 +312,28 @@ export default function CoverGuessMatch() {
                 );
               })}
           </ul>
+
+          {!!state.history?.length && (
+            <div className="w-full max-w-lg">
+              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+                {t('minigames.coverGuess.match.recap')}
+              </p>
+              <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                {state.history.map((g) => (
+                  <li key={g.gameId} className="flex flex-col items-center gap-1">
+                    <img
+                      src={g.coverUrl}
+                      alt={g.title}
+                      className="aspect-[3/4] w-full rounded-lg object-cover"
+                    />
+                    <span className="line-clamp-2 text-center text-xs text-zinc-500 dark:text-zinc-400">
+                      {g.title}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
 

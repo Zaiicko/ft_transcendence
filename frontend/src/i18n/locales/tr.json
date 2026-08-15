@@ -387,7 +387,8 @@
         "winner": "{{name}} kazandı!",
         "backToHub": "Mini oyunlara dön",
         "leave": "Maçtan ayrıl",
-        "finished": "Maç bitti!"
+        "finished": "Maç bitti!",
+        "recap": "Bu maçtaki oyunlar"
       },
       "invite": {
         "accept": "Kabul et",

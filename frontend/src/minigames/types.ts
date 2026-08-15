@@ -32,4 +32,5 @@ export interface CoverGuessMatchState {
   round: CoverGuessRoundState | null;
   winnerId?: number | null;
   participants?: { userId: number; username: string; score: number }[];
+  history?: { gameId: number; title: string; coverUrl: string }[];
 }

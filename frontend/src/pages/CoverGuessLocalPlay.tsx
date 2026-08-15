@@ -28,6 +28,12 @@ interface LocalOutcome {
   answerTitle?: string;
 }
 
+interface PlayedGame {
+  gameId: number;
+  title: string;
+  coverUrl: string;
+}
+
 export default function CoverGuessLocalPlay({
   difficulty,
   targetScore,
@@ -55,6 +61,7 @@ export default function CoverGuessLocalPlay({
   const [error, setError] = useState<string | null>(null);
   const [winner, setWinner] = useState<LocalPlayer | null>(null);
   const [remaining, setRemaining] = useState(answerTimeSec);
+  const [playedGames, setPlayedGames] = useState<PlayedGame[]>([]);
 
   const beginRound = useCallback(
     async (nextRoundIndex: number, excludeIds: number[]) => {
@@ -98,6 +105,14 @@ export default function CoverGuessLocalPlay({
         method: 'POST',
         body: JSON.stringify(catalogId != null ? { catalogId } : {}),
       });
+
+      if (outcome.resolved) {
+        // The answer is known now — reveal the cover fully (BlurredCover
+        // animates the transition) instead of leaving it at whatever blur
+        // step the last guess was made at.
+        setRound((prev) => (prev ? { ...prev, blurStepIndex: outcome.blurStepIndex } : prev));
+        setPlayedGames((prev) => [...prev, { gameId: outcome.answerGameId!, title: outcome.answerTitle!, coverUrl: round.coverUrl }]);
+      }
 
       if (outcome.correct) {
         const scorerIndex = turnOrder[turnPointer];
@@ -187,6 +202,29 @@ export default function CoverGuessLocalPlay({
             );
           })}
         </ul>
+
+        {playedGames.length > 0 && (
+          <div className="w-full max-w-lg">
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400">
+              {t('minigames.coverGuess.match.recap')}
+            </p>
+            <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+              {playedGames.map((g) => (
+                <li key={g.gameId} className="flex flex-col items-center gap-1">
+                  <img
+                    src={g.coverUrl}
+                    alt={g.title}
+                    className="aspect-[3/4] w-full rounded-lg object-cover"
+                  />
+                  <span className="line-clamp-2 text-center text-xs text-zinc-500 dark:text-zinc-400">
+                    {g.title}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="mt-2 flex gap-3">
           <button
             type="button"

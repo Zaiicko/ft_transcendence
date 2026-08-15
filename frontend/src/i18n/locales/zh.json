@@ -387,7 +387,8 @@
         "winner": "{{name}} 获胜！",
         "backToHub": "返回小游戏",
         "leave": "离开对局",
-        "finished": "对局结束！"
+        "finished": "对局结束！",
+        "recap": "本局出现的游戏"
       },
       "invite": {
         "accept": "接受",

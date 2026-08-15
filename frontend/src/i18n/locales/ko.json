@@ -387,7 +387,8 @@
         "winner": "{{name}}님 승리!",
         "backToHub": "미니게임으로 돌아가기",
         "leave": "경기 나가기",
-        "finished": "경기 종료!"
+        "finished": "경기 종료!",
+        "recap": "이번 경기의 게임"
       },
       "invite": {
         "accept": "수락",

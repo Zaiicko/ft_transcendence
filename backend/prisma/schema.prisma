@@ -608,8 +608,11 @@ model CoverGuessMatch {
   difficulty   String // "easy" | "normal" | "hard"
   targetScore  Int
   // Final snapshot only ({ userId, username, score }[]) — written at match
-  // end, not per-round; no per-round history is tracked.
+  // end, not per-round; no per-attempt history is tracked.
   participants Json?
+  // The games that were shown during the match ({ gameId, title, coverUrl }[]),
+  // for the post-match recap — written at match end alongside `participants`.
+  rounds       Json?
   winnerId     Int?
   createdAt    DateTime         @default(now())
   endedAt      DateTime?

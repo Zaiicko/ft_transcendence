@@ -93,6 +93,8 @@ interface CoverGuessMatchSession {
   usedGameIds: Set<number>;
   round: CoverGuessRound | null;
   roundIndex: number;
+  // Every game shown so far this match, in order — for the post-match recap.
+  history: { gameId: number; title: string; coverUrl: string }[];
   createdAt: number;
   nextRoundTimer?: ReturnType<typeof setTimeout>;
   turnTimer?: ReturnType<typeof setTimeout>;
@@ -205,6 +207,7 @@ export class CoverGuessService implements OnModuleDestroy {
       usedGameIds: new Set(),
       round: null,
       roundIndex: -1,
+      history: [],
       createdAt: Date.now(),
     });
 
@@ -356,6 +359,7 @@ export class CoverGuessService implements OnModuleDestroy {
       targetScore: row.targetScore,
       winnerId: row.winnerId,
       participants: row.participants,
+      history: row.rounds ?? [],
       round: null,
     };
   }
@@ -371,6 +375,10 @@ export class CoverGuessService implements OnModuleDestroy {
   ): { correct: boolean; resolved: boolean; blurStepIndex: number; answerGameId?: number; answerTitle?: string } {
     const correct = catalogId != null && catalogId === round.gameId;
     if (correct) {
+      // The answer is known now regardless of how blurred the guess was made
+      // at — jump straight to the last step so the client can animate a full
+      // reveal instead of leaving the cover only partly cleared.
+      round.blurStepIndex = BLUR_STEP_COUNT - 1;
       return {
         correct: true,
         resolved: true,
@@ -411,6 +419,7 @@ export class CoverGuessService implements OnModuleDestroy {
     }
 
     session.usedGameIds.add(game.id);
+    session.history.push({ gameId: game.id, title: game.title, coverUrl: game.coverUrl });
     session.round = {
       index: session.roundIndex,
       gameId: game.id,
@@ -467,6 +476,7 @@ export class CoverGuessService implements OnModuleDestroy {
           status: 'FINISHED',
           winnerId,
           participants: participants as Prisma.InputJsonValue,
+          rounds: session.history as unknown as Prisma.InputJsonValue,
           endedAt: new Date(),
         },
       })
@@ -497,6 +507,7 @@ export class CoverGuessService implements OnModuleDestroy {
       targetScore: session.targetScore,
       answerTimeSec: session.answerTimeSec,
       winnerId: session.winnerId ?? null,
+      history: session.history,
       players: [...session.players.values()].map((p) => ({
         userId: p.userId,
         username: p.username,

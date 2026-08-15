@@ -387,7 +387,8 @@
         "winner": "{{name}} wins!",
         "backToHub": "Back to mini-games",
         "leave": "Leave match",
-        "finished": "Match over!"
+        "finished": "Match over!",
+        "recap": "Games in this match"
       },
       "invite": {
         "accept": "Accept",
