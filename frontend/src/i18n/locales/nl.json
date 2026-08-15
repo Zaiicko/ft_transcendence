@@ -368,7 +368,9 @@
           "easy": "Alleen heel bekende games (300).",
           "normal": "Een grotere groep, met minder voor de hand liggende games (5000).",
           "hard": "De hele catalogus, inclusief obscure titels (27500)."
-        }
+        },
+        "answerTime": "Antwoordtijd",
+        "answerTimeSeconds": "{{count}}s"
       },
       "play": {
         "guessPlaceholder": "Zoek een game…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}} wint!",
         "backToHub": "Terug naar minigames",
-        "leave": "Wedstrijd verlaten"
+        "leave": "Wedstrijd verlaten",
+        "finished": "Wedstrijd afgelopen!"
       },
       "invite": {
         "accept": "Accepteren",
         "decline": "Weigeren",
         "accepted": "Geaccepteerd",
         "pending": "In afwachting",
-        "waitingForHost": "Wachten tot de host de wedstrijd start…"
+        "waitingForHost": "Wachten tot de host de wedstrijd start…",
+        "title": "<b>{{who}}</b> nodigt je uit om te spelen"
       },
       "errors": {
         "generic": "Er is iets misgegaan",

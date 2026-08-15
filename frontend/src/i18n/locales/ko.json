@@ -368,7 +368,9 @@
           "easy": "매우 유명한 게임만 포함됩니다 (300).",
           "normal": "더 넓은 범위로, 덜 알려진 게임도 포함됩니다 (5000).",
           "hard": "잘 알려지지 않은 작품을 포함한 전체 카탈로그입니다 (27500)."
-        }
+        },
+        "answerTime": "답변 시간",
+        "answerTimeSeconds": "{{count}}초"
       },
       "play": {
         "guessPlaceholder": "게임 검색…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}}님 승리!",
         "backToHub": "미니게임으로 돌아가기",
-        "leave": "경기 나가기"
+        "leave": "경기 나가기",
+        "finished": "경기 종료!"
       },
       "invite": {
         "accept": "수락",
         "decline": "거절",
         "accepted": "수락됨",
         "pending": "대기 중",
-        "waitingForHost": "호스트가 경기를 시작하기를 기다리는 중…"
+        "waitingForHost": "호스트가 경기를 시작하기를 기다리는 중…",
+        "title": "<b>{{who}}</b>님이 함께 플레이하자고 초대했습니다"
       },
       "errors": {
         "generic": "문제가 발생했습니다",

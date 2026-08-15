@@ -10,6 +10,10 @@ export class CreateCoverGuessMatchDto {
   @IsIn([3, 5, 7, 10])
   targetScore: number;
 
+  // Seconds a player gets to answer before it's auto-passed for them.
+  @IsIn([10, 15, 30])
+  answerTimeSec: number;
+
   @ArrayMinSize(1)
   @ArrayMaxSize(7)
   @ArrayUnique()

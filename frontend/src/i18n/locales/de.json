@@ -368,7 +368,9 @@
           "easy": "Nur sehr bekannte Spiele (300).",
           "normal": "Ein größerer Pool mit weniger offensichtlichen Spielen (5000).",
           "hard": "Der gesamte Katalog, auch mit unbekannten Titeln (27500)."
-        }
+        },
+        "answerTime": "Antwortzeit",
+        "answerTimeSeconds": "{{count}}s"
       },
       "play": {
         "guessPlaceholder": "Spiel suchen…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}} gewinnt!",
         "backToHub": "Zurück zu den Minispielen",
-        "leave": "Partie verlassen"
+        "leave": "Partie verlassen",
+        "finished": "Partie beendet!"
       },
       "invite": {
         "accept": "Annehmen",
         "decline": "Ablehnen",
         "accepted": "Angenommen",
         "pending": "Ausstehend",
-        "waitingForHost": "Warten, bis der Gastgeber die Partie startet…"
+        "waitingForHost": "Warten, bis der Gastgeber die Partie startet…",
+        "title": "<b>{{who}}</b> lädt dich zum Spielen ein"
       },
       "errors": {
         "generic": "Etwas ist schiefgelaufen",

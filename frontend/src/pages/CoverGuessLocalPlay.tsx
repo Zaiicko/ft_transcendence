@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import BlurredCover from '../components/BlurredCover';
 import CoverGuessInput from '../components/CoverGuessInput';
 import { ApiError, apiFetch } from '../lib/api';
 import { BLUR_STEPS_PX } from '../minigames/blurSteps';
@@ -29,11 +30,13 @@ interface LocalOutcome {
 export default function CoverGuessLocalPlay({
   difficulty,
   targetScore,
+  answerTimeSec,
   playerNames,
   onExit,
 }: {
   difficulty: CoverGuessDifficulty;
   targetScore: number;
+  answerTimeSec: number;
   playerNames: string[];
   onExit: () => void;
 }) {
@@ -43,12 +46,14 @@ export default function CoverGuessLocalPlay({
   const [roundIndex, setRoundIndex] = useState(0);
   const [turnOrder, setTurnOrder] = useState<number[]>([]);
   const [turnPointer, setTurnPointer] = useState(0);
+  const [turnCounter, setTurnCounter] = useState(0);
   const [round, setRound] = useState<LocalRound | null>(null);
   const [resolution, setResolution] = useState<LocalOutcome | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [winner, setWinner] = useState<LocalPlayer | null>(null);
+  const [remaining, setRemaining] = useState(answerTimeSec);
 
   const beginRound = useCallback(
     async (nextRoundIndex: number, excludeIds: number[]) => {
@@ -64,6 +69,7 @@ export default function CoverGuessLocalPlay({
         const offset = nextRoundIndex % playerNames.length;
         setTurnOrder(Array.from({ length: playerNames.length }, (_, i) => (offset + i) % playerNames.length));
         setTurnPointer(0);
+        setTurnCounter((c) => c + 1);
       } catch (err) {
         setError(err instanceof ApiError ? err.message : t('minigames.coverGuess.errors.generic'));
       } finally {
@@ -117,6 +123,7 @@ export default function CoverGuessLocalPlay({
 
       setRound({ ...round, blurStepIndex: outcome.blurStepIndex });
       setTurnPointer((p) => (p + 1) % turnOrder.length);
+      setTurnCounter((c) => c + 1);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t('minigames.coverGuess.errors.generic'));
     } finally {
@@ -124,23 +131,59 @@ export default function CoverGuessLocalPlay({
     }
   }
 
+  // Per-turn countdown — auto-passes when it hits 0. Keyed on turnCounter
+  // (not turnPointer/roundToken alone) since turnPointer can wrap back to a
+  // value it already had earlier in the same round with 3+ players.
+  useEffect(() => {
+    if (!round || resolution || loading) return;
+    const start = Date.now();
+    let interval: ReturnType<typeof setInterval>;
+    // Deferred a tick so the setRemaining calls don't run synchronously
+    // within the effect body itself.
+    const kickoff = setTimeout(() => {
+      setRemaining(answerTimeSec);
+      interval = setInterval(() => {
+        const left = Math.max(0, answerTimeSec - Math.floor((Date.now() - start) / 1000));
+        setRemaining(left);
+        if (left === 0) {
+          clearInterval(interval);
+          void submitGuess(undefined);
+        }
+      }, 250);
+    }, 0);
+    return () => {
+      clearTimeout(kickoff);
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turnCounter, resolution, loading, answerTimeSec]);
+
   if (winner) {
+    const ranked = [...players].sort((a, b) => b.score - a.score);
+    const medals = ['🥇', '🥈', '🥉'];
     return (
       <div className="card flex flex-col items-center gap-4 p-8 text-center">
         <span className="font-display text-2xl font-bold">
           {t('minigames.coverGuess.match.winner', { name: winner.name })}
         </span>
-        <ul className="flex flex-col gap-1 text-sm text-zinc-500 dark:text-zinc-400">
-          {[...players]
-            .sort((a, b) => b.score - a.score)
-            .map((p) => (
-              <li key={p.name}>
-                {p.name} — {p.score}
-              </li>
-            ))}
+        <ul className="flex w-full max-w-xs flex-col gap-1.5">
+          {ranked.map((p, i) => (
+            <li
+              key={p.name}
+              className="flex items-center gap-2.5 rounded-lg bg-zinc-100/70 px-3 py-1.5 text-sm dark:bg-zinc-800/70"
+            >
+              <span className="w-6 shrink-0 text-center">{medals[i] ?? `#${i + 1}`}</span>
+              <span className="min-w-0 flex-1 truncate text-left font-medium">{p.name}</span>
+              <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{p.score}</span>
+            </li>
+          ))}
         </ul>
         <div className="mt-2 flex gap-3">
-          <button type="button" onClick={onExit} className="rounded-full border border-zinc-400/60 px-4 py-2 text-sm transition hover:border-accent hover:text-accent dark:border-zinc-600">
+          <button
+            type="button"
+            onClick={onExit}
+            className="rounded-full border border-zinc-400/60 px-4 py-2 text-sm transition hover:border-accent hover:text-accent dark:border-zinc-600"
+          >
             {t('minigames.coverGuess.match.backToHub')}
           </button>
         </div>
@@ -176,12 +219,7 @@ export default function CoverGuessLocalPlay({
       <div className="card flex flex-col items-center gap-4 p-6">
         {round && (
           <div className="relative aspect-[3/4] w-56 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
-            <img
-              src={round.coverUrl}
-              alt=""
-              className="h-full w-full object-cover transition-[filter] duration-500"
-              style={{ filter: `blur(${blurPx}px)` }}
-            />
+            <BlurredCover src={round.coverUrl} blurPx={blurPx} className="h-full w-full object-cover" />
           </div>
         )}
 
@@ -200,6 +238,7 @@ export default function CoverGuessLocalPlay({
           <>
             <p className="text-sm font-medium">
               {t('minigames.coverGuess.play.yourTurn', { name: activePlayerName })}
+              <span className="ml-2 font-normal text-zinc-400">{remaining}s</span>
             </p>
             <div className="w-full max-w-sm">
               <CoverGuessInput disabled={loading || busy} onGuess={(id) => void submitGuess(id)} />

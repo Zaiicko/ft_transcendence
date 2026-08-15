@@ -75,6 +75,9 @@ interface CoverGuessRound {
   turnOrder: number[]; // userIds, this round's rotation
   turnPointer: number;
   resolved: boolean;
+  // Epoch ms the current turn auto-passes at — purely informational for the
+  // client's countdown; the server enforces it via `turnTimer` below.
+  turnDeadline: number;
 }
 
 interface CoverGuessMatchSession {
@@ -82,6 +85,8 @@ interface CoverGuessMatchSession {
   hostId: number;
   difficulty: CoverGuessDifficulty;
   targetScore: number;
+  // Seconds a player gets before their turn is auto-passed.
+  answerTimeSec: number;
   status: CoverGuessMatchStatus;
   // Map preserves insertion order — host first, then invitees in invite order.
   players: Map<number, CoverGuessPlayer>;
@@ -90,6 +95,8 @@ interface CoverGuessMatchSession {
   roundIndex: number;
   createdAt: number;
   nextRoundTimer?: ReturnType<typeof setTimeout>;
+  turnTimer?: ReturnType<typeof setTimeout>;
+  winnerId?: number | null;
 }
 
 @Injectable()
@@ -192,6 +199,7 @@ export class CoverGuessService implements OnModuleDestroy {
       hostId,
       difficulty: dto.difficulty,
       targetScore: dto.targetScore,
+      answerTimeSec: dto.answerTimeSec,
       status: 'LOBBY',
       players,
       usedGameIds: new Set(),
@@ -251,6 +259,10 @@ export class CoverGuessService implements OnModuleDestroy {
     const currentTurnUserId = round.turnOrder[round.turnPointer];
     if (currentTurnUserId !== userId) throw new ForbiddenException("Ce n'est pas ton tour");
 
+    // The acting player (human guess or their own timer firing) just used up
+    // their turn either way — clear it before deciding what comes next.
+    if (session.turnTimer) clearTimeout(session.turnTimer);
+
     const outcome = this.resolveAttempt(round, catalogId);
     // resolveAttempt only reports the outcome — the round's own `resolved`
     // flag (what toStateDto/broadcastState actually reads) must be set here.
@@ -273,6 +285,7 @@ export class CoverGuessService implements OnModuleDestroy {
     }
 
     round.turnPointer = (round.turnPointer + 1) % round.turnOrder.length;
+    this.scheduleTurnTimer(session);
     this.broadcastState(session);
     return this.toStateDto(session);
   }
@@ -290,9 +303,15 @@ export class CoverGuessService implements OnModuleDestroy {
         session.round.turnOrder.splice(idx, 1);
         if (session.round.turnOrder.length === 0) {
           session.round.resolved = true;
-        } else if (idx <= session.round.turnPointer) {
-          session.round.turnPointer =
-            session.round.turnPointer % session.round.turnOrder.length;
+          if (session.turnTimer) clearTimeout(session.turnTimer);
+        } else {
+          if (idx <= session.round.turnPointer) {
+            session.round.turnPointer =
+              session.round.turnPointer % session.round.turnOrder.length;
+          }
+          // The departing player may have been the one on the clock —
+          // re-arm for whoever it is now.
+          this.scheduleTurnTimer(session);
         }
       }
     }
@@ -303,6 +322,7 @@ export class CoverGuessService implements OnModuleDestroy {
         .update({ where: { id: matchId }, data: { status: 'ABANDONED', endedAt: new Date() } })
         .catch(() => {});
     } else if (session.status === 'PLAYING' && session.players.size < 2) {
+      if (session.turnTimer) clearTimeout(session.turnTimer);
       const winner = [...session.players.values()][0]?.userId ?? null;
       await this.finishMatch(session, winner);
       return;
@@ -391,7 +411,9 @@ export class CoverGuessService implements OnModuleDestroy {
       turnOrder,
       turnPointer: 0,
       resolved: false,
+      turnDeadline: 0, // set by scheduleTurnTimer below
     };
+    this.scheduleTurnTimer(session);
     this.broadcastState(session);
   }
 
@@ -401,9 +423,29 @@ export class CoverGuessService implements OnModuleDestroy {
     }, NEXT_ROUND_DELAY_MS);
   }
 
+  // (Re)arms the current turn's auto-pass timer — always clears any previous
+  // one first, so this is safe to call both when a round starts and whenever
+  // the turn advances within it. A round that's already resolved has nothing
+  // to schedule (the 4s inter-round gap needs no timer of its own).
+  private scheduleTurnTimer(session: CoverGuessMatchSession): void {
+    if (session.turnTimer) clearTimeout(session.turnTimer);
+    const round = session.round;
+    if (!round || round.resolved) return;
+    const userId = round.turnOrder[round.turnPointer];
+    round.turnDeadline = Date.now() + session.answerTimeSec * 1000;
+    session.turnTimer = setTimeout(() => {
+      // Same effect as that player passing manually. guess() re-checks whose
+      // turn it is before mutating anything, so this is a harmless no-op if
+      // the round has since moved on for any other reason.
+      void this.guess(session.id, userId, null).catch(() => {});
+    }, session.answerTimeSec * 1000);
+  }
+
   private async finishMatch(session: CoverGuessMatchSession, winnerId: number | null): Promise<void> {
     session.status = 'FINISHED';
+    session.winnerId = winnerId;
     if (session.nextRoundTimer) clearTimeout(session.nextRoundTimer);
+    if (session.turnTimer) clearTimeout(session.turnTimer);
     const participants = [...session.players.values()].map((p) => ({
       userId: p.userId,
       username: p.username,
@@ -436,6 +478,8 @@ export class CoverGuessService implements OnModuleDestroy {
       status: session.status,
       difficulty: session.difficulty,
       targetScore: session.targetScore,
+      answerTimeSec: session.answerTimeSec,
+      winnerId: session.winnerId ?? null,
       players: [...session.players.values()].map((p) => ({
         userId: p.userId,
         username: p.username,
@@ -449,6 +493,7 @@ export class CoverGuessService implements OnModuleDestroy {
         blurStepIndex: session.round.blurStepIndex,
         currentTurnUserId: session.round.turnOrder[session.round.turnPointer] ?? null,
         resolved: session.round.resolved,
+        turnDeadline: session.round.resolved ? null : session.round.turnDeadline,
         ...(session.round.resolved
           ? { answerGameId: session.round.gameId, answerTitle: session.round.title }
           : {}),

@@ -3,12 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
+import BlurredCover from '../components/BlurredCover';
 import CoverGuessInput from '../components/CoverGuessInput';
 import SectionHead from '../components/SectionHead';
 import { ApiError, apiFetch } from '../lib/api';
 import { BLUR_STEPS_PX } from '../minigames/blurSteps';
 import { useCoverGuessSocket } from '../minigames/useCoverGuessSocket';
 import type { CoverGuessMatchState } from '../minigames/types';
+
+const MEDALS = ['🥇', '🥈', '🥉'];
 
 export default function CoverGuessMatch() {
   const { matchId } = useParams<{ matchId: string }>();
@@ -20,6 +23,7 @@ export default function CoverGuessMatch() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [remaining, setRemaining] = useState<number | null>(null);
 
   const load = useCallback(() => {
     if (!matchId) return;
@@ -38,6 +42,28 @@ export default function CoverGuessMatch() {
   useCoverGuessSocket(!!user && !!matchId, (s) => {
     if (s.id === matchId) setState(s);
   });
+
+  // Purely cosmetic countdown — the server enforces the actual auto-pass and
+  // will push a fresh state once it fires.
+  useEffect(() => {
+    const deadline = state?.round?.turnDeadline;
+    let interval: ReturnType<typeof setInterval>;
+    // Deferred a tick so the setRemaining calls don't run synchronously
+    // within the effect body itself.
+    const kickoff = setTimeout(() => {
+      if (!deadline || state?.round?.resolved) {
+        setRemaining(null);
+        return;
+      }
+      const update = () => setRemaining(Math.max(0, Math.ceil((deadline - Date.now()) / 1000)));
+      update();
+      interval = setInterval(update, 250);
+    }, 0);
+    return () => {
+      clearTimeout(kickoff);
+      clearInterval(interval);
+    };
+  }, [state?.round?.turnDeadline, state?.round?.resolved]);
 
   async function respond(accept: boolean) {
     if (!matchId) return;
@@ -197,11 +223,10 @@ export default function CoverGuessMatch() {
 
           <div className="card flex flex-col items-center gap-4 p-6">
             <div className="relative aspect-[3/4] w-56 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
-              <img
+              <BlurredCover
                 src={state.round.coverUrl}
-                alt=""
-                className="h-full w-full object-cover transition-[filter] duration-500"
-                style={{ filter: `blur(${BLUR_STEPS_PX[state.round.blurStepIndex]}px)` }}
+                blurPx={BLUR_STEPS_PX[state.round.blurStepIndex]}
+                className="h-full w-full object-cover"
               />
             </div>
 
@@ -211,7 +236,10 @@ export default function CoverGuessMatch() {
               </p>
             ) : state.round.currentTurnUserId === user.id ? (
               <>
-                <p className="text-sm font-medium">{t('minigames.coverGuess.play.yourTurnNow')}</p>
+                <p className="text-sm font-medium">
+                  {t('minigames.coverGuess.play.yourTurnNow')}
+                  {remaining !== null && <span className="ml-2 font-normal text-zinc-400">{remaining}s</span>}
+                </p>
                 <div className="w-full max-w-sm">
                   <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
                 </div>
@@ -229,6 +257,7 @@ export default function CoverGuessMatch() {
                 {t('minigames.coverGuess.play.opponentTurn', {
                   name: state.players.find((p) => p.userId === state.round?.currentTurnUserId)?.username ?? '',
                 })}
+                {remaining !== null && <span className="ml-2 text-zinc-400">({remaining}s)</span>}
               </p>
             )}
           </div>
@@ -237,17 +266,23 @@ export default function CoverGuessMatch() {
 
       {state.status === 'FINISHED' && (
         <div className="card flex flex-col items-center gap-4 p-8 text-center">
-          <span className="font-display text-2xl font-bold">
-            {t('minigames.coverGuess.match.winner', {
-              name: state.players.find((p) => p.userId === state.winnerId)?.username ?? '',
-            })}
-          </span>
-          <ul className="flex flex-col gap-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <span className="font-display text-2xl font-bold">{t('minigames.coverGuess.match.finished')}</span>
+          <ul className="flex w-full max-w-sm flex-col gap-1.5">
             {[...state.players]
               .sort((a, b) => b.score - a.score)
-              .map((p) => (
-                <li key={p.userId}>
-                  {p.username} — {p.score}
+              .map((p, i) => (
+                <li
+                  key={p.userId}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm ${
+                    p.userId === state.winnerId
+                      ? 'bg-accent/15'
+                      : 'bg-zinc-100/70 dark:bg-zinc-800/70'
+                  }`}
+                >
+                  <span className="w-6 shrink-0 text-center">{MEDALS[i] ?? `#${i + 1}`}</span>
+                  <Avatar username={p.username} avatarUrl={p.avatarUrl} size={32} />
+                  <span className="min-w-0 flex-1 truncate text-left font-medium">{p.username}</span>
+                  <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{p.score}</span>
                 </li>
               ))}
           </ul>

@@ -368,7 +368,9 @@
           "easy": "Apenas jogos muito conhecidos (300).",
           "normal": "Um grupo mais amplo, com jogos menos óbvios (5000).",
           "hard": "Todo o catálogo, incluindo títulos pouco conhecidos (27500)."
-        }
+        },
+        "answerTime": "Tempo de resposta",
+        "answerTimeSeconds": "{{count}}s"
       },
       "play": {
         "guessPlaceholder": "Buscar um jogo…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}} venceu!",
         "backToHub": "Voltar aos minijogos",
-        "leave": "Sair da partida"
+        "leave": "Sair da partida",
+        "finished": "Partida encerrada!"
       },
       "invite": {
         "accept": "Aceitar",
         "decline": "Recusar",
         "accepted": "Aceito",
         "pending": "Pendente",
-        "waitingForHost": "Aguardando o anfitrião iniciar a partida…"
+        "waitingForHost": "Aguardando o anfitrião iniciar a partida…",
+        "title": "<b>{{who}}</b> está te convidando para jogar"
       },
       "errors": {
         "generic": "Algo deu errado",

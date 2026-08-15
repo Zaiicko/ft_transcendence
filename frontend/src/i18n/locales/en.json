@@ -368,7 +368,9 @@
           "easy": "Only very well-known games (300).",
           "normal": "A wider pool, including less obvious games (5000).",
           "hard": "The whole catalog, including obscure titles (27500)."
-        }
+        },
+        "answerTime": "Answer time",
+        "answerTimeSeconds": "{{count}}s"
       },
       "play": {
         "guessPlaceholder": "Search a game…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}} wins!",
         "backToHub": "Back to mini-games",
-        "leave": "Leave match"
+        "leave": "Leave match",
+        "finished": "Match over!"
       },
       "invite": {
         "accept": "Accept",
         "decline": "Decline",
         "accepted": "Accepted",
         "pending": "Pending",
-        "waitingForHost": "Waiting for the host to start the match…"
+        "waitingForHost": "Waiting for the host to start the match…",
+        "title": "<b>{{who}}</b> is inviting you to play"
       },
       "errors": {
         "generic": "Something went wrong",

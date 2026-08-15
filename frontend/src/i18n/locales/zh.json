@@ -368,7 +368,9 @@
           "easy": "只包含非常知名的游戏 (300)。",
           "normal": "范围更广，包含一些不太明显的游戏 (5000)。",
           "hard": "整个游戏库，包括冷门作品 (27500)。"
-        }
+        },
+        "answerTime": "回答时间",
+        "answerTimeSeconds": "{{count}}秒"
       },
       "play": {
         "guessPlaceholder": "搜索游戏…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}} 获胜！",
         "backToHub": "返回小游戏",
-        "leave": "离开对局"
+        "leave": "离开对局",
+        "finished": "对局结束！"
       },
       "invite": {
         "accept": "接受",
         "decline": "拒绝",
         "accepted": "已接受",
         "pending": "等待中",
-        "waitingForHost": "等待房主开始对局…"
+        "waitingForHost": "等待房主开始对局…",
+        "title": "<b>{{who}}</b> 邀请你一起玩"
       },
       "errors": {
         "generic": "出了点问题",

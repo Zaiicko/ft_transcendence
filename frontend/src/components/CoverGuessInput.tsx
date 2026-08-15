@@ -60,14 +60,9 @@ export default function CoverGuessInput({
               <button
                 type="button"
                 onClick={() => pick(g)}
-                className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                className="block w-full truncate px-3 py-1.5 text-left text-sm transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
               >
-                {g.coverUrl ? (
-                  <img src={g.coverUrl} alt="" className="h-8 w-6 shrink-0 rounded object-cover" />
-                ) : (
-                  <span className="h-8 w-6 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
-                )}
-                <span className="min-w-0 flex-1 truncate">{g.title}</span>
+                {g.title}
               </button>
             </li>
           ))}

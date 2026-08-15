@@ -16,6 +16,7 @@ export interface CoverGuessRoundState {
   blurStepIndex: number;
   currentTurnUserId: number | null;
   resolved: boolean;
+  turnDeadline: number | null;
   answerGameId?: number;
   answerTitle?: string;
 }
@@ -26,6 +27,7 @@ export interface CoverGuessMatchState {
   status: CoverGuessMatchStatus;
   difficulty: CoverGuessDifficulty;
   targetScore: number;
+  answerTimeSec: number;
   players: CoverGuessPlayerState[];
   round: CoverGuessRoundState | null;
   winnerId?: number | null;

@@ -368,7 +368,9 @@
           "easy": "Sadece çok bilinen oyunlar (300).",
           "normal": "Daha geniş bir havuz, daha az belirgin oyunlarla (5000).",
           "hard": "Az bilinen oyunlar dahil tüm katalog (27500)."
-        }
+        },
+        "answerTime": "Cevap süresi",
+        "answerTimeSeconds": "{{count}}sn"
       },
       "play": {
         "guessPlaceholder": "Oyun ara…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}} kazandı!",
         "backToHub": "Mini oyunlara dön",
-        "leave": "Maçtan ayrıl"
+        "leave": "Maçtan ayrıl",
+        "finished": "Maç bitti!"
       },
       "invite": {
         "accept": "Kabul et",
         "decline": "Reddet",
         "accepted": "Kabul edildi",
         "pending": "Bekliyor",
-        "waitingForHost": "Ev sahibinin maçı başlatması bekleniyor…"
+        "waitingForHost": "Ev sahibinin maçı başlatması bekleniyor…",
+        "title": "<b>{{who}}</b> seni oynamaya davet ediyor"
       },
       "errors": {
         "generic": "Bir şeyler ters gitti",

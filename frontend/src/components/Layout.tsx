@@ -5,6 +5,7 @@ import { useAuth } from '../auth/AuthContext';
 import Avatar from './Avatar';
 import ChatWidget from './ChatWidget';
 import LanguageSwitcher from './LanguageSwitcher';
+import GameInviteOverlay from '../minigames/GameInviteOverlay';
 import NotificationBell from './NotificationBell';
 import { BellIcon, NotificationPrefsList } from './NotificationSettings';
 import { applyMode, storedMode, ThemeMode } from '../lib/theme';
@@ -579,6 +580,9 @@ export default function Layout() {
 
       {/* Floating chat (bottom-right) — mounted only when signed in (else ChatWidget calls /chat/conversations → 401). */}
       {user && <ChatWidget />}
+
+      {/* Full-screen game-invite prompt, on top of whatever page the user is on. */}
+      {user && <GameInviteOverlay />}
 
       {/* Guided tour (auto after onboarding, or relaunched from settings). */}
       {user && tourOpen && <Tutorial onClose={handleTutorialClose} />}

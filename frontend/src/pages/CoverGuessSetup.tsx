@@ -11,6 +11,7 @@ import CoverGuessLocalPlay from './CoverGuessLocalPlay';
 
 const DIFFICULTIES: CoverGuessDifficulty[] = ['easy', 'normal', 'hard'];
 const TARGET_SCORES = [3, 5, 7, 10];
+const ANSWER_TIMES = [10, 15, 30];
 const MAX_LOCAL_PLAYERS = 6;
 
 interface FriendRow extends PublicUser {
@@ -25,6 +26,7 @@ export default function CoverGuessSetup() {
   const [mode, setMode] = useState<'local' | 'multi'>('local');
   const [difficulty, setDifficulty] = useState<CoverGuessDifficulty>('normal');
   const [targetScore, setTargetScore] = useState(5);
+  const [answerTimeSec, setAnswerTimeSec] = useState(15);
 
   const [localPlayerCount, setLocalPlayerCount] = useState(1);
   const [guestNames, setGuestNames] = useState<string[]>([]);
@@ -52,7 +54,7 @@ export default function CoverGuessSetup() {
     try {
       const { matchId } = await apiFetch<{ matchId: string }>('/minigames/cover-guess/matches', {
         method: 'POST',
-        body: JSON.stringify({ difficulty, targetScore, inviteeUserIds: selectedFriendIds }),
+        body: JSON.stringify({ difficulty, targetScore, answerTimeSec, inviteeUserIds: selectedFriendIds }),
       });
       navigate(`/minigames/cover-guess/match/${matchId}`);
     } catch (err) {
@@ -70,6 +72,7 @@ export default function CoverGuessSetup() {
         <CoverGuessLocalPlay
           difficulty={difficulty}
           targetScore={targetScore}
+          answerTimeSec={answerTimeSec}
           playerNames={playerNames}
           onExit={() => setPlaying(false)}
         />
@@ -155,6 +158,26 @@ export default function CoverGuessSetup() {
                 }`}
               >
                 {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm font-semibold">{t('minigames.coverGuess.setup.answerTime')}</p>
+          <div className="flex gap-2">
+            {ANSWER_TIMES.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setAnswerTimeSec(s)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  answerTimeSec === s
+                    ? 'bg-accent text-zinc-950'
+                    : 'border border-zinc-400/60 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300'
+                }`}
+              >
+                {t('minigames.coverGuess.setup.answerTimeSeconds', { count: s })}
               </button>
             ))}
           </div>

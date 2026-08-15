@@ -368,7 +368,9 @@
           "easy": "Tylko bardzo znane gry (300).",
           "normal": "Szersza pula, z mniej oczywistymi grami (5000).",
           "hard": "Cały katalog, łącznie z mało znanymi tytułami (27500)."
-        }
+        },
+        "answerTime": "Czas na odpowiedź",
+        "answerTimeSeconds": "{{count}}s"
       },
       "play": {
         "guessPlaceholder": "Szukaj gry…",
@@ -384,14 +386,16 @@
       "match": {
         "winner": "{{name}} wygrywa!",
         "backToHub": "Powrót do minigier",
-        "leave": "Opuść rozgrywkę"
+        "leave": "Opuść rozgrywkę",
+        "finished": "Rozgrywka zakończona!"
       },
       "invite": {
         "accept": "Akceptuj",
         "decline": "Odrzuć",
         "accepted": "Zaakceptowano",
         "pending": "Oczekujące",
-        "waitingForHost": "Oczekiwanie, aż gospodarz rozpocznie rozgrywkę…"
+        "waitingForHost": "Oczekiwanie, aż gospodarz rozpocznie rozgrywkę…",
+        "title": "<b>{{who}}</b> zaprasza Cię do gry"
       },
       "errors": {
         "generic": "Coś poszło nie tak",
