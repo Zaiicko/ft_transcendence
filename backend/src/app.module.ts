@@ -14,6 +14,7 @@ import { FriendsModule } from './friends/friends.module';
 import { GamesModule } from './games/games.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ListsModule } from './lists/lists.module';
+import { CoverGuessModule } from './minigames/cover-guess/cover-guess.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { OgModule } from './og/og.module';
 import { PresenceModule } from './presence/presence.module';
@@ -57,6 +58,7 @@ import { UsersModule } from './users/users.module';
     LeaderboardModule,
     AchievementsModule,
     OgModule,
+    CoverGuessModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

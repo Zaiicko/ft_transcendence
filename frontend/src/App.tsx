@@ -15,6 +15,9 @@ const Game = lazy(() => import('./pages/Game'));
 const Home = lazy(() => import('./pages/Home'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const Login = lazy(() => import('./pages/Login'));
+const CoverGuessMatch = lazy(() => import('./pages/CoverGuessMatch'));
+const CoverGuessSetup = lazy(() => import('./pages/CoverGuessSetup'));
+const Minigames = lazy(() => import('./pages/Minigames'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
 const PlayerLibrary = lazy(() => import('./pages/PlayerLibrary'));
@@ -71,6 +74,9 @@ export default function App() {
               <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/friends" element={<Friends />} />
+              <Route path="/minigames" element={<Minigames />} />
+              <Route path="/minigames/cover-guess" element={<CoverGuessSetup />} />
+              <Route path="/minigames/cover-guess/match/:matchId" element={<CoverGuessMatch />} />
               <Route path="/library" element={<Library />} />
               <Route path="/u/:username/library" element={<PlayerLibrary />} />
               <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />

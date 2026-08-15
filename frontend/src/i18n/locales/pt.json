@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Iniciar sessão",
     "signup": "Criar conta",
-    "library": "Bibliotecas"
+    "library": "Bibliotecas",
+    "minigames": "Minijogos"
   },
   "menu": {
     "notifications": "Notificações",
@@ -328,7 +329,77 @@
     "achievement": "Conquista desbloqueada: <b>{{name}}</b>",
     "prefAchievement": "Conquistas",
     "prefAchievementHint": "Quando você desbloqueia uma conquista",
-    "clear": "Limpar"
+    "clear": "Limpar",
+    "gameInvite": "<b>{{who}}</b> convidou você para um minijogo",
+    "prefGameInvite": "Convites para minijogos",
+    "prefGameInviteHint": "Quando um amigo te convida para jogar"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Jogar",
+      "title": "Minijogos",
+      "play": "Jogar"
+    },
+    "coverGuess": {
+      "title": "Adivinhe a capa",
+      "description": "Adivinhe o jogo pela capa — ela começa totalmente borrada e clareia um pouco a cada tentativa errada.",
+      "setup": {
+        "mode": "Modo",
+        "modeLocal": "Local",
+        "modeMulti": "Online",
+        "difficultyLabel": "Dificuldade",
+        "difficulty": {
+          "easy": "Fácil",
+          "normal": "Normal",
+          "hard": "Difícil"
+        },
+        "targetScore": "Primeiro a",
+        "localPlayers": "Jogadores neste dispositivo",
+        "guestNamePlaceholder": "Nome do jogador {{n}}",
+        "startMatch": "Começar",
+        "inviteFriends": "Convidar amigos online",
+        "noFriendsOnline": "Nenhum amigo online no momento.",
+        "sendInvites": "Enviar convites",
+        "modeHint": {
+          "local": "Jogue sozinho ou passe o dispositivo entre amigos na mesma tela.",
+          "multi": "Desafie um ou mais amigos online em tempo real, cada um no seu próprio dispositivo."
+        },
+        "difficultyHint": {
+          "easy": "Apenas jogos muito conhecidos (300).",
+          "normal": "Um grupo mais amplo, com jogos menos óbvios (5000).",
+          "hard": "Todo o catálogo, incluindo títulos pouco conhecidos (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Buscar um jogo…",
+        "targetScore": "Primeiro a {{count}} pontos",
+        "yourTurn": "Vez de {{name}}",
+        "yourTurnNow": "Sua vez — adivinhe o jogo!",
+        "opponentTurn": "Aguardando {{name}}…",
+        "pass": "Passar",
+        "correct": "Correto!",
+        "roundLost": "Ninguém acertou!",
+        "revealedAnswer": "Era {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} venceu!",
+        "backToHub": "Voltar aos minijogos",
+        "leave": "Sair da partida"
+      },
+      "invite": {
+        "accept": "Aceitar",
+        "decline": "Recusar",
+        "accepted": "Aceito",
+        "pending": "Pendente",
+        "waitingForHost": "Aguardando o anfitrião iniciar a partida…"
+      },
+      "errors": {
+        "generic": "Algo deu errado",
+        "loading": "Carregando…",
+        "matchNotFound": "Partida não encontrada",
+        "matchEnded": "Esta partida terminou"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Jogo em destaque",

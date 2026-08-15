@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "登录",
     "signup": "注册",
-    "library": "库"
+    "library": "库",
+    "minigames": "小游戏"
   },
   "menu": {
     "notifications": "通知",
@@ -328,7 +329,77 @@
     "achievement": "解锁成就：<b>{{name}}</b>",
     "prefAchievement": "成就",
     "prefAchievementHint": "当你解锁成就时",
-    "clear": "清空"
+    "clear": "清空",
+    "gameInvite": "<b>{{who}}</b> 邀请你玩小游戏",
+    "prefGameInvite": "小游戏邀请",
+    "prefGameInviteHint": "当好友邀请你一起玩时"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "开始游戏",
+      "title": "小游戏",
+      "play": "开始游戏"
+    },
+    "coverGuess": {
+      "title": "猜封面",
+      "description": "根据封面猜游戏——封面一开始完全模糊，每次猜错后会稍微变清晰一点。",
+      "setup": {
+        "mode": "模式",
+        "modeLocal": "本地",
+        "modeMulti": "在线",
+        "difficultyLabel": "难度",
+        "difficulty": {
+          "easy": "简单",
+          "normal": "普通",
+          "hard": "困难"
+        },
+        "targetScore": "先达到",
+        "localPlayers": "本设备上的玩家",
+        "guestNamePlaceholder": "玩家 {{n}} 的名字",
+        "startMatch": "开始",
+        "inviteFriends": "邀请在线好友",
+        "noFriendsOnline": "目前没有好友在线。",
+        "sendInvites": "发送邀请",
+        "modeHint": {
+          "local": "独自游玩，或在同一屏幕上和朋友轮流传递设备。",
+          "multi": "实时挑战一位或多位在线好友，每人使用自己的设备。"
+        },
+        "difficultyHint": {
+          "easy": "只包含非常知名的游戏 (300)。",
+          "normal": "范围更广，包含一些不太明显的游戏 (5000)。",
+          "hard": "整个游戏库，包括冷门作品 (27500)。"
+        }
+      },
+      "play": {
+        "guessPlaceholder": "搜索游戏…",
+        "targetScore": "先达到 {{count}} 分获胜",
+        "yourTurn": "轮到 {{name}}",
+        "yourTurnNow": "轮到你了——猜猜这是什么游戏！",
+        "opponentTurn": "等待 {{name}}…",
+        "pass": "跳过",
+        "correct": "猜对了！",
+        "roundLost": "没有人猜对！",
+        "revealedAnswer": "答案是 {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} 获胜！",
+        "backToHub": "返回小游戏",
+        "leave": "离开对局"
+      },
+      "invite": {
+        "accept": "接受",
+        "decline": "拒绝",
+        "accepted": "已接受",
+        "pending": "等待中",
+        "waitingForHost": "等待房主开始对局…"
+      },
+      "errors": {
+        "generic": "出了点问题",
+        "loading": "加载中…",
+        "matchNotFound": "未找到该对局",
+        "matchEnded": "该对局已结束"
+      }
+    }
   },
   "home": {
     "featuredBadge": "精选游戏",

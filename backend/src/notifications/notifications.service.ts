@@ -203,6 +203,24 @@ export class NotificationsService {
     }
   }
 
+  // Called by CoverGuessService when a host invites a friend to a match.
+  async gameInvited(
+    actorId: number,
+    recipientId: number,
+    matchId: string,
+    difficulty: string,
+  ): Promise<void> {
+    try {
+      await this.deliver(recipientId, NotificationType.GAME_INVITE, {
+        ...(await this.actorPayload(actorId)),
+        matchId,
+        difficulty,
+      });
+    } catch (err) {
+      this.logger.warn(`gameInvited notification failed: ${(err as Error).message}`);
+    }
+  }
+
   private async actorPayload(actorId: number) {
     const actor = await this.prisma.user.findUnique({
       where: { id: actorId },
@@ -226,6 +244,7 @@ export class NotificationsService {
     NotificationType.COMMENT_REPLY,
     NotificationType.FRIEND_JOINED,
     NotificationType.ACHIEVEMENT,
+    NotificationType.GAME_INVITE,
   ];
 
   private async wants(userId: number, type: NotificationType): Promise<boolean> {

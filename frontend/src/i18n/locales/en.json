@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Log in",
     "signup": "Sign up",
-    "library": "Libraries"
+    "library": "Libraries",
+    "minigames": "Mini-games"
   },
   "menu": {
     "notifications": "Notifications",
@@ -328,7 +329,77 @@
     "achievement": "Achievement unlocked: <b>{{name}}</b>",
     "prefAchievement": "Achievements",
     "prefAchievementHint": "When you unlock an achievement",
-    "clear": "Clear"
+    "clear": "Clear",
+    "gameInvite": "<b>{{who}}</b> invited you to a mini-game",
+    "prefGameInvite": "Mini-game invites",
+    "prefGameInviteHint": "When a friend invites you to play"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Play",
+      "title": "Mini-games",
+      "play": "Play"
+    },
+    "coverGuess": {
+      "title": "Guess the Cover",
+      "description": "Guess the game from its cover — it starts fully blurred and clears a little after every wrong guess.",
+      "setup": {
+        "mode": "Mode",
+        "modeLocal": "Local",
+        "modeMulti": "Online",
+        "difficultyLabel": "Difficulty",
+        "difficulty": {
+          "easy": "Easy",
+          "normal": "Normal",
+          "hard": "Hard"
+        },
+        "targetScore": "First to",
+        "localPlayers": "Players on this device",
+        "guestNamePlaceholder": "Player {{n}} name",
+        "startMatch": "Start",
+        "inviteFriends": "Invite online friends",
+        "noFriendsOnline": "No friends online right now.",
+        "sendInvites": "Send invites",
+        "modeHint": {
+          "local": "Play solo, or pass the device between friends on the same screen.",
+          "multi": "Challenge one or more online friends in real time, each on their own device."
+        },
+        "difficultyHint": {
+          "easy": "Only very well-known games (300).",
+          "normal": "A wider pool, including less obvious games (5000).",
+          "hard": "The whole catalog, including obscure titles (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Search a game…",
+        "targetScore": "First to {{count}} points",
+        "yourTurn": "{{name}}'s turn",
+        "yourTurnNow": "Your turn — guess the game!",
+        "opponentTurn": "Waiting for {{name}}…",
+        "pass": "Pass",
+        "correct": "Correct!",
+        "roundLost": "Nobody found it!",
+        "revealedAnswer": "It was {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} wins!",
+        "backToHub": "Back to mini-games",
+        "leave": "Leave match"
+      },
+      "invite": {
+        "accept": "Accept",
+        "decline": "Decline",
+        "accepted": "Accepted",
+        "pending": "Pending",
+        "waitingForHost": "Waiting for the host to start the match…"
+      },
+      "errors": {
+        "generic": "Something went wrong",
+        "loading": "Loading…",
+        "matchNotFound": "Match not found",
+        "matchEnded": "This match has ended"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Featured game",

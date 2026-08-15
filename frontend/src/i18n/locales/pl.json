@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Zaloguj się",
     "signup": "Zarejestruj się",
-    "library": "Biblioteki"
+    "library": "Biblioteki",
+    "minigames": "Minigry"
   },
   "menu": {
     "notifications": "Powiadomienia",
@@ -328,7 +329,77 @@
     "achievement": "Odblokowano osiągnięcie: <b>{{name}}</b>",
     "prefAchievement": "Osiągnięcia",
     "prefAchievementHint": "Gdy odblokujesz osiągnięcie",
-    "clear": "Wyczyść"
+    "clear": "Wyczyść",
+    "gameInvite": "<b>{{who}}</b> zaprosił(a) Cię do minigry",
+    "prefGameInvite": "Zaproszenia do minigier",
+    "prefGameInviteHint": "Gdy znajomy zaprosi Cię do gry"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Graj",
+      "title": "Minigry",
+      "play": "Graj"
+    },
+    "coverGuess": {
+      "title": "Zgadnij okładkę",
+      "description": "Zgadnij grę na podstawie okładki — na start jest całkowicie rozmyta i staje się nieco wyraźniejsza po każdej błędnej próbie.",
+      "setup": {
+        "mode": "Tryb",
+        "modeLocal": "Lokalny",
+        "modeMulti": "Online",
+        "difficultyLabel": "Poziom trudności",
+        "difficulty": {
+          "easy": "Łatwy",
+          "normal": "Normalny",
+          "hard": "Trudny"
+        },
+        "targetScore": "Pierwszy do",
+        "localPlayers": "Gracze na tym urządzeniu",
+        "guestNamePlaceholder": "Imię gracza {{n}}",
+        "startMatch": "Rozpocznij",
+        "inviteFriends": "Zaproś znajomych online",
+        "noFriendsOnline": "Nikt ze znajomych nie jest teraz online.",
+        "sendInvites": "Wyślij zaproszenia",
+        "modeHint": {
+          "local": "Graj sam albo podawajcie urządzenie między znajomymi na tym samym ekranie.",
+          "multi": "Rzuć wyzwanie jednemu lub kilku znajomym online w czasie rzeczywistym, każdy na swoim urządzeniu."
+        },
+        "difficultyHint": {
+          "easy": "Tylko bardzo znane gry (300).",
+          "normal": "Szersza pula, z mniej oczywistymi grami (5000).",
+          "hard": "Cały katalog, łącznie z mało znanymi tytułami (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Szukaj gry…",
+        "targetScore": "Pierwszy do {{count}} punktów",
+        "yourTurn": "Kolej {{name}}",
+        "yourTurnNow": "Twoja kolej — zgadnij grę!",
+        "opponentTurn": "Oczekiwanie na {{name}}…",
+        "pass": "Pomiń",
+        "correct": "Poprawnie!",
+        "roundLost": "Nikt nie zgadł!",
+        "revealedAnswer": "To było {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} wygrywa!",
+        "backToHub": "Powrót do minigier",
+        "leave": "Opuść rozgrywkę"
+      },
+      "invite": {
+        "accept": "Akceptuj",
+        "decline": "Odrzuć",
+        "accepted": "Zaakceptowano",
+        "pending": "Oczekujące",
+        "waitingForHost": "Oczekiwanie, aż gospodarz rozpocznie rozgrywkę…"
+      },
+      "errors": {
+        "generic": "Coś poszło nie tak",
+        "loading": "Ładowanie…",
+        "matchNotFound": "Nie znaleziono rozgrywki",
+        "matchEnded": "Ta rozgrywka się zakończyła"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Polecana gra",

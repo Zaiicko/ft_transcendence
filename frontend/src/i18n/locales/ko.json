@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "로그인",
     "signup": "회원가입",
-    "library": "라이브러리"
+    "library": "라이브러리",
+    "minigames": "미니게임"
   },
   "menu": {
     "notifications": "알림",
@@ -328,7 +329,77 @@
     "achievement": "업적 달성: <b>{{name}}</b>",
     "prefAchievement": "업적",
     "prefAchievementHint": "업적을 달성했을 때",
-    "clear": "지우기"
+    "clear": "지우기",
+    "gameInvite": "<b>{{who}}</b>님이 미니게임에 초대했습니다",
+    "prefGameInvite": "미니게임 초대",
+    "prefGameInviteHint": "친구가 함께 플레이하자고 초대할 때"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "플레이",
+      "title": "미니게임",
+      "play": "플레이"
+    },
+    "coverGuess": {
+      "title": "커버 맞추기",
+      "description": "흐릿한 커버 이미지를 보고 게임을 맞혀보세요 — 처음엔 완전히 흐리게 시작하고, 틀릴 때마다 조금씩 선명해집니다.",
+      "setup": {
+        "mode": "모드",
+        "modeLocal": "로컬",
+        "modeMulti": "온라인",
+        "difficultyLabel": "난이도",
+        "difficulty": {
+          "easy": "쉬움",
+          "normal": "보통",
+          "hard": "어려움"
+        },
+        "targetScore": "먼저 도달",
+        "localPlayers": "이 기기의 플레이어 수",
+        "guestNamePlaceholder": "플레이어 {{n}} 이름",
+        "startMatch": "시작",
+        "inviteFriends": "온라인 친구 초대",
+        "noFriendsOnline": "지금 온라인 상태인 친구가 없습니다.",
+        "sendInvites": "초대 보내기",
+        "modeHint": {
+          "local": "혼자 플레이하거나 같은 화면에서 친구들과 기기를 돌려가며 플레이하세요.",
+          "multi": "한 명 이상의 온라인 친구에게 실시간으로 도전하세요 (각자 자신의 기기 사용)."
+        },
+        "difficultyHint": {
+          "easy": "매우 유명한 게임만 포함됩니다 (300).",
+          "normal": "더 넓은 범위로, 덜 알려진 게임도 포함됩니다 (5000).",
+          "hard": "잘 알려지지 않은 작품을 포함한 전체 카탈로그입니다 (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "게임 검색…",
+        "targetScore": "{{count}}점 먼저 도달하면 승리",
+        "yourTurn": "{{name}}님의 차례",
+        "yourTurnNow": "당신의 차례입니다 — 게임을 맞혀보세요!",
+        "opponentTurn": "{{name}}님을 기다리는 중…",
+        "pass": "패스",
+        "correct": "정답!",
+        "roundLost": "아무도 맞히지 못했습니다!",
+        "revealedAnswer": "정답은 {{title}}였습니다"
+      },
+      "match": {
+        "winner": "{{name}}님 승리!",
+        "backToHub": "미니게임으로 돌아가기",
+        "leave": "경기 나가기"
+      },
+      "invite": {
+        "accept": "수락",
+        "decline": "거절",
+        "accepted": "수락됨",
+        "pending": "대기 중",
+        "waitingForHost": "호스트가 경기를 시작하기를 기다리는 중…"
+      },
+      "errors": {
+        "generic": "문제가 발생했습니다",
+        "loading": "불러오는 중…",
+        "matchNotFound": "경기를 찾을 수 없습니다",
+        "matchEnded": "이 경기는 종료되었습니다"
+      }
+    }
   },
   "home": {
     "featuredBadge": "추천 게임",

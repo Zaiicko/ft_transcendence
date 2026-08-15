@@ -243,6 +243,14 @@ export default function Layout() {
                       >
                         {t('nav.library')}
                       </NavLink>
+                      <NavLink
+                        to="/minigames"
+                        role="menuitem"
+                        onClick={() => setNavOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                      >
+                        {t('nav.minigames')}
+                      </NavLink>
                     </>
                   )}
                   {!user && (
@@ -285,6 +293,9 @@ export default function Layout() {
                 </NavLink>
                 <NavLink data-tour="library" to="/library" className={navLink}>
                   {t('nav.library')}
+                </NavLink>
+                <NavLink data-tour="minigames" to="/minigames" className={navLink}>
+                  {t('nav.minigames')}
                 </NavLink>
               </>
             )}

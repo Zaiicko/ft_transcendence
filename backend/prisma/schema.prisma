@@ -45,6 +45,14 @@ enum NotificationType {
   NEW_MESSAGE
   FRIEND_JOINED
   ACHIEVEMENT
+  GAME_INVITE
+}
+
+enum CoverGuessStatus {
+  LOBBY
+  PLAYING
+  FINISHED
+  ABANDONED
 }
 
 // ---------- Users & social ----------
@@ -154,6 +162,7 @@ model User {
   milestonesAsSubject LeaderboardMilestone[] @relation("MilestoneSubject")
   milestonesAsViewer  LeaderboardMilestone[] @relation("MilestoneViewer")
   achievements        UserAchievement[]
+  coverGuessMatches   CoverGuessMatch[]
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -582,4 +591,26 @@ model Notification {
 
   // The hot query: "my unread notifications"
   @@index([userId, readAt])
+}
+
+// Durable record for an ONLINE "guess the cover" match only — live gameplay
+// state (rounds, turns, blur) lives in memory (CoverGuessService), same
+// precedent as PresenceService. This row exists so a backend restart doesn't
+// silently erase a match with no trace (a reconnecting client can be told
+// "this match ended" instead of hanging) and so a GAME_INVITE notification has
+// a durable target, like Friendship backs FRIEND_REQUEST. LOCAL (same-device)
+// play never creates one of these.
+model CoverGuessMatch {
+  id           String           @id @default(cuid())
+  host         User             @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId       Int
+  status       CoverGuessStatus @default(LOBBY)
+  difficulty   String // "easy" | "normal" | "hard"
+  targetScore  Int
+  // Final snapshot only ({ userId, username, score }[]) — written at match
+  // end, not per-round; no per-round history is tracked.
+  participants Json?
+  winnerId     Int?
+  createdAt    DateTime         @default(now())
+  endedAt      DateTime?
 }

@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Anmelden",
     "signup": "Registrieren",
-    "library": "Bibliotheken"
+    "library": "Bibliotheken",
+    "minigames": "Minispiele"
   },
   "menu": {
     "notifications": "Benachrichtigungen",
@@ -328,7 +329,77 @@
     "achievement": "Erfolg freigeschaltet: <b>{{name}}</b>",
     "prefAchievement": "Erfolge",
     "prefAchievementHint": "Wenn du einen Erfolg freischaltest",
-    "clear": "Leeren"
+    "clear": "Leeren",
+    "gameInvite": "<b>{{who}}</b> hat dich zu einem Minispiel eingeladen",
+    "prefGameInvite": "Minispiel-Einladungen",
+    "prefGameInviteHint": "Wenn dich ein Freund zum Spielen einlädt"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Spielen",
+      "title": "Minispiele",
+      "play": "Spielen"
+    },
+    "coverGuess": {
+      "title": "Cover erraten",
+      "description": "Errate das Spiel anhand seines Covers — es startet komplett unscharf und wird nach jedem falschen Versuch etwas klarer.",
+      "setup": {
+        "mode": "Modus",
+        "modeLocal": "Lokal",
+        "modeMulti": "Online",
+        "difficultyLabel": "Schwierigkeit",
+        "difficulty": {
+          "easy": "Leicht",
+          "normal": "Normal",
+          "hard": "Schwer"
+        },
+        "targetScore": "Erster mit",
+        "localPlayers": "Spieler an diesem Gerät",
+        "guestNamePlaceholder": "Name von Spieler {{n}}",
+        "startMatch": "Starten",
+        "inviteFriends": "Online-Freunde einladen",
+        "noFriendsOnline": "Gerade keine Freunde online.",
+        "sendInvites": "Einladungen senden",
+        "modeHint": {
+          "local": "Spiele allein oder reicht das Gerät zwischen Freunden auf demselben Bildschirm weiter.",
+          "multi": "Fordere einen oder mehrere Online-Freunde in Echtzeit heraus, jeder auf seinem eigenen Gerät."
+        },
+        "difficultyHint": {
+          "easy": "Nur sehr bekannte Spiele (300).",
+          "normal": "Ein größerer Pool mit weniger offensichtlichen Spielen (5000).",
+          "hard": "Der gesamte Katalog, auch mit unbekannten Titeln (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Spiel suchen…",
+        "targetScore": "Erster mit {{count}} Punkten",
+        "yourTurn": "{{name}} ist dran",
+        "yourTurnNow": "Du bist dran — errate das Spiel!",
+        "opponentTurn": "Warten auf {{name}}…",
+        "pass": "Passen",
+        "correct": "Richtig!",
+        "roundLost": "Niemand hat es erraten!",
+        "revealedAnswer": "Es war {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} gewinnt!",
+        "backToHub": "Zurück zu den Minispielen",
+        "leave": "Partie verlassen"
+      },
+      "invite": {
+        "accept": "Annehmen",
+        "decline": "Ablehnen",
+        "accepted": "Angenommen",
+        "pending": "Ausstehend",
+        "waitingForHost": "Warten, bis der Gastgeber die Partie startet…"
+      },
+      "errors": {
+        "generic": "Etwas ist schiefgelaufen",
+        "loading": "Wird geladen…",
+        "matchNotFound": "Partie nicht gefunden",
+        "matchEnded": "Diese Partie ist beendet"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Vorgestelltes Spiel",

@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Iniciar sesión",
     "signup": "Registrarse",
-    "library": "Bibliotecas"
+    "library": "Bibliotecas",
+    "minigames": "Minijuegos"
   },
   "menu": {
     "notifications": "Notificaciones",
@@ -328,7 +329,77 @@
     "achievement": "Logro desbloqueado: <b>{{name}}</b>",
     "prefAchievement": "Logros",
     "prefAchievementHint": "Cuando desbloqueas un logro",
-    "clear": "Vaciar"
+    "clear": "Vaciar",
+    "gameInvite": "<b>{{who}}</b> te invitó a un minijuego",
+    "prefGameInvite": "Invitaciones a minijuegos",
+    "prefGameInviteHint": "Cuando un amigo te invita a jugar"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Jugar",
+      "title": "Minijuegos",
+      "play": "Jugar"
+    },
+    "coverGuess": {
+      "title": "Adivina la portada",
+      "description": "Adivina el juego a partir de su portada: empieza totalmente borrosa y se aclara un poco tras cada intento fallido.",
+      "setup": {
+        "mode": "Modo",
+        "modeLocal": "Local",
+        "modeMulti": "En línea",
+        "difficultyLabel": "Dificultad",
+        "difficulty": {
+          "easy": "Fácil",
+          "normal": "Normal",
+          "hard": "Difícil"
+        },
+        "targetScore": "Primero en llegar a",
+        "localPlayers": "Jugadores en este dispositivo",
+        "guestNamePlaceholder": "Nombre del jugador {{n}}",
+        "startMatch": "Empezar",
+        "inviteFriends": "Invitar a amigos conectados",
+        "noFriendsOnline": "No hay amigos conectados ahora mismo.",
+        "sendInvites": "Enviar invitaciones",
+        "modeHint": {
+          "local": "Juega solo, o pasa el dispositivo entre amigos en la misma pantalla.",
+          "multi": "Desafía a uno o varios amigos conectados en tiempo real, cada uno desde su propio dispositivo."
+        },
+        "difficultyHint": {
+          "easy": "Solo juegos muy conocidos (300).",
+          "normal": "Un grupo más amplio, con juegos menos evidentes (5000).",
+          "hard": "Todo el catálogo, incluidos títulos poco conocidos (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Busca un juego…",
+        "targetScore": "Primero en llegar a {{count}} puntos",
+        "yourTurn": "Turno de {{name}}",
+        "yourTurnNow": "Tu turno — ¡adivina el juego!",
+        "opponentTurn": "Esperando a {{name}}…",
+        "pass": "Pasar",
+        "correct": "¡Correcto!",
+        "roundLost": "¡Nadie lo adivinó!",
+        "revealedAnswer": "Era {{title}}"
+      },
+      "match": {
+        "winner": "¡{{name}} gana!",
+        "backToHub": "Volver a minijuegos",
+        "leave": "Abandonar partida"
+      },
+      "invite": {
+        "accept": "Aceptar",
+        "decline": "Rechazar",
+        "accepted": "Aceptada",
+        "pending": "Pendiente",
+        "waitingForHost": "Esperando a que el anfitrión empiece la partida…"
+      },
+      "errors": {
+        "generic": "Algo salió mal",
+        "loading": "Cargando…",
+        "matchNotFound": "Partida no encontrada",
+        "matchEnded": "Esta partida ha terminado"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Juego destacado",

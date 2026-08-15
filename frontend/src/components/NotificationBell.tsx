@@ -212,6 +212,8 @@ function linkFor(n: AppNotification): string {
     case 'NEW_MESSAGE':
     case 'FRIEND_JOINED':
       return p.actorUsername ? `/u/${p.actorUsername}` : '#';
+    case 'GAME_INVITE':
+      return p.matchId ? `/minigames/cover-guess/match/${p.matchId}` : '/minigames';
     default:
       return '#';
   }
@@ -260,6 +262,8 @@ function messageFor(n: AppNotification): ReactNode {
       const name = FAMILY_NAME_KEY[family] ? `${i18n.t(FAMILY_NAME_KEY[family])} (${threshold})` : '';
       return <Trans i18nKey="notifications.achievement" values={{ name }} components={components} />;
     }
+    case 'GAME_INVITE':
+      return <Trans i18nKey="notifications.gameInvite" values={{ who }} components={components} />;
     default:
       return <strong className="font-semibold">{who}</strong>;
   }

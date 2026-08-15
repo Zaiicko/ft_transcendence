@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Giriş yap",
     "signup": "Kaydol",
-    "library": "Kütüphaneler"
+    "library": "Kütüphaneler",
+    "minigames": "Mini oyunlar"
   },
   "menu": {
     "notifications": "Bildirimler",
@@ -328,7 +329,77 @@
     "achievement": "Başarım açıldı: <b>{{name}}</b>",
     "prefAchievement": "Başarımlar",
     "prefAchievementHint": "Bir başarım açtığında",
-    "clear": "Temizle"
+    "clear": "Temizle",
+    "gameInvite": "<b>{{who}}</b> seni bir mini oyuna davet etti",
+    "prefGameInvite": "Mini oyun davetleri",
+    "prefGameInviteHint": "Bir arkadaşın seni oynamaya davet ettiğinde"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Oyna",
+      "title": "Mini oyunlar",
+      "play": "Oyna"
+    },
+    "coverGuess": {
+      "title": "Kapağı Tahmin Et",
+      "description": "Oyunu kapak resminden tahmin et — başlangıçta tamamen bulanıktır ve her yanlış denemeden sonra biraz netleşir.",
+      "setup": {
+        "mode": "Mod",
+        "modeLocal": "Yerel",
+        "modeMulti": "Çevrimiçi",
+        "difficultyLabel": "Zorluk",
+        "difficulty": {
+          "easy": "Kolay",
+          "normal": "Normal",
+          "hard": "Zor"
+        },
+        "targetScore": "İlk ulaşan:",
+        "localPlayers": "Bu cihazdaki oyuncular",
+        "guestNamePlaceholder": "{{n}}. oyuncunun adı",
+        "startMatch": "Başlat",
+        "inviteFriends": "Çevrimiçi arkadaşları davet et",
+        "noFriendsOnline": "Şu anda çevrimiçi arkadaş yok.",
+        "sendInvites": "Davetleri gönder",
+        "modeHint": {
+          "local": "Tek başına oyna ya da aynı ekranda cihazı arkadaşlar arasında paylaştır.",
+          "multi": "Bir veya birden fazla çevrimiçi arkadaşına gerçek zamanlı meydan oku, herkes kendi cihazından."
+        },
+        "difficultyHint": {
+          "easy": "Sadece çok bilinen oyunlar (300).",
+          "normal": "Daha geniş bir havuz, daha az belirgin oyunlarla (5000).",
+          "hard": "Az bilinen oyunlar dahil tüm katalog (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Oyun ara…",
+        "targetScore": "İlk {{count}} puana ulaşan kazanır",
+        "yourTurn": "Sıra {{name}}'de",
+        "yourTurnNow": "Sıra sende — oyunu tahmin et!",
+        "opponentTurn": "{{name}} bekleniyor…",
+        "pass": "Geç",
+        "correct": "Doğru!",
+        "roundLost": "Kimse bilemedi!",
+        "revealedAnswer": "Cevap {{title}} idi"
+      },
+      "match": {
+        "winner": "{{name}} kazandı!",
+        "backToHub": "Mini oyunlara dön",
+        "leave": "Maçtan ayrıl"
+      },
+      "invite": {
+        "accept": "Kabul et",
+        "decline": "Reddet",
+        "accepted": "Kabul edildi",
+        "pending": "Bekliyor",
+        "waitingForHost": "Ev sahibinin maçı başlatması bekleniyor…"
+      },
+      "errors": {
+        "generic": "Bir şeyler ters gitti",
+        "loading": "Yükleniyor…",
+        "matchNotFound": "Maç bulunamadı",
+        "matchEnded": "Bu maç sona erdi"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Öne çıkan oyun",

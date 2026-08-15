@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Connexion",
     "signup": "Inscription",
-    "library": "Bibliothèques"
+    "library": "Bibliothèques",
+    "minigames": "Mini-jeux"
   },
   "menu": {
     "notifications": "Notifications",
@@ -328,7 +329,77 @@
     "achievement": "Succès débloqué : <b>{{name}}</b>",
     "prefAchievement": "Succès",
     "prefAchievementHint": "Quand tu débloques un succès",
-    "clear": "Effacer"
+    "clear": "Effacer",
+    "gameInvite": "<b>{{who}}</b> t'a invité à un mini-jeu",
+    "prefGameInvite": "Invitations aux mini-jeux",
+    "prefGameInviteHint": "Quand un ami t'invite à jouer"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Jouer",
+      "title": "Mini-jeux",
+      "play": "Jouer"
+    },
+    "coverGuess": {
+      "title": "Devine la pochette",
+      "description": "Devine le jeu à partir de sa pochette — elle est totalement floutée au départ et se defloute un peu après chaque mauvaise réponse.",
+      "setup": {
+        "mode": "Mode",
+        "modeLocal": "Local",
+        "modeMulti": "En ligne",
+        "difficultyLabel": "Difficulté",
+        "difficulty": {
+          "easy": "Facile",
+          "normal": "Normal",
+          "hard": "Difficile"
+        },
+        "targetScore": "Premier à",
+        "localPlayers": "Joueurs sur cet appareil",
+        "guestNamePlaceholder": "Nom du joueur {{n}}",
+        "startMatch": "Commencer",
+        "inviteFriends": "Inviter des amis en ligne",
+        "noFriendsOnline": "Aucun ami en ligne pour le moment.",
+        "sendInvites": "Envoyer les invitations",
+        "modeHint": {
+          "local": "Joue seul, ou passe l'appareil entre amis sur le même écran.",
+          "multi": "Défie un ou plusieurs amis en ligne en temps réel, chacun sur son propre appareil."
+        },
+        "difficultyHint": {
+          "easy": "Seulement des jeux très connus (300).",
+          "normal": "Un bassin plus large, avec des jeux moins évidents (5000).",
+          "hard": "Tout le catalogue, y compris des titres obscurs (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Cherche un jeu…",
+        "targetScore": "Premier à {{count}} points",
+        "yourTurn": "Au tour de {{name}}",
+        "yourTurnNow": "À toi de jouer — devine le jeu !",
+        "opponentTurn": "En attente de {{name}}…",
+        "pass": "Passer",
+        "correct": "Trouvé !",
+        "roundLost": "Personne n'a trouvé !",
+        "revealedAnswer": "C'était {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} gagne !",
+        "backToHub": "Retour aux mini-jeux",
+        "leave": "Quitter la partie"
+      },
+      "invite": {
+        "accept": "Accepter",
+        "decline": "Refuser",
+        "accepted": "Accepté",
+        "pending": "En attente",
+        "waitingForHost": "En attente que l'hôte lance la partie…"
+      },
+      "errors": {
+        "generic": "Une erreur est survenue",
+        "loading": "Chargement…",
+        "matchNotFound": "Partie introuvable",
+        "matchEnded": "Cette partie est terminée"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Jeu à la une",

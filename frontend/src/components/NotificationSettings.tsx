@@ -12,6 +12,7 @@ const TYPES: { key: string; labelKey: string; hintKey: string }[] = [
   { key: 'COMMENT_REPLY', labelKey: 'notifications.prefCommentReply', hintKey: 'notifications.prefCommentReplyHint' },
   { key: 'FRIEND_JOINED', labelKey: 'notifications.prefFriendJoined', hintKey: 'notifications.prefFriendJoinedHint' },
   { key: 'ACHIEVEMENT', labelKey: 'notifications.prefAchievement', hintKey: 'notifications.prefAchievementHint' },
+  { key: 'GAME_INVITE', labelKey: 'notifications.prefGameInvite', hintKey: 'notifications.prefGameInviteHint' },
 ];
 
 // Outline bell icon (1.6 stroke), shared by the section and title.

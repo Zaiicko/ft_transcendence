@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "ログイン",
     "signup": "新規登録",
-    "library": "ライブラリ"
+    "library": "ライブラリ",
+    "minigames": "ミニゲーム"
   },
   "menu": {
     "notifications": "通知",
@@ -328,7 +329,77 @@
     "achievement": "実績を解除：<b>{{name}}</b>",
     "prefAchievement": "実績",
     "prefAchievementHint": "実績を解除したとき",
-    "clear": "クリア"
+    "clear": "クリア",
+    "gameInvite": "<b>{{who}}</b>さんがミニゲームに招待しました",
+    "prefGameInvite": "ミニゲームの招待",
+    "prefGameInviteHint": "友達から対戦に招待されたとき"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "プレイ",
+      "title": "ミニゲーム",
+      "play": "プレイ"
+    },
+    "coverGuess": {
+      "title": "カバー当てクイズ",
+      "description": "ぼかされたカバー画像からゲームを当てよう。最初は完全にぼやけていて、外すたびに少しずつ鮮明になります。",
+      "setup": {
+        "mode": "モード",
+        "modeLocal": "ローカル",
+        "modeMulti": "オンライン",
+        "difficultyLabel": "難易度",
+        "difficulty": {
+          "easy": "かんたん",
+          "normal": "ふつう",
+          "hard": "むずかしい"
+        },
+        "targetScore": "先取",
+        "localPlayers": "この端末のプレイヤー人数",
+        "guestNamePlaceholder": "プレイヤー{{n}}の名前",
+        "startMatch": "開始",
+        "inviteFriends": "オンラインの友達を招待",
+        "noFriendsOnline": "現在オンラインの友達がいません。",
+        "sendInvites": "招待を送る",
+        "modeHint": {
+          "local": "一人でプレイするか、同じ画面で友達と端末を回してプレイします。",
+          "multi": "オンラインの友達1人以上をリアルタイムで招待して対戦します（それぞれ自分の端末でプレイ）。"
+        },
+        "difficultyHint": {
+          "easy": "とても有名なゲームのみ (300)。",
+          "normal": "対象が広く、あまり知られていないゲームも含みます (5000)。",
+          "hard": "マイナーな作品も含む、カタログ全体が対象です (27500)。"
+        }
+      },
+      "play": {
+        "guessPlaceholder": "ゲームを検索…",
+        "targetScore": "{{count}}点先取",
+        "yourTurn": "{{name}}さんの番です",
+        "yourTurnNow": "あなたの番です — ゲームを当てよう！",
+        "opponentTurn": "{{name}}さんを待っています…",
+        "pass": "パス",
+        "correct": "正解！",
+        "roundLost": "誰も当てられませんでした！",
+        "revealedAnswer": "正解は{{title}}でした"
+      },
+      "match": {
+        "winner": "{{name}}さんの勝利！",
+        "backToHub": "ミニゲームに戻る",
+        "leave": "対戦を退出"
+      },
+      "invite": {
+        "accept": "承諾",
+        "decline": "辞退",
+        "accepted": "承諾済み",
+        "pending": "返答待ち",
+        "waitingForHost": "ホストが対戦を開始するのを待っています…"
+      },
+      "errors": {
+        "generic": "問題が発生しました",
+        "loading": "読み込み中…",
+        "matchNotFound": "対戦が見つかりません",
+        "matchEnded": "この対戦は終了しました"
+      }
+    }
   },
   "home": {
     "featuredBadge": "注目のゲーム",

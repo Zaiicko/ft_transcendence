@@ -27,7 +27,8 @@
     "steam": "Steam",
     "login": "Inloggen",
     "signup": "Registreren",
-    "library": "Bibliotheken"
+    "library": "Bibliotheken",
+    "minigames": "Minigames"
   },
   "menu": {
     "notifications": "Meldingen",
@@ -328,7 +329,77 @@
     "achievement": "Prestatie ontgrendeld: <b>{{name}}</b>",
     "prefAchievement": "Prestaties",
     "prefAchievementHint": "Wanneer je een prestatie ontgrendelt",
-    "clear": "Wissen"
+    "clear": "Wissen",
+    "gameInvite": "<b>{{who}}</b> heeft je uitgenodigd voor een minigame",
+    "prefGameInvite": "Minigame-uitnodigingen",
+    "prefGameInviteHint": "Wanneer een vriend je uitnodigt om te spelen"
+  },
+  "minigames": {
+    "hub": {
+      "eyebrow": "Spelen",
+      "title": "Minigames",
+      "play": "Spelen"
+    },
+    "coverGuess": {
+      "title": "Raad de cover",
+      "description": "Raad de game aan de hand van de cover — die begint helemaal wazig en wordt na elke foute poging iets duidelijker.",
+      "setup": {
+        "mode": "Modus",
+        "modeLocal": "Lokaal",
+        "modeMulti": "Online",
+        "difficultyLabel": "Moeilijkheidsgraad",
+        "difficulty": {
+          "easy": "Makkelijk",
+          "normal": "Normaal",
+          "hard": "Moeilijk"
+        },
+        "targetScore": "Eerste tot",
+        "localPlayers": "Spelers op dit apparaat",
+        "guestNamePlaceholder": "Naam speler {{n}}",
+        "startMatch": "Starten",
+        "inviteFriends": "Online vrienden uitnodigen",
+        "noFriendsOnline": "Op dit moment geen vrienden online.",
+        "sendInvites": "Uitnodigingen versturen",
+        "modeHint": {
+          "local": "Speel alleen of geef het apparaat door tussen vrienden op hetzelfde scherm.",
+          "multi": "Daag een of meer online vrienden in real time uit, elk op hun eigen apparaat."
+        },
+        "difficultyHint": {
+          "easy": "Alleen heel bekende games (300).",
+          "normal": "Een grotere groep, met minder voor de hand liggende games (5000).",
+          "hard": "De hele catalogus, inclusief obscure titels (27500)."
+        }
+      },
+      "play": {
+        "guessPlaceholder": "Zoek een game…",
+        "targetScore": "Eerste tot {{count}} punten",
+        "yourTurn": "Beurt van {{name}}",
+        "yourTurnNow": "Jouw beurt — raad de game!",
+        "opponentTurn": "Wachten op {{name}}…",
+        "pass": "Passen",
+        "correct": "Juist!",
+        "roundLost": "Niemand raadde het!",
+        "revealedAnswer": "Het was {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} wint!",
+        "backToHub": "Terug naar minigames",
+        "leave": "Wedstrijd verlaten"
+      },
+      "invite": {
+        "accept": "Accepteren",
+        "decline": "Weigeren",
+        "accepted": "Geaccepteerd",
+        "pending": "In afwachting",
+        "waitingForHost": "Wachten tot de host de wedstrijd start…"
+      },
+      "errors": {
+        "generic": "Er is iets misgegaan",
+        "loading": "Laden…",
+        "matchNotFound": "Wedstrijd niet gevonden",
+        "matchEnded": "Deze wedstrijd is afgelopen"
+      }
+    }
   },
   "home": {
     "featuredBadge": "Uitgelichte game",
