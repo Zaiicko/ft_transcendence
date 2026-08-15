@@ -17,7 +17,7 @@ export class ScreenshotGuessController {
   // picking a game and, below, validating each guess against it.
   @Get('round')
   pickLocalRound(@Query() query: RoundQueryDto) {
-    return this.service.pickLocalRound(query.difficulty, query.exclude);
+    return this.service.pickLocalRound(query.difficulty, query.exclude, query.blur, query.attempts);
   }
 
   @Post('round/:token/guess')

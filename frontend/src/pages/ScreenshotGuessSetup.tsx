@@ -34,6 +34,7 @@ export default function ScreenshotGuessSetup() {
   const [mode, setMode] = useState<'local' | 'multi'>('local');
   const [difficulty, setDifficulty] = useState<ScreenshotGuessDifficulty>('normal');
   const [roundMode, setRoundMode] = useState<ScreenshotGuessRoundMode>('TURNS');
+  const [blur, setBlur] = useState(true);
   const [targetScore, setTargetScore] = useState(5);
   const [answerTimeSec, setAnswerTimeSec] = useState(15);
   // TURNS doesn't offer 5s — if that was picked under RACE and the mode
@@ -72,6 +73,7 @@ export default function ScreenshotGuessSetup() {
         body: JSON.stringify({
           difficulty,
           roundMode,
+          blur,
           targetScore,
           answerTimeSec: effectiveAnswerTimeSec,
           inviteeUserIds: selectedFriendIds,
@@ -93,6 +95,7 @@ export default function ScreenshotGuessSetup() {
         <ScreenshotGuessLocalPlay
           difficulty={difficulty}
           roundMode={roundMode}
+          blur={blur}
           targetScore={targetScore}
           answerTimeSec={effectiveAnswerTimeSec}
           playerNames={playerNames}
@@ -192,6 +195,37 @@ export default function ScreenshotGuessSetup() {
           </div>
           <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
             {t(`minigames.screenshotGuess.setup.roundModeHint.${roundMode}`)}
+          </p>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm font-semibold">{t('minigames.screenshotGuess.setup.blur')}</p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setBlur(true)}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                blur
+                  ? 'bg-accent text-zinc-950'
+                  : 'border border-zinc-400/60 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300'
+              }`}
+            >
+              {t('minigames.screenshotGuess.setup.blurLabel.on')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setBlur(false)}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                !blur
+                  ? 'bg-accent text-zinc-950'
+                  : 'border border-zinc-400/60 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300'
+              }`}
+            >
+              {t('minigames.screenshotGuess.setup.blurLabel.off')}
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+            {t(`minigames.screenshotGuess.setup.blurHint.${blur ? 'on' : 'off'}`)}
           </p>
         </div>
 

@@ -76,6 +76,9 @@ export interface ScreenshotGuessMatchState {
   status: ScreenshotGuessMatchStatus;
   difficulty: ScreenshotGuessDifficulty;
   roundMode?: ScreenshotGuessRoundMode;
+  // false = "no blur" mode — the screenshot is shown fully clear from the
+  // start.
+  blur?: boolean;
   targetScore: number;
   answerTimeSec: number;
   players: ScreenshotGuessPlayerState[];

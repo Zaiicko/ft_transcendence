@@ -1,5 +1,5 @@
-import { Transform } from 'class-transformer';
-import { IsArray, IsIn, IsInt, IsOptional } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsArray, IsBoolean, IsIn, IsInt, IsOptional, Min } from 'class-validator';
 import { ScreenshotGuessDifficulty } from '../screenshot-guess.types';
 
 export class RoundQueryDto {
@@ -20,4 +20,21 @@ export class RoundQueryDto {
       : [],
   )
   exclude: number[] = [];
+
+  // false = "no blur" local round: shown fully clear from the start.
+  @IsOptional()
+  @Transform(({ value }) => value !== 'false')
+  @IsBoolean()
+  blur = true;
+
+  // Only meaningful when blur is false and the local client is running
+  // TURNS mode: how many total attempts (= player count) the round gets
+  // before it's considered lost, since there's no blur budget to spend
+  // instead. Unused by RACE (still unlimited attempts, only the timer ends
+  // the round) and ignored when blur is true.
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  attempts?: number;
 }

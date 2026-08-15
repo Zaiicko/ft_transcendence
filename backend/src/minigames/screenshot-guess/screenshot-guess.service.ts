@@ -51,6 +51,11 @@ interface PendingLocalRound {
   title: string;
   screenshotUrl: string;
   blurStepIndex: number;
+  blur: boolean;
+  // No-blur TURNS only: attempts left across the whole round before it's
+  // considered lost (there's no blur budget to spend instead). Unused in
+  // RACE mode (still unlimited attempts) or when blur is enabled.
+  attemptsLeft?: number;
   expiresAt: number;
 }
 
@@ -77,6 +82,8 @@ interface ScreenshotGuessRound {
   // Epoch ms the current turn auto-passes at — purely informational for the
   // client's countdown; the server enforces it via `turnTimer` below.
   turnDeadline: number;
+  // No-blur TURNS only — see PendingLocalRound.attemptsLeft.
+  attemptsLeft?: number;
 }
 
 interface ScreenshotGuessMatchSession {
@@ -84,6 +91,8 @@ interface ScreenshotGuessMatchSession {
   hostId: number;
   difficulty: ScreenshotGuessDifficulty;
   roundMode: ScreenshotGuessRoundMode;
+  // false = "no blur" mode — see CreateScreenshotGuessMatchDto.blur.
+  blur: boolean;
   targetScore: number;
   // Seconds a player gets before their turn is auto-passed.
   answerTimeSec: number;
@@ -121,29 +130,73 @@ export class ScreenshotGuessService implements OnModuleDestroy {
 
   // ---------------------------------------------------------------- LOCAL --
 
-  async pickLocalRound(difficulty: ScreenshotGuessDifficulty, excludeIds: number[]) {
+  async pickLocalRound(
+    difficulty: ScreenshotGuessDifficulty,
+    excludeIds: number[],
+    blur = true,
+    attempts?: number,
+  ) {
     const game = await this.pickGame(difficulty, excludeIds);
     if (!game) throw new NotFoundException('Aucun jeu disponible pour cette difficulté');
     const roundToken = randomUUID();
+    // No blur = shown fully clear from the start, nothing to reveal.
+    const blurStepIndex = blur ? 0 : BLUR_STEP_COUNT - 1;
     this.localRounds.set(roundToken, {
       gameId: game.id,
       title: game.title,
       screenshotUrl: game.screenshotUrl,
-      blurStepIndex: 0,
+      blurStepIndex,
+      blur,
+      attemptsLeft: blur ? undefined : (attempts ?? 1),
       expiresAt: Date.now() + LOCAL_ROUND_TTL_MS,
     });
-    return { roundToken, screenshotUrl: game.screenshotUrl, blurStepIndex: 0 };
+    return { roundToken, screenshotUrl: game.screenshotUrl, blurStepIndex };
   }
 
   guessLocal(roundToken: string, catalogId: number | null, mode: ScreenshotGuessRoundMode = 'TURNS') {
     const round = this.localRounds.get(roundToken);
     if (!round) throw new NotFoundException('Manche introuvable ou expirée');
 
-    // TURNS: every attempt (guess or pass) advances the blur. RACE: the
-    // cover only advances on the client's own reveal-schedule ticks
-    // (catalogId === null) — a real wrong guess must not help clear it.
-    const advanceOnWrong = mode !== 'RACE' || catalogId === null;
-    const outcome = this.resolveAttempt(round, catalogId, advanceOnWrong);
+    if (mode === 'RACE') {
+      // Unlimited real attempts in RACE regardless of blur — only the
+      // client's own reveal-schedule ticks (catalogId === null) ever
+      // mutate the round.
+      const outcome = this.resolveAttempt(round, catalogId, catalogId === null);
+      if (outcome.resolved) this.localRounds.delete(roundToken);
+      return outcome;
+    }
+
+    if (!round.blur) {
+      // No blur budget to spend on a wrong TURNS guess — a fixed attempt
+      // count instead (see PendingLocalRound.attemptsLeft).
+      const correct = catalogId != null && catalogId === round.gameId;
+      if (correct) {
+        this.localRounds.delete(roundToken);
+        return {
+          correct: true,
+          resolved: true,
+          blurStepIndex: round.blurStepIndex,
+          answerGameId: round.gameId,
+          answerTitle: round.title,
+        };
+      }
+      round.attemptsLeft = (round.attemptsLeft ?? 1) - 1;
+      if (round.attemptsLeft <= 0) {
+        this.localRounds.delete(roundToken);
+        return {
+          correct: false,
+          resolved: true,
+          blurStepIndex: round.blurStepIndex,
+          answerGameId: round.gameId,
+          answerTitle: round.title,
+        };
+      }
+      return { correct: false, resolved: false, blurStepIndex: round.blurStepIndex };
+    }
+
+    // TURNS + blur (existing behavior): every attempt (guess or pass)
+    // advances the blur.
+    const outcome = this.resolveAttempt(round, catalogId, true);
     if (outcome.resolved) this.localRounds.delete(roundToken);
     return outcome;
   }
@@ -204,6 +257,7 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       hostId,
       difficulty: dto.difficulty,
       roundMode: dto.roundMode,
+      blur: dto.blur,
       targetScore: dto.targetScore,
       answerTimeSec: dto.answerTimeSec,
       status: 'LOBBY',
@@ -294,6 +348,8 @@ export class ScreenshotGuessService implements OnModuleDestroy {
     // their turn either way — clear it before deciding what comes next.
     if (session.turnTimer) clearTimeout(session.turnTimer);
 
+    if (!session.blur) return this.guessTurnsNoBlur(session, round, userId, catalogId);
+
     const outcome = this.resolveAttempt(round, catalogId);
     // resolveAttempt only reports the outcome — the round's own `resolved`
     // flag (what toStateDto/broadcastState actually reads) must be set here.
@@ -310,6 +366,42 @@ export class ScreenshotGuessService implements OnModuleDestroy {
 
     if (outcome.resolved) {
       // Fully revealed and still wrong — round over, nobody scored.
+      this.broadcastState(session);
+      this.scheduleNextRound(session);
+      return this.toStateDto(session);
+    }
+
+    round.turnPointer = (round.turnPointer + 1) % round.turnOrder.length;
+    this.scheduleTurnTimer(session);
+    this.broadcastState(session);
+    return this.toStateDto(session);
+  }
+
+  // TURNS + no blur: the screenshot was already shown fully clear from the
+  // start, so a wrong guess has nothing to reveal — instead of a blur
+  // budget, the round gets a fixed attemptsLeft (seeded to the player count
+  // in startRound) and ends once everyone's had their one shot.
+  private async guessTurnsNoBlur(
+    session: ScreenshotGuessMatchSession,
+    round: ScreenshotGuessRound,
+    userId: number,
+    catalogId: number | null,
+  ) {
+    const correct = catalogId != null && catalogId === round.gameId;
+
+    if (correct) {
+      round.resolved = true;
+      const player = session.players.get(userId)!;
+      player.score += 1;
+      this.broadcastState(session);
+      if (player.score >= session.targetScore) await this.finishMatch(session, userId);
+      else this.scheduleNextRound(session);
+      return this.toStateDto(session);
+    }
+
+    round.attemptsLeft = (round.attemptsLeft ?? round.turnOrder.length) - 1;
+    if (round.attemptsLeft <= 0) {
+      round.resolved = true;
       this.broadcastState(session);
       this.scheduleNextRound(session);
       return this.toStateDto(session);
@@ -481,11 +573,13 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       gameId: game.id,
       title: game.title,
       screenshotUrl: game.screenshotUrl,
-      blurStepIndex: 0,
+      // No blur = shown fully clear from the start, nothing to reveal.
+      blurStepIndex: session.blur ? 0 : BLUR_STEP_COUNT - 1,
       turnOrder,
       turnPointer: 0,
       resolved: false,
       turnDeadline: 0, // set by scheduleTurnTimer/scheduleRaceDeblur below
+      attemptsLeft: !session.blur && session.roundMode === 'TURNS' ? turnOrder.length : undefined,
     };
     if (session.roundMode === 'RACE') this.scheduleRaceDeblur(session);
     else this.scheduleTurnTimer(session);
@@ -589,6 +683,7 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       status: session.status,
       difficulty: session.difficulty,
       roundMode: session.roundMode,
+      blur: session.blur,
       targetScore: session.targetScore,
       answerTimeSec: session.answerTimeSec,
       winnerId: session.winnerId ?? null,

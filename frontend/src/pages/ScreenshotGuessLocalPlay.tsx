@@ -37,6 +37,7 @@ interface PlayedGame {
 export default function ScreenshotGuessLocalPlay({
   difficulty,
   roundMode,
+  blur,
   targetScore,
   answerTimeSec,
   playerNames,
@@ -44,6 +45,7 @@ export default function ScreenshotGuessLocalPlay({
 }: {
   difficulty: ScreenshotGuessDifficulty;
   roundMode: ScreenshotGuessRoundMode;
+  blur: boolean;
   targetScore: number;
   answerTimeSec: number;
   playerNames: string[];
@@ -76,8 +78,9 @@ export default function ScreenshotGuessLocalPlay({
       setResolution(null);
       setBuzzedIndex(null);
       try {
+        const attemptsParam = blur ? '' : `&blur=false&attempts=${playerNames.length}`;
         const r = await apiFetch<LocalRound>(
-          `/minigames/screenshot-guess/round?difficulty=${difficulty}&exclude=${excludeIds.join(',')}`,
+          `/minigames/screenshot-guess/round?difficulty=${difficulty}&exclude=${excludeIds.join(',')}${attemptsParam}`,
         );
         setRound(r);
         setRoundIndex(nextRoundIndex);
@@ -91,7 +94,7 @@ export default function ScreenshotGuessLocalPlay({
         setLoading(false);
       }
     },
-    [difficulty, playerNames.length, t],
+    [difficulty, blur, playerNames.length, t],
   );
 
   useEffect(() => {

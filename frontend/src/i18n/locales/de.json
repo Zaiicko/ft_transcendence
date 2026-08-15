@@ -460,6 +460,15 @@
           "TURNS": "Jeder hat einen Versuch pro Unschärfestufe, der Reihe nach.",
           "RACE": "Der Screenshot wird von selbst mit der Zeit klarer — antworte so schnell wie möglich, der erste richtige Versuch gewinnt die Runde."
         },
+        "blur": "Unschärfe",
+        "blurLabel": {
+          "on": "Mit Unschärfe",
+          "off": "Ohne Unschärfe"
+        },
+        "blurHint": {
+          "on": "Der Screenshot startet unscharf und wird mit jedem Versuch klarer, wie gewohnt.",
+          "off": "Der Screenshot wird von Anfang an vollständig klar gezeigt — viel schwerer, da Screenshots kaum je einen Titel oder ein Logo zeigen. Jeder Spieler hat nur einen einzigen Versuch pro Runde."
+        },
         "answerTimeLabel": {
           "TURNS": "Antwortzeit",
           "RACE": "Abstand zwischen den Enthüllungen"

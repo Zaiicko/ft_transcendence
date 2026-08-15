@@ -460,6 +460,15 @@
           "TURNS": "Cada um tem uma tentativa por nível de desfoque, por turnos.",
           "RACE": "A captura de tela se revela sozinha com o tempo — responda o mais rápido possível, o primeiro acerto vence a rodada."
         },
+        "blur": "Desfoque",
+        "blurLabel": {
+          "on": "Com desfoque",
+          "off": "Sem desfoque"
+        },
+        "blurHint": {
+          "on": "A captura começa borrada e clareia a cada tentativa, como de costume.",
+          "off": "A captura é mostrada totalmente nítida desde o início — bem mais difícil, já que capturas quase nunca mostram um título ou logo. Cada jogador tem apenas uma tentativa na rodada."
+        },
         "answerTimeLabel": {
           "TURNS": "Tempo de resposta",
           "RACE": "Intervalo de revelação"

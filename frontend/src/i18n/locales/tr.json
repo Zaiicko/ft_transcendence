@@ -460,6 +460,15 @@
           "TURNS": "Herkesin sırayla, her bulanıklık seviyesinde bir denemesi olur.",
           "RACE": "Ekran görüntüsü zamanla kendiliğinden netleşir — olabildiğince hızlı cevapla, ilk doğru deneme turu kazanır."
         },
+        "blur": "Bulanıklık",
+        "blurLabel": {
+          "on": "Bulanıklıkla",
+          "off": "Bulanıklık olmadan"
+        },
+        "blurHint": {
+          "on": "Ekran görüntüsü bulanık başlar ve her denemede netleşir, her zamanki gibi.",
+          "off": "Ekran görüntüsü baştan itibaren tamamen net gösterilir — çok daha zor, çünkü ekran görüntüleri neredeyse hiç başlık veya logo göstermez. Her oyuncunun tur için sadece tek bir denemesi olur."
+        },
         "answerTimeLabel": {
           "TURNS": "Cevap süresi",
           "RACE": "Netleşme aralığı"

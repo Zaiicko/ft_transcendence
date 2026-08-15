@@ -3,9 +3,12 @@ import { apiFetch } from '../lib/api';
 
 // Decorative "logo" for the screenshot-guess card on the mini-games hub:
 // fetches a real round screenshot (the same endpoint local play draws from)
-// purely to animate it blurring/clearing on a loop — a little preview of
-// the game itself. The roundToken that comes with it is never used; it just
-// expires unused like any other local round nobody played.
+// purely to animate it zooming out from a cropped detail to the full frame,
+// on a loop — a little preview of the game itself. Zoom rather than blur
+// (unlike CoverGuessLogo): this game has its own no-blur mode, so a
+// blur-reveal animation would misrepresent it. The roundToken that comes
+// with it is never used; it just expires unused like any other local round
+// nobody played.
 export default function ScreenshotGuessLogo({ className }: { className?: string }) {
   const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
 
@@ -29,7 +32,7 @@ export default function ScreenshotGuessLogo({ className }: { className?: string 
           alt=""
           aria-hidden="true"
           draggable={false}
-          className="h-full w-full animate-cover-guess-reveal object-cover"
+          className="h-full w-full animate-screenshot-guess-reveal object-cover"
         />
       )}
     </div>

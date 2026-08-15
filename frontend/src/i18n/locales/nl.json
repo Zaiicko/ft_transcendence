@@ -460,6 +460,15 @@
           "TURNS": "Iedereen krijgt om de beurt één poging per vervagingsstap.",
           "RACE": "De screenshot wordt vanzelf duidelijker na verloop van tijd — antwoord zo snel mogelijk, de eerste juiste gok wint de ronde."
         },
+        "blur": "Vervaging",
+        "blurLabel": {
+          "on": "Met vervaging",
+          "off": "Zonder vervaging"
+        },
+        "blurHint": {
+          "on": "De screenshot begint wazig en wordt bij elke poging duidelijker, zoals gebruikelijk.",
+          "off": "De screenshot wordt vanaf het begin volledig scherp getoond — veel moeilijker, want screenshots tonen bijna nooit een titel of logo. Elke speler krijgt maar één poging voor de ronde."
+        },
         "answerTimeLabel": {
           "TURNS": "Antwoordtijd",
           "RACE": "Interval tussen onthullingen"

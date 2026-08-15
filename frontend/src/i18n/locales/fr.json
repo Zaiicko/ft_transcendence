@@ -460,6 +460,15 @@
           "TURNS": "Chacun a un essai par palier de flou, à tour de rôle.",
           "RACE": "La capture d'écran se dévoile toute seule avec le temps — réponds le plus vite possible, le premier bon essai remporte la manche."
         },
+        "blur": "Flou",
+        "blurLabel": {
+          "on": "Avec flou",
+          "off": "Sans flou"
+        },
+        "blurHint": {
+          "on": "La capture démarre floutée et se dévoile à chaque essai, comme d'habitude.",
+          "off": "La capture est affichée nette dès le début — bien plus dur, car les captures ne montrent presque jamais de titre ou de logo. Chaque joueur n'a plus qu'un seul essai pour la manche."
+        },
         "answerTimeLabel": {
           "TURNS": "Temps de réponse",
           "RACE": "Intervalle de dévoilement"

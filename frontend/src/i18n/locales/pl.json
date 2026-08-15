@@ -460,6 +460,15 @@
           "TURNS": "Każdy ma jedną próbę na poziom rozmycia, po kolei.",
           "RACE": "Zrzut ekranu sam się odsłania z czasem — odpowiadaj jak najszybciej, pierwsza trafna próba wygrywa rundę."
         },
+        "blur": "Rozmycie",
+        "blurLabel": {
+          "on": "Z rozmyciem",
+          "off": "Bez rozmycia"
+        },
+        "blurHint": {
+          "on": "Zrzut ekranu zaczyna się rozmyty i staje się wyraźniejszy z każdą próbą, jak zwykle.",
+          "off": "Zrzut ekranu jest pokazany całkowicie wyraźnie od początku — dużo trudniej, bo zrzuty ekranu prawie nigdy nie pokazują tytułu ani logo. Każdy gracz ma tylko jedną próbę na rundę."
+        },
         "answerTimeLabel": {
           "TURNS": "Czas na odpowiedź",
           "RACE": "Odstęp między odsłonięciami"

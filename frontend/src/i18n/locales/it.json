@@ -460,6 +460,15 @@
           "TURNS": "Ognuno ha un tentativo per livello di sfocatura, a turno.",
           "RACE": "Lo screenshot si svela da solo col tempo — rispondi il più veloce possibile, il primo tentativo corretto vince il round."
         },
+        "blur": "Sfocatura",
+        "blurLabel": {
+          "on": "Con sfocatura",
+          "off": "Senza sfocatura"
+        },
+        "blurHint": {
+          "on": "Lo screenshot parte sfocato e si schiarisce a ogni tentativo, come al solito.",
+          "off": "Lo screenshot viene mostrato completamente nitido fin dall'inizio — molto più difficile, perché gli screenshot quasi mai mostrano un titolo o un logo. Ogni giocatore ha un solo tentativo per il round."
+        },
         "answerTimeLabel": {
           "TURNS": "Tempo di risposta",
           "RACE": "Intervallo di rivelazione"

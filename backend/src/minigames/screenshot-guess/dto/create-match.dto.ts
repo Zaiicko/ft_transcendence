@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsIn, IsInt } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsIn, IsInt } from 'class-validator';
 import { ScreenshotGuessDifficulty, ScreenshotGuessRoundMode } from '../screenshot-guess.types';
 
 export class CreateScreenshotGuessMatchDto {
@@ -8,6 +8,15 @@ export class CreateScreenshotGuessMatchDto {
 
   @IsIn(['TURNS', 'RACE'])
   roundMode: ScreenshotGuessRoundMode;
+
+  // false = "no blur" mode: the screenshot is shown fully clear from the
+  // start. Screenshots (unlike box-art covers) rarely show a title or logo,
+  // so this is still genuinely hard even without any blur — the mode just
+  // drops the multi-attempt reveal scaffolding: in TURNS each player gets a
+  // single attempt total for the round instead of one per blur step, and in
+  // RACE the round just runs for one answerTimeSec window before ending.
+  @IsBoolean()
+  blur: boolean;
 
   // First to reach this many round wins takes the match.
   @IsIn([3, 5, 7, 10])

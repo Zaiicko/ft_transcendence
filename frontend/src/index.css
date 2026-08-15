@@ -266,3 +266,32 @@ body {
     filter: blur(4px);
   }
 }
+
+/* Logo du mini-jeu "Devine la capture d'écran" : zoom sur un détail
+   recadré, puis dézoom pour révéler l'image entière — en boucle. Pas de
+   flou ici (contrairement à cover-guess) puisque le jeu a justement un
+   mode sans flou ; le zoom illustre plutôt qu'on ne voit d'abord qu'un
+   fragment de la capture, comme en jeu. */
+@keyframes screenshot-guess-reveal {
+  0%,
+  12% {
+    transform: scale(2.6) translate(8%, -6%);
+  }
+  55%,
+  70% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(2.6) translate(8%, -6%);
+  }
+}
+.animate-screenshot-guess-reveal {
+  animation: screenshot-guess-reveal 6s ease-in-out infinite;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-screenshot-guess-reveal {
+    animation: none;
+    transform: scale(1.3) translate(4%, -3%);
+  }
+}

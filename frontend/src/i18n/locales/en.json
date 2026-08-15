@@ -460,6 +460,15 @@
           "TURNS": "Everyone gets one guess per blur step, in rotation.",
           "RACE": "The screenshot clears on its own over time — guess as fast as you can, first correct answer wins the round."
         },
+        "blur": "Blur",
+        "blurLabel": {
+          "on": "With blur",
+          "off": "No blur"
+        },
+        "blurHint": {
+          "on": "The screenshot starts blurred and clears with each attempt, same as usual.",
+          "off": "The screenshot is shown fully clear from the start — much harder, since screenshots rarely show a title or logo. Each player gets a single attempt for the round instead."
+        },
         "answerTimeLabel": {
           "TURNS": "Answer time",
           "RACE": "Reveal interval"
