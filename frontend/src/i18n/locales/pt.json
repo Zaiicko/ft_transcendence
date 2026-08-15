@@ -369,7 +369,19 @@
           "normal": "Um grupo mais amplo, com jogos menos óbvios (5000).",
           "hard": "Todo o catálogo, incluindo títulos pouco conhecidos (27500)."
         },
-        "answerTime": "Tempo de resposta",
+        "roundMode": "Modo de rodada",
+        "roundModeLabel": {
+          "TURNS": "Por turnos",
+          "RACE": "O primeiro que acertar"
+        },
+        "roundModeHint": {
+          "TURNS": "Cada um tem uma tentativa por nível de desfoque, por turnos.",
+          "RACE": "A capa se revela sozinha com o tempo — responda o mais rápido possível, o primeiro acerto vence a rodada."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Tempo de resposta",
+          "RACE": "Intervalo de revelação"
+        },
         "answerTimeSeconds": "{{count}}s"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "Vez de {{name}}",
         "yourTurnNow": "Sua vez — adivinhe o jogo!",
         "opponentTurn": "Aguardando {{name}}…",
+        "racePromptOnline": "Adivinhe antes dos outros!",
+        "nextBlurIn": "Próxima revelação em {{count}}s",
+        "buzzerOpen": "Toque no seu nome para responder!",
+        "buzzedTurn": "{{name}}, sua vez de responder!",
+        "cancelBuzz": "Não era essa — solto a vez",
         "pass": "Passar",
         "correct": "Correto!",
         "roundLost": "Ninguém acertou!",

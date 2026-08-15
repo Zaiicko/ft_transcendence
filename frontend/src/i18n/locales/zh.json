@@ -369,7 +369,19 @@
           "normal": "范围更广，包含一些不太明显的游戏 (5000)。",
           "hard": "整个游戏库，包括冷门作品 (27500)。"
         },
-        "answerTime": "回答时间",
+        "roundMode": "回合模式",
+        "roundModeLabel": {
+          "TURNS": "轮流猜",
+          "RACE": "抢答制"
+        },
+        "roundModeHint": {
+          "TURNS": "每人在每个模糊等级都有一次机会，轮流进行。",
+          "RACE": "封面会随时间自动变清晰——尽快作答，第一个猜对的人赢得本回合。"
+        },
+        "answerTimeLabel": {
+          "TURNS": "回答时间",
+          "RACE": "揭晓间隔"
+        },
         "answerTimeSeconds": "{{count}}秒"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "轮到 {{name}}",
         "yourTurnNow": "轮到你了——猜猜这是什么游戏！",
         "opponentTurn": "等待 {{name}}…",
+        "racePromptOnline": "抢在别人之前猜出来！",
+        "nextBlurIn": "{{count}}秒后进一步揭晓",
+        "buzzerOpen": "点击你的名字来回答！",
+        "buzzedTurn": "{{name}}，轮到你回答了！",
+        "cancelBuzz": "不是这个——放弃抢答",
         "pass": "跳过",
         "correct": "猜对了！",
         "roundLost": "没有人猜对！",

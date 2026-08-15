@@ -369,7 +369,19 @@
           "normal": "Ein größerer Pool mit weniger offensichtlichen Spielen (5000).",
           "hard": "Der gesamte Katalog, auch mit unbekannten Titeln (27500)."
         },
-        "answerTime": "Antwortzeit",
+        "roundMode": "Rundenmodus",
+        "roundModeLabel": {
+          "TURNS": "Der Reihe nach",
+          "RACE": "Wer zuerst antwortet"
+        },
+        "roundModeHint": {
+          "TURNS": "Jeder hat einen Versuch pro Unschärfestufe, der Reihe nach.",
+          "RACE": "Das Cover wird von selbst mit der Zeit klarer — antworte so schnell wie möglich, der erste richtige Versuch gewinnt die Runde."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Antwortzeit",
+          "RACE": "Abstand zwischen den Enthüllungen"
+        },
         "answerTimeSeconds": "{{count}}s"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "{{name}} ist dran",
         "yourTurnNow": "Du bist dran — errate das Spiel!",
         "opponentTurn": "Warten auf {{name}}…",
+        "racePromptOnline": "Errate es vor den anderen!",
+        "nextBlurIn": "Nächste Enthüllung in {{count}}s",
+        "buzzerOpen": "Tippe auf deinen Namen, um zu antworten!",
+        "buzzedTurn": "{{name}}, du bist dran zu antworten!",
+        "cancelBuzz": "Doch nicht — Buzzer freigeben",
         "pass": "Passen",
         "correct": "Richtig!",
         "roundLost": "Niemand hat es erraten!",

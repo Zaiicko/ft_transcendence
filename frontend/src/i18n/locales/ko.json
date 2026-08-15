@@ -369,7 +369,19 @@
           "normal": "더 넓은 범위로, 덜 알려진 게임도 포함됩니다 (5000).",
           "hard": "잘 알려지지 않은 작품을 포함한 전체 카탈로그입니다 (27500)."
         },
-        "answerTime": "답변 시간",
+        "roundMode": "라운드 모드",
+        "roundModeLabel": {
+          "TURNS": "차례대로",
+          "RACE": "먼저 맞히기"
+        },
+        "roundModeHint": {
+          "TURNS": "모두가 흐림 단계마다 차례대로 한 번씩 시도합니다.",
+          "RACE": "표지가 시간이 지나면 저절로 선명해집니다 — 최대한 빨리 답하세요, 가장 먼저 맞힌 사람이 라운드를 이깁니다."
+        },
+        "answerTimeLabel": {
+          "TURNS": "답변 시간",
+          "RACE": "공개 간격"
+        },
         "answerTimeSeconds": "{{count}}초"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "{{name}}님의 차례",
         "yourTurnNow": "당신의 차례입니다 — 게임을 맞혀보세요!",
         "opponentTurn": "{{name}}님을 기다리는 중…",
+        "racePromptOnline": "다른 사람보다 먼저 맞혀보세요!",
+        "nextBlurIn": "{{count}}초 후 다음 공개",
+        "buzzerOpen": "이름을 눌러 답변하세요!",
+        "buzzedTurn": "{{name}}님, 답변할 차례입니다!",
+        "cancelBuzz": "아니에요 — 버저 포기",
         "pass": "패스",
         "correct": "정답!",
         "roundLost": "아무도 맞히지 못했습니다!",

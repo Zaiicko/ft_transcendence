@@ -369,7 +369,19 @@
           "normal": "Un gruppo più ampio, con giochi meno ovvi (5000).",
           "hard": "L'intero catalogo, inclusi titoli poco conosciuti (27500)."
         },
-        "answerTime": "Tempo di risposta",
+        "roundMode": "Modalità di round",
+        "roundModeLabel": {
+          "TURNS": "A turni",
+          "RACE": "Il primo che risponde"
+        },
+        "roundModeHint": {
+          "TURNS": "Ognuno ha un tentativo per livello di sfocatura, a turno.",
+          "RACE": "La copertina si svela da sola col tempo — rispondi il più veloce possibile, il primo tentativo corretto vince il round."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Tempo di risposta",
+          "RACE": "Intervallo di rivelazione"
+        },
         "answerTimeSeconds": "{{count}}s"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "Turno di {{name}}",
         "yourTurnNow": "Tocca a te — indovina il gioco!",
         "opponentTurn": "In attesa di {{name}}…",
+        "racePromptOnline": "Indovina prima degli altri!",
+        "nextBlurIn": "Prossima rivelazione tra {{count}}s",
+        "buzzerOpen": "Tocca il tuo nome per rispondere!",
+        "buzzedTurn": "{{name}}, tocca a te rispondere!",
+        "cancelBuzz": "Non era quello — lascio il turno",
         "pass": "Passa",
         "correct": "Esatto!",
         "roundLost": "Nessuno ha indovinato!",

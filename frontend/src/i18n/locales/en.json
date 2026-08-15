@@ -369,7 +369,19 @@
           "normal": "A wider pool, including less obvious games (5000).",
           "hard": "The whole catalog, including obscure titles (27500)."
         },
-        "answerTime": "Answer time",
+        "roundMode": "Round mode",
+        "roundModeLabel": {
+          "TURNS": "Take turns",
+          "RACE": "First to answer"
+        },
+        "roundModeHint": {
+          "TURNS": "Everyone gets one guess per blur step, in rotation.",
+          "RACE": "The cover clears on its own over time — guess as fast as you can, first correct answer wins the round."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Answer time",
+          "RACE": "Reveal interval"
+        },
         "answerTimeSeconds": "{{count}}s"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "{{name}}'s turn",
         "yourTurnNow": "Your turn — guess the game!",
         "opponentTurn": "Waiting for {{name}}…",
+        "racePromptOnline": "Guess before the others!",
+        "nextBlurIn": "Next reveal in {{count}}s",
+        "buzzerOpen": "Tap your name to answer!",
+        "buzzedTurn": "{{name}}, it's your turn — guess!",
+        "cancelBuzz": "Not it — let go",
         "pass": "Pass",
         "correct": "Correct!",
         "roundLost": "Nobody found it!",

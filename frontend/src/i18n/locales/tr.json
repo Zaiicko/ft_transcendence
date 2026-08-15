@@ -369,7 +369,19 @@
           "normal": "Daha geniş bir havuz, daha az belirgin oyunlarla (5000).",
           "hard": "Az bilinen oyunlar dahil tüm katalog (27500)."
         },
-        "answerTime": "Cevap süresi",
+        "roundMode": "Tur modu",
+        "roundModeLabel": {
+          "TURNS": "Sırayla",
+          "RACE": "İlk cevaplayan kazanır"
+        },
+        "roundModeHint": {
+          "TURNS": "Herkesin sırayla, her bulanıklık seviyesinde bir denemesi olur.",
+          "RACE": "Kapak zamanla kendiliğinden netleşir — olabildiğince hızlı cevapla, ilk doğru deneme turu kazanır."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Cevap süresi",
+          "RACE": "Netleşme aralığı"
+        },
         "answerTimeSeconds": "{{count}}sn"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "Sıra {{name}}'de",
         "yourTurnNow": "Sıra sende — oyunu tahmin et!",
         "opponentTurn": "{{name}} bekleniyor…",
+        "racePromptOnline": "Diğerlerinden önce tahmin et!",
+        "nextBlurIn": "Sonraki netleşme {{count}}s içinde",
+        "buzzerOpen": "Cevaplamak için adına dokun!",
+        "buzzedTurn": "{{name}}, cevaplama sırası sende!",
+        "cancelBuzz": "O değildi — sırayı bırak",
         "pass": "Geç",
         "correct": "Doğru!",
         "roundLost": "Kimse bilemedi!",

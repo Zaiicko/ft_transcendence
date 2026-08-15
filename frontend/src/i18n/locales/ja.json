@@ -369,7 +369,19 @@
           "normal": "対象が広く、あまり知られていないゲームも含みます (5000)。",
           "hard": "マイナーな作品も含む、カタログ全体が対象です (27500)。"
         },
-        "answerTime": "回答時間",
+        "roundMode": "ラウンドモード",
+        "roundModeLabel": {
+          "TURNS": "順番に",
+          "RACE": "早い者勝ち"
+        },
+        "roundModeHint": {
+          "TURNS": "各プレイヤーがぼかしの段階ごとに順番で1回ずつ挑戦します。",
+          "RACE": "カバーは時間とともに自動的にはっきりしていきます — できるだけ早く答えましょう、最初に正解した人がそのラウンドの勝者です。"
+        },
+        "answerTimeLabel": {
+          "TURNS": "回答時間",
+          "RACE": "解除の間隔"
+        },
         "answerTimeSeconds": "{{count}}秒"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "{{name}}さんの番です",
         "yourTurnNow": "あなたの番です — ゲームを当てよう！",
         "opponentTurn": "{{name}}さんを待っています…",
+        "racePromptOnline": "他の人より先に当てよう！",
+        "nextBlurIn": "次の解除まで{{count}}秒",
+        "buzzerOpen": "自分の名前をタップして回答しよう！",
+        "buzzedTurn": "{{name}}さん、あなたの回答の番です！",
+        "cancelBuzz": "違った — 回答権を手放す",
         "pass": "パス",
         "correct": "正解！",
         "roundLost": "誰も当てられませんでした！",

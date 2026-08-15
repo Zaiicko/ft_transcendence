@@ -22,7 +22,7 @@ export class CoverGuessController {
 
   @Post('round/:token/guess')
   guessLocal(@Param('token') token: string, @Body() dto: GuessCoverGuessDto) {
-    return this.service.guessLocal(token, dto.catalogId ?? null);
+    return this.service.guessLocal(token, dto.catalogId ?? null, dto.mode ?? 'TURNS');
   }
 
   // MULTI mode

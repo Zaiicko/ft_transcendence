@@ -243,6 +243,20 @@ export default function CoverGuessMatch() {
               <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 {t('minigames.coverGuess.play.revealedAnswer', { title: state.round.answerTitle })}
               </p>
+            ) : state.roundMode === 'RACE' ? (
+              <>
+                <p className="text-sm font-medium">
+                  {t('minigames.coverGuess.play.racePromptOnline')}
+                  {remaining !== null && (
+                    <span className="ml-2 font-normal text-zinc-400">
+                      {t('minigames.coverGuess.play.nextBlurIn', { count: remaining })}
+                    </span>
+                  )}
+                </p>
+                <div className="w-full max-w-sm">
+                  <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
+                </div>
+              </>
             ) : state.round.currentTurnUserId === user.id ? (
               <>
                 <p className="text-sm font-medium">

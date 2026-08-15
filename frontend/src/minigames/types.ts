@@ -1,5 +1,11 @@
 export type CoverGuessDifficulty = 'easy' | 'normal' | 'hard';
 
+// TURNS: everyone gets one guess per blur step, in rotation, and a guess
+// (right or wrong) is what advances the blur. RACE: the cover clears on its
+// own on a fixed schedule, anyone can attempt at any time, first correct
+// guess wins the round.
+export type CoverGuessRoundMode = 'TURNS' | 'RACE';
+
 export type CoverGuessMatchStatus = 'LOBBY' | 'PLAYING' | 'FINISHED' | 'ABANDONED';
 
 export interface CoverGuessPlayerState {
@@ -26,6 +32,7 @@ export interface CoverGuessMatchState {
   hostId: number;
   status: CoverGuessMatchStatus;
   difficulty: CoverGuessDifficulty;
+  roundMode?: CoverGuessRoundMode;
   targetScore: number;
   answerTimeSec: number;
   players: CoverGuessPlayerState[];

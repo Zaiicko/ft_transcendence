@@ -12,7 +12,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { CreateCoverGuessMatchDto } from './dto/create-match.dto';
 import { CoverGuessGateway } from './cover-guess.gateway';
-import { BLUR_STEP_COUNT, CoverGuessDifficulty } from './cover-guess.types';
+import { BLUR_STEP_COUNT, CoverGuessDifficulty, CoverGuessRoundMode } from './cover-guess.types';
 
 // Rank-limited pools for easy/normal (cheap: fetch only ids, pick one at
 // random client-side); "hard" has no cutoff — the whole filtered catalog is
@@ -84,6 +84,7 @@ interface CoverGuessMatchSession {
   id: string;
   hostId: number;
   difficulty: CoverGuessDifficulty;
+  roundMode: CoverGuessRoundMode;
   targetScore: number;
   // Seconds a player gets before their turn is auto-passed.
   answerTimeSec: number;
@@ -136,11 +137,15 @@ export class CoverGuessService implements OnModuleDestroy {
     return { roundToken, coverUrl: game.coverUrl, blurStepIndex: 0 };
   }
 
-  guessLocal(roundToken: string, catalogId: number | null) {
+  guessLocal(roundToken: string, catalogId: number | null, mode: CoverGuessRoundMode = 'TURNS') {
     const round = this.localRounds.get(roundToken);
     if (!round) throw new NotFoundException('Manche introuvable ou expirée');
 
-    const outcome = this.resolveAttempt(round, catalogId);
+    // TURNS: every attempt (guess or pass) advances the blur. RACE: the
+    // cover only advances on the client's own reveal-schedule ticks
+    // (catalogId === null) — a real wrong guess must not help clear it.
+    const advanceOnWrong = mode !== 'RACE' || catalogId === null;
+    const outcome = this.resolveAttempt(round, catalogId, advanceOnWrong);
     if (outcome.resolved) this.localRounds.delete(roundToken);
     return outcome;
   }
@@ -200,6 +205,7 @@ export class CoverGuessService implements OnModuleDestroy {
       id,
       hostId,
       difficulty: dto.difficulty,
+      roundMode: dto.roundMode,
       targetScore: dto.targetScore,
       answerTimeSec: dto.answerTimeSec,
       status: 'LOBBY',
@@ -268,6 +274,9 @@ export class CoverGuessService implements OnModuleDestroy {
       throw new BadRequestException('Aucune manche en cours');
     }
     const round = session.round;
+
+    if (session.roundMode === 'RACE') return this.guessRace(session, round, userId, catalogId);
+
     const currentTurnUserId = round.turnOrder[round.turnPointer];
     if (currentTurnUserId !== userId) throw new ForbiddenException("Ce n'est pas ton tour");
 
@@ -299,6 +308,33 @@ export class CoverGuessService implements OnModuleDestroy {
     round.turnPointer = (round.turnPointer + 1) % round.turnOrder.length;
     this.scheduleTurnTimer(session);
     this.broadcastState(session);
+    return this.toStateDto(session);
+  }
+
+  // RACE: any accepted player can attempt at any time, no turn to check.
+  // A wrong guess doesn't touch the round at all — the cover only clears via
+  // scheduleRaceDeblur's own timer — so there's nothing to broadcast for a
+  // miss, it just quietly tells the guesser themself "not that one".
+  private async guessRace(
+    session: CoverGuessMatchSession,
+    round: CoverGuessRound,
+    userId: number,
+    catalogId: number | null,
+  ) {
+    if (!this.activePlayers(session).some((p) => p.userId === userId)) throw new ForbiddenException();
+
+    const correct = catalogId != null && catalogId === round.gameId;
+    if (!correct) return this.toStateDto(session);
+
+    round.resolved = true;
+    round.blurStepIndex = BLUR_STEP_COUNT - 1;
+    if (session.turnTimer) clearTimeout(session.turnTimer);
+
+    const player = session.players.get(userId)!;
+    player.score += 1;
+    this.broadcastState(session);
+    if (player.score >= session.targetScore) await this.finishMatch(session, userId);
+    else this.scheduleNextRound(session);
     return this.toStateDto(session);
   }
 
@@ -372,6 +408,7 @@ export class CoverGuessService implements OnModuleDestroy {
   private resolveAttempt(
     round: { gameId: number; title: string; blurStepIndex: number },
     catalogId: number | null,
+    advanceOnWrong = true,
   ): { correct: boolean; resolved: boolean; blurStepIndex: number; answerGameId?: number; answerTitle?: string } {
     const correct = catalogId != null && catalogId === round.gameId;
     if (correct) {
@@ -386,6 +423,9 @@ export class CoverGuessService implements OnModuleDestroy {
         answerGameId: round.gameId,
         answerTitle: round.title,
       };
+    }
+    if (!advanceOnWrong) {
+      return { correct: false, resolved: false, blurStepIndex: round.blurStepIndex };
     }
     const wasFinalAttempt = round.blurStepIndex >= BLUR_STEP_COUNT - 1;
     if (wasFinalAttempt) {
@@ -403,11 +443,17 @@ export class CoverGuessService implements OnModuleDestroy {
 
   private async startRound(session: CoverGuessMatchSession): Promise<void> {
     session.roundIndex += 1;
-    const activeIds = this.activePlayers(session).map((p) => p.userId);
-    // The starting player shifts by one every round so nobody is always
-    // first or always last — relative order (J1→J2→J3) stays fixed.
-    const startOffset = session.roundIndex % activeIds.length;
-    const turnOrder = [...activeIds.slice(startOffset), ...activeIds.slice(0, startOffset)];
+    // RACE has no turn rotation — everyone can guess at any time, so
+    // turnOrder stays empty (toStateDto then reports currentTurnUserId as
+    // null, which is exactly what the client needs to not highlight anyone).
+    let turnOrder: number[] = [];
+    if (session.roundMode === 'TURNS') {
+      const activeIds = this.activePlayers(session).map((p) => p.userId);
+      // The starting player shifts by one every round so nobody is always
+      // first or always last — relative order (J1→J2→J3) stays fixed.
+      const startOffset = session.roundIndex % activeIds.length;
+      turnOrder = [...activeIds.slice(startOffset), ...activeIds.slice(0, startOffset)];
+    }
 
     const game = await this.pickGame(session.difficulty, [...session.usedGameIds]);
     if (!game) {
@@ -429,9 +475,10 @@ export class CoverGuessService implements OnModuleDestroy {
       turnOrder,
       turnPointer: 0,
       resolved: false,
-      turnDeadline: 0, // set by scheduleTurnTimer below
+      turnDeadline: 0, // set by scheduleTurnTimer/scheduleRaceDeblur below
     };
-    this.scheduleTurnTimer(session);
+    if (session.roundMode === 'RACE') this.scheduleRaceDeblur(session);
+    else this.scheduleTurnTimer(session);
     this.broadcastState(session);
   }
 
@@ -456,6 +503,33 @@ export class CoverGuessService implements OnModuleDestroy {
       // turn it is before mutating anything, so this is a harmless no-op if
       // the round has since moved on for any other reason.
       void this.guess(session.id, userId, null).catch(() => {});
+    }, session.answerTimeSec * 1000);
+  }
+
+  // RACE's equivalent of scheduleTurnTimer: instead of a specific player's
+  // turn expiring, the cover itself clears by one step on a fixed schedule,
+  // independent of who (if anyone) is guessing. Reuses the same
+  // `turnTimer`/`turnDeadline` fields as TURNS — only one of the two modes'
+  // schedulers is ever active for a given session, and the client already
+  // reads `turnDeadline` as "when does the next thing happen" either way.
+  private scheduleRaceDeblur(session: CoverGuessMatchSession): void {
+    if (session.turnTimer) clearTimeout(session.turnTimer);
+    const round = session.round;
+    if (!round || round.resolved) return;
+    round.turnDeadline = Date.now() + session.answerTimeSec * 1000;
+    session.turnTimer = setTimeout(() => {
+      const r = session.round;
+      if (!r || r.resolved || r !== round) return;
+      if (r.blurStepIndex >= BLUR_STEP_COUNT - 1) {
+        // Fully revealed and still nobody found it.
+        r.resolved = true;
+        this.broadcastState(session);
+        this.scheduleNextRound(session);
+      } else {
+        r.blurStepIndex += 1;
+        this.broadcastState(session);
+        this.scheduleRaceDeblur(session);
+      }
     }, session.answerTimeSec * 1000);
   }
 
@@ -504,6 +578,7 @@ export class CoverGuessService implements OnModuleDestroy {
       hostId: session.hostId,
       status: session.status,
       difficulty: session.difficulty,
+      roundMode: session.roundMode,
       targetScore: session.targetScore,
       answerTimeSec: session.answerTimeSec,
       winnerId: session.winnerId ?? null,

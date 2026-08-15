@@ -6,10 +6,11 @@ import Avatar from '../components/Avatar';
 import SectionHead from '../components/SectionHead';
 import { ApiError, apiFetch } from '../lib/api';
 import type { PublicUser } from '../lib/types';
-import type { CoverGuessDifficulty } from '../minigames/types';
+import type { CoverGuessDifficulty, CoverGuessRoundMode } from '../minigames/types';
 import CoverGuessLocalPlay from './CoverGuessLocalPlay';
 
 const DIFFICULTIES: CoverGuessDifficulty[] = ['easy', 'normal', 'hard'];
+const ROUND_MODES: CoverGuessRoundMode[] = ['TURNS', 'RACE'];
 const TARGET_SCORES = [3, 5, 7, 10];
 const ANSWER_TIMES = [10, 15, 30];
 const MAX_LOCAL_PLAYERS = 6;
@@ -25,6 +26,7 @@ export default function CoverGuessSetup() {
 
   const [mode, setMode] = useState<'local' | 'multi'>('local');
   const [difficulty, setDifficulty] = useState<CoverGuessDifficulty>('normal');
+  const [roundMode, setRoundMode] = useState<CoverGuessRoundMode>('TURNS');
   const [targetScore, setTargetScore] = useState(5);
   const [answerTimeSec, setAnswerTimeSec] = useState(15);
 
@@ -54,7 +56,13 @@ export default function CoverGuessSetup() {
     try {
       const { matchId } = await apiFetch<{ matchId: string }>('/minigames/cover-guess/matches', {
         method: 'POST',
-        body: JSON.stringify({ difficulty, targetScore, answerTimeSec, inviteeUserIds: selectedFriendIds }),
+        body: JSON.stringify({
+          difficulty,
+          roundMode,
+          targetScore,
+          answerTimeSec,
+          inviteeUserIds: selectedFriendIds,
+        }),
       });
       navigate(`/minigames/cover-guess/match/${matchId}`);
     } catch (err) {
@@ -71,6 +79,7 @@ export default function CoverGuessSetup() {
         <SectionHead eyebrow={t('minigames.hub.eyebrow')} title={t('minigames.coverGuess.title')} />
         <CoverGuessLocalPlay
           difficulty={difficulty}
+          roundMode={roundMode}
           targetScore={targetScore}
           answerTimeSec={answerTimeSec}
           playerNames={playerNames}
@@ -144,6 +153,29 @@ export default function CoverGuessSetup() {
         </div>
 
         <div>
+          <p className="mb-2 text-sm font-semibold">{t('minigames.coverGuess.setup.roundMode')}</p>
+          <div className="flex gap-2">
+            {ROUND_MODES.map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setRoundMode(m)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  roundMode === m
+                    ? 'bg-accent text-zinc-950'
+                    : 'border border-zinc-400/60 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300'
+                }`}
+              >
+                {t(`minigames.coverGuess.setup.roundModeLabel.${m}`)}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+            {t(`minigames.coverGuess.setup.roundModeHint.${roundMode}`)}
+          </p>
+        </div>
+
+        <div>
           <p className="mb-2 text-sm font-semibold">{t('minigames.coverGuess.setup.targetScore')}</p>
           <div className="flex gap-2">
             {TARGET_SCORES.map((s) => (
@@ -164,7 +196,9 @@ export default function CoverGuessSetup() {
         </div>
 
         <div>
-          <p className="mb-2 text-sm font-semibold">{t('minigames.coverGuess.setup.answerTime')}</p>
+          <p className="mb-2 text-sm font-semibold">
+            {t(`minigames.coverGuess.setup.answerTimeLabel.${roundMode}`)}
+          </p>
           <div className="flex gap-2">
             {ANSWER_TIMES.map((s) => (
               <button

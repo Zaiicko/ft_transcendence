@@ -369,7 +369,19 @@
           "normal": "Szersza pula, z mniej oczywistymi grami (5000).",
           "hard": "Cały katalog, łącznie z mało znanymi tytułami (27500)."
         },
-        "answerTime": "Czas na odpowiedź",
+        "roundMode": "Tryb rundy",
+        "roundModeLabel": {
+          "TURNS": "Po kolei",
+          "RACE": "Kto pierwszy odpowie"
+        },
+        "roundModeHint": {
+          "TURNS": "Każdy ma jedną próbę na poziom rozmycia, po kolei.",
+          "RACE": "Okładka sama się odsłania z czasem — odpowiadaj jak najszybciej, pierwsza trafna próba wygrywa rundę."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Czas na odpowiedź",
+          "RACE": "Odstęp między odsłonięciami"
+        },
         "answerTimeSeconds": "{{count}}s"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "Kolej {{name}}",
         "yourTurnNow": "Twoja kolej — zgadnij grę!",
         "opponentTurn": "Oczekiwanie na {{name}}…",
+        "racePromptOnline": "Zgadnij przed innymi!",
+        "nextBlurIn": "Następne odsłonięcie za {{count}}s",
+        "buzzerOpen": "Dotknij swojego imienia, aby odpowiedzieć!",
+        "buzzedTurn": "{{name}}, twoja kolej na odpowiedź!",
+        "cancelBuzz": "To nie to — oddaję kolejkę",
         "pass": "Pomiń",
         "correct": "Poprawnie!",
         "roundLost": "Nikt nie zgadł!",

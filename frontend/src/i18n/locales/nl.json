@@ -369,7 +369,19 @@
           "normal": "Een grotere groep, met minder voor de hand liggende games (5000).",
           "hard": "De hele catalogus, inclusief obscure titels (27500)."
         },
-        "answerTime": "Antwoordtijd",
+        "roundMode": "Rondemodus",
+        "roundModeLabel": {
+          "TURNS": "Om de beurt",
+          "RACE": "Wie het eerst raadt"
+        },
+        "roundModeHint": {
+          "TURNS": "Iedereen krijgt om de beurt één poging per vervagingsstap.",
+          "RACE": "De cover wordt vanzelf duidelijker na verloop van tijd — antwoord zo snel mogelijk, de eerste juiste gok wint de ronde."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Antwoordtijd",
+          "RACE": "Interval tussen onthullingen"
+        },
         "answerTimeSeconds": "{{count}}s"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "Beurt van {{name}}",
         "yourTurnNow": "Jouw beurt — raad de game!",
         "opponentTurn": "Wachten op {{name}}…",
+        "racePromptOnline": "Raad het vóór de anderen!",
+        "nextBlurIn": "Volgende onthulling over {{count}}s",
+        "buzzerOpen": "Tik op je naam om te antwoorden!",
+        "buzzedTurn": "{{name}}, jij mag antwoorden!",
+        "cancelBuzz": "Toch niet — beurt loslaten",
         "pass": "Passen",
         "correct": "Juist!",
         "roundLost": "Niemand raadde het!",

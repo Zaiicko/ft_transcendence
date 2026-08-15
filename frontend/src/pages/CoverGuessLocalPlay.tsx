@@ -5,7 +5,7 @@ import CoverGuessInput from '../components/CoverGuessInput';
 import { MedalIcon, PLACE } from '../components/RankIcons';
 import { ApiError, apiFetch } from '../lib/api';
 import { BLUR_STEPS_PX } from '../minigames/blurSteps';
-import type { CoverGuessDifficulty } from '../minigames/types';
+import type { CoverGuessDifficulty, CoverGuessRoundMode } from '../minigames/types';
 
 const NEXT_ROUND_DELAY_MS = 3200;
 
@@ -36,24 +36,30 @@ interface PlayedGame {
 
 export default function CoverGuessLocalPlay({
   difficulty,
+  roundMode,
   targetScore,
   answerTimeSec,
   playerNames,
   onExit,
 }: {
   difficulty: CoverGuessDifficulty;
+  roundMode: CoverGuessRoundMode;
   targetScore: number;
   answerTimeSec: number;
   playerNames: string[];
   onExit: () => void;
 }) {
   const { t } = useTranslation();
+  const isRace = roundMode === 'RACE';
   const [players, setPlayers] = useState<LocalPlayer[]>(() => playerNames.map((name) => ({ name, score: 0 })));
   const [usedIds, setUsedIds] = useState<number[]>([]);
   const [roundIndex, setRoundIndex] = useState(0);
   const [turnOrder, setTurnOrder] = useState<number[]>([]);
   const [turnPointer, setTurnPointer] = useState(0);
   const [turnCounter, setTurnCounter] = useState(0);
+  // RACE only: who currently holds the buzzer (has exclusive rights to the
+  // guess input right now). null = buzzer open, anyone can tap their name.
+  const [buzzedIndex, setBuzzedIndex] = useState<number | null>(null);
   const [round, setRound] = useState<LocalRound | null>(null);
   const [resolution, setResolution] = useState<LocalOutcome | null>(null);
   const [loading, setLoading] = useState(true);
@@ -68,6 +74,7 @@ export default function CoverGuessLocalPlay({
       setLoading(true);
       setError(null);
       setResolution(null);
+      setBuzzedIndex(null);
       try {
         const r = await apiFetch<LocalRound>(
           `/minigames/cover-guess/round?difficulty=${difficulty}&exclude=${excludeIds.join(',')}`,
@@ -96,6 +103,33 @@ export default function CoverGuessLocalPlay({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Shared by every way a round can end (a correct guess, or the cover
+  // fully clearing with nobody finding it): reveals the cover, records it
+  // for the post-match recap, awards the point if there's a scorer, and
+  // chains the next round unless that score just won the match.
+  function applyResolution(outcome: LocalOutcome, scorerIndex: number | null) {
+    if (!round) return;
+    setRound({ ...round, blurStepIndex: outcome.blurStepIndex });
+    setPlayedGames((prev) => [
+      ...prev,
+      { gameId: outcome.answerGameId!, title: outcome.answerTitle!, coverUrl: round.coverUrl },
+    ]);
+    setResolution(outcome);
+    setBuzzedIndex(null);
+
+    if (scorerIndex != null) {
+      const newScore = players[scorerIndex].score + 1;
+      setPlayers((prev) => prev.map((p, i) => (i === scorerIndex ? { ...p, score: newScore } : p)));
+      if (newScore >= targetScore) {
+        setWinner({ ...players[scorerIndex], score: newScore });
+        return;
+      }
+    }
+    const nextUsed = [...usedIds, outcome.answerGameId!];
+    setUsedIds(nextUsed);
+    setTimeout(() => void beginRound(roundIndex + 1, nextUsed), NEXT_ROUND_DELAY_MS);
+  }
+
   async function submitGuess(catalogId?: number) {
     if (!round || busy) return;
     setBusy(true);
@@ -103,15 +137,23 @@ export default function CoverGuessLocalPlay({
     try {
       const outcome = await apiFetch<LocalOutcome>(`/minigames/cover-guess/round/${round.roundToken}/guess`, {
         method: 'POST',
-        body: JSON.stringify(catalogId != null ? { catalogId } : {}),
+        body: JSON.stringify({ ...(catalogId != null ? { catalogId } : {}), ...(isRace ? { mode: 'RACE' } : {}) }),
       });
 
+      if (isRace) {
+        // A wrong RACE guess never resolves the round (the cover only
+        // advances via the automatic tick below) — just reopen the buzzer.
+        if (outcome.correct) applyResolution(outcome, buzzedIndex);
+        else setBuzzedIndex(null);
+        return;
+      }
+
       if (outcome.resolved) {
-        // The answer is known now — reveal the cover fully (BlurredCover
-        // animates the transition) instead of leaving it at whatever blur
-        // step the last guess was made at.
         setRound((prev) => (prev ? { ...prev, blurStepIndex: outcome.blurStepIndex } : prev));
-        setPlayedGames((prev) => [...prev, { gameId: outcome.answerGameId!, title: outcome.answerTitle!, coverUrl: round.coverUrl }]);
+        setPlayedGames((prev) => [
+          ...prev,
+          { gameId: outcome.answerGameId!, title: outcome.answerTitle!, coverUrl: round.coverUrl },
+        ]);
       }
 
       if (outcome.correct) {
@@ -142,14 +184,41 @@ export default function CoverGuessLocalPlay({
       setTurnCounter((c) => c + 1);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t('minigames.coverGuess.errors.generic'));
+      if (isRace) setBuzzedIndex(null);
     } finally {
       setBusy(false);
     }
   }
 
-  // Per-turn countdown — auto-passes when it hits 0. Keyed on turnCounter
-  // (not turnPointer/roundToken alone) since turnPointer can wrap back to a
-  // value it already had earlier in the same round with 3+ players.
+  // RACE only: the automatic reveal step — nobody "attempted" this, time
+  // just passed. Fires regardless of buzzer state (buzzing doesn't pause
+  // the clock). On success it re-arms itself via turnCounter, the same
+  // signal the countdown effect below already restarts on for TURNS.
+  async function raceTick() {
+    if (!round) return;
+    try {
+      const outcome = await apiFetch<LocalOutcome>(`/minigames/cover-guess/round/${round.roundToken}/guess`, {
+        method: 'POST',
+        body: JSON.stringify({ mode: 'RACE' }),
+      });
+      if (outcome.resolved) {
+        applyResolution(outcome, null);
+        return;
+      }
+      setRound((prev) => (prev ? { ...prev, blurStepIndex: outcome.blurStepIndex } : prev));
+      setTurnCounter((c) => c + 1);
+    } catch {
+      // Network hiccup — try again on the next natural tick instead of
+      // freezing the round.
+      setTurnCounter((c) => c + 1);
+    }
+  }
+
+  // Countdown shared by both modes: in TURNS it's the current player's turn
+  // expiring (auto-pass); in RACE it's the next automatic reveal step. Keyed
+  // on turnCounter (not turnPointer/roundToken alone) since turnPointer can
+  // wrap back to a value it already had earlier in the same round with 3+
+  // players, and both modes re-arm it themselves by bumping turnCounter.
   useEffect(() => {
     if (!round || resolution || loading) return;
     const start = Date.now();
@@ -163,7 +232,8 @@ export default function CoverGuessLocalPlay({
         setRemaining(left);
         if (left === 0) {
           clearInterval(interval);
-          void submitGuess(undefined);
+          if (isRace) void raceTick();
+          else void submitGuess(undefined);
         }
       }, 250);
     }, 0);
@@ -240,6 +310,7 @@ export default function CoverGuessLocalPlay({
 
   const activePlayerName = round && turnOrder.length > 0 ? players[turnOrder[turnPointer]].name : '';
   const blurPx = round ? BLUR_STEPS_PX[round.blurStepIndex] : BLUR_STEPS_PX[0];
+  const highlightIndex = isRace ? buzzedIndex : turnOrder[turnPointer];
 
   return (
     <div className="flex flex-col gap-6">
@@ -249,7 +320,7 @@ export default function CoverGuessLocalPlay({
             <span
               key={p.name}
               className={`rounded-full px-3 py-1 font-medium ${
-                turnOrder[turnPointer] === i && !resolution
+                highlightIndex === i && !resolution
                   ? 'bg-accent text-zinc-950'
                   : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'
               }`}
@@ -281,6 +352,45 @@ export default function CoverGuessLocalPlay({
               {t('minigames.coverGuess.play.revealedAnswer', { title: resolution.answerTitle })}
             </p>
           </div>
+        ) : isRace ? (
+          <>
+            <p className="text-sm font-medium">
+              {buzzedIndex != null
+                ? t('minigames.coverGuess.play.buzzedTurn', { name: players[buzzedIndex].name })
+                : t('minigames.coverGuess.play.buzzerOpen')}
+              <span className="ml-2 font-normal text-zinc-400">
+                {t('minigames.coverGuess.play.nextBlurIn', { count: remaining })}
+              </span>
+            </p>
+            {buzzedIndex == null ? (
+              <div className="flex flex-wrap justify-center gap-2">
+                {players.map((p, i) => (
+                  <button
+                    key={p.name}
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setBuzzedIndex(i)}
+                    className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+                  >
+                    {p.name}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="w-full max-w-sm">
+                  <CoverGuessInput disabled={busy} onGuess={(id) => void submitGuess(id)} />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setBuzzedIndex(null)}
+                  className="text-xs text-zinc-400 transition hover:text-accent"
+                >
+                  {t('minigames.coverGuess.play.cancelBuzz')}
+                </button>
+              </>
+            )}
+          </>
         ) : (
           <>
             <p className="text-sm font-medium">

@@ -369,7 +369,19 @@
           "normal": "Un bassin plus large, avec des jeux moins évidents (5000).",
           "hard": "Tout le catalogue, y compris des titres obscurs (27500)."
         },
-        "answerTime": "Temps de réponse",
+        "roundMode": "Mode de manche",
+        "roundModeLabel": {
+          "TURNS": "Chacun son tour",
+          "RACE": "Le premier qui trouve"
+        },
+        "roundModeHint": {
+          "TURNS": "Chacun a un essai par palier de flou, à tour de rôle.",
+          "RACE": "La pochette se dévoile toute seule avec le temps — réponds le plus vite possible, le premier bon essai remporte la manche."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Temps de réponse",
+          "RACE": "Intervalle de dévoilement"
+        },
         "answerTimeSeconds": "{{count}}s"
       },
       "play": {
@@ -378,6 +390,11 @@
         "yourTurn": "Au tour de {{name}}",
         "yourTurnNow": "À toi de jouer — devine le jeu !",
         "opponentTurn": "En attente de {{name}}…",
+        "racePromptOnline": "Devine avant les autres !",
+        "nextBlurIn": "Prochain flou dans {{count}}s",
+        "buzzerOpen": "Appuie sur ton nom pour répondre !",
+        "buzzedTurn": "{{name}}, à toi de répondre !",
+        "cancelBuzz": "Pas ça — je laisse la main",
         "pass": "Passer",
         "correct": "Trouvé !",
         "roundLost": "Personne n'a trouvé !",
