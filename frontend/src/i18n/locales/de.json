@@ -395,7 +395,8 @@
         "accepted": "Angenommen",
         "pending": "Ausstehend",
         "waitingForHost": "Warten, bis der Gastgeber die Partie startet…",
-        "title": "<b>{{who}}</b> lädt dich zum Spielen ein"
+        "title": "<b>{{who}}</b> lädt dich ein, {{game}} zu spielen",
+        "declined": "Abgelehnt"
       },
       "errors": {
         "generic": "Etwas ist schiefgelaufen",

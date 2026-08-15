@@ -395,7 +395,8 @@
         "accepted": "Kabul edildi",
         "pending": "Bekliyor",
         "waitingForHost": "Ev sahibinin maçı başlatması bekleniyor…",
-        "title": "<b>{{who}}</b> seni oynamaya davet ediyor"
+        "title": "<b>{{who}}</b> seni {{game}} oynamaya davet ediyor",
+        "declined": "Reddedildi"
       },
       "errors": {
         "generic": "Bir şeyler ters gitti",

@@ -7,7 +7,7 @@ export interface CoverGuessPlayerState {
   username: string;
   avatarUrl: string | null;
   score: number;
-  status: 'PENDING' | 'ACCEPTED';
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
 }
 
 export interface CoverGuessRoundState {

@@ -395,7 +395,8 @@
         "accepted": "Geaccepteerd",
         "pending": "In afwachting",
         "waitingForHost": "Wachten tot de host de wedstrijd start…",
-        "title": "<b>{{who}}</b> nodigt je uit om te spelen"
+        "title": "<b>{{who}}</b> nodigt je uit om {{game}} te spelen",
+        "declined": "Geweigerd"
       },
       "errors": {
         "generic": "Er is iets misgegaan",

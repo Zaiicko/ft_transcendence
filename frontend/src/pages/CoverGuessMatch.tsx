@@ -5,13 +5,12 @@ import { useAuth } from '../auth/AuthContext';
 import Avatar from '../components/Avatar';
 import BlurredCover from '../components/BlurredCover';
 import CoverGuessInput from '../components/CoverGuessInput';
+import { CrownIcon, MedalIcon, PLACE } from '../components/RankIcons';
 import SectionHead from '../components/SectionHead';
 import { ApiError, apiFetch } from '../lib/api';
 import { BLUR_STEPS_PX } from '../minigames/blurSteps';
 import { useCoverGuessSocket } from '../minigames/useCoverGuessSocket';
 import type { CoverGuessMatchState } from '../minigames/types';
-
-const MEDALS = ['🥇', '🥈', '🥉'];
 
 export default function CoverGuessMatch() {
   const { matchId } = useParams<{ matchId: string }>();
@@ -154,11 +153,19 @@ export default function CoverGuessMatch() {
                 <Avatar username={p.username} avatarUrl={p.avatarUrl} size={32} />
                 <span className="font-medium">{p.username}</span>
                 <span
-                  className={`ml-auto text-xs ${p.status === 'ACCEPTED' ? 'text-green-500' : 'text-zinc-400'}`}
+                  className={`ml-auto text-xs ${
+                    p.status === 'ACCEPTED'
+                      ? 'text-green-500'
+                      : p.status === 'DECLINED'
+                        ? 'text-red-400'
+                        : 'text-zinc-400'
+                  }`}
                 >
                   {p.status === 'ACCEPTED'
                     ? t('minigames.coverGuess.invite.accepted')
-                    : t('minigames.coverGuess.invite.pending')}
+                    : p.status === 'DECLINED'
+                      ? t('minigames.coverGuess.invite.declined')
+                      : t('minigames.coverGuess.invite.pending')}
                 </span>
               </li>
             ))}
@@ -203,7 +210,9 @@ export default function CoverGuessMatch() {
       {state.status === 'PLAYING' && state.round && (
         <div className="flex flex-col gap-6">
           <div className="flex flex-wrap gap-3 text-sm">
-            {state.players.map((p) => (
+            {state.players
+              .filter((p) => p.status === 'ACCEPTED')
+              .map((p) => (
               <span
                 key={p.userId}
                 className={`flex items-center gap-2 rounded-full px-3 py-1 font-medium ${
@@ -268,23 +277,40 @@ export default function CoverGuessMatch() {
         <div className="card flex flex-col items-center gap-4 p-8 text-center">
           <span className="font-display text-2xl font-bold">{t('minigames.coverGuess.match.finished')}</span>
           <ul className="flex w-full max-w-sm flex-col gap-1.5">
-            {[...state.players]
+            {state.players
+              .filter((p) => p.status === 'ACCEPTED')
               .sort((a, b) => b.score - a.score)
-              .map((p, i) => (
-                <li
-                  key={p.userId}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm ${
-                    p.userId === state.winnerId
-                      ? 'bg-accent/15'
-                      : 'bg-zinc-100/70 dark:bg-zinc-800/70'
-                  }`}
-                >
-                  <span className="w-6 shrink-0 text-center">{MEDALS[i] ?? `#${i + 1}`}</span>
-                  <Avatar username={p.username} avatarUrl={p.avatarUrl} size={32} />
-                  <span className="min-w-0 flex-1 truncate text-left font-medium">{p.username}</span>
-                  <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{p.score}</span>
-                </li>
-              ))}
+              .map((p, i) => {
+                const place = i < 3 ? ((i + 1) as 1 | 2 | 3) : null;
+                return (
+                  <li
+                    key={p.userId}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm ${
+                      p.userId === state.winnerId
+                        ? 'bg-accent/15'
+                        : 'bg-zinc-100/70 dark:bg-zinc-800/70'
+                    }`}
+                  >
+                    <span className="flex w-6 shrink-0 items-center justify-center">
+                      {place ? (
+                        <MedalIcon className={`h-4 w-4 ${PLACE[place].text}`} />
+                      ) : (
+                        <span className="text-xs text-zinc-400">#{i + 1}</span>
+                      )}
+                    </span>
+                    <span className="relative shrink-0">
+                      {place === 1 && (
+                        <CrownIcon className="absolute -top-3 left-1/2 h-3.5 w-3.5 -translate-x-1/2 text-amber-400" />
+                      )}
+                      <span className={place ? `rounded-full ring-2 ${PLACE[place].ring}` : undefined}>
+                        <Avatar username={p.username} avatarUrl={p.avatarUrl} size={32} />
+                      </span>
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-left font-medium">{p.username}</span>
+                    <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{p.score}</span>
+                  </li>
+                );
+              })}
           </ul>
         </div>
       )}

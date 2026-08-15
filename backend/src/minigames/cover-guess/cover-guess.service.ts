@@ -56,7 +56,7 @@ interface PendingLocalRound {
 }
 
 type CoverGuessMatchStatus = 'LOBBY' | 'PLAYING' | 'FINISHED' | 'ABANDONED';
-type CoverGuessPlayerStatus = 'PENDING' | 'ACCEPTED';
+type CoverGuessPlayerStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
 
 interface CoverGuessPlayer {
   userId: number;
@@ -212,7 +212,9 @@ export class CoverGuessService implements OnModuleDestroy {
       data: { id, hostId, status: 'LOBBY', difficulty: dto.difficulty, targetScore: dto.targetScore },
     });
 
-    for (const u of invitees) void this.notifications.gameInvited(hostId, u.id, id, dto.difficulty);
+    for (const u of invitees) {
+      void this.notifications.gameInvited(hostId, u.id, id, 'cover-guess', dto.difficulty);
+    }
 
     return { matchId: id };
   }
@@ -223,8 +225,10 @@ export class CoverGuessService implements OnModuleDestroy {
     const player = session.players.get(userId);
     if (!player || player.status !== 'PENDING') throw new NotFoundException('Invitation introuvable');
 
-    if (accept) player.status = 'ACCEPTED';
-    else session.players.delete(userId);
+    // Declining keeps the player visible in the lobby list (marked as
+    // declined) rather than silently vanishing — only an explicit leave()
+    // actually removes someone from the roster.
+    player.status = accept ? 'ACCEPTED' : 'DECLINED';
 
     this.broadcastState(session);
     return this.toStateDto(session);
@@ -235,12 +239,17 @@ export class CoverGuessService implements OnModuleDestroy {
     if (session.hostId !== hostId) throw new ForbiddenException();
     if (session.status !== 'LOBBY') throw new BadRequestException('La partie a déjà commencé');
 
-    // Anyone who never responded is simply left out — the host decides when
-    // enough friends are in, not required to wait for everyone.
-    for (const [id, p] of session.players) if (p.status === 'PENDING') session.players.delete(id);
-    if (session.players.size < 2) {
+    // Validate BEFORE mutating anything — a start attempt that turns out to
+    // have too few accepted players must be a no-op, not silently drop the
+    // still-pending invitees as a side effect of a call that then fails.
+    if (this.activePlayers(session).length < 2) {
       throw new BadRequestException('Il faut au moins un ami qui a accepté');
     }
+    // Anyone who never responded is simply left out — the host decides when
+    // enough friends are in, not required to wait for everyone. Declined
+    // invitees are kept in `players` (visible in the lobby list) but were
+    // never counted as active to begin with.
+    for (const [id, p] of session.players) if (p.status === 'PENDING') session.players.delete(id);
 
     session.status = 'PLAYING';
     await this.prisma.coverGuessMatch
@@ -321,9 +330,9 @@ export class CoverGuessService implements OnModuleDestroy {
       await this.prisma.coverGuessMatch
         .update({ where: { id: matchId }, data: { status: 'ABANDONED', endedAt: new Date() } })
         .catch(() => {});
-    } else if (session.status === 'PLAYING' && session.players.size < 2) {
+    } else if (session.status === 'PLAYING' && this.activePlayers(session).length < 2) {
       if (session.turnTimer) clearTimeout(session.turnTimer);
-      const winner = [...session.players.values()][0]?.userId ?? null;
+      const winner = this.activePlayers(session)[0]?.userId ?? null;
       await this.finishMatch(session, winner);
       return;
     }
@@ -386,7 +395,7 @@ export class CoverGuessService implements OnModuleDestroy {
 
   private async startRound(session: CoverGuessMatchSession): Promise<void> {
     session.roundIndex += 1;
-    const activeIds = [...session.players.keys()];
+    const activeIds = this.activePlayers(session).map((p) => p.userId);
     // The starting player shifts by one every round so nobody is always
     // first or always last — relative order (J1→J2→J3) stays fixed.
     const startOffset = session.roundIndex % activeIds.length;
@@ -396,7 +405,7 @@ export class CoverGuessService implements OnModuleDestroy {
     if (!game) {
       // Exhausted the tier's pool (astronomically unlikely) — end the match
       // with whoever's leading rather than getting stuck.
-      const leader = [...session.players.values()].sort((a, b) => b.score - a.score)[0];
+      const leader = this.activePlayers(session).sort((a, b) => b.score - a.score)[0];
       await this.finishMatch(session, leader?.userId ?? null);
       return;
     }
@@ -469,6 +478,14 @@ export class CoverGuessService implements OnModuleDestroy {
     const session = this.matches.get(matchId);
     if (!session) throw new NotFoundException('Partie introuvable ou terminée');
     return session;
+  }
+
+  // `players` is the full roster ever invited (host, accepted, pending,
+  // declined — declined ones stay for the lobby list, never removed on
+  // decline). Anything gameplay-related (turn order, win/abandon counts,
+  // leader fallback) must only ever consider the ACCEPTED subset.
+  private activePlayers(session: CoverGuessMatchSession): CoverGuessPlayer[] {
+    return [...session.players.values()].filter((p) => p.status === 'ACCEPTED');
   }
 
   private toStateDto(session: CoverGuessMatchSession) {

@@ -395,7 +395,8 @@
         "accepted": "Accepted",
         "pending": "Pending",
         "waitingForHost": "Waiting for the host to start the match…",
-        "title": "<b>{{who}}</b> is inviting you to play"
+        "title": "<b>{{who}}</b> is inviting you to play {{game}}",
+        "declined": "Declined"
       },
       "errors": {
         "generic": "Something went wrong",

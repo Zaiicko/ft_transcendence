@@ -395,7 +395,8 @@
         "accepted": "수락됨",
         "pending": "대기 중",
         "waitingForHost": "호스트가 경기를 시작하기를 기다리는 중…",
-        "title": "<b>{{who}}</b>님이 함께 플레이하자고 초대했습니다"
+        "title": "<b>{{who}}</b>님이 '{{game}}' 게임에 초대했습니다",
+        "declined": "거절함"
       },
       "errors": {
         "generic": "문제가 발생했습니다",

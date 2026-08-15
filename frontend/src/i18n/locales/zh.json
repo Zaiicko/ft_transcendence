@@ -395,7 +395,8 @@
         "accepted": "已接受",
         "pending": "等待中",
         "waitingForHost": "等待房主开始对局…",
-        "title": "<b>{{who}}</b> 邀请你一起玩"
+        "title": "<b>{{who}}</b> 邀请你一起玩「{{game}}」",
+        "declined": "已拒绝"
       },
       "errors": {
         "generic": "出了点问题",

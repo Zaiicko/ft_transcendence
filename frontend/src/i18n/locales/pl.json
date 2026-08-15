@@ -395,7 +395,8 @@
         "accepted": "Zaakceptowano",
         "pending": "Oczekujące",
         "waitingForHost": "Oczekiwanie, aż gospodarz rozpocznie rozgrywkę…",
-        "title": "<b>{{who}}</b> zaprasza Cię do gry"
+        "title": "<b>{{who}}</b> zaprasza Cię do gry w {{game}}",
+        "declined": "Odrzucone"
       },
       "errors": {
         "generic": "Coś poszło nie tak",

@@ -395,7 +395,8 @@
         "accepted": "承諾済み",
         "pending": "返答待ち",
         "waitingForHost": "ホストが対戦を開始するのを待っています…",
-        "title": "<b>{{who}}</b>さんが対戦に誘っています"
+        "title": "<b>{{who}}</b>さんが「{{game}}」に誘っています",
+        "declined": "辞退済み"
       },
       "errors": {
         "generic": "問題が発生しました",

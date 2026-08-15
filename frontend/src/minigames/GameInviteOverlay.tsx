@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import { apiFetch } from '../lib/api';
 import { useNotificationSocket } from '../notifications/useNotificationSocket';
+import { minigameTitleKey } from './gameNames';
 import type { AppNotification } from '../lib/types';
 
 // Full-screen blocking prompt for a cover-guess invite, on top of whatever
@@ -57,7 +58,10 @@ export default function GameInviteOverlay() {
         <p className="text-sm">
           <Trans
             i18nKey="minigames.coverGuess.invite.title"
-            values={{ who: invite.payload.actorUsername ?? t('notifications.someone') }}
+            values={{
+              who: invite.payload.actorUsername ?? t('notifications.someone'),
+              game: t(minigameTitleKey(invite.payload.game)),
+            }}
             components={{ b: <strong className="font-semibold" /> }}
           />
         </p>

@@ -28,7 +28,7 @@ export default function CoverGuessInput({
       }
       apiFetch<{ data: GameSummary[] }>(`/games/search?q=${encodeURIComponent(trimmed)}`)
         .then(({ data }) => {
-          if (!cancelled) setResults(data.slice(0, 6));
+          if (!cancelled) setResults(data);
         })
         .catch(() => {});
     }, 300);
@@ -54,7 +54,7 @@ export default function CoverGuessInput({
         className="field w-full px-3 py-2 text-sm disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400 dark:disabled:bg-zinc-900 dark:disabled:text-zinc-500"
       />
       {!disabled && results.length > 0 && (
-        <ul className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <ul className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto overscroll-contain rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
           {results.map((g) => (
             <li key={g.id}>
               <button

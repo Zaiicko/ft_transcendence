@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import BlurredCover from '../components/BlurredCover';
 import CoverGuessInput from '../components/CoverGuessInput';
+import { MedalIcon, PLACE } from '../components/RankIcons';
 import { ApiError, apiFetch } from '../lib/api';
 import { BLUR_STEPS_PX } from '../minigames/blurSteps';
 import type { CoverGuessDifficulty } from '../minigames/types';
@@ -160,23 +161,31 @@ export default function CoverGuessLocalPlay({
 
   if (winner) {
     const ranked = [...players].sort((a, b) => b.score - a.score);
-    const medals = ['🥇', '🥈', '🥉'];
     return (
       <div className="card flex flex-col items-center gap-4 p-8 text-center">
         <span className="font-display text-2xl font-bold">
           {t('minigames.coverGuess.match.winner', { name: winner.name })}
         </span>
         <ul className="flex w-full max-w-xs flex-col gap-1.5">
-          {ranked.map((p, i) => (
-            <li
-              key={p.name}
-              className="flex items-center gap-2.5 rounded-lg bg-zinc-100/70 px-3 py-1.5 text-sm dark:bg-zinc-800/70"
-            >
-              <span className="w-6 shrink-0 text-center">{medals[i] ?? `#${i + 1}`}</span>
-              <span className="min-w-0 flex-1 truncate text-left font-medium">{p.name}</span>
-              <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{p.score}</span>
-            </li>
-          ))}
+          {ranked.map((p, i) => {
+            const place = i < 3 ? ((i + 1) as 1 | 2 | 3) : null;
+            return (
+              <li
+                key={p.name}
+                className="flex items-center gap-2.5 rounded-lg bg-zinc-100/70 px-3 py-1.5 text-sm dark:bg-zinc-800/70"
+              >
+                <span className="flex w-6 shrink-0 items-center justify-center">
+                  {place ? (
+                    <MedalIcon className={`h-4 w-4 ${PLACE[place].text}`} />
+                  ) : (
+                    <span className="text-xs text-zinc-400">#{i + 1}</span>
+                  )}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-left font-medium">{p.name}</span>
+                <span className="shrink-0 text-zinc-500 dark:text-zinc-400">{p.score}</span>
+              </li>
+            );
+          })}
         </ul>
         <div className="mt-2 flex gap-3">
           <button
