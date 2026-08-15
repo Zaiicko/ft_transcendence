@@ -55,6 +55,13 @@ enum CoverGuessStatus {
   ABANDONED
 }
 
+enum ScreenshotGuessStatus {
+  LOBBY
+  PLAYING
+  FINISHED
+  ABANDONED
+}
+
 // ---------- Users & social ----------
 
 model User {
@@ -163,6 +170,7 @@ model User {
   milestonesAsViewer  LeaderboardMilestone[] @relation("MilestoneViewer")
   achievements        UserAchievement[]
   coverGuessMatches   CoverGuessMatch[]
+  screenshotGuessMatches ScreenshotGuessMatch[]
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -615,5 +623,24 @@ model CoverGuessMatch {
   rounds       Json?
   winnerId     Int?
   createdAt    DateTime         @default(now())
+  endedAt      DateTime?
+}
+
+model ScreenshotGuessMatch {
+  id           String                @id @default(cuid())
+  host         User                  @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId       Int
+  status       ScreenshotGuessStatus @default(LOBBY)
+  difficulty   String // "easy" | "normal" | "hard"
+  targetScore  Int
+  // Final snapshot only ({ userId, username, score }[]) — written at match
+  // end, not per-round; no per-attempt history is tracked.
+  participants Json?
+  // The screenshots that were shown during the match
+  // ({ gameId, title, screenshotUrl }[]), for the post-match recap —
+  // written at match end alongside `participants`.
+  rounds       Json?
+  winnerId     Int?
+  createdAt    DateTime              @default(now())
   endedAt      DateTime?
 }

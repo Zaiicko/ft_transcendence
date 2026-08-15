@@ -337,6 +337,11 @@
       "title": "미니게임",
       "play": "플레이"
     },
+    "invite": {
+      "title": "<b>{{who}}</b>님이 '{{game}}' 게임에 초대했습니다",
+      "accept": "수락",
+      "decline": "거절"
+    },
     "coverGuess": {
       "title": "커버 맞추기",
       "description": "흐릿한 커버 이미지를 보고 게임을 맞혀보세요 — 처음엔 완전히 흐리게 시작하고, 틀릴 때마다 조금씩 선명해집니다.",
@@ -405,12 +410,89 @@
         "recap": "이번 경기의 게임"
       },
       "invite": {
-        "accept": "수락",
-        "decline": "거절",
         "accepted": "수락됨",
         "pending": "대기 중",
         "waitingForHost": "호스트가 경기를 시작하기를 기다리는 중…",
-        "title": "<b>{{who}}</b>님이 '{{game}}' 게임에 초대했습니다",
+        "declined": "거절함"
+      },
+      "errors": {
+        "generic": "문제가 발생했습니다",
+        "loading": "불러오는 중…",
+        "matchNotFound": "경기를 찾을 수 없습니다",
+        "matchEnded": "이 경기는 종료되었습니다"
+      }
+    },
+    "screenshotGuess": {
+      "title": "스크린샷 맞추기",
+      "description": "흐릿한 인게임 스크린샷을 보고 게임을 맞혀보세요 — 처음엔 완전히 흐리게 시작하고, 틀릴 때마다 조금씩 선명해집니다.",
+      "setup": {
+        "mode": "모드",
+        "modeLocal": "로컬",
+        "modeMulti": "온라인",
+        "difficultyLabel": "난이도",
+        "difficulty": {
+          "easy": "쉬움",
+          "normal": "보통",
+          "hard": "어려움"
+        },
+        "targetScore": "먼저 도달",
+        "localPlayers": "이 기기의 플레이어 수",
+        "guestNamePlaceholder": "플레이어 {{n}} 이름",
+        "startMatch": "시작",
+        "inviteFriends": "온라인 친구 초대",
+        "noFriendsOnline": "지금 온라인 상태인 친구가 없습니다.",
+        "sendInvites": "초대 보내기",
+        "modeHint": {
+          "local": "혼자 플레이하거나 같은 화면에서 친구들과 기기를 돌려가며 플레이하세요.",
+          "multi": "한 명 이상의 온라인 친구에게 실시간으로 도전하세요 (각자 자신의 기기 사용)."
+        },
+        "difficultyHint": {
+          "easy": "매우 유명한 게임만 포함됩니다 (300).",
+          "normal": "더 넓은 범위로, 덜 알려진 게임도 포함됩니다 (5000).",
+          "hard": "잘 알려지지 않은 작품을 포함한 전체 카탈로그입니다 (27500)."
+        },
+        "roundMode": "라운드 모드",
+        "roundModeLabel": {
+          "TURNS": "차례대로",
+          "RACE": "먼저 맞히기"
+        },
+        "roundModeHint": {
+          "TURNS": "모두가 흐림 단계마다 차례대로 한 번씩 시도합니다.",
+          "RACE": "스크린샷이 시간이 지나면 저절로 선명해집니다 — 최대한 빨리 답하세요, 가장 먼저 맞힌 사람이 라운드를 이깁니다."
+        },
+        "answerTimeLabel": {
+          "TURNS": "답변 시간",
+          "RACE": "공개 간격"
+        },
+        "answerTimeSeconds": "{{count}}초"
+      },
+      "play": {
+        "guessPlaceholder": "게임 검색…",
+        "targetScore": "{{count}}점 먼저 도달하면 승리",
+        "yourTurn": "{{name}}님의 차례",
+        "yourTurnNow": "당신의 차례입니다 — 게임을 맞혀보세요!",
+        "opponentTurn": "{{name}}님을 기다리는 중…",
+        "racePromptOnline": "다른 사람보다 먼저 맞혀보세요!",
+        "nextBlurIn": "{{count}}초 후 다음 공개",
+        "buzzerOpen": "이름을 눌러 답변하세요!",
+        "buzzedTurn": "{{name}}님, 답변할 차례입니다!",
+        "cancelBuzz": "아니에요 — 버저 포기",
+        "pass": "패스",
+        "correct": "정답!",
+        "roundLost": "아무도 맞히지 못했습니다!",
+        "revealedAnswer": "정답은 {{title}}였습니다"
+      },
+      "match": {
+        "winner": "{{name}}님 승리!",
+        "backToHub": "미니게임으로 돌아가기",
+        "leave": "경기 나가기",
+        "finished": "경기 종료!",
+        "recap": "이번 경기의 게임"
+      },
+      "invite": {
+        "accepted": "수락됨",
+        "pending": "대기 중",
+        "waitingForHost": "호스트가 경기를 시작하기를 기다리는 중…",
         "declined": "거절함"
       },
       "errors": {

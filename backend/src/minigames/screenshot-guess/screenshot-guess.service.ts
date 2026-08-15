@@ -9,14 +9,14 @@ import {
 } from '@nestjs/common';
 import { FriendshipStatus, GameType, Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateCoverGuessMatchDto } from './dto/create-match.dto';
-import { CoverGuessGateway } from './cover-guess.gateway';
-import { BLUR_STEP_COUNT, CoverGuessDifficulty, CoverGuessRoundMode } from './cover-guess.types';
+import { CreateScreenshotGuessMatchDto } from './dto/create-match.dto';
+import { ScreenshotGuessGateway } from './screenshot-guess.gateway';
+import { BLUR_STEP_COUNT, ScreenshotGuessDifficulty, ScreenshotGuessRoundMode } from './screenshot-guess.types';
 
 // Rank-limited pools for easy/normal (cheap: fetch only ids, pick one at
 // random client-side); "hard" has no cutoff — the whole filtered catalog is
 // in play, picked via a random offset instead of materialising ~37k rows.
-const TIER_LIMIT: Record<CoverGuessDifficulty, number | null> = {
+const TIER_LIMIT: Record<ScreenshotGuessDifficulty, number | null> = {
   easy: 300,
   normal: 5000,
   hard: null,
@@ -34,42 +34,42 @@ const FINISHED_GRACE_MS = 5 * 60_000;
 const LOCAL_ROUND_TTL_MS = 5 * 60_000;
 
 const BASE_GAME_WHERE: Prisma.GameWhereInput = {
-  coverUrl: { not: null },
+  screenshots: { isEmpty: false },
   // Same "real base game" filter as the catalog list — DLC/expansions never
-  // show up as a cover to guess.
+  // show up as a screenshot to guess.
   OR: [{ parentId: null }, { gameType: { in: [GameType.STANDALONE, GameType.REMAKE, GameType.REMASTER] } }],
 };
 
 interface PickedGame {
   id: number;
   title: string;
-  coverUrl: string;
+  screenshotUrl: string;
 }
 
 interface PendingLocalRound {
   gameId: number;
   title: string;
-  coverUrl: string;
+  screenshotUrl: string;
   blurStepIndex: number;
   expiresAt: number;
 }
 
-type CoverGuessMatchStatus = 'LOBBY' | 'PLAYING' | 'FINISHED' | 'ABANDONED';
-type CoverGuessPlayerStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
+type ScreenshotGuessMatchStatus = 'LOBBY' | 'PLAYING' | 'FINISHED' | 'ABANDONED';
+type ScreenshotGuessPlayerStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
 
-interface CoverGuessPlayer {
+interface ScreenshotGuessPlayer {
   userId: number;
   username: string;
   avatarUrl: string | null;
   score: number;
-  status: CoverGuessPlayerStatus;
+  status: ScreenshotGuessPlayerStatus;
 }
 
-interface CoverGuessRound {
+interface ScreenshotGuessRound {
   index: number;
   gameId: number;
   title: string;
-  coverUrl: string;
+  screenshotUrl: string;
   blurStepIndex: number;
   turnOrder: number[]; // userIds, this round's rotation
   turnPointer: number;
@@ -79,22 +79,22 @@ interface CoverGuessRound {
   turnDeadline: number;
 }
 
-interface CoverGuessMatchSession {
+interface ScreenshotGuessMatchSession {
   id: string;
   hostId: number;
-  difficulty: CoverGuessDifficulty;
-  roundMode: CoverGuessRoundMode;
+  difficulty: ScreenshotGuessDifficulty;
+  roundMode: ScreenshotGuessRoundMode;
   targetScore: number;
   // Seconds a player gets before their turn is auto-passed.
   answerTimeSec: number;
-  status: CoverGuessMatchStatus;
+  status: ScreenshotGuessMatchStatus;
   // Map preserves insertion order — host first, then invitees in invite order.
-  players: Map<number, CoverGuessPlayer>;
+  players: Map<number, ScreenshotGuessPlayer>;
   usedGameIds: Set<number>;
-  round: CoverGuessRound | null;
+  round: ScreenshotGuessRound | null;
   roundIndex: number;
   // Every game shown so far this match, in order — for the post-match recap.
-  history: { gameId: number; title: string; coverUrl: string }[];
+  history: { gameId: number; title: string; screenshotUrl: string }[];
   createdAt: number;
   nextRoundTimer?: ReturnType<typeof setTimeout>;
   turnTimer?: ReturnType<typeof setTimeout>;
@@ -102,15 +102,15 @@ interface CoverGuessMatchSession {
 }
 
 @Injectable()
-export class CoverGuessService implements OnModuleDestroy {
-  private readonly logger = new Logger(CoverGuessService.name);
-  private readonly matches = new Map<string, CoverGuessMatchSession>();
+export class ScreenshotGuessService implements OnModuleDestroy {
+  private readonly logger = new Logger(ScreenshotGuessService.name);
+  private readonly matches = new Map<string, ScreenshotGuessMatchSession>();
   private readonly localRounds = new Map<string, PendingLocalRound>();
   private readonly sweepTimer: ReturnType<typeof setInterval>;
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly gateway: CoverGuessGateway,
+    private readonly gateway: ScreenshotGuessGateway,
   ) {
     this.sweepTimer = setInterval(() => this.sweep(), 60_000);
   }
@@ -121,21 +121,21 @@ export class CoverGuessService implements OnModuleDestroy {
 
   // ---------------------------------------------------------------- LOCAL --
 
-  async pickLocalRound(difficulty: CoverGuessDifficulty, excludeIds: number[]) {
+  async pickLocalRound(difficulty: ScreenshotGuessDifficulty, excludeIds: number[]) {
     const game = await this.pickGame(difficulty, excludeIds);
     if (!game) throw new NotFoundException('Aucun jeu disponible pour cette difficulté');
     const roundToken = randomUUID();
     this.localRounds.set(roundToken, {
       gameId: game.id,
       title: game.title,
-      coverUrl: game.coverUrl,
+      screenshotUrl: game.screenshotUrl,
       blurStepIndex: 0,
       expiresAt: Date.now() + LOCAL_ROUND_TTL_MS,
     });
-    return { roundToken, coverUrl: game.coverUrl, blurStepIndex: 0 };
+    return { roundToken, screenshotUrl: game.screenshotUrl, blurStepIndex: 0 };
   }
 
-  guessLocal(roundToken: string, catalogId: number | null, mode: CoverGuessRoundMode = 'TURNS') {
+  guessLocal(roundToken: string, catalogId: number | null, mode: ScreenshotGuessRoundMode = 'TURNS') {
     const round = this.localRounds.get(roundToken);
     if (!round) throw new NotFoundException('Manche introuvable ou expirée');
 
@@ -150,7 +150,7 @@ export class CoverGuessService implements OnModuleDestroy {
 
   // ---------------------------------------------------------------- MULTI --
 
-  async createMatch(hostId: number, dto: CreateCoverGuessMatchDto): Promise<{ matchId: string }> {
+  async createMatch(hostId: number, dto: CreateScreenshotGuessMatchDto): Promise<{ matchId: string }> {
     const host = await this.prisma.user.findUnique({
       where: { id: hostId },
       select: { id: true, username: true, avatarUrl: true },
@@ -181,7 +181,7 @@ export class CoverGuessService implements OnModuleDestroy {
     }
 
     const id = randomUUID();
-    const players = new Map<number, CoverGuessPlayer>();
+    const players = new Map<number, ScreenshotGuessPlayer>();
     players.set(hostId, {
       userId: hostId,
       username: host.username,
@@ -215,7 +215,7 @@ export class CoverGuessService implements OnModuleDestroy {
       createdAt: Date.now(),
     });
 
-    await this.prisma.coverGuessMatch.create({
+    await this.prisma.screenshotGuessMatch.create({
       data: { id, hostId, status: 'LOBBY', difficulty: dto.difficulty, targetScore: dto.targetScore },
     });
 
@@ -227,7 +227,7 @@ export class CoverGuessService implements OnModuleDestroy {
     for (const u of invitees) {
       this.gateway.emitToUser(u.id, 'minigame:invite', {
         matchId: id,
-        game: 'cover-guess',
+        game: 'screenshot-guess',
         difficulty: dto.difficulty,
         actorId: hostId,
         actorUsername: host.username,
@@ -271,7 +271,7 @@ export class CoverGuessService implements OnModuleDestroy {
     for (const [id, p] of session.players) if (p.status === 'PENDING') session.players.delete(id);
 
     session.status = 'PLAYING';
-    await this.prisma.coverGuessMatch
+    await this.prisma.screenshotGuessMatch
       .update({ where: { id: matchId }, data: { status: 'PLAYING' } })
       .catch(() => {});
     await this.startRound(session);
@@ -326,8 +326,8 @@ export class CoverGuessService implements OnModuleDestroy {
   // scheduleRaceDeblur's own timer — so there's nothing to broadcast for a
   // miss, it just quietly tells the guesser themself "not that one".
   private async guessRace(
-    session: CoverGuessMatchSession,
-    round: CoverGuessRound,
+    session: ScreenshotGuessMatchSession,
+    round: ScreenshotGuessRound,
     userId: number,
     catalogId: number | null,
   ) {
@@ -376,7 +376,7 @@ export class CoverGuessService implements OnModuleDestroy {
 
     if (session.status === 'LOBBY' && session.hostId === userId) {
       session.status = 'ABANDONED';
-      await this.prisma.coverGuessMatch
+      await this.prisma.screenshotGuessMatch
         .update({ where: { id: matchId }, data: { status: 'ABANDONED', endedAt: new Date() } })
         .catch(() => {});
     } else if (session.status === 'PLAYING' && this.activePlayers(session).length < 2) {
@@ -396,7 +396,7 @@ export class CoverGuessService implements OnModuleDestroy {
       return this.toStateDto(session);
     }
     // Evicted from memory (backend restart or long gone) — durable fallback.
-    const row = await this.prisma.coverGuessMatch.findUnique({ where: { id: matchId } });
+    const row = await this.prisma.screenshotGuessMatch.findUnique({ where: { id: matchId } });
     if (!row) throw new NotFoundException('Partie introuvable');
     return {
       id: row.id,
@@ -451,7 +451,7 @@ export class CoverGuessService implements OnModuleDestroy {
     return { correct: false, resolved: false, blurStepIndex: round.blurStepIndex };
   }
 
-  private async startRound(session: CoverGuessMatchSession): Promise<void> {
+  private async startRound(session: ScreenshotGuessMatchSession): Promise<void> {
     session.roundIndex += 1;
     // RACE has no turn rotation — everyone can guess at any time, so
     // turnOrder stays empty (toStateDto then reports currentTurnUserId as
@@ -475,12 +475,12 @@ export class CoverGuessService implements OnModuleDestroy {
     }
 
     session.usedGameIds.add(game.id);
-    session.history.push({ gameId: game.id, title: game.title, coverUrl: game.coverUrl });
+    session.history.push({ gameId: game.id, title: game.title, screenshotUrl: game.screenshotUrl });
     session.round = {
       index: session.roundIndex,
       gameId: game.id,
       title: game.title,
-      coverUrl: game.coverUrl,
+      screenshotUrl: game.screenshotUrl,
       blurStepIndex: 0,
       turnOrder,
       turnPointer: 0,
@@ -492,7 +492,7 @@ export class CoverGuessService implements OnModuleDestroy {
     this.broadcastState(session);
   }
 
-  private scheduleNextRound(session: CoverGuessMatchSession): void {
+  private scheduleNextRound(session: ScreenshotGuessMatchSession): void {
     session.nextRoundTimer = setTimeout(() => {
       if (session.status === 'PLAYING') void this.startRound(session);
     }, NEXT_ROUND_DELAY_MS);
@@ -502,7 +502,7 @@ export class CoverGuessService implements OnModuleDestroy {
   // one first, so this is safe to call both when a round starts and whenever
   // the turn advances within it. A round that's already resolved has nothing
   // to schedule (the 4s inter-round gap needs no timer of its own).
-  private scheduleTurnTimer(session: CoverGuessMatchSession): void {
+  private scheduleTurnTimer(session: ScreenshotGuessMatchSession): void {
     if (session.turnTimer) clearTimeout(session.turnTimer);
     const round = session.round;
     if (!round || round.resolved) return;
@@ -522,7 +522,7 @@ export class CoverGuessService implements OnModuleDestroy {
   // `turnTimer`/`turnDeadline` fields as TURNS — only one of the two modes'
   // schedulers is ever active for a given session, and the client already
   // reads `turnDeadline` as "when does the next thing happen" either way.
-  private scheduleRaceDeblur(session: CoverGuessMatchSession): void {
+  private scheduleRaceDeblur(session: ScreenshotGuessMatchSession): void {
     if (session.turnTimer) clearTimeout(session.turnTimer);
     const round = session.round;
     if (!round || round.resolved) return;
@@ -543,7 +543,7 @@ export class CoverGuessService implements OnModuleDestroy {
     }, session.answerTimeSec * 1000);
   }
 
-  private async finishMatch(session: CoverGuessMatchSession, winnerId: number | null): Promise<void> {
+  private async finishMatch(session: ScreenshotGuessMatchSession, winnerId: number | null): Promise<void> {
     session.status = 'FINISHED';
     session.winnerId = winnerId;
     if (session.nextRoundTimer) clearTimeout(session.nextRoundTimer);
@@ -553,7 +553,7 @@ export class CoverGuessService implements OnModuleDestroy {
       username: p.username,
       score: p.score,
     }));
-    await this.prisma.coverGuessMatch
+    await this.prisma.screenshotGuessMatch
       .update({
         where: { id: session.id },
         data: {
@@ -568,7 +568,7 @@ export class CoverGuessService implements OnModuleDestroy {
     this.broadcastState(session);
   }
 
-  private requireSession(matchId: string): CoverGuessMatchSession {
+  private requireSession(matchId: string): ScreenshotGuessMatchSession {
     const session = this.matches.get(matchId);
     if (!session) throw new NotFoundException('Partie introuvable ou terminée');
     return session;
@@ -578,11 +578,11 @@ export class CoverGuessService implements OnModuleDestroy {
   // declined — declined ones stay for the lobby list, never removed on
   // decline). Anything gameplay-related (turn order, win/abandon counts,
   // leader fallback) must only ever consider the ACCEPTED subset.
-  private activePlayers(session: CoverGuessMatchSession): CoverGuessPlayer[] {
+  private activePlayers(session: ScreenshotGuessMatchSession): ScreenshotGuessPlayer[] {
     return [...session.players.values()].filter((p) => p.status === 'ACCEPTED');
   }
 
-  private toStateDto(session: CoverGuessMatchSession) {
+  private toStateDto(session: ScreenshotGuessMatchSession) {
     return {
       id: session.id,
       hostId: session.hostId,
@@ -602,7 +602,7 @@ export class CoverGuessService implements OnModuleDestroy {
       })),
       round: session.round && {
         index: session.round.index,
-        coverUrl: session.round.coverUrl,
+        screenshotUrl: session.round.screenshotUrl,
         blurStepIndex: session.round.blurStepIndex,
         currentTurnUserId: session.round.turnOrder[session.round.turnPointer] ?? null,
         resolved: session.round.resolved,
@@ -614,21 +614,21 @@ export class CoverGuessService implements OnModuleDestroy {
     };
   }
 
-  private broadcastState(session: CoverGuessMatchSession): void {
+  private broadcastState(session: ScreenshotGuessMatchSession): void {
     const dto = this.toStateDto(session);
-    for (const p of session.players.values()) this.gateway.emitToUser(p.userId, 'coverguess:state', dto);
+    for (const p of session.players.values()) this.gateway.emitToUser(p.userId, 'screenshotguess:state', dto);
     // The host still needs the update even if they've just been removed as a
     // player (can't happen today — leave() only drops the caller — kept for
     // safety since hostId isn't always in `players`' key set by construction).
     if (!session.players.has(session.hostId)) {
-      this.gateway.emitToUser(session.hostId, 'coverguess:state', dto);
+      this.gateway.emitToUser(session.hostId, 'screenshotguess:state', dto);
     }
   }
 
   // Picks one random game within a difficulty tier, excluding ids already
   // used earlier in the same session/local run.
   private async pickGame(
-    difficulty: CoverGuessDifficulty,
+    difficulty: ScreenshotGuessDifficulty,
     excludeIds: number[],
   ): Promise<PickedGame | null> {
     const where: Prisma.GameWhereInput = {
@@ -646,10 +646,11 @@ export class CoverGuessService implements OnModuleDestroy {
       });
       if (pool.length === 0) return null;
       const id = pool[Math.floor(Math.random() * pool.length)].id;
-      return this.prisma.game.findUnique({
+      const row = await this.prisma.game.findUnique({
         where: { id },
-        select: { id: true, title: true, coverUrl: true },
-      }) as Promise<PickedGame>;
+        select: { id: true, title: true, screenshots: true },
+      });
+      return row && this.toPickedGame(row);
     }
 
     const total = await this.prisma.game.count({ where });
@@ -658,9 +659,17 @@ export class CoverGuessService implements OnModuleDestroy {
       where,
       skip: Math.floor(Math.random() * total),
       take: 1,
-      select: { id: true, title: true, coverUrl: true },
+      select: { id: true, title: true, screenshots: true },
     });
-    return (row as PickedGame) ?? null;
+    return row ? this.toPickedGame(row) : null;
+  }
+
+  // A game can have several screenshots on file (MAX_SCREENSHOTS = 6 at
+  // import time) — pick one at random each time this game comes up rather
+  // than always showing the same one.
+  private toPickedGame(row: { id: number; title: string; screenshots: string[] }): PickedGame {
+    const screenshotUrl = row.screenshots[Math.floor(Math.random() * row.screenshots.length)];
+    return { id: row.id, title: row.title, screenshotUrl };
   }
 
   private sweep(): void {
@@ -668,7 +677,7 @@ export class CoverGuessService implements OnModuleDestroy {
     for (const [id, session] of this.matches) {
       if (session.status === 'LOBBY' && now - session.createdAt > LOBBY_TTL_MS) {
         session.status = 'ABANDONED';
-        this.prisma.coverGuessMatch
+        this.prisma.screenshotGuessMatch
           .update({ where: { id }, data: { status: 'ABANDONED', endedAt: new Date() } })
           .catch(() => {});
         this.broadcastState(session);

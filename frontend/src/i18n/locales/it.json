@@ -337,6 +337,11 @@
       "title": "Minigiochi",
       "play": "Gioca"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> ti invita a giocare a {{game}}",
+      "accept": "Accetta",
+      "decline": "Rifiuta"
+    },
     "coverGuess": {
       "title": "Indovina la copertina",
       "description": "Indovina il gioco dalla sua copertina — inizia completamente sfocata e si schiarisce un po' a ogni tentativo sbagliato.",
@@ -405,12 +410,89 @@
         "recap": "Giochi di questa partita"
       },
       "invite": {
-        "accept": "Accetta",
-        "decline": "Rifiuta",
         "accepted": "Accettato",
         "pending": "In attesa",
         "waitingForHost": "In attesa che l'host avvii la partita…",
-        "title": "<b>{{who}}</b> ti invita a giocare a {{game}}",
+        "declined": "Rifiutato"
+      },
+      "errors": {
+        "generic": "Qualcosa è andato storto",
+        "loading": "Caricamento…",
+        "matchNotFound": "Partita non trovata",
+        "matchEnded": "Questa partita è terminata"
+      }
+    },
+    "screenshotGuess": {
+      "title": "Indovina lo screenshot",
+      "description": "Indovina il gioco da uno screenshot di gioco — inizia completamente sfocato e si schiarisce un po' a ogni tentativo sbagliato.",
+      "setup": {
+        "mode": "Modalità",
+        "modeLocal": "Locale",
+        "modeMulti": "Online",
+        "difficultyLabel": "Difficoltà",
+        "difficulty": {
+          "easy": "Facile",
+          "normal": "Normale",
+          "hard": "Difficile"
+        },
+        "targetScore": "Primo a",
+        "localPlayers": "Giocatori su questo dispositivo",
+        "guestNamePlaceholder": "Nome giocatore {{n}}",
+        "startMatch": "Inizia",
+        "inviteFriends": "Invita amici online",
+        "noFriendsOnline": "Nessun amico online al momento.",
+        "sendInvites": "Invia inviti",
+        "modeHint": {
+          "local": "Gioca da solo o passa il dispositivo tra amici sullo stesso schermo.",
+          "multi": "Sfida uno o più amici online in tempo reale, ognuno dal proprio dispositivo."
+        },
+        "difficultyHint": {
+          "easy": "Solo giochi molto conosciuti (300).",
+          "normal": "Un gruppo più ampio, con giochi meno ovvi (5000).",
+          "hard": "L'intero catalogo, inclusi titoli poco conosciuti (27500)."
+        },
+        "roundMode": "Modalità di round",
+        "roundModeLabel": {
+          "TURNS": "A turni",
+          "RACE": "Il primo che risponde"
+        },
+        "roundModeHint": {
+          "TURNS": "Ognuno ha un tentativo per livello di sfocatura, a turno.",
+          "RACE": "Lo screenshot si svela da solo col tempo — rispondi il più veloce possibile, il primo tentativo corretto vince il round."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Tempo di risposta",
+          "RACE": "Intervallo di rivelazione"
+        },
+        "answerTimeSeconds": "{{count}}s"
+      },
+      "play": {
+        "guessPlaceholder": "Cerca un gioco…",
+        "targetScore": "Primo a {{count}} punti",
+        "yourTurn": "Turno di {{name}}",
+        "yourTurnNow": "Tocca a te — indovina il gioco!",
+        "opponentTurn": "In attesa di {{name}}…",
+        "racePromptOnline": "Indovina prima degli altri!",
+        "nextBlurIn": "Prossima rivelazione tra {{count}}s",
+        "buzzerOpen": "Tocca il tuo nome per rispondere!",
+        "buzzedTurn": "{{name}}, tocca a te rispondere!",
+        "cancelBuzz": "Non era quello — lascio il turno",
+        "pass": "Passa",
+        "correct": "Esatto!",
+        "roundLost": "Nessuno ha indovinato!",
+        "revealedAnswer": "Era {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} vince!",
+        "backToHub": "Torna ai minigiochi",
+        "leave": "Abbandona la partita",
+        "finished": "Partita terminata!",
+        "recap": "Giochi di questa partita"
+      },
+      "invite": {
+        "accepted": "Accettato",
+        "pending": "In attesa",
+        "waitingForHost": "In attesa che l'host avvii la partita…",
         "declined": "Rifiutato"
       },
       "errors": {

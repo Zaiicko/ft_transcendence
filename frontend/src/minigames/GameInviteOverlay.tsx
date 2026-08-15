@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -5,36 +6,43 @@ import Avatar from '../components/Avatar';
 import { apiFetch } from '../lib/api';
 import CoverGuessLogo from './CoverGuessLogo';
 import { minigameTitleKey } from './gameNames';
-import { useCoverGuessInviteSocket } from './useCoverGuessInviteSocket';
-import type { CoverGuessInvite } from './types';
+import ScreenshotGuessLogo from './ScreenshotGuessLogo';
+import { useMinigameInviteSocket } from './useMinigameInviteSocket';
+import type { MinigameInvite } from './types';
 
-// Full-screen blocking prompt for a cover-guess invite, on top of whatever
-// page the user is on — a bell notification wasn't enough since the user
-// explicitly wants it impossible to miss, and it only goes away once they
-// accept or decline (no click-outside/Escape dismiss, unlike the generic
-// Modal component). Driven by its own `coverguess:invite` socket event, not
-// the general notification pipeline — this overlay IS the notification.
+const LOGO: Record<MinigameInvite['game'], () => ReactElement> = {
+  'cover-guess': () => <CoverGuessLogo className="aspect-[3/4] w-20" />,
+  'screenshot-guess': () => <ScreenshotGuessLogo className="aspect-[3/4] w-20" />,
+};
+
+// Full-screen blocking prompt for a mini-game invite (any of them — this
+// overlay is shared), on top of whatever page the user is on — a bell
+// notification wasn't enough since the user explicitly wants it impossible
+// to miss, and it only goes away once they accept or decline (no
+// click-outside/Escape dismiss, unlike the generic Modal component). Driven
+// by its own `minigame:invite` socket event, not the general notification
+// pipeline — this overlay IS the notification.
 export default function GameInviteOverlay() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [invite, setInvite] = useState<CoverGuessInvite | null>(null);
+  const [invite, setInvite] = useState<MinigameInvite | null>(null);
   const [busy, setBusy] = useState(false);
 
-  useCoverGuessInviteSocket((i) => setInvite(i), true);
+  useMinigameInviteSocket((i) => setInvite(i), true);
 
   if (!invite) return null;
   const matchId = invite.matchId;
+  const game = invite.game;
+  const Logo = LOGO[game];
 
   async function respond(accept: boolean) {
     setBusy(true);
     try {
-      if (matchId) {
-        await apiFetch(`/minigames/cover-guess/matches/${matchId}/respond`, {
-          method: 'POST',
-          body: JSON.stringify({ accept }),
-        });
-        if (accept) navigate(`/minigames/cover-guess/match/${matchId}`);
-      }
+      await apiFetch(`/minigames/${game}/matches/${matchId}/respond`, {
+        method: 'POST',
+        body: JSON.stringify({ accept }),
+      });
+      if (accept) navigate(`/minigames/${game}/match/${matchId}`);
     } catch {
       // best-effort — the invite may have expired/been cancelled meanwhile
     } finally {
@@ -53,15 +61,15 @@ export default function GameInviteOverlay() {
         <Avatar username={invite.actorUsername} avatarUrl={invite.actorAvatarUrl} size={56} />
         <p className="text-sm">
           <Trans
-            i18nKey="minigames.coverGuess.invite.title"
+            i18nKey="minigames.invite.title"
             values={{
               who: invite.actorUsername,
-              game: t(minigameTitleKey(invite.game)),
+              game: t(minigameTitleKey(game)),
             }}
             components={{ b: <strong className="font-semibold" /> }}
           />
         </p>
-        <CoverGuessLogo className="aspect-[3/4] w-20" />
+        <Logo />
         <div className="flex gap-3">
           <button
             type="button"
@@ -69,7 +77,7 @@ export default function GameInviteOverlay() {
             onClick={() => void respond(true)}
             className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
           >
-            {t('minigames.coverGuess.invite.accept')}
+            {t('minigames.invite.accept')}
           </button>
           <button
             type="button"
@@ -77,7 +85,7 @@ export default function GameInviteOverlay() {
             onClick={() => void respond(false)}
             className="rounded-full border border-zinc-400/60 px-5 py-2 text-sm transition hover:border-red-400 hover:text-red-400 disabled:opacity-50 dark:border-zinc-600"
           >
-            {t('minigames.coverGuess.invite.decline')}
+            {t('minigames.invite.decline')}
           </button>
         </div>
       </div>

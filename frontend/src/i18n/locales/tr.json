@@ -337,6 +337,11 @@
       "title": "Mini oyunlar",
       "play": "Oyna"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> seni {{game}} oynamaya davet ediyor",
+      "accept": "Kabul et",
+      "decline": "Reddet"
+    },
     "coverGuess": {
       "title": "Kapağı Tahmin Et",
       "description": "Oyunu kapak resminden tahmin et — başlangıçta tamamen bulanıktır ve her yanlış denemeden sonra biraz netleşir.",
@@ -405,12 +410,89 @@
         "recap": "Bu maçtaki oyunlar"
       },
       "invite": {
-        "accept": "Kabul et",
-        "decline": "Reddet",
         "accepted": "Kabul edildi",
         "pending": "Bekliyor",
         "waitingForHost": "Ev sahibinin maçı başlatması bekleniyor…",
-        "title": "<b>{{who}}</b> seni {{game}} oynamaya davet ediyor",
+        "declined": "Reddedildi"
+      },
+      "errors": {
+        "generic": "Bir şeyler ters gitti",
+        "loading": "Yükleniyor…",
+        "matchNotFound": "Maç bulunamadı",
+        "matchEnded": "Bu maç sona erdi"
+      }
+    },
+    "screenshotGuess": {
+      "title": "Ekran Görüntüsünü Tahmin Et",
+      "description": "Oyunu, oyun içinden bir ekran görüntüsünden tahmin et — başlangıçta tamamen bulanıktır ve her yanlış denemeden sonra biraz netleşir.",
+      "setup": {
+        "mode": "Mod",
+        "modeLocal": "Yerel",
+        "modeMulti": "Çevrimiçi",
+        "difficultyLabel": "Zorluk",
+        "difficulty": {
+          "easy": "Kolay",
+          "normal": "Normal",
+          "hard": "Zor"
+        },
+        "targetScore": "İlk ulaşan:",
+        "localPlayers": "Bu cihazdaki oyuncular",
+        "guestNamePlaceholder": "{{n}}. oyuncunun adı",
+        "startMatch": "Başlat",
+        "inviteFriends": "Çevrimiçi arkadaşları davet et",
+        "noFriendsOnline": "Şu anda çevrimiçi arkadaş yok.",
+        "sendInvites": "Davetleri gönder",
+        "modeHint": {
+          "local": "Tek başına oyna ya da aynı ekranda cihazı arkadaşlar arasında paylaştır.",
+          "multi": "Bir veya birden fazla çevrimiçi arkadaşına gerçek zamanlı meydan oku, herkes kendi cihazından."
+        },
+        "difficultyHint": {
+          "easy": "Sadece çok bilinen oyunlar (300).",
+          "normal": "Daha geniş bir havuz, daha az belirgin oyunlarla (5000).",
+          "hard": "Az bilinen oyunlar dahil tüm katalog (27500)."
+        },
+        "roundMode": "Tur modu",
+        "roundModeLabel": {
+          "TURNS": "Sırayla",
+          "RACE": "İlk cevaplayan kazanır"
+        },
+        "roundModeHint": {
+          "TURNS": "Herkesin sırayla, her bulanıklık seviyesinde bir denemesi olur.",
+          "RACE": "Ekran görüntüsü zamanla kendiliğinden netleşir — olabildiğince hızlı cevapla, ilk doğru deneme turu kazanır."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Cevap süresi",
+          "RACE": "Netleşme aralığı"
+        },
+        "answerTimeSeconds": "{{count}}sn"
+      },
+      "play": {
+        "guessPlaceholder": "Oyun ara…",
+        "targetScore": "İlk {{count}} puana ulaşan kazanır",
+        "yourTurn": "Sıra {{name}}'de",
+        "yourTurnNow": "Sıra sende — oyunu tahmin et!",
+        "opponentTurn": "{{name}} bekleniyor…",
+        "racePromptOnline": "Diğerlerinden önce tahmin et!",
+        "nextBlurIn": "Sonraki netleşme {{count}}s içinde",
+        "buzzerOpen": "Cevaplamak için adına dokun!",
+        "buzzedTurn": "{{name}}, cevaplama sırası sende!",
+        "cancelBuzz": "O değildi — sırayı bırak",
+        "pass": "Geç",
+        "correct": "Doğru!",
+        "roundLost": "Kimse bilemedi!",
+        "revealedAnswer": "Cevap {{title}} idi"
+      },
+      "match": {
+        "winner": "{{name}} kazandı!",
+        "backToHub": "Mini oyunlara dön",
+        "leave": "Maçtan ayrıl",
+        "finished": "Maç bitti!",
+        "recap": "Bu maçtaki oyunlar"
+      },
+      "invite": {
+        "accepted": "Kabul edildi",
+        "pending": "Bekliyor",
+        "waitingForHost": "Ev sahibinin maçı başlatması bekleniyor…",
         "declined": "Reddedildi"
       },
       "errors": {

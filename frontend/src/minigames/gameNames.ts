@@ -3,6 +3,7 @@
 // regardless of what language the sender had active when they sent it.
 const TITLE_KEY: Record<string, string> = {
   'cover-guess': 'minigames.coverGuess.title',
+  'screenshot-guess': 'minigames.screenshotGuess.title',
 };
 
 export function minigameTitleKey(game: string | undefined): string {

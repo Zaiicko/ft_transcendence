@@ -337,6 +337,11 @@
       "title": "Minijogos",
       "play": "Jogar"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> está te convidando para jogar {{game}}",
+      "accept": "Aceitar",
+      "decline": "Recusar"
+    },
     "coverGuess": {
       "title": "Adivinhe a capa",
       "description": "Adivinhe o jogo pela capa — ela começa totalmente borrada e clareia um pouco a cada tentativa errada.",
@@ -405,12 +410,89 @@
         "recap": "Jogos desta partida"
       },
       "invite": {
-        "accept": "Aceitar",
-        "decline": "Recusar",
         "accepted": "Aceito",
         "pending": "Pendente",
         "waitingForHost": "Aguardando o anfitrião iniciar a partida…",
-        "title": "<b>{{who}}</b> está te convidando para jogar {{game}}",
+        "declined": "Recusado"
+      },
+      "errors": {
+        "generic": "Algo deu errado",
+        "loading": "Carregando…",
+        "matchNotFound": "Partida não encontrada",
+        "matchEnded": "Esta partida terminou"
+      }
+    },
+    "screenshotGuess": {
+      "title": "Adivinhe a captura de tela",
+      "description": "Adivinhe o jogo por uma captura de tela do próprio jogo — ela começa totalmente borrada e clareia um pouco a cada tentativa errada.",
+      "setup": {
+        "mode": "Modo",
+        "modeLocal": "Local",
+        "modeMulti": "Online",
+        "difficultyLabel": "Dificuldade",
+        "difficulty": {
+          "easy": "Fácil",
+          "normal": "Normal",
+          "hard": "Difícil"
+        },
+        "targetScore": "Primeiro a",
+        "localPlayers": "Jogadores neste dispositivo",
+        "guestNamePlaceholder": "Nome do jogador {{n}}",
+        "startMatch": "Começar",
+        "inviteFriends": "Convidar amigos online",
+        "noFriendsOnline": "Nenhum amigo online no momento.",
+        "sendInvites": "Enviar convites",
+        "modeHint": {
+          "local": "Jogue sozinho ou passe o dispositivo entre amigos na mesma tela.",
+          "multi": "Desafie um ou mais amigos online em tempo real, cada um no seu próprio dispositivo."
+        },
+        "difficultyHint": {
+          "easy": "Apenas jogos muito conhecidos (300).",
+          "normal": "Um grupo mais amplo, com jogos menos óbvios (5000).",
+          "hard": "Todo o catálogo, incluindo títulos pouco conhecidos (27500)."
+        },
+        "roundMode": "Modo de rodada",
+        "roundModeLabel": {
+          "TURNS": "Por turnos",
+          "RACE": "O primeiro que acertar"
+        },
+        "roundModeHint": {
+          "TURNS": "Cada um tem uma tentativa por nível de desfoque, por turnos.",
+          "RACE": "A captura de tela se revela sozinha com o tempo — responda o mais rápido possível, o primeiro acerto vence a rodada."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Tempo de resposta",
+          "RACE": "Intervalo de revelação"
+        },
+        "answerTimeSeconds": "{{count}}s"
+      },
+      "play": {
+        "guessPlaceholder": "Buscar um jogo…",
+        "targetScore": "Primeiro a {{count}} pontos",
+        "yourTurn": "Vez de {{name}}",
+        "yourTurnNow": "Sua vez — adivinhe o jogo!",
+        "opponentTurn": "Aguardando {{name}}…",
+        "racePromptOnline": "Adivinhe antes dos outros!",
+        "nextBlurIn": "Próxima revelação em {{count}}s",
+        "buzzerOpen": "Toque no seu nome para responder!",
+        "buzzedTurn": "{{name}}, sua vez de responder!",
+        "cancelBuzz": "Não era essa — solto a vez",
+        "pass": "Passar",
+        "correct": "Correto!",
+        "roundLost": "Ninguém acertou!",
+        "revealedAnswer": "Era {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} venceu!",
+        "backToHub": "Voltar aos minijogos",
+        "leave": "Sair da partida",
+        "finished": "Partida encerrada!",
+        "recap": "Jogos desta partida"
+      },
+      "invite": {
+        "accepted": "Aceito",
+        "pending": "Pendente",
+        "waitingForHost": "Aguardando o anfitrião iniciar a partida…",
         "declined": "Recusado"
       },
       "errors": {

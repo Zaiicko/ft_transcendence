@@ -337,6 +337,11 @@
       "title": "ミニゲーム",
       "play": "プレイ"
     },
+    "invite": {
+      "title": "<b>{{who}}</b>さんが「{{game}}」に誘っています",
+      "accept": "承諾",
+      "decline": "辞退"
+    },
     "coverGuess": {
       "title": "カバー当てクイズ",
       "description": "ぼかされたカバー画像からゲームを当てよう。最初は完全にぼやけていて、外すたびに少しずつ鮮明になります。",
@@ -405,12 +410,89 @@
         "recap": "この対戦で出たゲーム"
       },
       "invite": {
-        "accept": "承諾",
-        "decline": "辞退",
         "accepted": "承諾済み",
         "pending": "返答待ち",
         "waitingForHost": "ホストが対戦を開始するのを待っています…",
-        "title": "<b>{{who}}</b>さんが「{{game}}」に誘っています",
+        "declined": "辞退済み"
+      },
+      "errors": {
+        "generic": "問題が発生しました",
+        "loading": "読み込み中…",
+        "matchNotFound": "対戦が見つかりません",
+        "matchEnded": "この対戦は終了しました"
+      }
+    },
+    "screenshotGuess": {
+      "title": "スクリーンショット当てクイズ",
+      "description": "ぼかされたゲーム内スクリーンショットからゲームを当てよう。最初は完全にぼやけていて、外すたびに少しずつ鮮明になります。",
+      "setup": {
+        "mode": "モード",
+        "modeLocal": "ローカル",
+        "modeMulti": "オンライン",
+        "difficultyLabel": "難易度",
+        "difficulty": {
+          "easy": "かんたん",
+          "normal": "ふつう",
+          "hard": "むずかしい"
+        },
+        "targetScore": "先取",
+        "localPlayers": "この端末のプレイヤー人数",
+        "guestNamePlaceholder": "プレイヤー{{n}}の名前",
+        "startMatch": "開始",
+        "inviteFriends": "オンラインの友達を招待",
+        "noFriendsOnline": "現在オンラインの友達がいません。",
+        "sendInvites": "招待を送る",
+        "modeHint": {
+          "local": "一人でプレイするか、同じ画面で友達と端末を回してプレイします。",
+          "multi": "オンラインの友達1人以上をリアルタイムで招待して対戦します（それぞれ自分の端末でプレイ）。"
+        },
+        "difficultyHint": {
+          "easy": "とても有名なゲームのみ (300)。",
+          "normal": "対象が広く、あまり知られていないゲームも含みます (5000)。",
+          "hard": "マイナーな作品も含む、カタログ全体が対象です (27500)。"
+        },
+        "roundMode": "ラウンドモード",
+        "roundModeLabel": {
+          "TURNS": "順番に",
+          "RACE": "早い者勝ち"
+        },
+        "roundModeHint": {
+          "TURNS": "各プレイヤーがぼかしの段階ごとに順番で1回ずつ挑戦します。",
+          "RACE": "スクリーンショットは時間とともに自動的にはっきりしていきます — できるだけ早く答えましょう、最初に正解した人がそのラウンドの勝者です。"
+        },
+        "answerTimeLabel": {
+          "TURNS": "回答時間",
+          "RACE": "解除の間隔"
+        },
+        "answerTimeSeconds": "{{count}}秒"
+      },
+      "play": {
+        "guessPlaceholder": "ゲームを検索…",
+        "targetScore": "{{count}}点先取",
+        "yourTurn": "{{name}}さんの番です",
+        "yourTurnNow": "あなたの番です — ゲームを当てよう！",
+        "opponentTurn": "{{name}}さんを待っています…",
+        "racePromptOnline": "他の人より先に当てよう！",
+        "nextBlurIn": "次の解除まで{{count}}秒",
+        "buzzerOpen": "自分の名前をタップして回答しよう！",
+        "buzzedTurn": "{{name}}さん、あなたの回答の番です！",
+        "cancelBuzz": "違った — 回答権を手放す",
+        "pass": "パス",
+        "correct": "正解！",
+        "roundLost": "誰も当てられませんでした！",
+        "revealedAnswer": "正解は{{title}}でした"
+      },
+      "match": {
+        "winner": "{{name}}さんの勝利！",
+        "backToHub": "ミニゲームに戻る",
+        "leave": "対戦を退出",
+        "finished": "対戦終了！",
+        "recap": "この対戦で出たゲーム"
+      },
+      "invite": {
+        "accepted": "承諾済み",
+        "pending": "返答待ち",
+        "waitingForHost": "ホストが対戦を開始するのを待っています…",
         "declined": "辞退済み"
       },
       "errors": {

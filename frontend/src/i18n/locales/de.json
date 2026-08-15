@@ -337,6 +337,11 @@
       "title": "Minispiele",
       "play": "Spielen"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> lädt dich ein, {{game}} zu spielen",
+      "accept": "Annehmen",
+      "decline": "Ablehnen"
+    },
     "coverGuess": {
       "title": "Cover erraten",
       "description": "Errate das Spiel anhand seines Covers — es startet komplett unscharf und wird nach jedem falschen Versuch etwas klarer.",
@@ -405,12 +410,89 @@
         "recap": "Spiele dieser Partie"
       },
       "invite": {
-        "accept": "Annehmen",
-        "decline": "Ablehnen",
         "accepted": "Angenommen",
         "pending": "Ausstehend",
         "waitingForHost": "Warten, bis der Gastgeber die Partie startet…",
-        "title": "<b>{{who}}</b> lädt dich ein, {{game}} zu spielen",
+        "declined": "Abgelehnt"
+      },
+      "errors": {
+        "generic": "Etwas ist schiefgelaufen",
+        "loading": "Wird geladen…",
+        "matchNotFound": "Partie nicht gefunden",
+        "matchEnded": "Diese Partie ist beendet"
+      }
+    },
+    "screenshotGuess": {
+      "title": "Screenshot erraten",
+      "description": "Errate das Spiel anhand eines Screenshots aus dem Spiel — er startet komplett unscharf und wird nach jedem falschen Versuch etwas klarer.",
+      "setup": {
+        "mode": "Modus",
+        "modeLocal": "Lokal",
+        "modeMulti": "Online",
+        "difficultyLabel": "Schwierigkeit",
+        "difficulty": {
+          "easy": "Leicht",
+          "normal": "Normal",
+          "hard": "Schwer"
+        },
+        "targetScore": "Erster mit",
+        "localPlayers": "Spieler an diesem Gerät",
+        "guestNamePlaceholder": "Name von Spieler {{n}}",
+        "startMatch": "Starten",
+        "inviteFriends": "Online-Freunde einladen",
+        "noFriendsOnline": "Gerade keine Freunde online.",
+        "sendInvites": "Einladungen senden",
+        "modeHint": {
+          "local": "Spiele allein oder reicht das Gerät zwischen Freunden auf demselben Bildschirm weiter.",
+          "multi": "Fordere einen oder mehrere Online-Freunde in Echtzeit heraus, jeder auf seinem eigenen Gerät."
+        },
+        "difficultyHint": {
+          "easy": "Nur sehr bekannte Spiele (300).",
+          "normal": "Ein größerer Pool mit weniger offensichtlichen Spielen (5000).",
+          "hard": "Der gesamte Katalog, auch mit unbekannten Titeln (27500)."
+        },
+        "roundMode": "Rundenmodus",
+        "roundModeLabel": {
+          "TURNS": "Der Reihe nach",
+          "RACE": "Wer zuerst antwortet"
+        },
+        "roundModeHint": {
+          "TURNS": "Jeder hat einen Versuch pro Unschärfestufe, der Reihe nach.",
+          "RACE": "Der Screenshot wird von selbst mit der Zeit klarer — antworte so schnell wie möglich, der erste richtige Versuch gewinnt die Runde."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Antwortzeit",
+          "RACE": "Abstand zwischen den Enthüllungen"
+        },
+        "answerTimeSeconds": "{{count}}s"
+      },
+      "play": {
+        "guessPlaceholder": "Spiel suchen…",
+        "targetScore": "Erster mit {{count}} Punkten",
+        "yourTurn": "{{name}} ist dran",
+        "yourTurnNow": "Du bist dran — errate das Spiel!",
+        "opponentTurn": "Warten auf {{name}}…",
+        "racePromptOnline": "Errate es vor den anderen!",
+        "nextBlurIn": "Nächste Enthüllung in {{count}}s",
+        "buzzerOpen": "Tippe auf deinen Namen, um zu antworten!",
+        "buzzedTurn": "{{name}}, du bist dran zu antworten!",
+        "cancelBuzz": "Doch nicht — Buzzer freigeben",
+        "pass": "Passen",
+        "correct": "Richtig!",
+        "roundLost": "Niemand hat es erraten!",
+        "revealedAnswer": "Es war {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} gewinnt!",
+        "backToHub": "Zurück zu den Minispielen",
+        "leave": "Partie verlassen",
+        "finished": "Partie beendet!",
+        "recap": "Spiele dieser Partie"
+      },
+      "invite": {
+        "accepted": "Angenommen",
+        "pending": "Ausstehend",
+        "waitingForHost": "Warten, bis der Gastgeber die Partie startet…",
         "declined": "Abgelehnt"
       },
       "errors": {

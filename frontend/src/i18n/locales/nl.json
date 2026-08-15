@@ -337,6 +337,11 @@
       "title": "Minigames",
       "play": "Spelen"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> nodigt je uit om {{game}} te spelen",
+      "accept": "Accepteren",
+      "decline": "Weigeren"
+    },
     "coverGuess": {
       "title": "Raad de cover",
       "description": "Raad de game aan de hand van de cover — die begint helemaal wazig en wordt na elke foute poging iets duidelijker.",
@@ -405,12 +410,89 @@
         "recap": "Spellen in deze wedstrijd"
       },
       "invite": {
-        "accept": "Accepteren",
-        "decline": "Weigeren",
         "accepted": "Geaccepteerd",
         "pending": "In afwachting",
         "waitingForHost": "Wachten tot de host de wedstrijd start…",
-        "title": "<b>{{who}}</b> nodigt je uit om {{game}} te spelen",
+        "declined": "Geweigerd"
+      },
+      "errors": {
+        "generic": "Er is iets misgegaan",
+        "loading": "Laden…",
+        "matchNotFound": "Wedstrijd niet gevonden",
+        "matchEnded": "Deze wedstrijd is afgelopen"
+      }
+    },
+    "screenshotGuess": {
+      "title": "Raad de screenshot",
+      "description": "Raad de game aan de hand van een screenshot uit het spel — die begint helemaal wazig en wordt na elke foute poging iets duidelijker.",
+      "setup": {
+        "mode": "Modus",
+        "modeLocal": "Lokaal",
+        "modeMulti": "Online",
+        "difficultyLabel": "Moeilijkheidsgraad",
+        "difficulty": {
+          "easy": "Makkelijk",
+          "normal": "Normaal",
+          "hard": "Moeilijk"
+        },
+        "targetScore": "Eerste tot",
+        "localPlayers": "Spelers op dit apparaat",
+        "guestNamePlaceholder": "Naam speler {{n}}",
+        "startMatch": "Starten",
+        "inviteFriends": "Online vrienden uitnodigen",
+        "noFriendsOnline": "Op dit moment geen vrienden online.",
+        "sendInvites": "Uitnodigingen versturen",
+        "modeHint": {
+          "local": "Speel alleen of geef het apparaat door tussen vrienden op hetzelfde scherm.",
+          "multi": "Daag een of meer online vrienden in real time uit, elk op hun eigen apparaat."
+        },
+        "difficultyHint": {
+          "easy": "Alleen heel bekende games (300).",
+          "normal": "Een grotere groep, met minder voor de hand liggende games (5000).",
+          "hard": "De hele catalogus, inclusief obscure titels (27500)."
+        },
+        "roundMode": "Rondemodus",
+        "roundModeLabel": {
+          "TURNS": "Om de beurt",
+          "RACE": "Wie het eerst raadt"
+        },
+        "roundModeHint": {
+          "TURNS": "Iedereen krijgt om de beurt één poging per vervagingsstap.",
+          "RACE": "De screenshot wordt vanzelf duidelijker na verloop van tijd — antwoord zo snel mogelijk, de eerste juiste gok wint de ronde."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Antwoordtijd",
+          "RACE": "Interval tussen onthullingen"
+        },
+        "answerTimeSeconds": "{{count}}s"
+      },
+      "play": {
+        "guessPlaceholder": "Zoek een game…",
+        "targetScore": "Eerste tot {{count}} punten",
+        "yourTurn": "Beurt van {{name}}",
+        "yourTurnNow": "Jouw beurt — raad de game!",
+        "opponentTurn": "Wachten op {{name}}…",
+        "racePromptOnline": "Raad het vóór de anderen!",
+        "nextBlurIn": "Volgende onthulling over {{count}}s",
+        "buzzerOpen": "Tik op je naam om te antwoorden!",
+        "buzzedTurn": "{{name}}, jij mag antwoorden!",
+        "cancelBuzz": "Toch niet — beurt loslaten",
+        "pass": "Passen",
+        "correct": "Juist!",
+        "roundLost": "Niemand raadde het!",
+        "revealedAnswer": "Het was {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} wint!",
+        "backToHub": "Terug naar minigames",
+        "leave": "Wedstrijd verlaten",
+        "finished": "Wedstrijd afgelopen!",
+        "recap": "Spellen in deze wedstrijd"
+      },
+      "invite": {
+        "accepted": "Geaccepteerd",
+        "pending": "In afwachting",
+        "waitingForHost": "Wachten tot de host de wedstrijd start…",
         "declined": "Geweigerd"
       },
       "errors": {

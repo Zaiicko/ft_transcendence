@@ -337,6 +337,11 @@
       "title": "Mini-games",
       "play": "Play"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> is inviting you to play {{game}}",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
     "coverGuess": {
       "title": "Guess the Cover",
       "description": "Guess the game from its cover — it starts fully blurred and clears a little after every wrong guess.",
@@ -405,12 +410,89 @@
         "recap": "Games in this match"
       },
       "invite": {
-        "accept": "Accept",
-        "decline": "Decline",
         "accepted": "Accepted",
         "pending": "Pending",
         "waitingForHost": "Waiting for the host to start the match…",
-        "title": "<b>{{who}}</b> is inviting you to play {{game}}",
+        "declined": "Declined"
+      },
+      "errors": {
+        "generic": "Something went wrong",
+        "loading": "Loading…",
+        "matchNotFound": "Match not found",
+        "matchEnded": "This match has ended"
+      }
+    },
+    "screenshotGuess": {
+      "title": "Guess the Screenshot",
+      "description": "Guess the game from an in-game screenshot — it starts fully blurred and clears a little after every wrong guess.",
+      "setup": {
+        "mode": "Mode",
+        "modeLocal": "Local",
+        "modeMulti": "Online",
+        "difficultyLabel": "Difficulty",
+        "difficulty": {
+          "easy": "Easy",
+          "normal": "Normal",
+          "hard": "Hard"
+        },
+        "targetScore": "First to",
+        "localPlayers": "Players on this device",
+        "guestNamePlaceholder": "Player {{n}} name",
+        "startMatch": "Start",
+        "inviteFriends": "Invite online friends",
+        "noFriendsOnline": "No friends online right now.",
+        "sendInvites": "Send invites",
+        "modeHint": {
+          "local": "Play solo, or pass the device between friends on the same screen.",
+          "multi": "Challenge one or more online friends in real time, each on their own device."
+        },
+        "difficultyHint": {
+          "easy": "Only very well-known games (300).",
+          "normal": "A wider pool, including less obvious games (5000).",
+          "hard": "The whole catalog, including obscure titles (27500)."
+        },
+        "roundMode": "Round mode",
+        "roundModeLabel": {
+          "TURNS": "Take turns",
+          "RACE": "First to answer"
+        },
+        "roundModeHint": {
+          "TURNS": "Everyone gets one guess per blur step, in rotation.",
+          "RACE": "The screenshot clears on its own over time — guess as fast as you can, first correct answer wins the round."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Answer time",
+          "RACE": "Reveal interval"
+        },
+        "answerTimeSeconds": "{{count}}s"
+      },
+      "play": {
+        "guessPlaceholder": "Search a game…",
+        "targetScore": "First to {{count}} points",
+        "yourTurn": "{{name}}'s turn",
+        "yourTurnNow": "Your turn — guess the game!",
+        "opponentTurn": "Waiting for {{name}}…",
+        "racePromptOnline": "Guess before the others!",
+        "nextBlurIn": "Next reveal in {{count}}s",
+        "buzzerOpen": "Tap your name to answer!",
+        "buzzedTurn": "{{name}}, it's your turn — guess!",
+        "cancelBuzz": "Not it — let go",
+        "pass": "Pass",
+        "correct": "Correct!",
+        "roundLost": "Nobody found it!",
+        "revealedAnswer": "It was {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} wins!",
+        "backToHub": "Back to mini-games",
+        "leave": "Leave match",
+        "finished": "Match over!",
+        "recap": "Games in this match"
+      },
+      "invite": {
+        "accepted": "Accepted",
+        "pending": "Pending",
+        "waitingForHost": "Waiting for the host to start the match…",
         "declined": "Declined"
       },
       "errors": {

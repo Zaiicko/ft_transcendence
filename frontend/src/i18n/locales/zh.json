@@ -337,6 +337,11 @@
       "title": "小游戏",
       "play": "开始游戏"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> 邀请你一起玩「{{game}}」",
+      "accept": "接受",
+      "decline": "拒绝"
+    },
     "coverGuess": {
       "title": "猜封面",
       "description": "根据封面猜游戏——封面一开始完全模糊，每次猜错后会稍微变清晰一点。",
@@ -405,12 +410,89 @@
         "recap": "本局出现的游戏"
       },
       "invite": {
-        "accept": "接受",
-        "decline": "拒绝",
         "accepted": "已接受",
         "pending": "等待中",
         "waitingForHost": "等待房主开始对局…",
-        "title": "<b>{{who}}</b> 邀请你一起玩「{{game}}」",
+        "declined": "已拒绝"
+      },
+      "errors": {
+        "generic": "出了点问题",
+        "loading": "加载中…",
+        "matchNotFound": "未找到该对局",
+        "matchEnded": "该对局已结束"
+      }
+    },
+    "screenshotGuess": {
+      "title": "猜游戏截图",
+      "description": "根据游戏内截图猜游戏——截图一开始完全模糊，每次猜错后会稍微变清晰一点。",
+      "setup": {
+        "mode": "模式",
+        "modeLocal": "本地",
+        "modeMulti": "在线",
+        "difficultyLabel": "难度",
+        "difficulty": {
+          "easy": "简单",
+          "normal": "普通",
+          "hard": "困难"
+        },
+        "targetScore": "先达到",
+        "localPlayers": "本设备上的玩家",
+        "guestNamePlaceholder": "玩家 {{n}} 的名字",
+        "startMatch": "开始",
+        "inviteFriends": "邀请在线好友",
+        "noFriendsOnline": "目前没有好友在线。",
+        "sendInvites": "发送邀请",
+        "modeHint": {
+          "local": "独自游玩，或在同一屏幕上和朋友轮流传递设备。",
+          "multi": "实时挑战一位或多位在线好友，每人使用自己的设备。"
+        },
+        "difficultyHint": {
+          "easy": "只包含非常知名的游戏 (300)。",
+          "normal": "范围更广，包含一些不太明显的游戏 (5000)。",
+          "hard": "整个游戏库，包括冷门作品 (27500)。"
+        },
+        "roundMode": "回合模式",
+        "roundModeLabel": {
+          "TURNS": "轮流猜",
+          "RACE": "抢答制"
+        },
+        "roundModeHint": {
+          "TURNS": "每人在每个模糊等级都有一次机会，轮流进行。",
+          "RACE": "截图会随时间自动变清晰——尽快作答，第一个猜对的人赢得本回合。"
+        },
+        "answerTimeLabel": {
+          "TURNS": "回答时间",
+          "RACE": "揭晓间隔"
+        },
+        "answerTimeSeconds": "{{count}}秒"
+      },
+      "play": {
+        "guessPlaceholder": "搜索游戏…",
+        "targetScore": "先达到 {{count}} 分获胜",
+        "yourTurn": "轮到 {{name}}",
+        "yourTurnNow": "轮到你了——猜猜这是什么游戏！",
+        "opponentTurn": "等待 {{name}}…",
+        "racePromptOnline": "抢在别人之前猜出来！",
+        "nextBlurIn": "{{count}}秒后进一步揭晓",
+        "buzzerOpen": "点击你的名字来回答！",
+        "buzzedTurn": "{{name}}，轮到你回答了！",
+        "cancelBuzz": "不是这个——放弃抢答",
+        "pass": "跳过",
+        "correct": "猜对了！",
+        "roundLost": "没有人猜对！",
+        "revealedAnswer": "答案是 {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} 获胜！",
+        "backToHub": "返回小游戏",
+        "leave": "离开对局",
+        "finished": "对局结束！",
+        "recap": "本局出现的游戏"
+      },
+      "invite": {
+        "accepted": "已接受",
+        "pending": "等待中",
+        "waitingForHost": "等待房主开始对局…",
         "declined": "已拒绝"
       },
       "errors": {

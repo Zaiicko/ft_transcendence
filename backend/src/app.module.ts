@@ -15,6 +15,7 @@ import { GamesModule } from './games/games.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ListsModule } from './lists/lists.module';
 import { CoverGuessModule } from './minigames/cover-guess/cover-guess.module';
+import { ScreenshotGuessModule } from './minigames/screenshot-guess/screenshot-guess.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { OgModule } from './og/og.module';
 import { PresenceModule } from './presence/presence.module';
@@ -59,6 +60,7 @@ import { UsersModule } from './users/users.module';
     AchievementsModule,
     OgModule,
     CoverGuessModule,
+    ScreenshotGuessModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

@@ -337,6 +337,11 @@
       "title": "Mini-jeux",
       "play": "Jouer"
     },
+    "invite": {
+      "title": "<b>{{who}}</b> t'invite à jouer à {{game}}",
+      "accept": "Accepter",
+      "decline": "Refuser"
+    },
     "coverGuess": {
       "title": "Devine la pochette",
       "description": "Devine le jeu à partir de sa pochette — elle est totalement floutée au départ et se defloute un peu après chaque mauvaise réponse.",
@@ -405,12 +410,89 @@
         "recap": "Jeux de la partie"
       },
       "invite": {
-        "accept": "Accepter",
-        "decline": "Refuser",
         "accepted": "Accepté",
         "pending": "En attente",
         "waitingForHost": "En attente que l'hôte lance la partie…",
-        "title": "<b>{{who}}</b> t'invite à jouer à {{game}}",
+        "declined": "Refusé"
+      },
+      "errors": {
+        "generic": "Une erreur est survenue",
+        "loading": "Chargement…",
+        "matchNotFound": "Partie introuvable",
+        "matchEnded": "Cette partie est terminée"
+      }
+    },
+    "screenshotGuess": {
+      "title": "Devine la capture d'écran",
+      "description": "Devine le jeu à partir d'une capture d'écran en jeu — elle est totalement floutée au départ et se defloute un peu après chaque mauvaise réponse.",
+      "setup": {
+        "mode": "Mode",
+        "modeLocal": "Local",
+        "modeMulti": "En ligne",
+        "difficultyLabel": "Difficulté",
+        "difficulty": {
+          "easy": "Facile",
+          "normal": "Normal",
+          "hard": "Difficile"
+        },
+        "targetScore": "Premier à",
+        "localPlayers": "Joueurs sur cet appareil",
+        "guestNamePlaceholder": "Nom du joueur {{n}}",
+        "startMatch": "Commencer",
+        "inviteFriends": "Inviter des amis en ligne",
+        "noFriendsOnline": "Aucun ami en ligne pour le moment.",
+        "sendInvites": "Envoyer les invitations",
+        "modeHint": {
+          "local": "Joue seul, ou passe l'appareil entre amis sur le même écran.",
+          "multi": "Défie un ou plusieurs amis en ligne en temps réel, chacun sur son propre appareil."
+        },
+        "difficultyHint": {
+          "easy": "Seulement des jeux très connus (300).",
+          "normal": "Un bassin plus large, avec des jeux moins évidents (5000).",
+          "hard": "Tout le catalogue, y compris des titres obscurs (27500)."
+        },
+        "roundMode": "Mode de manche",
+        "roundModeLabel": {
+          "TURNS": "Chacun son tour",
+          "RACE": "Le premier qui trouve"
+        },
+        "roundModeHint": {
+          "TURNS": "Chacun a un essai par palier de flou, à tour de rôle.",
+          "RACE": "La capture d'écran se dévoile toute seule avec le temps — réponds le plus vite possible, le premier bon essai remporte la manche."
+        },
+        "answerTimeLabel": {
+          "TURNS": "Temps de réponse",
+          "RACE": "Intervalle de dévoilement"
+        },
+        "answerTimeSeconds": "{{count}}s"
+      },
+      "play": {
+        "guessPlaceholder": "Cherche un jeu…",
+        "targetScore": "Premier à {{count}} points",
+        "yourTurn": "Au tour de {{name}}",
+        "yourTurnNow": "À toi de jouer — devine le jeu !",
+        "opponentTurn": "En attente de {{name}}…",
+        "racePromptOnline": "Devine avant les autres !",
+        "nextBlurIn": "Prochain flou dans {{count}}s",
+        "buzzerOpen": "Appuie sur ton nom pour répondre !",
+        "buzzedTurn": "{{name}}, à toi de répondre !",
+        "cancelBuzz": "Pas ça — je laisse la main",
+        "pass": "Passer",
+        "correct": "Trouvé !",
+        "roundLost": "Personne n'a trouvé !",
+        "revealedAnswer": "C'était {{title}}"
+      },
+      "match": {
+        "winner": "{{name}} gagne !",
+        "backToHub": "Retour aux mini-jeux",
+        "leave": "Quitter la partie",
+        "finished": "Partie terminée !",
+        "recap": "Jeux de la partie"
+      },
+      "invite": {
+        "accepted": "Accepté",
+        "pending": "En attente",
+        "waitingForHost": "En attente que l'hôte lance la partie…",
         "declined": "Refusé"
       },
       "errors": {

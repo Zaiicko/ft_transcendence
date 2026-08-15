@@ -17,6 +17,8 @@ const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const Login = lazy(() => import('./pages/Login'));
 const CoverGuessMatch = lazy(() => import('./pages/CoverGuessMatch'));
 const CoverGuessSetup = lazy(() => import('./pages/CoverGuessSetup'));
+const ScreenshotGuessMatch = lazy(() => import('./pages/ScreenshotGuessMatch'));
+const ScreenshotGuessSetup = lazy(() => import('./pages/ScreenshotGuessSetup'));
 const Minigames = lazy(() => import('./pages/Minigames'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
@@ -77,6 +79,8 @@ export default function App() {
               <Route path="/minigames" element={<Minigames />} />
               <Route path="/minigames/cover-guess" element={<CoverGuessSetup />} />
               <Route path="/minigames/cover-guess/match/:matchId" element={<CoverGuessMatch />} />
+              <Route path="/minigames/screenshot-guess" element={<ScreenshotGuessSetup />} />
+              <Route path="/minigames/screenshot-guess/match/:matchId" element={<ScreenshotGuessMatch />} />
               <Route path="/library" element={<Library />} />
               <Route path="/u/:username/library" element={<PlayerLibrary />} />
               <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />
