@@ -467,10 +467,10 @@
         },
         "blurHint": {
           "on": "La capture démarre floutée et se dévoile à chaque essai.",
-          "off": "La capture est affichée nette dès le début — bien plus dur, car les captures ne montrent presque jamais de titre ou de logo. Chaque joueur n'a plus qu'un seul essai pour la manche."
+          "off": "La capture est affichée nette dès le début."
         },
         "maxAttempts": "Essais max",
-        "maxAttemptsHint": "Nombre total de mauvaises réponses autorisées avant la fin de la manche — réparti entre les tours des joueurs (ou partagé entre tous en mode « premier qui trouve »).",
+        "maxAttemptsHint": "Chaque joueur dispose de ce nombre de mauvaises réponses avant d'être éliminé — ce n'est pas un total partagé entre tous.",
         "answerTimeLabel": {
           "TURNS": "Temps de réponse",
           "RACE": "Intervalle de dévoilement"
@@ -486,6 +486,7 @@
         "racePromptOnline": "Devine avant les autres !",
         "nextBlurIn": "Prochain flou dans {{count}}s",
         "attemptsLeft": "{{count}} essai(s) restant(s)",
+        "outOfAttempts": "Tu n'as plus d'essai pour cette manche.",
         "buzzerOpen": "Appuie sur ton nom pour répondre !",
         "buzzedTurn": "{{name}}, à toi de répondre !",
         "cancelBuzz": "Pas ça — je laisse la main",

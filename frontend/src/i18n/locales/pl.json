@@ -467,10 +467,10 @@
         },
         "blurHint": {
           "on": "Zrzut ekranu zaczyna się rozmyty i staje się wyraźniejszy z każdą próbą.",
-          "off": "Zrzut ekranu jest pokazany całkowicie wyraźnie od początku — dużo trudniej, bo zrzuty ekranu prawie nigdy nie pokazują tytułu ani logo. Każdy gracz ma tylko jedną próbę na rundę."
+          "off": "Zrzut ekranu jest pokazany całkowicie wyraźnie od początku."
         },
         "maxAttempts": "Maks. prób",
-        "maxAttemptsHint": "Łączna liczba błędnych prób dozwolona przed zakończeniem rundy — rozłożona na kolejki graczy (lub wspólna dla wszystkich w trybie „kto pierwszy zgadnie”).",
+        "maxAttemptsHint": "Każdy gracz ma tyle błędnych prób, zanim odpadnie — to nie jest wspólna pula dla całej grupy.",
         "answerTimeLabel": {
           "TURNS": "Czas na odpowiedź",
           "RACE": "Odstęp między odsłonięciami"
@@ -486,6 +486,7 @@
         "racePromptOnline": "Zgadnij przed innymi!",
         "nextBlurIn": "Następne odsłonięcie za {{count}}s",
         "attemptsLeft": "Pozostało prób: {{count}}",
+        "outOfAttempts": "Nie masz już prób w tej rundzie.",
         "buzzerOpen": "Dotknij swojego imienia, aby odpowiedzieć!",
         "buzzedTurn": "{{name}}, twoja kolej na odpowiedź!",
         "cancelBuzz": "To nie to — oddaję kolejkę",

@@ -52,9 +52,13 @@ interface PendingLocalRound {
   screenshotUrl: string;
   blurStepIndex: number;
   blur: boolean;
-  // No blur only (TURNS or RACE): attempts left across the whole round
-  // before it's considered lost (there's no blur budget to spend instead).
-  // Unused when blur is enabled.
+  // No blur only (TURNS or RACE): a single shared counter, unlike the
+  // per-player Map used in multiplayer — local has no player identity on the
+  // wire at all (the frontend alone drives whose turn/buzz it is), so the
+  // caller (ScreenshotGuessLocalPlay) sizes this as maxAttempts × player
+  // count up front, giving each player their own maxAttempts by construction
+  // as long as attempts are spent one at a time in rotation. Unused when
+  // blur is enabled.
   attemptsLeft?: number;
   expiresAt: number;
 }
@@ -82,8 +86,12 @@ interface ScreenshotGuessRound {
   // Epoch ms the current turn auto-passes at — purely informational for the
   // client's countdown; the server enforces it via `turnTimer` below.
   turnDeadline: number;
-  // No blur only (TURNS or RACE) — see PendingLocalRound.attemptsLeft.
-  attemptsLeft?: number;
+  // No blur only (TURNS or RACE): each player's own remaining wrong-guess
+  // budget (maxAttempts each — not a pool split across the group), keyed by
+  // userId. TURNS drops a player from turnOrder once theirs hits zero; RACE
+  // just stops accepting guesses from them. The round ends once every active
+  // player is out, or unresolved once turnOrder empties for TURNS.
+  attemptsLeft?: Map<number, number>;
 }
 
 interface ScreenshotGuessMatchSession {
@@ -388,9 +396,10 @@ export class ScreenshotGuessService implements OnModuleDestroy {
 
   // TURNS + no blur: the screenshot was already shown fully clear from the
   // start, so a wrong guess has nothing to reveal — instead of a blur
-  // budget, the round gets a fixed attemptsLeft (host-configured maxAttempts,
-  // seeded in startRound) and ends once it's spent, turns wrapping around the
-  // rotation as needed.
+  // budget, each player gets their own fixed attemptsLeft (host-configured
+  // maxAttempts each, seeded in startRound). A player who spends theirs is
+  // dropped from turnOrder entirely (not just skipped) — the round only ends
+  // unresolved once nobody's left in the rotation.
   private async guessTurnsNoBlur(
     session: ScreenshotGuessMatchSession,
     round: ScreenshotGuessRound,
@@ -409,11 +418,23 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       return this.toStateDto(session);
     }
 
-    round.attemptsLeft = (round.attemptsLeft ?? session.maxAttempts) - 1;
-    if (round.attemptsLeft <= 0) {
-      round.resolved = true;
+    const remaining = (round.attemptsLeft!.get(userId) ?? session.maxAttempts) - 1;
+    round.attemptsLeft!.set(userId, remaining);
+
+    if (remaining <= 0) {
+      // The acting player is always at turnPointer (checked by guess() before
+      // dispatching here) — removing that index shifts the next player into
+      // it, so turnPointer only needs to wrap if it was the last slot.
+      round.turnOrder.splice(round.turnPointer, 1);
+      if (round.turnOrder.length === 0) {
+        round.resolved = true;
+        this.broadcastState(session);
+        this.scheduleNextRound(session);
+        return this.toStateDto(session);
+      }
+      round.turnPointer = round.turnPointer % round.turnOrder.length;
+      this.scheduleTurnTimer(session);
       this.broadcastState(session);
-      this.scheduleNextRound(session);
       return this.toStateDto(session);
     }
 
@@ -425,9 +446,10 @@ export class ScreenshotGuessService implements OnModuleDestroy {
 
   // RACE + no blur: there's no reveal schedule to run (the screenshot is
   // already fully clear), so unlike guessRace below, a wrong guess here
-  // spends a shared attempts budget instead — same pool for everyone, no
-  // turn to check. Once it hits zero the round ends unresolved, same as
-  // guessTurnsNoBlur but without the turn rotation.
+  // spends that player's own attemptsLeft instead — no turn to check, but
+  // also no shared pool: everyone gets their own maxAttempts. Once a player
+  // is out they can't guess anymore; the round only ends unresolved once
+  // every active player is out.
   private async guessRaceNoBlur(
     session: ScreenshotGuessMatchSession,
     round: ScreenshotGuessRound,
@@ -435,6 +457,9 @@ export class ScreenshotGuessService implements OnModuleDestroy {
     catalogId: number | null,
   ) {
     if (!this.activePlayers(session).some((p) => p.userId === userId)) throw new ForbiddenException();
+
+    const before = round.attemptsLeft!.get(userId) ?? session.maxAttempts;
+    if (before <= 0) throw new ForbiddenException('Plus aucun essai pour cette manche');
 
     const correct = catalogId != null && catalogId === round.gameId;
     if (correct) {
@@ -447,15 +472,18 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       return this.toStateDto(session);
     }
 
-    round.attemptsLeft = (round.attemptsLeft ?? session.maxAttempts) - 1;
-    if (round.attemptsLeft <= 0) {
+    round.attemptsLeft!.set(userId, before - 1);
+    const someoneStillHasAttempts = this.activePlayers(session).some(
+      (p) => (round.attemptsLeft!.get(p.userId) ?? session.maxAttempts) > 0,
+    );
+    if (!someoneStillHasAttempts) {
       round.resolved = true;
       this.broadcastState(session);
       this.scheduleNextRound(session);
       return this.toStateDto(session);
     }
-    // Broadcast so everyone sees the shared attempts budget tick down, even
-    // though nothing else about the round changed.
+    // Broadcast so everyone sees that player's attempts budget tick down,
+    // even though nothing else about the round changed.
     this.broadcastState(session);
     return this.toStateDto(session);
   }
@@ -627,7 +655,11 @@ export class ScreenshotGuessService implements OnModuleDestroy {
       turnPointer: 0,
       resolved: false,
       turnDeadline: 0, // set by scheduleTurnTimer/scheduleRaceDeblur below
-      attemptsLeft: !session.blur ? session.maxAttempts : undefined,
+      // Each active player gets their own maxAttempts, not a pool split
+      // across the group — keyed by userId regardless of round mode.
+      attemptsLeft: !session.blur
+        ? new Map(this.activePlayers(session).map((p) => [p.userId, session.maxAttempts]))
+        : undefined,
     };
     if (session.roundMode === 'RACE') {
       // No-blur RACE has nothing to reveal on a schedule — it resolves via
@@ -756,7 +788,10 @@ export class ScreenshotGuessService implements OnModuleDestroy {
         currentTurnUserId: session.round.turnOrder[session.round.turnPointer] ?? null,
         resolved: session.round.resolved,
         turnDeadline: session.round.resolved ? null : session.round.turnDeadline,
-        attemptsLeft: session.round.attemptsLeft ?? null,
+        // Per-player remaining attempts (no blur only), keyed by userId —
+        // JSON object keys stringify the numbers, the client reads them back
+        // by indexing with a userId same as any plain object.
+        attemptsLeft: session.round.attemptsLeft ? Object.fromEntries(session.round.attemptsLeft) : null,
         ...(session.round.resolved
           ? { answerGameId: session.round.gameId, answerTitle: session.round.title }
           : {}),

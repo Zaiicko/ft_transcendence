@@ -467,10 +467,10 @@
         },
         "blurHint": {
           "on": "De screenshot begint wazig en wordt bij elke poging duidelijker.",
-          "off": "De screenshot wordt vanaf het begin volledig scherp getoond — veel moeilijker, want screenshots tonen bijna nooit een titel of logo. Elke speler krijgt maar één poging voor de ronde."
+          "off": "De screenshot wordt vanaf het begin volledig scherp getoond."
         },
         "maxAttempts": "Max. pogingen",
-        "maxAttemptsHint": "Totaal aantal foute pogingen dat is toegestaan voordat de ronde eindigt — verdeeld over de beurten van de spelers (of gedeeld door iedereen in de modus 'eerste die het raadt').",
+        "maxAttemptsHint": "Elke speler krijgt dit aantal foute pogingen voordat die uitvalt — geen gedeeld totaal voor de hele groep.",
         "answerTimeLabel": {
           "TURNS": "Antwoordtijd",
           "RACE": "Interval tussen onthullingen"
@@ -486,6 +486,7 @@
         "racePromptOnline": "Raad het vóór de anderen!",
         "nextBlurIn": "Volgende onthulling over {{count}}s",
         "attemptsLeft": "Nog {{count}} poging(en)",
+        "outOfAttempts": "Je hebt geen pogingen meer voor deze ronde.",
         "buzzerOpen": "Tik op je naam om te antwoorden!",
         "buzzedTurn": "{{name}}, jij mag antwoorden!",
         "cancelBuzz": "Toch niet — beurt loslaten",

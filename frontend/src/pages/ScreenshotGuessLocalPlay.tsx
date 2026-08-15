@@ -18,14 +18,12 @@ interface LocalRound {
   roundToken: string;
   screenshotUrl: string;
   blurStepIndex: number;
-  attemptsLeft?: number;
 }
 
 interface LocalOutcome {
   correct: boolean;
   resolved: boolean;
   blurStepIndex: number;
-  attemptsLeft?: number;
   answerGameId?: number;
   answerTitle?: string;
 }
@@ -74,6 +72,11 @@ export default function ScreenshotGuessLocalPlay({
   const [winner, setWinner] = useState<LocalPlayer | null>(null);
   const [remaining, setRemaining] = useState(answerTimeSec);
   const [playedGames, setPlayedGames] = useState<PlayedGame[]>([]);
+  // No blur only: each player's own remaining wrong-guess budget, tracked
+  // client-side since the local guess endpoint has no concept of player
+  // identity at all (see beginRound's attemptsParam for how the server's
+  // shared counter is sized so it lines up with this exactly).
+  const [attemptsLeftByPlayer, setAttemptsLeftByPlayer] = useState<number[]>([]);
 
   const beginRound = useCallback(
     async (nextRoundIndex: number, excludeIds: number[]) => {
@@ -81,8 +84,16 @@ export default function ScreenshotGuessLocalPlay({
       setError(null);
       setResolution(null);
       setBuzzedIndex(null);
+      setAttemptsLeftByPlayer(Array(playerNames.length).fill(maxAttempts));
       try {
-        const attemptsParam = blur ? '' : `&blur=false&attempts=${maxAttempts}`;
+        // Each player gets their own maxAttempts, not a pool split across the
+        // group — since the server only ever sees a single shared counter for
+        // local rounds, it's sized as maxAttempts × player count so that, as
+        // long as one guess is spent per player per turn (TURNS) or the UI
+        // caps each player's own share (RACE, enforced below), the server's
+        // counter reaches zero at the exact same moment every player's own
+        // count does.
+        const attemptsParam = blur ? '' : `&blur=false&attempts=${maxAttempts * playerNames.length}`;
         const r = await apiFetch<LocalRound>(
           `/minigames/screenshot-guess/round?difficulty=${difficulty}&exclude=${excludeIds.join(',')}${attemptsParam}`,
         );
@@ -160,9 +171,13 @@ export default function ScreenshotGuessLocalPlay({
           return;
         }
         // Blur mode: the cover only advances via the automatic tick below,
-        // so a wrong guess just reopens the buzzer. No blur: also update the
-        // remaining attempts budget the wrong guess just spent.
-        setRound((prev) => (prev ? { ...prev, attemptsLeft: outcome.attemptsLeft } : prev));
+        // so a wrong guess just reopens the buzzer. No blur: also spend that
+        // player's own attempts share (the buzz buttons below stay disabled
+        // for anyone already at zero, so this never goes negative).
+        if (!blur && buzzedIndex != null) {
+          const i = buzzedIndex;
+          setAttemptsLeftByPlayer((prev) => prev.map((v, idx) => (idx === i ? v - 1 : v)));
+        }
         setBuzzedIndex(null);
         return;
       }
@@ -198,7 +213,11 @@ export default function ScreenshotGuessLocalPlay({
         return;
       }
 
-      setRound({ ...round, blurStepIndex: outcome.blurStepIndex, attemptsLeft: outcome.attemptsLeft });
+      setRound({ ...round, blurStepIndex: outcome.blurStepIndex });
+      if (!blur) {
+        const i = turnOrder[turnPointer];
+        setAttemptsLeftByPlayer((prev) => prev.map((v, idx) => (idx === i ? v - 1 : v)));
+      }
       setTurnPointer((p) => (p + 1) % turnOrder.length);
       setTurnCounter((c) => c + 1);
     } catch (err) {
@@ -349,6 +368,12 @@ export default function ScreenshotGuessLocalPlay({
               }`}
             >
               {p.name}: {p.score}
+              {!blur && attemptsLeftByPlayer[i] != null && (
+                <span className="font-normal opacity-70">
+                  {' '}
+                  ({t('minigames.screenshotGuess.play.attemptsLeft', { count: attemptsLeftByPlayer[i] })})
+                </span>
+              )}
             </span>
           ))}
         </div>
@@ -381,31 +406,28 @@ export default function ScreenshotGuessLocalPlay({
               {buzzedIndex != null
                 ? t('minigames.screenshotGuess.play.buzzedTurn', { name: players[buzzedIndex].name })
                 : t('minigames.screenshotGuess.play.buzzerOpen')}
-              {blur ? (
+              {blur && (
                 <span className="ml-2 font-normal text-zinc-400">
                   {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
                 </span>
-              ) : (
-                round?.attemptsLeft != null && (
-                  <span className="ml-2 font-normal text-zinc-400">
-                    {t('minigames.screenshotGuess.play.attemptsLeft', { count: round.attemptsLeft })}
-                  </span>
-                )
               )}
             </p>
             {buzzedIndex == null ? (
               <div className="flex flex-wrap justify-center gap-2">
-                {players.map((p, i) => (
-                  <button
-                    key={p.name}
-                    type="button"
-                    disabled={loading}
-                    onClick={() => setBuzzedIndex(i)}
-                    className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
-                  >
-                    {p.name}
-                  </button>
-                ))}
+                {players.map((p, i) => {
+                  const exhausted = !blur && (attemptsLeftByPlayer[i] ?? 1) <= 0;
+                  return (
+                    <button
+                      key={p.name}
+                      type="button"
+                      disabled={loading || exhausted}
+                      onClick={() => setBuzzedIndex(i)}
+                      className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+                    >
+                      {p.name}
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <>
@@ -427,11 +449,6 @@ export default function ScreenshotGuessLocalPlay({
             <p className="text-sm font-medium">
               {t('minigames.screenshotGuess.play.yourTurn', { name: activePlayerName })}
               <span className="ml-2 font-normal text-zinc-400">{remaining}s</span>
-              {!blur && round?.attemptsLeft != null && (
-                <span className="ml-2 font-normal text-zinc-400">
-                  {t('minigames.screenshotGuess.play.attemptsLeft', { count: round.attemptsLeft })}
-                </span>
-              )}
             </p>
             <div className="w-full max-w-sm">
               <CoverGuessInput disabled={loading || busy} onGuess={(id) => void submitGuess(id)} />

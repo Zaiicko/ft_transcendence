@@ -66,9 +66,10 @@ export interface ScreenshotGuessRoundState {
   currentTurnUserId: number | null;
   resolved: boolean;
   turnDeadline: number | null;
-  // Only set when the match is running without blur — the shared/per-turn
-  // wrong-guess budget left before the round ends unresolved.
-  attemptsLeft: number | null;
+  // Only set when the match is running without blur — each player's own
+  // remaining wrong-guess budget (maxAttempts each, not a pool split across
+  // the group), keyed by userId.
+  attemptsLeft: Record<number, number> | null;
   answerGameId?: number;
   answerTitle?: string;
 }

@@ -467,10 +467,10 @@
         },
         "blurHint": {
           "on": "Ekran görüntüsü bulanık başlar ve her denemede netleşir.",
-          "off": "Ekran görüntüsü baştan itibaren tamamen net gösterilir — çok daha zor, çünkü ekran görüntüleri neredeyse hiç başlık veya logo göstermez. Her oyuncunun tur için sadece tek bir denemesi olur."
+          "off": "Ekran görüntüsü baştan itibaren tamamen net gösterilir."
         },
         "maxAttempts": "Maks. deneme",
-        "maxAttemptsHint": "Tur bitmeden önce izin verilen toplam yanlış deneme sayısı — oyuncuların sıraları arasında paylaştırılır (veya \"ilk bulan kazanır\" modunda herkes arasında ortak kullanılır).",
+        "maxAttemptsHint": "Her oyuncu elenmeden önce bu kadar yanlış deneme hakkına sahiptir — grup için ortak bir havuz değildir.",
         "answerTimeLabel": {
           "TURNS": "Cevap süresi",
           "RACE": "Netleşme aralığı"
@@ -486,6 +486,7 @@
         "racePromptOnline": "Diğerlerinden önce tahmin et!",
         "nextBlurIn": "Sonraki netleşme {{count}}s içinde",
         "attemptsLeft": "{{count}} deneme kaldı",
+        "outOfAttempts": "Bu tur için deneme hakkın kalmadı.",
         "buzzerOpen": "Cevaplamak için adına dokun!",
         "buzzedTurn": "{{name}}, cevaplama sırası sende!",
         "cancelBuzz": "O değildi — sırayı bırak",

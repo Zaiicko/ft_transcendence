@@ -223,6 +223,11 @@ export default function ScreenshotGuessMatch() {
               >
                 <Avatar username={p.username} avatarUrl={p.avatarUrl} size={20} />
                 {p.username}: {p.score}
+                {!state.blur && state.round?.attemptsLeft?.[p.userId] != null && (
+                  <span className="font-normal opacity-70">
+                    ({t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft[p.userId] })})
+                  </span>
+                )}
               </span>
             ))}
             <span className="ml-auto self-center text-zinc-400">
@@ -252,26 +257,22 @@ export default function ScreenshotGuessMatch() {
                       {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
                     </span>
                   )}
-                  {!state.blur && state.round.attemptsLeft != null && (
-                    <span className="ml-2 font-normal text-zinc-400">
-                      {t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft })}
-                    </span>
-                  )}
                 </p>
-                <div className="w-full max-w-sm">
-                  <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
-                </div>
+                {state.blur || (state.round.attemptsLeft?.[user.id] ?? 1) > 0 ? (
+                  <div className="w-full max-w-sm">
+                    <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
+                  </div>
+                ) : (
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    {t('minigames.screenshotGuess.play.outOfAttempts')}
+                  </p>
+                )}
               </>
             ) : state.round.currentTurnUserId === user.id ? (
               <>
                 <p className="text-sm font-medium">
                   {t('minigames.screenshotGuess.play.yourTurnNow')}
                   {remaining !== null && <span className="ml-2 font-normal text-zinc-400">{remaining}s</span>}
-                  {!state.blur && state.round.attemptsLeft != null && (
-                    <span className="ml-2 font-normal text-zinc-400">
-                      {t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft })}
-                    </span>
-                  )}
                 </p>
                 <div className="w-full max-w-sm">
                   <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
@@ -291,11 +292,6 @@ export default function ScreenshotGuessMatch() {
                   name: state.players.find((p) => p.userId === state.round?.currentTurnUserId)?.username ?? '',
                 })}
                 {remaining !== null && <span className="ml-2 text-zinc-400">({remaining}s)</span>}
-                {!state.blur && state.round.attemptsLeft != null && (
-                  <span className="ml-2 text-zinc-400">
-                    {t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft })}
-                  </span>
-                )}
               </p>
             )}
           </div>

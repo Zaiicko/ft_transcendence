@@ -467,10 +467,10 @@
         },
         "blurHint": {
           "on": "Der Screenshot startet unscharf und wird mit jedem Versuch klarer.",
-          "off": "Der Screenshot wird von Anfang an vollständig klar gezeigt — viel schwerer, da Screenshots kaum je einen Titel oder ein Logo zeigen. Jeder Spieler hat nur einen einzigen Versuch pro Runde."
+          "off": "Der Screenshot wird von Anfang an vollständig klar gezeigt."
         },
         "maxAttempts": "Max. Versuche",
-        "maxAttemptsHint": "Gesamtzahl falscher Versuche, bevor die Runde endet — verteilt auf die Spielzüge (oder von allen gemeinsam genutzt im Modus „Wer zuerst rät“).",
+        "maxAttemptsHint": "Jeder Spieler hat diese Anzahl an Fehlversuchen, bevor er ausscheidet — kein gemeinsames Kontingent für die Gruppe.",
         "answerTimeLabel": {
           "TURNS": "Antwortzeit",
           "RACE": "Abstand zwischen den Enthüllungen"
@@ -486,6 +486,7 @@
         "racePromptOnline": "Errate es vor den anderen!",
         "nextBlurIn": "Nächste Enthüllung in {{count}}s",
         "attemptsLeft": "Noch {{count}} Versuch(e)",
+        "outOfAttempts": "Du hast keine Versuche mehr für diese Runde.",
         "buzzerOpen": "Tippe auf deinen Namen, um zu antworten!",
         "buzzedTurn": "{{name}}, du bist dran zu antworten!",
         "cancelBuzz": "Doch nicht — Buzzer freigeben",

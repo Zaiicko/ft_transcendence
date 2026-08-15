@@ -467,10 +467,10 @@
         },
         "blurHint": {
           "on": "The screenshot starts blurred and clears with each attempt.",
-          "off": "The screenshot is shown fully clear from the start — much harder, since screenshots rarely show a title or logo. Each player gets a single attempt for the round instead."
+          "off": "The screenshot is shown fully clear from the start."
         },
         "maxAttempts": "Max attempts",
-        "maxAttemptsHint": "Total number of wrong guesses allowed before the round ends — shared across every player's turn (or across everyone at once in \"first to guess\" mode).",
+        "maxAttemptsHint": "Each player gets this many wrong guesses before they're out — not a pool split across the group.",
         "answerTimeLabel": {
           "TURNS": "Answer time",
           "RACE": "Reveal interval"
@@ -486,6 +486,7 @@
         "racePromptOnline": "Guess before the others!",
         "nextBlurIn": "Next reveal in {{count}}s",
         "attemptsLeft": "{{count}} attempt(s) left",
+        "outOfAttempts": "You're out of attempts for this round.",
         "buzzerOpen": "Tap your name to answer!",
         "buzzedTurn": "{{name}}, it's your turn — guess!",
         "cancelBuzz": "Not it — let go",

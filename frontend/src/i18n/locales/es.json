@@ -467,10 +467,10 @@
         },
         "blurHint": {
           "on": "La captura empieza borrosa y se aclara con cada intento.",
-          "off": "La captura se muestra totalmente nítida desde el principio — mucho más difícil, ya que las capturas casi nunca muestran un título o logo. Cada jugador tiene un único intento por ronda."
+          "off": "La captura se muestra totalmente nítida desde el principio."
         },
         "maxAttempts": "Intentos máximos",
-        "maxAttemptsHint": "Número total de respuestas incorrectas permitidas antes de que termine la ronda — repartido entre los turnos de los jugadores (o compartido entre todos en el modo «el primero en acertar»).",
+        "maxAttemptsHint": "Cada jugador tiene este número de respuestas incorrectas antes de quedar eliminado — no es un total compartido entre todos.",
         "answerTimeLabel": {
           "TURNS": "Tiempo de respuesta",
           "RACE": "Intervalo de revelado"
@@ -486,6 +486,7 @@
         "racePromptOnline": "¡Adivina antes que los demás!",
         "nextBlurIn": "Próximo desenfoque en {{count}}s",
         "attemptsLeft": "{{count}} intento(s) restante(s)",
+        "outOfAttempts": "Ya no tienes intentos para esta ronda.",
         "buzzerOpen": "¡Toca tu nombre para responder!",
         "buzzedTurn": "{{name}}, ¡es tu turno de responder!",
         "cancelBuzz": "No era — suelto el turno",
