@@ -12,7 +12,13 @@ import CoverGuessLocalPlay from './CoverGuessLocalPlay';
 const DIFFICULTIES: CoverGuessDifficulty[] = ['easy', 'normal', 'hard'];
 const ROUND_MODES: CoverGuessRoundMode[] = ['TURNS', 'RACE'];
 const TARGET_SCORES = [3, 5, 7, 10];
-const ANSWER_TIMES = [10, 15, 30];
+// RACE gets an extra, faster 5s option on top of TURNS' choices — a 5s
+// per-turn window would be unreasonably tight, but a 5s reveal tick makes
+// for a snappier race.
+const ANSWER_TIMES: Record<CoverGuessRoundMode, number[]> = {
+  TURNS: [10, 15, 30],
+  RACE: [5, 10, 15, 30],
+};
 const MAX_LOCAL_PLAYERS = 6;
 
 interface FriendRow extends PublicUser {
@@ -29,6 +35,12 @@ export default function CoverGuessSetup() {
   const [roundMode, setRoundMode] = useState<CoverGuessRoundMode>('TURNS');
   const [targetScore, setTargetScore] = useState(5);
   const [answerTimeSec, setAnswerTimeSec] = useState(15);
+  // TURNS doesn't offer 5s — if that was picked under RACE and the mode
+  // switches back, fall back to the mode's first option rather than
+  // rendering/sending a value that isn't one of its choices. answerTimeSec
+  // itself is left untouched so switching back to RACE restores it.
+  const answerTimes = ANSWER_TIMES[roundMode];
+  const effectiveAnswerTimeSec = answerTimes.includes(answerTimeSec) ? answerTimeSec : answerTimes[0];
 
   const [localPlayerCount, setLocalPlayerCount] = useState(1);
   const [guestNames, setGuestNames] = useState<string[]>([]);
@@ -60,7 +72,7 @@ export default function CoverGuessSetup() {
           difficulty,
           roundMode,
           targetScore,
-          answerTimeSec,
+          answerTimeSec: effectiveAnswerTimeSec,
           inviteeUserIds: selectedFriendIds,
         }),
       });
@@ -81,7 +93,7 @@ export default function CoverGuessSetup() {
           difficulty={difficulty}
           roundMode={roundMode}
           targetScore={targetScore}
-          answerTimeSec={answerTimeSec}
+          answerTimeSec={effectiveAnswerTimeSec}
           playerNames={playerNames}
           onExit={() => setPlaying(false)}
         />
@@ -200,13 +212,13 @@ export default function CoverGuessSetup() {
             {t(`minigames.coverGuess.setup.answerTimeLabel.${roundMode}`)}
           </p>
           <div className="flex gap-2">
-            {ANSWER_TIMES.map((s) => (
+            {answerTimes.map((s) => (
               <button
                 key={s}
                 type="button"
                 onClick={() => setAnswerTimeSec(s)}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-                  answerTimeSec === s
+                  effectiveAnswerTimeSec === s
                     ? 'bg-accent text-zinc-950'
                     : 'border border-zinc-400/60 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300'
                 }`}

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import SectionHead from '../components/SectionHead';
+import CoverGuessLogo from '../minigames/CoverGuessLogo';
 
 export default function Minigames() {
   const { t } = useTranslation();
@@ -13,6 +14,7 @@ export default function Minigames() {
           to="/minigames/cover-guess"
           className="card group flex flex-col gap-3 p-5 transition hover:-translate-y-0.5 hover:border-accent/50"
         >
+          <CoverGuessLogo className="aspect-[3/4] w-16" />
           <span className="font-display text-lg font-bold tracking-tight">
             {t('minigames.coverGuess.title')}
           </span>

@@ -241,3 +241,28 @@ body {
     animation: none;
   }
 }
+
+/* Logo du mini-jeu "Devine la pochette" : la cover reste floutée, se
+   dévoile, puis se reflote — en boucle, comme un petit teaser du jeu. */
+@keyframes cover-guess-reveal {
+  0%,
+  15% {
+    filter: blur(11px);
+  }
+  50%,
+  65% {
+    filter: blur(0);
+  }
+  100% {
+    filter: blur(11px);
+  }
+}
+.animate-cover-guess-reveal {
+  animation: cover-guess-reveal 5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-cover-guess-reveal {
+    animation: none;
+    filter: blur(4px);
+  }
+}

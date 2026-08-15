@@ -14,8 +14,10 @@ export class CreateCoverGuessMatchDto {
   targetScore: number;
 
   // TURNS: seconds a player gets to answer before it's auto-passed for them.
-  // RACE: seconds between each automatic reveal step.
-  @IsIn([10, 15, 30])
+  // RACE: seconds between each automatic reveal step (5s only makes sense
+  // here — TURNS keeps 10/15/30 as its minimum, the client only offers 5
+  // when roundMode is RACE).
+  @IsIn([5, 10, 15, 30])
   answerTimeSec: number;
 
   @ArrayMinSize(1)
