@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "截图一开始是模糊的，每次尝试后会变清晰。",
-          "off": "截图从一开始就完全清晰显示。"
+          "off": "截图从聚焦某个细节的放大视图开始，并以和模糊相同的节奏逐步缩小。"
         },
-        "maxAttempts": "最大尝试次数",
-        "maxAttemptsHint": "每位玩家在出局前都拥有这么多次错误猜测机会——不是全组共用的总数。",
         "answerTimeLabel": {
           "TURNS": "回答时间",
           "RACE": "揭晓间隔"
@@ -485,8 +483,6 @@
         "opponentTurn": "等待 {{name}}…",
         "racePromptOnline": "抢在别人之前猜出来！",
         "nextBlurIn": "{{count}}秒后进一步揭晓",
-        "attemptsLeft": "剩余 {{count}} 次尝试",
-        "outOfAttempts": "本回合你已经没有尝试机会了。",
         "buzzerOpen": "点击你的名字来回答！",
         "buzzedTurn": "{{name}}，轮到你回答了！",
         "cancelBuzz": "不是这个——放弃抢答",

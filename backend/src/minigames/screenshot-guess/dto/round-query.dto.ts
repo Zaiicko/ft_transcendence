@@ -1,5 +1,5 @@
-import { Transform, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsIn, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsArray, IsIn, IsInt, IsOptional } from 'class-validator';
 import { ScreenshotGuessDifficulty } from '../screenshot-guess.types';
 
 export class RoundQueryDto {
@@ -20,21 +20,4 @@ export class RoundQueryDto {
       : [],
   )
   exclude: number[] = [];
-
-  // false = "no blur" local round: shown fully clear from the start.
-  @IsOptional()
-  @Transform(({ value }) => value !== 'false')
-  @IsBoolean()
-  blur = true;
-
-  // Only meaningful when blur is false: how many total wrong-guess attempts
-  // the round gets before it's considered lost, since there's no blur budget
-  // to spend instead. Host-configurable at setup (not tied to player count).
-  // Ignored when blur is true.
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Max(10)
-  @Type(() => Number)
-  attempts?: number;
 }

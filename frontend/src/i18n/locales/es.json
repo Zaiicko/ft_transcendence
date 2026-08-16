@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "La captura empieza borrosa y se aclara con cada intento.",
-          "off": "La captura se muestra totalmente nítida desde el principio."
+          "off": "La captura empieza con zoom sobre un detalle y se aleja progresivamente, al mismo ritmo que el desenfoque."
         },
-        "maxAttempts": "Intentos máximos",
-        "maxAttemptsHint": "Cada jugador tiene este número de respuestas incorrectas antes de quedar eliminado — no es un total compartido entre todos.",
         "answerTimeLabel": {
           "TURNS": "Tiempo de respuesta",
           "RACE": "Intervalo de revelado"
@@ -485,8 +483,6 @@
         "opponentTurn": "Esperando a {{name}}…",
         "racePromptOnline": "¡Adivina antes que los demás!",
         "nextBlurIn": "Próximo desenfoque en {{count}}s",
-        "attemptsLeft": "{{count}} intento(s) restante(s)",
-        "outOfAttempts": "Ya no tienes intentos para esta ronda.",
         "buzzerOpen": "¡Toca tu nombre para responder!",
         "buzzedTurn": "{{name}}, ¡es tu turno de responder!",
         "cancelBuzz": "No era — suelto el turno",

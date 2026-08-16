@@ -66,10 +66,6 @@ export interface ScreenshotGuessRoundState {
   currentTurnUserId: number | null;
   resolved: boolean;
   turnDeadline: number | null;
-  // Only set when the match is running without blur — each player's own
-  // remaining wrong-guess budget (maxAttempts each, not a pool split across
-  // the group), keyed by userId.
-  attemptsLeft: Record<number, number> | null;
   answerGameId?: number;
   answerTitle?: string;
 }
@@ -80,11 +76,10 @@ export interface ScreenshotGuessMatchState {
   status: ScreenshotGuessMatchStatus;
   difficulty: ScreenshotGuessDifficulty;
   roundMode?: ScreenshotGuessRoundMode;
-  // false = "no blur" mode — the screenshot is shown fully clear from the
-  // start.
+  // false = "no blur" mode: the client renders a zoom-out reveal instead of
+  // a blur-clear one, at the exact same cadence (round mechanics are
+  // identical either way).
   blur?: boolean;
-  // Only meaningful when blur is false — see CreateScreenshotGuessMatchDto.
-  maxAttempts?: number;
   targetScore: number;
   answerTimeSec: number;
   players: ScreenshotGuessPlayerState[];

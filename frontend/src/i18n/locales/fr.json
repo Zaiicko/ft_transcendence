@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "La capture démarre floutée et se dévoile à chaque essai.",
-          "off": "La capture est affichée nette dès le début."
+          "off": "La capture démarre zoomée sur un détail et se dézoome progressivement, au même rythme que le flou."
         },
-        "maxAttempts": "Essais max",
-        "maxAttemptsHint": "Chaque joueur dispose de ce nombre de mauvaises réponses avant d'être éliminé — ce n'est pas un total partagé entre tous.",
         "answerTimeLabel": {
           "TURNS": "Temps de réponse",
           "RACE": "Intervalle de dévoilement"
@@ -485,8 +483,6 @@
         "opponentTurn": "En attente de {{name}}…",
         "racePromptOnline": "Devine avant les autres !",
         "nextBlurIn": "Prochain flou dans {{count}}s",
-        "attemptsLeft": "{{count}} essai(s) restant(s)",
-        "outOfAttempts": "Tu n'as plus d'essai pour cette manche.",
         "buzzerOpen": "Appuie sur ton nom pour répondre !",
         "buzzedTurn": "{{name}}, à toi de répondre !",
         "cancelBuzz": "Pas ça — je laisse la main",

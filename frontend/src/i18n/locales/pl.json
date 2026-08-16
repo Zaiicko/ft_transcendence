@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "Zrzut ekranu zaczyna się rozmyty i staje się wyraźniejszy z każdą próbą.",
-          "off": "Zrzut ekranu jest pokazany całkowicie wyraźnie od początku."
+          "off": "Zrzut ekranu zaczyna się przybliżony na szczególe i stopniowo się oddala, w tym samym tempie co rozmycie."
         },
-        "maxAttempts": "Maks. prób",
-        "maxAttemptsHint": "Każdy gracz ma tyle błędnych prób, zanim odpadnie — to nie jest wspólna pula dla całej grupy.",
         "answerTimeLabel": {
           "TURNS": "Czas na odpowiedź",
           "RACE": "Odstęp między odsłonięciami"
@@ -485,8 +483,6 @@
         "opponentTurn": "Oczekiwanie na {{name}}…",
         "racePromptOnline": "Zgadnij przed innymi!",
         "nextBlurIn": "Następne odsłonięcie za {{count}}s",
-        "attemptsLeft": "Pozostało prób: {{count}}",
-        "outOfAttempts": "Nie masz już prób w tej rundzie.",
         "buzzerOpen": "Dotknij swojego imienia, aby odpowiedzieć!",
         "buzzedTurn": "{{name}}, twoja kolej na odpowiedź!",
         "cancelBuzz": "To nie to — oddaję kolejkę",

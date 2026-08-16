@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "Der Screenshot startet unscharf und wird mit jedem Versuch klarer.",
-          "off": "Der Screenshot wird von Anfang an vollständig klar gezeigt."
+          "off": "Der Screenshot startet mit Zoom auf ein Detail und zoomt schrittweise heraus, im gleichen Tempo wie die Unschärfe."
         },
-        "maxAttempts": "Max. Versuche",
-        "maxAttemptsHint": "Jeder Spieler hat diese Anzahl an Fehlversuchen, bevor er ausscheidet — kein gemeinsames Kontingent für die Gruppe.",
         "answerTimeLabel": {
           "TURNS": "Antwortzeit",
           "RACE": "Abstand zwischen den Enthüllungen"
@@ -485,8 +483,6 @@
         "opponentTurn": "Warten auf {{name}}…",
         "racePromptOnline": "Errate es vor den anderen!",
         "nextBlurIn": "Nächste Enthüllung in {{count}}s",
-        "attemptsLeft": "Noch {{count}} Versuch(e)",
-        "outOfAttempts": "Du hast keine Versuche mehr für diese Runde.",
         "buzzerOpen": "Tippe auf deinen Namen, um zu antworten!",
         "buzzedTurn": "{{name}}, du bist dran zu antworten!",
         "cancelBuzz": "Doch nicht — Buzzer freigeben",

@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "스크린샷은 흐릿하게 시작해서 시도할 때마다 선명해집니다.",
-          "off": "스크린샷이 처음부터 완전히 선명하게 표시됩니다."
+          "off": "스크린샷은 세부 부분을 확대한 상태로 시작해 흐림 효과와 같은 속도로 점점 축소됩니다."
         },
-        "maxAttempts": "최대 시도 횟수",
-        "maxAttemptsHint": "각 플레이어는 탈락하기 전까지 이만큼의 오답 기회를 가집니다 — 그룹 전체가 공유하는 총량이 아닙니다.",
         "answerTimeLabel": {
           "TURNS": "답변 시간",
           "RACE": "공개 간격"
@@ -485,8 +483,6 @@
         "opponentTurn": "{{name}}님을 기다리는 중…",
         "racePromptOnline": "다른 사람보다 먼저 맞혀보세요!",
         "nextBlurIn": "{{count}}초 후 다음 공개",
-        "attemptsLeft": "{{count}}회 남음",
-        "outOfAttempts": "이번 라운드에서 더 이상 시도할 수 없습니다.",
         "buzzerOpen": "이름을 눌러 답변하세요!",
         "buzzedTurn": "{{name}}님, 답변할 차례입니다!",
         "cancelBuzz": "아니에요 — 버저 포기",

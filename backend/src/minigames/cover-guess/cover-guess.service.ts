@@ -537,8 +537,13 @@ export class CoverGuessService implements OnModuleDestroy {
         this.scheduleNextRound(session);
       } else {
         r.blurStepIndex += 1;
-        this.broadcastState(session);
+        // Reschedule (which stamps a fresh turnDeadline) BEFORE broadcasting
+        // — otherwise this broadcast still carries the deadline that just
+        // expired, so the client's countdown reads 0 instead of resetting to
+        // a new answerTimeSec window (the reveal itself still happens on
+        // schedule either way, only the displayed countdown was affected).
         this.scheduleRaceDeblur(session);
+        this.broadcastState(session);
       }
     }, session.answerTimeSec * 1000);
   }

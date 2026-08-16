@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "A captura começa borrada e clareia a cada tentativa.",
-          "off": "A captura é mostrada totalmente nítida desde o início."
+          "off": "A captura começa com zoom em um detalhe e se afasta progressivamente, no mesmo ritmo do desfoque."
         },
-        "maxAttempts": "Tentativas máximas",
-        "maxAttemptsHint": "Cada jogador tem esse número de respostas erradas antes de ser eliminado — não é um total compartilhado pelo grupo.",
         "answerTimeLabel": {
           "TURNS": "Tempo de resposta",
           "RACE": "Intervalo de revelação"
@@ -485,8 +483,6 @@
         "opponentTurn": "Aguardando {{name}}…",
         "racePromptOnline": "Adivinhe antes dos outros!",
         "nextBlurIn": "Próxima revelação em {{count}}s",
-        "attemptsLeft": "{{count}} tentativa(s) restante(s)",
-        "outOfAttempts": "Você não tem mais tentativas nesta rodada.",
         "buzzerOpen": "Toque no seu nome para responder!",
         "buzzedTurn": "{{name}}, sua vez de responder!",
         "cancelBuzz": "Não era essa — solto a vez",

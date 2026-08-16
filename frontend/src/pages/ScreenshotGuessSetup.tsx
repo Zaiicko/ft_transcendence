@@ -21,7 +21,6 @@ const ANSWER_TIMES: Record<ScreenshotGuessRoundMode, number[]> = {
   RACE: [5, 10, 15, 30],
 };
 const MAX_LOCAL_PLAYERS = 6;
-const MAX_ATTEMPTS_CAP = 10;
 
 interface FriendRow extends PublicUser {
   isOnline: boolean;
@@ -36,7 +35,6 @@ export default function ScreenshotGuessSetup() {
   const [difficulty, setDifficulty] = useState<ScreenshotGuessDifficulty>('normal');
   const [roundMode, setRoundMode] = useState<ScreenshotGuessRoundMode>('TURNS');
   const [blur, setBlur] = useState(true);
-  const [maxAttempts, setMaxAttempts] = useState(3);
   const [targetScore, setTargetScore] = useState(5);
   const [answerTimeSec, setAnswerTimeSec] = useState(15);
   // TURNS doesn't offer 5s — if that was picked under RACE and the mode
@@ -45,9 +43,6 @@ export default function ScreenshotGuessSetup() {
   // itself is left untouched so switching back to RACE restores it.
   const answerTimes = ANSWER_TIMES[roundMode];
   const effectiveAnswerTimeSec = answerTimes.includes(answerTimeSec) ? answerTimeSec : answerTimes[0];
-  // RACE's reveal interval only means something when there's a blur to
-  // reveal — without it the round instead resolves via maxAttempts below.
-  const showAnswerTime = !(roundMode === 'RACE' && !blur);
 
   const [localPlayerCount, setLocalPlayerCount] = useState(1);
   const [guestNames, setGuestNames] = useState<string[]>([]);
@@ -79,7 +74,6 @@ export default function ScreenshotGuessSetup() {
           difficulty,
           roundMode,
           blur,
-          maxAttempts,
           targetScore,
           answerTimeSec: effectiveAnswerTimeSec,
           inviteeUserIds: selectedFriendIds,
@@ -102,7 +96,6 @@ export default function ScreenshotGuessSetup() {
           difficulty={difficulty}
           roundMode={roundMode}
           blur={blur}
-          maxAttempts={maxAttempts}
           targetScore={targetScore}
           answerTimeSec={effectiveAnswerTimeSec}
           playerNames={playerNames}
@@ -234,31 +227,6 @@ export default function ScreenshotGuessSetup() {
           <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
             {t(`minigames.screenshotGuess.setup.blurHint.${blur ? 'on' : 'off'}`)}
           </p>
-          {!blur && (
-            <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
-              <p className="mb-2 text-sm font-semibold">{t('minigames.screenshotGuess.setup.maxAttempts')}</p>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setMaxAttempts((n) => Math.max(1, n - 1))}
-                  className="h-8 w-8 rounded-full border border-zinc-400/60 text-lg dark:border-zinc-600"
-                >
-                  −
-                </button>
-                <span className="w-6 text-center font-semibold">{maxAttempts}</span>
-                <button
-                  type="button"
-                  onClick={() => setMaxAttempts((n) => Math.min(MAX_ATTEMPTS_CAP, n + 1))}
-                  className="h-8 w-8 rounded-full border border-zinc-400/60 text-lg dark:border-zinc-600"
-                >
-                  +
-                </button>
-              </div>
-              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-                {t('minigames.screenshotGuess.setup.maxAttemptsHint')}
-              </p>
-            </div>
-          )}
         </div>
 
         <div>
@@ -281,29 +249,27 @@ export default function ScreenshotGuessSetup() {
           </div>
         </div>
 
-        {showAnswerTime && (
-          <div>
-            <p className="mb-2 text-sm font-semibold">
-              {t(`minigames.screenshotGuess.setup.answerTimeLabel.${roundMode}`)}
-            </p>
-            <div className="flex gap-2">
-              {answerTimes.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setAnswerTimeSec(s)}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-                    effectiveAnswerTimeSec === s
-                      ? 'bg-accent text-zinc-950'
-                      : 'border border-zinc-400/60 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300'
-                  }`}
-                >
-                  {t('minigames.screenshotGuess.setup.answerTimeSeconds', { count: s })}
-                </button>
-              ))}
-            </div>
+        <div>
+          <p className="mb-2 text-sm font-semibold">
+            {t(`minigames.screenshotGuess.setup.answerTimeLabel.${roundMode}`)}
+          </p>
+          <div className="flex gap-2">
+            {answerTimes.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setAnswerTimeSec(s)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  effectiveAnswerTimeSec === s
+                    ? 'bg-accent text-zinc-950'
+                    : 'border border-zinc-400/60 text-zinc-600 dark:border-zinc-600 dark:text-zinc-300'
+                }`}
+              >
+                {t('minigames.screenshotGuess.setup.answerTimeSeconds', { count: s })}
+              </button>
+            ))}
           </div>
-        )}
+        </div>
 
         {mode === 'local' ? (
           <div>

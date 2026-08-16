@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "The screenshot starts blurred and clears with each attempt.",
-          "off": "The screenshot is shown fully clear from the start."
+          "off": "The screenshot starts zoomed in on a detail and zooms out progressively, at the same pace as the blur."
         },
-        "maxAttempts": "Max attempts",
-        "maxAttemptsHint": "Each player gets this many wrong guesses before they're out — not a pool split across the group.",
         "answerTimeLabel": {
           "TURNS": "Answer time",
           "RACE": "Reveal interval"
@@ -485,8 +483,6 @@
         "opponentTurn": "Waiting for {{name}}…",
         "racePromptOnline": "Guess before the others!",
         "nextBlurIn": "Next reveal in {{count}}s",
-        "attemptsLeft": "{{count}} attempt(s) left",
-        "outOfAttempts": "You're out of attempts for this round.",
         "buzzerOpen": "Tap your name to answer!",
         "buzzedTurn": "{{name}}, it's your turn — guess!",
         "cancelBuzz": "Not it — let go",

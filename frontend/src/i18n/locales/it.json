@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "Lo screenshot parte sfocato e si schiarisce a ogni tentativo.",
-          "off": "Lo screenshot viene mostrato completamente nitido fin dall'inizio."
+          "off": "Lo screenshot parte con uno zoom su un dettaglio e si allontana progressivamente, allo stesso ritmo della sfocatura."
         },
-        "maxAttempts": "Tentativi massimi",
-        "maxAttemptsHint": "Ogni giocatore ha questo numero di risposte sbagliate prima di essere eliminato — non è un totale condiviso dal gruppo.",
         "answerTimeLabel": {
           "TURNS": "Tempo di risposta",
           "RACE": "Intervallo di rivelazione"
@@ -485,8 +483,6 @@
         "opponentTurn": "In attesa di {{name}}…",
         "racePromptOnline": "Indovina prima degli altri!",
         "nextBlurIn": "Prossima rivelazione tra {{count}}s",
-        "attemptsLeft": "{{count}} tentativo/i rimasto/i",
-        "outOfAttempts": "Non hai più tentativi per questo round.",
         "buzzerOpen": "Tocca il tuo nome per rispondere!",
         "buzzedTurn": "{{name}}, tocca a te rispondere!",
         "cancelBuzz": "Non era quello — lascio il turno",

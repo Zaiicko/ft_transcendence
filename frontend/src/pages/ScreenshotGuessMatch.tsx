@@ -7,6 +7,7 @@ import BlurredCover from '../components/BlurredCover';
 import CoverGuessInput from '../components/CoverGuessInput';
 import { CrownIcon, MedalIcon, PLACE } from '../components/RankIcons';
 import SectionHead from '../components/SectionHead';
+import ZoomedScreenshot from '../components/ZoomedScreenshot';
 import { ApiError, apiFetch } from '../lib/api';
 import { BLUR_STEPS_PX } from '../minigames/blurSteps';
 import { useScreenshotGuessSocket } from '../minigames/useScreenshotGuessSocket';
@@ -223,11 +224,6 @@ export default function ScreenshotGuessMatch() {
               >
                 <Avatar username={p.username} avatarUrl={p.avatarUrl} size={20} />
                 {p.username}: {p.score}
-                {!state.blur && state.round?.attemptsLeft?.[p.userId] != null && (
-                  <span className="font-normal opacity-70">
-                    ({t('minigames.screenshotGuess.play.attemptsLeft', { count: state.round.attemptsLeft[p.userId] })})
-                  </span>
-                )}
               </span>
             ))}
             <span className="ml-auto self-center text-zinc-400">
@@ -237,11 +233,19 @@ export default function ScreenshotGuessMatch() {
 
           <div className="card flex flex-col items-center gap-4 p-6">
             <div className="relative aspect-[3/4] w-56 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
-              <BlurredCover
-                src={state.round.screenshotUrl}
-                blurPx={BLUR_STEPS_PX[state.round.blurStepIndex]}
-                className="h-full w-full object-cover"
-              />
+              {state.blur ? (
+                <BlurredCover
+                  src={state.round.screenshotUrl}
+                  blurPx={BLUR_STEPS_PX[state.round.blurStepIndex]}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <ZoomedScreenshot
+                  src={state.round.screenshotUrl}
+                  stepIndex={state.round.blurStepIndex}
+                  className="h-full w-full object-cover"
+                />
+              )}
             </div>
 
             {state.round.resolved ? (
@@ -252,21 +256,15 @@ export default function ScreenshotGuessMatch() {
               <>
                 <p className="text-sm font-medium">
                   {t('minigames.screenshotGuess.play.racePromptOnline')}
-                  {state.blur && remaining !== null && (
+                  {remaining !== null && (
                     <span className="ml-2 font-normal text-zinc-400">
                       {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
                     </span>
                   )}
                 </p>
-                {state.blur || (state.round.attemptsLeft?.[user.id] ?? 1) > 0 ? (
-                  <div className="w-full max-w-sm">
-                    <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
-                  </div>
-                ) : (
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                    {t('minigames.screenshotGuess.play.outOfAttempts')}
-                  </p>
-                )}
+                <div className="w-full max-w-sm">
+                  <CoverGuessInput disabled={busy} onGuess={(id) => void guess(id)} />
+                </div>
               </>
             ) : state.round.currentTurnUserId === user.id ? (
               <>

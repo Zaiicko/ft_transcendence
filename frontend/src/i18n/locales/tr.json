@@ -467,10 +467,8 @@
         },
         "blurHint": {
           "on": "Ekran görüntüsü bulanık başlar ve her denemede netleşir.",
-          "off": "Ekran görüntüsü baştan itibaren tamamen net gösterilir."
+          "off": "Ekran görüntüsü bir ayrıntıya yakınlaştırılmış başlar ve bulanıklıkla aynı hızda kademeli olarak uzaklaşır."
         },
-        "maxAttempts": "Maks. deneme",
-        "maxAttemptsHint": "Her oyuncu elenmeden önce bu kadar yanlış deneme hakkına sahiptir — grup için ortak bir havuz değildir.",
         "answerTimeLabel": {
           "TURNS": "Cevap süresi",
           "RACE": "Netleşme aralığı"
@@ -485,8 +483,6 @@
         "opponentTurn": "{{name}} bekleniyor…",
         "racePromptOnline": "Diğerlerinden önce tahmin et!",
         "nextBlurIn": "Sonraki netleşme {{count}}s içinde",
-        "attemptsLeft": "{{count}} deneme kaldı",
-        "outOfAttempts": "Bu tur için deneme hakkın kalmadı.",
         "buzzerOpen": "Cevaplamak için adına dokun!",
         "buzzedTurn": "{{name}}, cevaplama sırası sende!",
         "cancelBuzz": "O değildi — sırayı bırak",
