@@ -258,7 +258,12 @@ export default function ScreenshotGuessMatch() {
                   {t('minigames.screenshotGuess.play.racePromptOnline')}
                   {remaining !== null && (
                     <span className="ml-2 font-normal text-zinc-400">
-                      {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
+                      {t(
+                        state.blur
+                          ? 'minigames.screenshotGuess.play.nextBlurIn'
+                          : 'minigames.screenshotGuess.play.nextZoomOutIn',
+                        { count: remaining },
+                      )}
                     </span>
                   )}
                 </p>

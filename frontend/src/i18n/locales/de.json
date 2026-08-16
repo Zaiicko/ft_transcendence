@@ -483,6 +483,7 @@
         "opponentTurn": "Warten auf {{name}}…",
         "racePromptOnline": "Errate es vor den anderen!",
         "nextBlurIn": "Nächste Enthüllung in {{count}}s",
+        "nextZoomOutIn": "Nächstes Herauszoomen in {{count}}s",
         "buzzerOpen": "Tippe auf deinen Namen, um zu antworten!",
         "buzzedTurn": "{{name}}, du bist dran zu antworten!",
         "cancelBuzz": "Doch nicht — Buzzer freigeben",

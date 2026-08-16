@@ -483,6 +483,7 @@
         "opponentTurn": "Waiting for {{name}}…",
         "racePromptOnline": "Guess before the others!",
         "nextBlurIn": "Next reveal in {{count}}s",
+        "nextZoomOutIn": "Next zoom-out in {{count}}s",
         "buzzerOpen": "Tap your name to answer!",
         "buzzedTurn": "{{name}}, it's your turn — guess!",
         "cancelBuzz": "Not it — let go",

@@ -371,7 +371,10 @@ export default function ScreenshotGuessLocalPlay({
                 ? t('minigames.screenshotGuess.play.buzzedTurn', { name: players[buzzedIndex].name })
                 : t('minigames.screenshotGuess.play.buzzerOpen')}
               <span className="ml-2 font-normal text-zinc-400">
-                {t('minigames.screenshotGuess.play.nextBlurIn', { count: remaining })}
+                {t(
+                  blur ? 'minigames.screenshotGuess.play.nextBlurIn' : 'minigames.screenshotGuess.play.nextZoomOutIn',
+                  { count: remaining },
+                )}
               </span>
             </p>
             {buzzedIndex == null ? (

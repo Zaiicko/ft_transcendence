@@ -5,12 +5,15 @@ import { useEffect, useRef } from 'react';
 const TRANSITION_MS = 550;
 
 // 7 steps (same count as BLUR_STEPS_PX), from a tight crop on a detail down
-// to the full frame. The crop is centered on FOCUS_X/FOCUS_Y rather than the
-// image center, so the early steps read as "a fragment of a screenshot"
-// rather than just a zoomed-in center.
+// to the full frame. The crop is centered on FOCUS_X/FOCUS_Y (fractions of
+// the base, already-aspect-cropped frame — see drawAt) rather than the image
+// center, so the early steps read as "a fragment of a screenshot" rather
+// than just a zoomed-in center.
 const ZOOM_SCALES = [2.6, 2.2, 1.9, 1.6, 1.35, 1.15, 1];
 const FOCUS_X = 0.62;
 const FOCUS_Y = 0.4;
+// Matches the aspect-[3/4] box this is always displayed in.
+const ASPECT = 3 / 4;
 
 // Screenshot-guess's "no blur" equivalent of BlurredCover: renders via
 // <canvas> for the same two reasons (see BlurredCover) — no flash of the
@@ -39,12 +42,27 @@ export default function ZoomedScreenshot({
     if (!canvas || !img) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    if (canvas.width !== img.naturalWidth) canvas.width = img.naturalWidth;
-    if (canvas.height !== img.naturalHeight) canvas.height = img.naturalHeight;
-    const cropW = canvas.width / scale;
-    const cropH = canvas.height / scale;
-    const cropX = Math.min(Math.max(canvas.width * FOCUS_X - cropW / 2, 0), canvas.width - cropW);
-    const cropY = Math.min(Math.max(canvas.height * FOCUS_Y - cropH / 2, 0), canvas.height - cropH);
+
+    // The canvas element is displayed at ASPECT (via its container/className)
+    // — sizing the canvas itself to that same aspect makes CSS object-cover a
+    // no-op, so this crop is the ONLY crop that happens. Basing it on the raw
+    // natural image instead (ignoring ASPECT) would let object-cover crop a
+    // SECOND time on top of an already-zoomed frame, compounding into a much
+    // tighter zoom than `scale` actually calls for.
+    const srcAspect = img.naturalWidth / img.naturalHeight;
+    const baseW = srcAspect > ASPECT ? img.naturalHeight * ASPECT : img.naturalWidth;
+    const baseH = srcAspect > ASPECT ? img.naturalHeight : img.naturalWidth / ASPECT;
+    const baseX = (img.naturalWidth - baseW) / 2;
+    const baseY = (img.naturalHeight - baseH) / 2;
+
+    if (canvas.width !== baseW) canvas.width = baseW;
+    if (canvas.height !== baseH) canvas.height = baseH;
+
+    // Zoom into that base (already-cropped-to-ASPECT) frame by `scale`.
+    const cropW = baseW / scale;
+    const cropH = baseH / scale;
+    const cropX = baseX + Math.min(Math.max(baseW * FOCUS_X - cropW / 2, 0), baseW - cropW);
+    const cropY = baseY + Math.min(Math.max(baseH * FOCUS_Y - cropH / 2, 0), baseH - cropH);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
   }

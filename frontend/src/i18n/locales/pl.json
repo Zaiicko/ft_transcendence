@@ -483,6 +483,7 @@
         "opponentTurn": "Oczekiwanie na {{name}}…",
         "racePromptOnline": "Zgadnij przed innymi!",
         "nextBlurIn": "Następne odsłonięcie za {{count}}s",
+        "nextZoomOutIn": "Kolejne oddalenie za {{count}}s",
         "buzzerOpen": "Dotknij swojego imienia, aby odpowiedzieć!",
         "buzzedTurn": "{{name}}, twoja kolej na odpowiedź!",
         "cancelBuzz": "To nie to — oddaję kolejkę",

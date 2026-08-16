@@ -483,6 +483,7 @@
         "opponentTurn": "{{name}} bekleniyor…",
         "racePromptOnline": "Diğerlerinden önce tahmin et!",
         "nextBlurIn": "Sonraki netleşme {{count}}s içinde",
+        "nextZoomOutIn": "Sonraki uzaklaştırma {{count}}sn sonra",
         "buzzerOpen": "Cevaplamak için adına dokun!",
         "buzzedTurn": "{{name}}, cevaplama sırası sende!",
         "cancelBuzz": "O değildi — sırayı bırak",

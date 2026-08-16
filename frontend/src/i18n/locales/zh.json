@@ -483,6 +483,7 @@
         "opponentTurn": "等待 {{name}}…",
         "racePromptOnline": "抢在别人之前猜出来！",
         "nextBlurIn": "{{count}}秒后进一步揭晓",
+        "nextZoomOutIn": "{{count}} 秒后缩小",
         "buzzerOpen": "点击你的名字来回答！",
         "buzzedTurn": "{{name}}，轮到你回答了！",
         "cancelBuzz": "不是这个——放弃抢答",

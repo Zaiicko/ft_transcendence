@@ -483,6 +483,7 @@
         "opponentTurn": "En attente de {{name}}…",
         "racePromptOnline": "Devine avant les autres !",
         "nextBlurIn": "Prochain flou dans {{count}}s",
+        "nextZoomOutIn": "Prochain dézoom dans {{count}}s",
         "buzzerOpen": "Appuie sur ton nom pour répondre !",
         "buzzedTurn": "{{name}}, à toi de répondre !",
         "cancelBuzz": "Pas ça — je laisse la main",

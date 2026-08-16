@@ -483,6 +483,7 @@
         "opponentTurn": "In attesa di {{name}}…",
         "racePromptOnline": "Indovina prima degli altri!",
         "nextBlurIn": "Prossima rivelazione tra {{count}}s",
+        "nextZoomOutIn": "Prossimo zoom indietro tra {{count}}s",
         "buzzerOpen": "Tocca il tuo nome per rispondere!",
         "buzzedTurn": "{{name}}, tocca a te rispondere!",
         "cancelBuzz": "Non era quello — lascio il turno",

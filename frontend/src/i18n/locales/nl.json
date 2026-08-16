@@ -483,6 +483,7 @@
         "opponentTurn": "Wachten op {{name}}…",
         "racePromptOnline": "Raad het vóór de anderen!",
         "nextBlurIn": "Volgende onthulling over {{count}}s",
+        "nextZoomOutIn": "Volgende uitzoom over {{count}}s",
         "buzzerOpen": "Tik op je naam om te antwoorden!",
         "buzzedTurn": "{{name}}, jij mag antwoorden!",
         "cancelBuzz": "Toch niet — beurt loslaten",

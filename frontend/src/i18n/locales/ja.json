@@ -483,6 +483,7 @@
         "opponentTurn": "{{name}}さんを待っています…",
         "racePromptOnline": "他の人より先に当てよう！",
         "nextBlurIn": "次の解除まで{{count}}秒",
+        "nextZoomOutIn": "次のズームアウトまで{{count}}秒",
         "buzzerOpen": "自分の名前をタップして回答しよう！",
         "buzzedTurn": "{{name}}さん、あなたの回答の番です！",
         "cancelBuzz": "違った — 回答権を手放す",
