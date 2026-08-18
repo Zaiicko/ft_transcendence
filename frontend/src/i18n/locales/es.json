@@ -511,6 +511,61 @@
         "matchNotFound": "Partida no encontrada",
         "matchEnded": "Esta partida ha terminado"
       }
+    },
+    "panoramaGuess": {
+      "title": "Adivina el panorama",
+      "description": "Adivina el juego a partir de un panorama 360° capturado en el juego por un jugador.",
+      "setup": {
+        "mode": "Modo",
+        "modeLocal": "Local",
+        "modeMulti": "En línea",
+        "modeHint": {
+          "local": "Juega solo, o pasa el dispositivo entre amigos en la misma pantalla.",
+          "multi": "Desafía a uno o varios amigos conectados en tiempo real, cada uno desde su propio dispositivo."
+        },
+        "targetScore": "Primero en llegar a",
+        "answerTimeLabel": "Duración de la ronda",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Jugadores en este dispositivo",
+        "guestNamePlaceholder": "Nombre del jugador {{n}}",
+        "startMatch": "Empezar",
+        "inviteFriends": "Invitar a amigos conectados",
+        "noFriendsOnline": "No hay amigos conectados ahora mismo.",
+        "sendInvites": "Enviar invitaciones"
+      },
+      "play": {
+        "embedTitle": "Panorama a adivinar",
+        "targetScore": "Primero en llegar a {{count}} puntos",
+        "correct": "¡Correcto!",
+        "roundLost": "¡Nadie lo adivinó!",
+        "revealedAnswer": "Era {{title}}",
+        "buzzerOpen": "¡Toca tu nombre para responder!",
+        "buzzedTurn": "{{name}}, ¡es tu turno de responder!",
+        "cancelBuzz": "No era — suelto el turno",
+        "roundTimeLeft": "Tiempo restante: {{count}}s",
+        "racePromptOnline": "¡Adivina antes que los demás!"
+      },
+      "match": {
+        "winner": "¡{{name}} gana!",
+        "recap": "Juegos de esta partida",
+        "backToHub": "Volver a minijuegos",
+        "finished": "¡Partida terminada!",
+        "leave": "Abandonar partida"
+      },
+      "invite": {
+        "accepted": "Aceptada",
+        "declined": "Rechazada",
+        "pending": "Pendiente",
+        "accept": "Aceptar",
+        "decline": "Rechazar",
+        "waitingForHost": "Esperando a que el anfitrión empiece la partida…"
+      },
+      "errors": {
+        "generic": "Algo salió mal",
+        "loading": "Cargando…",
+        "matchNotFound": "Partida no encontrada",
+        "matchEnded": "Esta partida ha terminado"
+      }
     }
   },
   "home": {

@@ -19,6 +19,8 @@ const CoverGuessMatch = lazy(() => import('./pages/CoverGuessMatch'));
 const CoverGuessSetup = lazy(() => import('./pages/CoverGuessSetup'));
 const ScreenshotGuessMatch = lazy(() => import('./pages/ScreenshotGuessMatch'));
 const ScreenshotGuessSetup = lazy(() => import('./pages/ScreenshotGuessSetup'));
+const PanoramaGuessMatch = lazy(() => import('./pages/PanoramaGuessMatch'));
+const PanoramaGuessSetup = lazy(() => import('./pages/PanoramaGuessSetup'));
 const Minigames = lazy(() => import('./pages/Minigames'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
@@ -81,6 +83,8 @@ export default function App() {
               <Route path="/minigames/cover-guess/match/:matchId" element={<CoverGuessMatch />} />
               <Route path="/minigames/screenshot-guess" element={<ScreenshotGuessSetup />} />
               <Route path="/minigames/screenshot-guess/match/:matchId" element={<ScreenshotGuessMatch />} />
+              <Route path="/minigames/panorama-guess" element={<PanoramaGuessSetup />} />
+              <Route path="/minigames/panorama-guess/match/:matchId" element={<PanoramaGuessMatch />} />
               <Route path="/library" element={<Library />} />
               <Route path="/u/:username/library" element={<PlayerLibrary />} />
               <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />

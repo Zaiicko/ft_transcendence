@@ -511,6 +511,61 @@
         "matchNotFound": "Partie nicht gefunden",
         "matchEnded": "Diese Partie ist beendet"
       }
+    },
+    "panoramaGuess": {
+      "title": "Panorama erraten",
+      "description": "Errate das Spiel anhand eines 360°-Panoramas, das ein Spieler im Spiel aufgenommen hat.",
+      "setup": {
+        "mode": "Modus",
+        "modeLocal": "Lokal",
+        "modeMulti": "Online",
+        "modeHint": {
+          "local": "Spiele allein oder reicht das Gerät zwischen Freunden auf demselben Bildschirm weiter.",
+          "multi": "Fordere einen oder mehrere Online-Freunde in Echtzeit heraus, jeder auf seinem eigenen Gerät."
+        },
+        "targetScore": "Erster mit",
+        "answerTimeLabel": "Rundendauer",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Spieler an diesem Gerät",
+        "guestNamePlaceholder": "Name von Spieler {{n}}",
+        "startMatch": "Starten",
+        "inviteFriends": "Online-Freunde einladen",
+        "noFriendsOnline": "Gerade keine Freunde online.",
+        "sendInvites": "Einladungen senden"
+      },
+      "play": {
+        "embedTitle": "Zu erratendes Panorama",
+        "targetScore": "Erster mit {{count}} Punkten",
+        "correct": "Richtig!",
+        "roundLost": "Niemand hat es erraten!",
+        "revealedAnswer": "Es war {{title}}",
+        "buzzerOpen": "Tippe auf deinen Namen, um zu antworten!",
+        "buzzedTurn": "{{name}}, du bist dran zu antworten!",
+        "cancelBuzz": "Doch nicht — Buzzer freigeben",
+        "roundTimeLeft": "Verbleibende Zeit: {{count}}s",
+        "racePromptOnline": "Errate es vor den anderen!"
+      },
+      "match": {
+        "winner": "{{name}} gewinnt!",
+        "recap": "Spiele dieser Partie",
+        "backToHub": "Zurück zu den Minispielen",
+        "finished": "Partie beendet!",
+        "leave": "Partie verlassen"
+      },
+      "invite": {
+        "accepted": "Angenommen",
+        "declined": "Abgelehnt",
+        "pending": "Ausstehend",
+        "accept": "Annehmen",
+        "decline": "Ablehnen",
+        "waitingForHost": "Warten, bis der Gastgeber die Partie startet…"
+      },
+      "errors": {
+        "generic": "Etwas ist schiefgelaufen",
+        "loading": "Wird geladen…",
+        "matchNotFound": "Partie nicht gefunden",
+        "matchEnded": "Diese Partie ist beendet"
+      }
     }
   },
   "home": {

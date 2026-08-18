@@ -16,6 +16,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ListsModule } from './lists/lists.module';
 import { CoverGuessModule } from './minigames/cover-guess/cover-guess.module';
 import { ScreenshotGuessModule } from './minigames/screenshot-guess/screenshot-guess.module';
+import { PanoramaGuessModule } from './minigames/panorama-guess/panorama-guess.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { OgModule } from './og/og.module';
 import { PresenceModule } from './presence/presence.module';
@@ -61,6 +62,7 @@ import { UsersModule } from './users/users.module';
     OgModule,
     CoverGuessModule,
     ScreenshotGuessModule,
+    PanoramaGuessModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

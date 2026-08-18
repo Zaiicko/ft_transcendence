@@ -511,6 +511,61 @@
         "matchNotFound": "Maç bulunamadı",
         "matchEnded": "Bu maç sona erdi"
       }
+    },
+    "panoramaGuess": {
+      "title": "Panoramayı Tahmin Et",
+      "description": "Oyunu, bir oyuncunun oyun içinde çektiği 360° panoramadan tahmin et.",
+      "setup": {
+        "mode": "Mod",
+        "modeLocal": "Yerel",
+        "modeMulti": "Çevrimiçi",
+        "modeHint": {
+          "local": "Tek başına oyna ya da aynı ekranda cihazı arkadaşlar arasında paylaştır.",
+          "multi": "Bir veya birden fazla çevrimiçi arkadaşına gerçek zamanlı meydan oku, herkes kendi cihazından."
+        },
+        "targetScore": "İlk ulaşan:",
+        "answerTimeLabel": "Tur süresi",
+        "answerTimeSeconds": "{{count}}sn",
+        "localPlayers": "Bu cihazdaki oyuncular",
+        "guestNamePlaceholder": "{{n}}. oyuncunun adı",
+        "startMatch": "Başlat",
+        "inviteFriends": "Çevrimiçi arkadaşları davet et",
+        "noFriendsOnline": "Şu anda çevrimiçi arkadaş yok.",
+        "sendInvites": "Davetleri gönder"
+      },
+      "play": {
+        "embedTitle": "Tahmin edilecek panorama",
+        "targetScore": "İlk {{count}} puana ulaşan kazanır",
+        "correct": "Doğru!",
+        "roundLost": "Kimse bilemedi!",
+        "revealedAnswer": "Cevap {{title}} idi",
+        "buzzerOpen": "Cevaplamak için adına dokun!",
+        "buzzedTurn": "{{name}}, cevaplama sırası sende!",
+        "cancelBuzz": "O değildi — sırayı bırak",
+        "roundTimeLeft": "Kalan süre: {{count}}sn",
+        "racePromptOnline": "Diğerlerinden önce tahmin et!"
+      },
+      "match": {
+        "winner": "{{name}} kazandı!",
+        "recap": "Bu maçtaki oyunlar",
+        "backToHub": "Mini oyunlara dön",
+        "finished": "Maç bitti!",
+        "leave": "Maçtan ayrıl"
+      },
+      "invite": {
+        "accepted": "Kabul edildi",
+        "declined": "Reddedildi",
+        "pending": "Bekliyor",
+        "accept": "Kabul et",
+        "decline": "Reddet",
+        "waitingForHost": "Ev sahibinin maçı başlatması bekleniyor…"
+      },
+      "errors": {
+        "generic": "Bir şeyler ters gitti",
+        "loading": "Yükleniyor…",
+        "matchNotFound": "Maç bulunamadı",
+        "matchEnded": "Bu maç sona erdi"
+      }
     }
   },
   "home": {

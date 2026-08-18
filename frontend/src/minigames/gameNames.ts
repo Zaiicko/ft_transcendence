@@ -4,6 +4,7 @@
 const TITLE_KEY: Record<string, string> = {
   'cover-guess': 'minigames.coverGuess.title',
   'screenshot-guess': 'minigames.screenshotGuess.title',
+  'panorama-guess': 'minigames.panoramaGuess.title',
 };
 
 export function minigameTitleKey(game: string | undefined): string {

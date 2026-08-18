@@ -511,6 +511,61 @@
         "matchNotFound": "Partie introuvable",
         "matchEnded": "Cette partie est terminée"
       }
+    },
+    "panoramaGuess": {
+      "title": "Devine le panorama",
+      "description": "Devine le jeu à partir d'un panorama 360° pris en jeu par un joueur.",
+      "setup": {
+        "mode": "Mode",
+        "modeLocal": "Local",
+        "modeMulti": "En ligne",
+        "modeHint": {
+          "local": "Joue seul, ou passe l'appareil entre amis sur le même écran.",
+          "multi": "Défie un ou plusieurs amis en ligne en temps réel, chacun sur son propre appareil."
+        },
+        "targetScore": "Premier à",
+        "answerTimeLabel": "Durée de la manche",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Joueurs sur cet appareil",
+        "guestNamePlaceholder": "Nom du joueur {{n}}",
+        "startMatch": "Commencer",
+        "inviteFriends": "Inviter des amis en ligne",
+        "noFriendsOnline": "Aucun ami en ligne pour le moment.",
+        "sendInvites": "Envoyer les invitations"
+      },
+      "play": {
+        "embedTitle": "Panorama à deviner",
+        "targetScore": "Premier à {{count}} points",
+        "correct": "Trouvé !",
+        "roundLost": "Personne n'a trouvé !",
+        "revealedAnswer": "C'était {{title}}",
+        "buzzerOpen": "Appuie sur ton nom pour répondre !",
+        "buzzedTurn": "{{name}}, à toi de répondre !",
+        "cancelBuzz": "Pas ça — je laisse la main",
+        "roundTimeLeft": "Temps restant : {{count}}s",
+        "racePromptOnline": "Devine avant les autres !"
+      },
+      "match": {
+        "winner": "{{name}} gagne !",
+        "recap": "Jeux de la partie",
+        "backToHub": "Retour aux mini-jeux",
+        "finished": "Partie terminée !",
+        "leave": "Quitter la partie"
+      },
+      "invite": {
+        "accepted": "Accepté",
+        "declined": "Refusé",
+        "pending": "En attente",
+        "accept": "Accepter",
+        "decline": "Refuser",
+        "waitingForHost": "En attente que l'hôte lance la partie…"
+      },
+      "errors": {
+        "generic": "Une erreur est survenue",
+        "loading": "Chargement…",
+        "matchNotFound": "Partie introuvable",
+        "matchEnded": "Cette partie est terminée"
+      }
     }
   },
   "home": {

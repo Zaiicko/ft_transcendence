@@ -511,6 +511,61 @@
         "matchNotFound": "Match not found",
         "matchEnded": "This match has ended"
       }
+    },
+    "panoramaGuess": {
+      "title": "Guess the Panorama",
+      "description": "Guess the game from a 360° in-game panorama captured by a player.",
+      "setup": {
+        "mode": "Mode",
+        "modeLocal": "Local",
+        "modeMulti": "Online",
+        "modeHint": {
+          "local": "Play solo, or pass the device between friends on the same screen.",
+          "multi": "Challenge one or more online friends in real time, each on their own device."
+        },
+        "targetScore": "First to",
+        "answerTimeLabel": "Round length",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Players on this device",
+        "guestNamePlaceholder": "Player {{n}} name",
+        "startMatch": "Start",
+        "inviteFriends": "Invite online friends",
+        "noFriendsOnline": "No friends online right now.",
+        "sendInvites": "Send invites"
+      },
+      "play": {
+        "embedTitle": "Panorama to guess",
+        "targetScore": "First to {{count}} points",
+        "correct": "Correct!",
+        "roundLost": "Nobody found it!",
+        "revealedAnswer": "It was {{title}}",
+        "buzzerOpen": "Tap your name to answer!",
+        "buzzedTurn": "{{name}}, it's your turn — guess!",
+        "cancelBuzz": "Not it — let go",
+        "roundTimeLeft": "Time left: {{count}}s",
+        "racePromptOnline": "Guess before the others!"
+      },
+      "match": {
+        "winner": "{{name}} wins!",
+        "recap": "Games in this match",
+        "backToHub": "Back to mini-games",
+        "finished": "Match over!",
+        "leave": "Leave match"
+      },
+      "invite": {
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "pending": "Pending",
+        "accept": "Accept",
+        "decline": "Decline",
+        "waitingForHost": "Waiting for the host to start the match…"
+      },
+      "errors": {
+        "generic": "Something went wrong",
+        "loading": "Loading…",
+        "matchNotFound": "Match not found",
+        "matchEnded": "This match has ended"
+      }
     }
   },
   "home": {

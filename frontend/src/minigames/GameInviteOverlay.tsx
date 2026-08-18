@@ -6,6 +6,7 @@ import Avatar from '../components/Avatar';
 import { apiFetch } from '../lib/api';
 import CoverGuessLogo from './CoverGuessLogo';
 import { minigameTitleKey } from './gameNames';
+import PanoramaGuessLogo from './PanoramaGuessLogo';
 import ScreenshotGuessLogo from './ScreenshotGuessLogo';
 import { useMinigameInviteSocket } from './useMinigameInviteSocket';
 import type { MinigameInvite } from './types';
@@ -13,6 +14,7 @@ import type { MinigameInvite } from './types';
 const LOGO: Record<MinigameInvite['game'], () => ReactElement> = {
   'cover-guess': () => <CoverGuessLogo className="aspect-[3/4] w-20" />,
   'screenshot-guess': () => <ScreenshotGuessLogo className="aspect-[3/4] w-20" />,
+  'panorama-guess': () => <PanoramaGuessLogo className="aspect-[3/4] w-20" />,
 };
 
 // Full-screen blocking prompt for a mini-game invite (any of them — this

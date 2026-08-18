@@ -511,6 +511,61 @@
         "matchNotFound": "Partida não encontrada",
         "matchEnded": "Esta partida terminou"
       }
+    },
+    "panoramaGuess": {
+      "title": "Adivinhe o panorama",
+      "description": "Adivinhe o jogo a partir de um panorama 360° capturado no jogo por um jogador.",
+      "setup": {
+        "mode": "Modo",
+        "modeLocal": "Local",
+        "modeMulti": "Online",
+        "modeHint": {
+          "local": "Jogue sozinho ou passe o dispositivo entre amigos na mesma tela.",
+          "multi": "Desafie um ou mais amigos online em tempo real, cada um no seu próprio dispositivo."
+        },
+        "targetScore": "Primeiro a",
+        "answerTimeLabel": "Duração da rodada",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Jogadores neste dispositivo",
+        "guestNamePlaceholder": "Nome do jogador {{n}}",
+        "startMatch": "Começar",
+        "inviteFriends": "Convidar amigos online",
+        "noFriendsOnline": "Nenhum amigo online no momento.",
+        "sendInvites": "Enviar convites"
+      },
+      "play": {
+        "embedTitle": "Panorama para adivinhar",
+        "targetScore": "Primeiro a {{count}} pontos",
+        "correct": "Correto!",
+        "roundLost": "Ninguém acertou!",
+        "revealedAnswer": "Era {{title}}",
+        "buzzerOpen": "Toque no seu nome para responder!",
+        "buzzedTurn": "{{name}}, sua vez de responder!",
+        "cancelBuzz": "Não era essa — solto a vez",
+        "roundTimeLeft": "Tempo restante: {{count}}s",
+        "racePromptOnline": "Adivinhe antes dos outros!"
+      },
+      "match": {
+        "winner": "{{name}} venceu!",
+        "recap": "Jogos desta partida",
+        "backToHub": "Voltar aos minijogos",
+        "finished": "Partida encerrada!",
+        "leave": "Sair da partida"
+      },
+      "invite": {
+        "accepted": "Aceito",
+        "declined": "Recusado",
+        "pending": "Pendente",
+        "accept": "Aceitar",
+        "decline": "Recusar",
+        "waitingForHost": "Aguardando o anfitrião iniciar a partida…"
+      },
+      "errors": {
+        "generic": "Algo deu errado",
+        "loading": "Carregando…",
+        "matchNotFound": "Partida não encontrada",
+        "matchEnded": "Esta partida terminou"
+      }
     }
   },
   "home": {

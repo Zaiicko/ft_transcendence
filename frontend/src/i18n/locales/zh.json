@@ -511,6 +511,61 @@
         "matchNotFound": "未找到该对局",
         "matchEnded": "该对局已结束"
       }
+    },
+    "panoramaGuess": {
+      "title": "猜全景图",
+      "description": "根据玩家在游戏中拍摄的360°全景图猜游戏。",
+      "setup": {
+        "mode": "模式",
+        "modeLocal": "本地",
+        "modeMulti": "在线",
+        "modeHint": {
+          "local": "独自游玩，或在同一屏幕上和朋友轮流传递设备。",
+          "multi": "实时挑战一位或多位在线好友，每人使用自己的设备。"
+        },
+        "targetScore": "先达到",
+        "answerTimeLabel": "回合时长",
+        "answerTimeSeconds": "{{count}}秒",
+        "localPlayers": "本设备上的玩家",
+        "guestNamePlaceholder": "玩家 {{n}} 的名字",
+        "startMatch": "开始",
+        "inviteFriends": "邀请在线好友",
+        "noFriendsOnline": "目前没有好友在线。",
+        "sendInvites": "发送邀请"
+      },
+      "play": {
+        "embedTitle": "待猜全景图",
+        "targetScore": "先达到 {{count}} 分获胜",
+        "correct": "猜对了！",
+        "roundLost": "没有人猜对！",
+        "revealedAnswer": "答案是 {{title}}",
+        "buzzerOpen": "点击你的名字来回答！",
+        "buzzedTurn": "{{name}}，轮到你回答了！",
+        "cancelBuzz": "不是这个——放弃抢答",
+        "roundTimeLeft": "剩余时间：{{count}}秒",
+        "racePromptOnline": "抢在别人之前猜出来！"
+      },
+      "match": {
+        "winner": "{{name}} 获胜！",
+        "recap": "本局出现的游戏",
+        "backToHub": "返回小游戏",
+        "finished": "对局结束！",
+        "leave": "离开对局"
+      },
+      "invite": {
+        "accepted": "已接受",
+        "declined": "已拒绝",
+        "pending": "等待中",
+        "accept": "接受",
+        "decline": "拒绝",
+        "waitingForHost": "等待房主开始对局…"
+      },
+      "errors": {
+        "generic": "出了点问题",
+        "loading": "加载中…",
+        "matchNotFound": "未找到该对局",
+        "matchEnded": "该对局已结束"
+      }
     }
   },
   "home": {

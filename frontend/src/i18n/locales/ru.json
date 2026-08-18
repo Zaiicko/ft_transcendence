@@ -511,6 +511,61 @@
         "matchNotFound": "Матч не найден",
         "matchEnded": "Этот матч завершён"
       }
+    },
+    "panoramaGuess": {
+      "title": "Угадай панораму",
+      "description": "Угадайте игру по 360°-панораме, снятой игроком прямо в игре.",
+      "setup": {
+        "mode": "Режим",
+        "modeLocal": "Локально",
+        "modeMulti": "Онлайн",
+        "modeHint": {
+          "local": "Играйте в одиночку или передавайте устройство друзьям на одном экране.",
+          "multi": "Бросьте вызов одному или нескольким друзьям онлайн в реальном времени — каждый со своего устройства."
+        },
+        "targetScore": "Первый до",
+        "answerTimeLabel": "Длительность раунда",
+        "answerTimeSeconds": "{{count}}с",
+        "localPlayers": "Игроки на этом устройстве",
+        "guestNamePlaceholder": "Имя игрока {{n}}",
+        "startMatch": "Начать",
+        "inviteFriends": "Пригласить друзей онлайн",
+        "noFriendsOnline": "Сейчас никого из друзей нет в сети.",
+        "sendInvites": "Отправить приглашения"
+      },
+      "play": {
+        "embedTitle": "Панорама для угадывания",
+        "targetScore": "Первый до {{count}} очков",
+        "correct": "Верно!",
+        "roundLost": "Никто не угадал!",
+        "revealedAnswer": "Это была {{title}}",
+        "buzzerOpen": "Нажмите на своё имя, чтобы ответить!",
+        "buzzedTurn": "{{name}}, ваша очередь отвечать!",
+        "cancelBuzz": "Не то — отказаться от хода",
+        "roundTimeLeft": "Осталось времени: {{count}}с",
+        "racePromptOnline": "Угадайте раньше остальных!"
+      },
+      "match": {
+        "winner": "{{name}} побеждает!",
+        "recap": "Игры этого матча",
+        "backToHub": "Назад к мини-играм",
+        "finished": "Матч завершён!",
+        "leave": "Покинуть матч"
+      },
+      "invite": {
+        "accepted": "Принято",
+        "declined": "Отклонено",
+        "pending": "Ожидание",
+        "accept": "Принять",
+        "decline": "Отклонить",
+        "waitingForHost": "Ожидание, пока хост начнёт матч…"
+      },
+      "errors": {
+        "generic": "Что-то пошло не так",
+        "loading": "Загрузка…",
+        "matchNotFound": "Матч не найден",
+        "matchEnded": "Этот матч завершён"
+      }
     }
   },
   "home": {

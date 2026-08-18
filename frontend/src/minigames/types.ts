@@ -1,4 +1,4 @@
-export type MinigameSlug = 'cover-guess' | 'screenshot-guess';
+export type MinigameSlug = 'cover-guess' | 'screenshot-guess' | 'panorama-guess';
 
 export type CoverGuessDifficulty = 'easy' | 'normal' | 'hard';
 
@@ -87,6 +87,45 @@ export interface ScreenshotGuessMatchState {
   winnerId?: number | null;
   participants?: { userId: number; username: string; score: number }[];
   history?: { gameId: number; title: string; screenshotUrl: string }[];
+}
+
+// ---- Panorama-guess: guess the game from a 360° in-game panorama, shown via
+// Kuula's official embed iframe (never a file we host ourselves — see
+// PanoramaEmbed.tsx). No blur/zoom equivalent exists for a panorama we don't
+// control pixel-level, so this game is Race-only: no roundMode, no
+// currentTurnUserId, no blurStepIndex. No difficulty tiers either — the
+// curated pool is small and hand-verified as a whole rather than ranked.
+
+export type PanoramaGuessMatchStatus = 'LOBBY' | 'PLAYING' | 'FINISHED' | 'ABANDONED';
+
+export interface PanoramaGuessPlayerState {
+  userId: number;
+  username: string;
+  avatarUrl: string | null;
+  score: number;
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+}
+
+export interface PanoramaGuessRoundState {
+  index: number;
+  kuulaId: string;
+  resolved: boolean;
+  turnDeadline: number | null;
+  answerGameId?: number;
+  answerTitle?: string;
+}
+
+export interface PanoramaGuessMatchState {
+  id: string;
+  hostId: number;
+  status: PanoramaGuessMatchStatus;
+  targetScore: number;
+  answerTimeSec: number;
+  players: PanoramaGuessPlayerState[];
+  round: PanoramaGuessRoundState | null;
+  winnerId?: number | null;
+  participants?: { userId: number; username: string; score: number }[];
+  history?: { gameId: number; title: string; kuulaId: string }[];
 }
 
 // Pushed live via the `minigame:invite` socket event (shared by every

@@ -62,6 +62,13 @@ enum ScreenshotGuessStatus {
   ABANDONED
 }
 
+enum PanoramaGuessStatus {
+  LOBBY
+  PLAYING
+  FINISHED
+  ABANDONED
+}
+
 // ---------- Users & social ----------
 
 model User {
@@ -171,6 +178,7 @@ model User {
   achievements        UserAchievement[]
   coverGuessMatches   CoverGuessMatch[]
   screenshotGuessMatches ScreenshotGuessMatch[]
+  panoramaGuessMatches PanoramaGuessMatch[]
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -286,6 +294,7 @@ model Game {
   completions GameCompletion[]
   listItems GameListItem[]
   messages  Message[]
+  panoramaGuessEntries PanoramaGuessEntry[]
 
   translations GameTranslation[]
 }
@@ -642,5 +651,33 @@ model ScreenshotGuessMatch {
   rounds       Json?
   winnerId     Int?
   createdAt    DateTime              @default(now())
+  endedAt      DateTime?
+}
+
+// Hand-curated catalogue backing panorama-guess — never populated by
+// scraping Kuula's images. Each row links a Kuula post ID (the image stays
+// hosted on their servers, shown in-game only via Kuula's official embed
+// iframe) to the catalog game it depicts. See
+// backend/src/panorama-candidates-extract.ts + panorama-seed.ts for how this
+// table is populated: a review file first, a human decides what goes in.
+model PanoramaGuessEntry {
+  id        Int      @id @default(autoincrement())
+  kuulaId   String   @unique
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId    Int
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model PanoramaGuessMatch {
+  id           String              @id @default(cuid())
+  host         User                @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId       Int
+  status       PanoramaGuessStatus @default(LOBBY)
+  targetScore  Int
+  participants Json?
+  rounds       Json?
+  winnerId     Int?
+  createdAt    DateTime            @default(now())
   endedAt      DateTime?
 }

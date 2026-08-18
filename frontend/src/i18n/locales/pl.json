@@ -511,6 +511,61 @@
         "matchNotFound": "Nie znaleziono rozgrywki",
         "matchEnded": "Ta rozgrywka się zakończyła"
       }
+    },
+    "panoramaGuess": {
+      "title": "Zgadnij panoramę",
+      "description": "Zgadnij grę na podstawie panoramy 360° zrobionej przez gracza w grze.",
+      "setup": {
+        "mode": "Tryb",
+        "modeLocal": "Lokalny",
+        "modeMulti": "Online",
+        "modeHint": {
+          "local": "Graj sam albo podawajcie urządzenie między znajomymi na tym samym ekranie.",
+          "multi": "Rzuć wyzwanie jednemu lub kilku znajomym online w czasie rzeczywistym, każdy na swoim urządzeniu."
+        },
+        "targetScore": "Pierwszy do",
+        "answerTimeLabel": "Czas trwania rundy",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Gracze na tym urządzeniu",
+        "guestNamePlaceholder": "Imię gracza {{n}}",
+        "startMatch": "Rozpocznij",
+        "inviteFriends": "Zaproś znajomych online",
+        "noFriendsOnline": "Nikt ze znajomych nie jest teraz online.",
+        "sendInvites": "Wyślij zaproszenia"
+      },
+      "play": {
+        "embedTitle": "Panorama do odgadnięcia",
+        "targetScore": "Pierwszy do {{count}} punktów",
+        "correct": "Poprawnie!",
+        "roundLost": "Nikt nie zgadł!",
+        "revealedAnswer": "To było {{title}}",
+        "buzzerOpen": "Dotknij swojego imienia, aby odpowiedzieć!",
+        "buzzedTurn": "{{name}}, twoja kolej na odpowiedź!",
+        "cancelBuzz": "To nie to — oddaję kolejkę",
+        "roundTimeLeft": "Pozostały czas: {{count}}s",
+        "racePromptOnline": "Zgadnij przed innymi!"
+      },
+      "match": {
+        "winner": "{{name}} wygrywa!",
+        "recap": "Gry w tej rozgrywce",
+        "backToHub": "Powrót do minigier",
+        "finished": "Rozgrywka zakończona!",
+        "leave": "Opuść rozgrywkę"
+      },
+      "invite": {
+        "accepted": "Zaakceptowano",
+        "declined": "Odrzucone",
+        "pending": "Oczekujące",
+        "accept": "Akceptuj",
+        "decline": "Odrzuć",
+        "waitingForHost": "Oczekiwanie, aż gospodarz rozpocznie rozgrywkę…"
+      },
+      "errors": {
+        "generic": "Coś poszło nie tak",
+        "loading": "Ładowanie…",
+        "matchNotFound": "Nie znaleziono rozgrywki",
+        "matchEnded": "Ta rozgrywka się zakończyła"
+      }
     }
   },
   "home": {

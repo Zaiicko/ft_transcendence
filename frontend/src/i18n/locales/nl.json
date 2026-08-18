@@ -511,6 +511,61 @@
         "matchNotFound": "Wedstrijd niet gevonden",
         "matchEnded": "Deze wedstrijd is afgelopen"
       }
+    },
+    "panoramaGuess": {
+      "title": "Raad het panorama",
+      "description": "Raad de game aan de hand van een 360°-panorama, vastgelegd door een speler in de game.",
+      "setup": {
+        "mode": "Modus",
+        "modeLocal": "Lokaal",
+        "modeMulti": "Online",
+        "modeHint": {
+          "local": "Speel alleen of geef het apparaat door tussen vrienden op hetzelfde scherm.",
+          "multi": "Daag een of meer online vrienden in real time uit, elk op hun eigen apparaat."
+        },
+        "targetScore": "Eerste tot",
+        "answerTimeLabel": "Rondeduur",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Spelers op dit apparaat",
+        "guestNamePlaceholder": "Naam speler {{n}}",
+        "startMatch": "Starten",
+        "inviteFriends": "Online vrienden uitnodigen",
+        "noFriendsOnline": "Op dit moment geen vrienden online.",
+        "sendInvites": "Uitnodigingen versturen"
+      },
+      "play": {
+        "embedTitle": "Te raden panorama",
+        "targetScore": "Eerste tot {{count}} punten",
+        "correct": "Juist!",
+        "roundLost": "Niemand raadde het!",
+        "revealedAnswer": "Het was {{title}}",
+        "buzzerOpen": "Tik op je naam om te antwoorden!",
+        "buzzedTurn": "{{name}}, jij mag antwoorden!",
+        "cancelBuzz": "Toch niet — beurt loslaten",
+        "roundTimeLeft": "Resterende tijd: {{count}}s",
+        "racePromptOnline": "Raad het vóór de anderen!"
+      },
+      "match": {
+        "winner": "{{name}} wint!",
+        "recap": "Spellen in deze wedstrijd",
+        "backToHub": "Terug naar minigames",
+        "finished": "Wedstrijd afgelopen!",
+        "leave": "Wedstrijd verlaten"
+      },
+      "invite": {
+        "accepted": "Geaccepteerd",
+        "declined": "Geweigerd",
+        "pending": "In afwachting",
+        "accept": "Accepteren",
+        "decline": "Weigeren",
+        "waitingForHost": "Wachten tot de host de wedstrijd start…"
+      },
+      "errors": {
+        "generic": "Er is iets misgegaan",
+        "loading": "Laden…",
+        "matchNotFound": "Wedstrijd niet gevonden",
+        "matchEnded": "Deze wedstrijd is afgelopen"
+      }
     }
   },
   "home": {

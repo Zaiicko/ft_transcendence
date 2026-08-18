@@ -511,6 +511,61 @@
         "matchNotFound": "Partita non trovata",
         "matchEnded": "Questa partita è terminata"
       }
+    },
+    "panoramaGuess": {
+      "title": "Indovina il panorama",
+      "description": "Indovina il gioco da un panorama a 360° catturato in gioco da un giocatore.",
+      "setup": {
+        "mode": "Modalità",
+        "modeLocal": "Locale",
+        "modeMulti": "Online",
+        "modeHint": {
+          "local": "Gioca da solo o passa il dispositivo tra amici sullo stesso schermo.",
+          "multi": "Sfida uno o più amici online in tempo reale, ognuno dal proprio dispositivo."
+        },
+        "targetScore": "Primo a",
+        "answerTimeLabel": "Durata del round",
+        "answerTimeSeconds": "{{count}}s",
+        "localPlayers": "Giocatori su questo dispositivo",
+        "guestNamePlaceholder": "Nome giocatore {{n}}",
+        "startMatch": "Inizia",
+        "inviteFriends": "Invita amici online",
+        "noFriendsOnline": "Nessun amico online al momento.",
+        "sendInvites": "Invia inviti"
+      },
+      "play": {
+        "embedTitle": "Panorama da indovinare",
+        "targetScore": "Primo a {{count}} punti",
+        "correct": "Esatto!",
+        "roundLost": "Nessuno ha indovinato!",
+        "revealedAnswer": "Era {{title}}",
+        "buzzerOpen": "Tocca il tuo nome per rispondere!",
+        "buzzedTurn": "{{name}}, tocca a te rispondere!",
+        "cancelBuzz": "Non era quello — lascio il turno",
+        "roundTimeLeft": "Tempo rimasto: {{count}}s",
+        "racePromptOnline": "Indovina prima degli altri!"
+      },
+      "match": {
+        "winner": "{{name}} vince!",
+        "recap": "Giochi di questa partita",
+        "backToHub": "Torna ai minigiochi",
+        "finished": "Partita terminata!",
+        "leave": "Abbandona la partita"
+      },
+      "invite": {
+        "accepted": "Accettato",
+        "declined": "Rifiutato",
+        "pending": "In attesa",
+        "accept": "Accetta",
+        "decline": "Rifiuta",
+        "waitingForHost": "In attesa che l'host avvii la partita…"
+      },
+      "errors": {
+        "generic": "Qualcosa è andato storto",
+        "loading": "Caricamento…",
+        "matchNotFound": "Partita non trovata",
+        "matchEnded": "Questa partita è terminata"
+      }
     }
   },
   "home": {
