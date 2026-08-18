@@ -340,11 +340,11 @@ export default function ScreenshotGuessLocalPlay({
       <div className="card flex flex-col items-center gap-4 p-6">
         {round &&
           (blur ? (
-            <div className="relative aspect-[3/4] w-56 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
+            <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
               <BlurredCover src={round.screenshotUrl} blurPx={blurPx} className="h-full w-full object-cover" />
             </div>
           ) : (
-            <div className="relative aspect-[3/4] w-56 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
+            <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
               <ZoomedScreenshot
                 src={round.screenshotUrl}
                 stepIndex={round.blurStepIndex}

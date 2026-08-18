@@ -12,8 +12,9 @@ const TRANSITION_MS = 550;
 const ZOOM_SCALES = [2.6, 2.2, 1.9, 1.6, 1.35, 1.15, 1];
 const FOCUS_X = 0.62;
 const FOCUS_Y = 0.4;
-// Matches the aspect-[3/4] box this is always displayed in.
-const ASPECT = 3 / 4;
+// Matches the aspect-video (16:9) box this is always displayed in — screenshots
+// are landscape, unlike cover-guess's portrait box art.
+const ASPECT = 16 / 9;
 
 // Screenshot-guess's "no blur" equivalent of BlurredCover: renders via
 // <canvas> for the same two reasons (see BlurredCover) — no flash of the

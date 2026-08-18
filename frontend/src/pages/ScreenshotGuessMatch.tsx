@@ -232,7 +232,7 @@ export default function ScreenshotGuessMatch() {
           </div>
 
           <div className="card flex flex-col items-center gap-4 p-6">
-            <div className="relative aspect-[3/4] w-56 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
+            <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
               {state.blur ? (
                 <BlurredCover
                   src={state.round.screenshotUrl}
