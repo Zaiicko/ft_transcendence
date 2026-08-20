@@ -375,6 +375,7 @@ function FeedbackPanel() {
   const [items, setItems] = useState<FeedbackT[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [replyTarget, setReplyTarget] = useState<FeedbackT | null>(null);
 
   const [prevStatus, setPrevStatus] = useState(status);
   if (status !== prevStatus) {
@@ -458,21 +459,118 @@ function FeedbackPanel() {
               <p className="mt-2 whitespace-pre-line text-sm text-zinc-700 dark:text-zinc-200">{f.message}</p>
 
               {status === 'OPEN' && (
-                <div className="mt-4 flex justify-end">
-                  <button
-                    type="button"
-                    disabled={busyId === f.id}
-                    onClick={() => resolve(f.id)}
-                    className="rounded-full border border-zinc-400/60 px-4 py-1.5 text-xs font-semibold transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-600"
-                  >
-                    {t('admin.feedback.markResolved')}
-                  </button>
+                <div className="mt-4 flex items-center justify-between gap-2">
+                  {f.user ? (
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                      {t('admin.feedback.replyHint')}
+                    </span>
+                  ) : (
+                    <span className="text-xs italic text-zinc-500 dark:text-zinc-400">
+                      {t('admin.feedback.noAccount')}
+                    </span>
+                  )}
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      disabled={busyId === f.id}
+                      onClick={() => resolve(f.id)}
+                      className="rounded-full border border-zinc-400/60 px-4 py-1.5 text-xs font-semibold transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-600"
+                    >
+                      {t('admin.feedback.markResolved')}
+                    </button>
+                    {f.user && (
+                      <button
+                        type="button"
+                        disabled={busyId === f.id}
+                        onClick={() => setReplyTarget(f)}
+                        className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+                      >
+                        {t('admin.feedback.reply')}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </article>
           ))}
         </div>
       )}
+      {replyTarget && (
+        <ReplyFeedbackModal
+          feedbackId={replyTarget.id}
+          username={replyTarget.user!.username}
+          onClose={() => setReplyTarget(null)}
+          onReplied={() => {
+            setItems((list) => list.filter((f) => f.id !== replyTarget.id));
+            setReplyTarget(null);
+          }}
+        />
+      )}
     </>
+  );
+}
+
+function ReplyFeedbackModal({
+  feedbackId,
+  username,
+  onClose,
+  onReplied,
+}: {
+  feedbackId: number;
+  username: string;
+  onClose: () => void;
+  onReplied: () => void;
+}) {
+  const { t } = useTranslation();
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    const body = message.trim();
+    if (!body) return;
+    setSending(true);
+    try {
+      await apiFetch(`/feedback/${feedbackId}/reply`, {
+        method: 'PATCH',
+        body: JSON.stringify({ message: body }),
+      });
+      onReplied();
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <Modal title={t('admin.feedback.replyModalTitle', { username })} onClose={onClose}>
+      <form onSubmit={submit} className="flex flex-col gap-3">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('admin.feedback.replyModalIntro')}</p>
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder={t('admin.feedback.replyPlaceholder')}
+          maxLength={2000}
+          rows={4}
+          autoFocus
+          className="field w-full resize-none !rounded-xl px-4 py-2"
+        />
+        <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full px-4 py-2 text-sm text-zinc-500 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+          >
+            {t('common.cancel')}
+          </button>
+          <button
+            type="submit"
+            disabled={sending || !message.trim()}
+            className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-zinc-950 transition hover:brightness-110 disabled:opacity-50"
+          >
+            {t('admin.feedback.sendReply')}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }

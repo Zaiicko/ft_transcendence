@@ -1564,7 +1564,14 @@
       },
       "empty": "Nic tu nie ma.",
       "anonymous": "Anonim",
-      "markResolved": "Oznacz jako rozpatrzone"
+      "markResolved": "Oznacz jako rozpatrzone",
+      "replyHint": "Odpowiedź wysyła użytkownikowi wiadomość bezpośrednią.",
+      "noAccount": "Wysłano bez konta — odpowiedź w aplikacji nie jest możliwa.",
+      "reply": "Odpowiedz",
+      "replyModalTitle": "Odpowiedz {{username}}",
+      "replyModalIntro": "Twoja wiadomość zostanie wysłana jako wiadomość bezpośrednia z Twojego konta.",
+      "replyPlaceholder": "Twoja odpowiedź…",
+      "sendReply": "Wyślij odpowiedź"
     }
   },
   "feedback": {

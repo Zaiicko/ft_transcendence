@@ -1564,7 +1564,14 @@
       },
       "empty": "Hier ist nichts.",
       "anonymous": "Anonym",
-      "markResolved": "Als bearbeitet markieren"
+      "markResolved": "Als bearbeitet markieren",
+      "replyHint": "Antworten sendet dem Nutzer eine Direktnachricht.",
+      "noAccount": "Ohne Konto gesendet — keine Antwort in der App möglich.",
+      "reply": "Antworten",
+      "replyModalTitle": "Auf {{username}} antworten",
+      "replyModalIntro": "Deine Nachricht wird als Direktnachricht von deinem Konto gesendet.",
+      "replyPlaceholder": "Deine Antwort …",
+      "sendReply": "Antwort senden"
     }
   },
   "feedback": {

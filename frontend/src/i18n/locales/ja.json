@@ -1564,7 +1564,14 @@
       },
       "empty": "ここには何もありません。",
       "anonymous": "匿名",
-      "markResolved": "対応済みにする"
+      "markResolved": "対応済みにする",
+      "replyHint": "返信するとユーザーにダイレクトメッセージが送信されます。",
+      "noAccount": "アカウントなしで送信されたため、アプリ内での返信はできません。",
+      "reply": "返信",
+      "replyModalTitle": "{{username}} に返信",
+      "replyModalIntro": "メッセージはあなたのアカウントからダイレクトメッセージとして送信されます。",
+      "replyPlaceholder": "返信内容…",
+      "sendReply": "返信を送信"
     }
   },
   "feedback": {

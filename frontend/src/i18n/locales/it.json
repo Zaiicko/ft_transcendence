@@ -1564,7 +1564,14 @@
       },
       "empty": "Niente qui.",
       "anonymous": "Anonimo",
-      "markResolved": "Segna come risolto"
+      "markResolved": "Segna come risolto",
+      "replyHint": "Rispondere invia un messaggio diretto all'utente.",
+      "noAccount": "Inviato senza account — nessuna risposta possibile nell'app.",
+      "reply": "Rispondi",
+      "replyModalTitle": "Rispondi a {{username}}",
+      "replyModalIntro": "Il tuo messaggio verrà inviato come messaggio diretto dal tuo account.",
+      "replyPlaceholder": "La tua risposta…",
+      "sendReply": "Invia risposta"
     }
   },
   "feedback": {

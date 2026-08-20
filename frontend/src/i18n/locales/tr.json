@@ -1564,7 +1564,14 @@
       },
       "empty": "Burada bir şey yok.",
       "anonymous": "Anonim",
-      "markResolved": "Çözüldü olarak işaretle"
+      "markResolved": "Çözüldü olarak işaretle",
+      "replyHint": "Yanıtlamak kullanıcıya doğrudan mesaj gönderir.",
+      "noAccount": "Hesap olmadan gönderildi — uygulama içinden yanıt verilemez.",
+      "reply": "Yanıtla",
+      "replyModalTitle": "{{username}} kullanıcısına yanıtla",
+      "replyModalIntro": "Mesajın, hesabından doğrudan mesaj olarak gönderilecek.",
+      "replyPlaceholder": "Yanıtın…",
+      "sendReply": "Yanıtı gönder"
     }
   },
   "feedback": {

@@ -7,6 +7,7 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
+import { ReplyFeedbackDto } from './dto/reply-feedback.dto';
 import { FeedbackService } from './feedback.service';
 
 // Open to guests too (a bug report shouldn't require an account) — tighter
@@ -35,5 +36,15 @@ export class FeedbackController {
   @Patch(':id/resolve')
   resolve(@CurrentUser() admin: JwtPayload, @Param('id', ParseIntPipe) id: number) {
     return this.feedbackService.resolve(admin.sub, id);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id/reply')
+  reply(
+    @CurrentUser() admin: JwtPayload,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ReplyFeedbackDto,
+  ) {
+    return this.feedbackService.reply(admin.sub, id, dto.message);
   }
 }

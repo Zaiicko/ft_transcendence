@@ -1564,7 +1564,14 @@
       },
       "empty": "여기에는 아무것도 없습니다.",
       "anonymous": "익명",
-      "markResolved": "처리 완료로 표시"
+      "markResolved": "처리 완료로 표시",
+      "replyHint": "답장하면 사용자에게 다이렉트 메시지가 전송됩니다.",
+      "noAccount": "계정 없이 제출됨 — 앱 내 답장이 불가능합니다.",
+      "reply": "답장",
+      "replyModalTitle": "{{username}}님에게 답장",
+      "replyModalIntro": "메시지는 회원님의 계정에서 다이렉트 메시지로 전송됩니다.",
+      "replyPlaceholder": "답장 내용…",
+      "sendReply": "답장 보내기"
     }
   },
   "feedback": {

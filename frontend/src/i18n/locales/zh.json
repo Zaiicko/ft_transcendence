@@ -1564,7 +1564,14 @@
       },
       "empty": "这里暂无内容。",
       "anonymous": "匿名",
-      "markResolved": "标记为已处理"
+      "markResolved": "标记为已处理",
+      "replyHint": "回复会向该用户发送一条私信。",
+      "noAccount": "以访客身份提交 — 无法在应用内回复。",
+      "reply": "回复",
+      "replyModalTitle": "回复 {{username}}",
+      "replyModalIntro": "你的消息将以私信形式从你的账户发送。",
+      "replyPlaceholder": "输入回复……",
+      "sendReply": "发送回复"
     }
   },
   "feedback": {

@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FeedbackStatus } from '@prisma/client';
+import { FeedbackStatus, FriendshipStatus } from '@prisma/client';
+import { ChatService } from '../chat/chat.service';
 import { MailerService } from '../mailer/mailer.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
@@ -17,6 +18,7 @@ export class FeedbackService {
     private prisma: PrismaService,
     private mailer: MailerService,
     private config: ConfigService,
+    private chat: ChatService,
   ) {}
 
   async create(userId: number | undefined, dto: CreateFeedbackDto) {
@@ -69,6 +71,48 @@ export class FeedbackService {
       where: { id },
       data: { status: 'RESOLVED', resolvedById: adminId, resolvedAt: new Date() },
     });
+    return { ok: true };
+  }
+
+  // Delivers the reply as a normal DM from the admin's own account — chat is
+  // friends-only (ChatService.assertFriends), so a submitter who isn't
+  // already friends with the admin is silently connected first. That's the
+  // only way for the message to actually reach their inbox given the
+  // existing chat model (conversations are built from the friend list, not
+  // from message history), and it doubles as a legitimate support channel:
+  // the user can reply back through normal chat afterwards.
+  async reply(adminId: number, id: number, message: string) {
+    const feedback = await this.prisma.feedback.findUnique({ where: { id } });
+    if (!feedback) throw new NotFoundException();
+    if (!feedback.userId) {
+      throw new ForbiddenException('This feedback was submitted without an account — reply by email instead');
+    }
+
+    const existing = await this.prisma.friendship.findFirst({
+      where: {
+        status: FriendshipStatus.ACCEPTED,
+        OR: [
+          { requesterId: adminId, addresseeId: feedback.userId },
+          { requesterId: feedback.userId, addresseeId: adminId },
+        ],
+      },
+      select: { id: true },
+    });
+    if (!existing) {
+      await this.prisma.friendship.create({
+        data: { requesterId: adminId, addresseeId: feedback.userId, status: FriendshipStatus.ACCEPTED },
+      });
+    }
+
+    await this.chat.send(adminId, { toUserId: feedback.userId, content: message });
+
+    if (feedback.status === 'OPEN') {
+      await this.prisma.feedback.update({
+        where: { id },
+        data: { status: 'RESOLVED', resolvedById: adminId, resolvedAt: new Date() },
+      });
+    }
+
     return { ok: true };
   }
 }
