@@ -1115,8 +1115,9 @@
             "• Steam (Valve), jeśli zdecydujesz się połączyć swoje konto, w celu weryfikacji Twojej tożsamości oraz pobrania nazwy użytkownika, awatara, biblioteki gier i listy znajomych Steam (wykorzystywanej wyłącznie do sugerowania znajomych już obecnych na Saveboxd, nigdy nieprzechowywanej);",
             "• Google, 42 (Intra) i Discord, jeśli zdecydujesz się zalogować przez jednego z tych dostawców;",
             "• Brevo, naszego dostawcę wysyłki wiadomości transakcyjnych, wykorzystywanego wyłącznie do e-maili weryfikacyjnych i resetowania hasła.",
+            "• Kuula, w celu wyświetlania osadzonych (iframe) panoram 360° używanych w minigrze „Zgadnij miejsce” — Twoja przeglądarka ładuje tę zawartość bezpośrednio z ich serwerów, a Saveboxd nie przekazuje im żadnych Twoich danych osobowych;",
             "Nie korzystamy z żadnych narzędzi analityki odbiorców, reklamowych ani śledzących stron trzecich.",
-            "Hosting: ten projekt jest rozwijany i oceniany w ramach programu 42. Jeśli strona miałaby zostać publicznie wdrożona, ta sekcja powinna zostać uzupełniona o nazwę dostawcy hostingu."
+            "Hosting: ta strona jest hostowana przez OVH SAS, na serwerze zlokalizowanym we Francji."
           ]
         },
         "contact": {

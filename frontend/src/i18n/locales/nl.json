@@ -1115,8 +1115,9 @@
             "• Steam (Valve), als u ervoor kiest uw account te koppelen, om uw identiteit te verifiëren en uw gebruikersnaam, avatar, gamebibliotheek en Steam-vriendenlijst op te halen (alleen gebruikt om u vrienden voor te stellen die al op Saveboxd aanwezig zijn, nooit opgeslagen);",
             "• Google, 42 (Intra) en Discord, als u ervoor kiest in te loggen via een van deze aanbieders;",
             "• Brevo, onze aanbieder voor het versturen van transactionele e-mails, alleen gebruikt voor e-mailverificatie en wachtwoordherstel.",
+            "• Kuula, voor de ingesloten (iframe) weergave van de 360°-panorama's die worden gebruikt in de minigame “Raad de locatie” — uw browser laadt deze inhoud rechtstreeks van hun servers, zonder dat Saveboxd hen persoonsgegevens over u doorgeeft;",
             "Wij gebruiken geen enkele tool voor publieksanalyse, reclame of tracking door derden.",
-            "Hosting: dit project wordt ontwikkeld en geëvalueerd in het kader van het 42-curriculum. Mocht de site openbaar worden ingezet, dan moet deze sectie worden aangevuld met de naam van de hostingprovider."
+            "Hosting: deze site wordt gehost door OVH SAS, op een server in Frankrijk."
           ]
         },
         "contact": {

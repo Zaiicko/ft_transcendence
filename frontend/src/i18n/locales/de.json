@@ -1115,8 +1115,9 @@
             "• Steam (Valve), sofern Sie Ihr Konto verknüpfen, um Ihre Identität zu überprüfen und Ihren Anzeigenamen, Avatar, Ihre Spielebibliothek und Ihre Steam-Freundesliste abzurufen (nur verwendet, um Ihnen bereits auf Saveboxd vorhandene Freunde vorzuschlagen, niemals gespeichert);",
             "• Google, 42 (Intra) und Discord, sofern Sie sich über einen dieser Anbieter anmelden;",
             "• Brevo, unser Anbieter für den Versand von Transaktions-E-Mails, ausschließlich für E-Mail-Verifizierung und Passwort-Zurücksetzung verwendet.",
+            "• Kuula, für die eingebettete Anzeige (iframe) der 360°-Panoramen im Minispiel „Errate den Ort“ — Ihr Browser lädt diesen Inhalt direkt von deren Servern, ohne dass Saveboxd ihnen personenbezogene Daten über Sie übermittelt;",
             "Wir verwenden keine Analyse-, Werbe- oder Tracking-Tools Dritter.",
-            "Hosting: Dieses Projekt wird im Rahmen des 42-Curriculums entwickelt und bewertet. Sollte die Seite öffentlich bereitgestellt werden, muss dieser Abschnitt mit dem Namen des Hosting-Anbieters ergänzt werden."
+            "Hosting: Diese Seite wird von OVH SAS auf einem Server in Frankreich gehostet."
           ]
         },
         "contact": {

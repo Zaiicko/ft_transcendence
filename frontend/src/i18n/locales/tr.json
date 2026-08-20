@@ -1115,8 +1115,9 @@
             "• hesabınızı bağlamayı seçerseniz, kimliğinizi doğrulamak ve kullanıcı adınızı, avatarınızı, oyun kütüphanenizi ve Steam arkadaş listenizi almak için Steam (Valve) (yalnızca Saveboxd'de zaten bulunan arkadaşları önermek için kullanılır, asla saklanmaz);",
             "• bu sağlayıcılardan biriyle giriş yapmayı seçerseniz Google, 42 (Intra) ve Discord;",
             "• yalnızca e-posta doğrulama ve parola sıfırlama e-postaları için kullanılan işlemsel e-posta sağlayıcımız Brevo.",
+            "• “Yeri Tahmin Et” mini oyununda kullanılan 360° panoramaların gömülü (iframe) olarak görüntülenmesi için Kuula — tarayıcınız bu içeriği doğrudan onların sunucularından yükler ve Saveboxd sizinle ilgili hiçbir kişisel veriyi onlara iletmez;",
             "Hiçbir kitle analitiği, reklam veya üçüncü taraf izleme aracı kullanmıyoruz.",
-            "Barındırma: bu proje 42 müfredatı kapsamında geliştirilmekte ve değerlendirilmektedir. Site herkese açık olarak dağıtılırsa, bu bölüm barındırma sağlayıcısının adıyla tamamlanmalıdır."
+            "Barındırma: bu site OVH SAS tarafından, Fransa'da bulunan bir sunucuda barındırılmaktadır."
           ]
         },
         "contact": {

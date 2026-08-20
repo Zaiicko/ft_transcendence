@@ -1115,8 +1115,9 @@
             "• Steam (Valve), caso opte por associar a sua conta, para verificar a sua identidade e obter o seu nome de utilizador, avatar, biblioteca de jogos e lista de amigos Steam (utilizada apenas para sugerir amigos já presentes no Saveboxd, nunca armazenada);",
             "• Google, 42 (Intra) e Discord, caso opte por iniciar sessão através de um destes fornecedores;",
             "• Brevo, o nosso fornecedor de envio de e-mails transacionais, utilizado apenas para os e-mails de verificação de endereço e redefinição de palavra-passe.",
+            "• Kuula, para a exibição incorporada (iframe) dos panoramas 360° utilizados no minijogo «Adivinhe o local» — o seu navegador carrega este conteúdo diretamente dos servidores deles, sem que o Saveboxd lhes transmita qualquer dado pessoal seu;",
             "Não utilizamos qualquer ferramenta de análise de audiência, publicidade ou rastreamento de terceiros.",
-            "Alojamento: este projeto é desenvolvido e avaliado no âmbito do currículo 42. Se o site viesse a ser implementado publicamente, esta secção deverá ser complementada com o nome do fornecedor de alojamento."
+            "Alojamento: este site está alojado pela OVH SAS, num servidor localizado em França."
           ]
         },
         "contact": {

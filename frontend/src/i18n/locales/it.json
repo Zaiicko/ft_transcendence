@@ -1115,8 +1115,9 @@
             "• Steam (Valve), se scegli di collegare il tuo account, per verificare la tua identità e recuperare il tuo nome utente, avatar, libreria di giochi e lista amici Steam (utilizzata solo per suggerirti amici già presenti su Saveboxd, mai memorizzata);",
             "• Google, 42 (Intra) e Discord, se scegli di accedere tramite uno di questi fornitori;",
             "• Brevo, il nostro fornitore di invio e-mail transazionali, utilizzato solo per le e-mail di verifica dell'indirizzo e di reimpostazione della password.",
+            "• Kuula, per la visualizzazione integrata (iframe) dei panorami a 360° utilizzati nel minigioco «Indovina il luogo» — il tuo browser carica questo contenuto direttamente dai loro server, senza che Saveboxd trasmetta loro alcun dato personale che ti riguarda;",
             "Non utilizziamo alcuno strumento di analisi del pubblico, pubblicitario o di tracciamento di terze parti.",
-            "Hosting: questo progetto è sviluppato e valutato nell'ambito del percorso 42. Se il sito venisse distribuito pubblicamente, questa sezione dovrà essere completata con il nome del fornitore di hosting."
+            "Hosting: questo sito è ospitato da OVH SAS, su un server situato in Francia."
           ]
         },
         "contact": {

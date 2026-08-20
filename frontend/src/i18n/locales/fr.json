@@ -1115,8 +1115,9 @@
             "• Steam (Valve), si vous liez votre compte, pour vérifier votre identité et récupérer votre pseudonyme, avatar, bibliothèque de jeux et liste d'amis Steam (utilisée uniquement pour vous suggérer des amis déjà présents sur Saveboxd, jamais stockée) ;",
             "• Google, 42 (Intra) et Discord, si vous choisissez de vous connecter via l'un de ces fournisseurs ;",
             "• Brevo, notre prestataire d'envoi d'e-mails transactionnels, utilisé uniquement pour les e-mails de vérification d'adresse et de réinitialisation de mot de passe.",
+            "• Kuula, pour l'affichage intégré (iframe) des panoramas 360° utilisés dans le mini-jeu « Devine le lieu » — votre navigateur charge ce contenu directement depuis leurs serveurs, sans qu'aucune donnée personnelle vous concernant ne leur soit transmise par Saveboxd ;",
             "Nous n'utilisons aucun outil d'analyse d'audience, de publicité ou de suivi tiers.",
-            "Hébergement : ce projet est développé et évalué dans le cadre du cursus 42. Si le site venait à être déployé publiquement, cette section devra être complétée avec le nom de l'hébergeur."
+            "Hébergement : ce site est hébergé par OVH SAS, sur un serveur situé en France."
           ]
         },
         "contact": {
