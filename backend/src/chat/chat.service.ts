@@ -36,13 +36,17 @@ export class ChatService {
   ) {}
 
   // Conversations are the friend list, each with its last message, unread count
-  // and online status. Sorted with active conversations first.
+  // and online status. Sorted with active conversations first. Also includes
+  // any system account (e.g. the feedback-reply "Admin" bot) the user has
+  // message history with, even without a Friendship row — see assertFriends.
   async listConversations(userId: number) {
     const friendIds = await this.friendIds(userId);
-    if (friendIds.length === 0) return [];
+    const systemIds = await this.systemContactIds(userId);
+    const otherIds = [...new Set([...friendIds, ...systemIds])];
+    if (otherIds.length === 0) return [];
 
     const friends = await this.prisma.user.findMany({
-      where: { id: { in: friendIds } },
+      where: { id: { in: otherIds } },
       select: { id: true, username: true, avatarUrl: true },
     });
 
@@ -185,6 +189,15 @@ export class ChatService {
   }
 
   private async assertFriends(userId: number, otherId: number) {
+    // A system account (the feedback-reply "Admin" bot) can message, and be
+    // messaged by, anyone — replying to feedback must never require or
+    // create a real Friendship row between a stranger and an admin.
+    const systemSide = await this.prisma.user.findFirst({
+      where: { id: { in: [userId, otherId] }, isSystemAccount: true },
+      select: { id: true },
+    });
+    if (systemSide) return;
+
     const friendship = await this.prisma.friendship.findFirst({
       where: {
         status: FriendshipStatus.ACCEPTED,
@@ -196,5 +209,27 @@ export class ChatService {
       select: { id: true },
     });
     if (!friendship) throw new ForbiddenException('You can only message friends');
+  }
+
+  // System accounts (e.g. the feedback-reply bot) the user has exchanged at
+  // least one message with — surfaced in listConversations() even without a
+  // Friendship row. There's normally exactly one such account, so this is a
+  // cheap existence check per system account rather than a full message scan.
+  private async systemContactIds(userId: number): Promise<number[]> {
+    const systemUsers = await this.prisma.user.findMany({
+      where: { isSystemAccount: true },
+      select: { id: true },
+    });
+    if (systemUsers.length === 0) return [];
+    const withHistory = await Promise.all(
+      systemUsers.map(async (s) => {
+        const exists = await this.prisma.message.findFirst({
+          where: this.betweenFilter(userId, s.id),
+          select: { id: true },
+        });
+        return exists ? s.id : null;
+      }),
+    );
+    return withHistory.filter((id): id is number => id !== null);
   }
 }

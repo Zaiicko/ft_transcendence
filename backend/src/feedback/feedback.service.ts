@@ -1,12 +1,18 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FeedbackStatus, FriendshipStatus } from '@prisma/client';
+import { FeedbackStatus, Prisma } from '@prisma/client';
 import { ChatService } from '../chat/chat.service';
 import { MailerService } from '../mailer/mailer.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 
 const publicAuthor = { select: { id: true, username: true, avatarUrl: true } };
+
+// Reserved system account that delivers feedback replies — never a real
+// login (no password, LOCAL provider). Fixed, well-known identity so a
+// second reply doesn't create a second bot.
+const ADMIN_BOT_EMAIL = 'admin-bot@saveboxd.internal';
+const ADMIN_BOT_USERNAME = 'Admin';
 
 function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -74,13 +80,12 @@ export class FeedbackService {
     return { ok: true };
   }
 
-  // Delivers the reply as a normal DM from the admin's own account — chat is
-  // friends-only (ChatService.assertFriends), so a submitter who isn't
-  // already friends with the admin is silently connected first. That's the
-  // only way for the message to actually reach their inbox given the
-  // existing chat model (conversations are built from the friend list, not
-  // from message history), and it doubles as a legitimate support channel:
-  // the user can reply back through normal chat afterwards.
+  // Delivers the reply as a DM from the reserved "Admin" bot account, not
+  // the real admin's personal one — the user explicitly didn't want a
+  // stranger's feedback reply adding them as a friend of their own account.
+  // ChatService lets a system account message anyone without a Friendship
+  // row (see assertFriends/systemContactIds), so no friend-adding happens
+  // at all, on either account.
   async reply(adminId: number, id: number, message: string) {
     const feedback = await this.prisma.feedback.findUnique({ where: { id } });
     if (!feedback) throw new NotFoundException();
@@ -88,23 +93,8 @@ export class FeedbackService {
       throw new ForbiddenException('This feedback was submitted without an account — reply by email instead');
     }
 
-    const existing = await this.prisma.friendship.findFirst({
-      where: {
-        status: FriendshipStatus.ACCEPTED,
-        OR: [
-          { requesterId: adminId, addresseeId: feedback.userId },
-          { requesterId: feedback.userId, addresseeId: adminId },
-        ],
-      },
-      select: { id: true },
-    });
-    if (!existing) {
-      await this.prisma.friendship.create({
-        data: { requesterId: adminId, addresseeId: feedback.userId, status: FriendshipStatus.ACCEPTED },
-      });
-    }
-
-    await this.chat.send(adminId, { toUserId: feedback.userId, content: message });
+    const botId = await this.getOrCreateAdminBot();
+    await this.chat.send(botId, { toUserId: feedback.userId, content: message });
 
     if (feedback.status === 'OPEN') {
       await this.prisma.feedback.update({
@@ -114,5 +104,36 @@ export class FeedbackService {
     }
 
     return { ok: true };
+  }
+
+  private async getOrCreateAdminBot(): Promise<number> {
+    const existing = await this.prisma.user.findFirst({
+      where: { isSystemAccount: true },
+      select: { id: true },
+    });
+    if (existing) return existing.id;
+
+    try {
+      const bot = await this.prisma.user.create({
+        data: {
+          email: ADMIN_BOT_EMAIL,
+          username: ADMIN_BOT_USERNAME,
+          usernameLower: ADMIN_BOT_USERNAME.toLowerCase(),
+          provider: 'LOCAL',
+          isSystemAccount: true,
+        },
+      });
+      return bot.id;
+    } catch (e) {
+      // Two replies racing to create the bot: the loser just re-reads it.
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        const bot = await this.prisma.user.findFirst({
+          where: { isSystemAccount: true },
+          select: { id: true },
+        });
+        if (bot) return bot.id;
+      }
+      throw e;
+    }
   }
 }

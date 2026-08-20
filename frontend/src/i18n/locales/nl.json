@@ -1569,7 +1569,7 @@
       "noAccount": "Verzonden zonder account — reageren in de app is niet mogelijk.",
       "reply": "Reageren",
       "replyModalTitle": "Reageren naar {{username}}",
-      "replyModalIntro": "Je bericht wordt verzonden als directe boodschap vanaf jouw account.",
+      "replyModalIntro": "Je bericht wordt verzonden vanaf een speciaal 'Admin'-account, niet vanaf je persoonlijke account — jullie worden niet als vrienden toegevoegd.",
       "replyPlaceholder": "Je antwoord…",
       "sendReply": "Antwoord versturen"
     }

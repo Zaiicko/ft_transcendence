@@ -1569,7 +1569,7 @@
       "noAccount": "以访客身份提交 — 无法在应用内回复。",
       "reply": "回复",
       "replyModalTitle": "回复 {{username}}",
-      "replyModalIntro": "你的消息将以私信形式从你的账户发送。",
+      "replyModalIntro": "你的消息将通过专用的「Admin」账号发送，而非你的个人账号 — 双方不会被添加为好友。",
       "replyPlaceholder": "输入回复……",
       "sendReply": "发送回复"
     }

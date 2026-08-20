@@ -1569,7 +1569,7 @@
       "noAccount": "Wysłano bez konta — odpowiedź w aplikacji nie jest możliwa.",
       "reply": "Odpowiedz",
       "replyModalTitle": "Odpowiedz {{username}}",
-      "replyModalIntro": "Twoja wiadomość zostanie wysłana jako wiadomość bezpośrednia z Twojego konta.",
+      "replyModalIntro": "Twoja wiadomość zostanie wysłana z dedykowanego konta „Admin”, a nie z Twojego osobistego konta — nie zostaniecie dodani jako znajomi.",
       "replyPlaceholder": "Twoja odpowiedź…",
       "sendReply": "Wyślij odpowiedź"
     }

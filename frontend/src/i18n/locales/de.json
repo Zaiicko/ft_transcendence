@@ -1569,7 +1569,7 @@
       "noAccount": "Ohne Konto gesendet — keine Antwort in der App möglich.",
       "reply": "Antworten",
       "replyModalTitle": "Auf {{username}} antworten",
-      "replyModalIntro": "Deine Nachricht wird als Direktnachricht von deinem Konto gesendet.",
+      "replyModalIntro": "Deine Nachricht wird von einem eigenen „Admin“-Konto gesendet, nicht von deinem persönlichen Konto — ihr werdet nicht als Freunde hinzugefügt.",
       "replyPlaceholder": "Deine Antwort …",
       "sendReply": "Antwort senden"
     }

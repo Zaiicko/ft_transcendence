@@ -1569,7 +1569,7 @@
       "noAccount": "アカウントなしで送信されたため、アプリ内での返信はできません。",
       "reply": "返信",
       "replyModalTitle": "{{username}} に返信",
-      "replyModalIntro": "メッセージはあなたのアカウントからダイレクトメッセージとして送信されます。",
+      "replyModalIntro": "メッセージは個人アカウントではなく、専用の「Admin」アカウントから送信されます。友達として追加されることはありません。",
       "replyPlaceholder": "返信内容…",
       "sendReply": "返信を送信"
     }

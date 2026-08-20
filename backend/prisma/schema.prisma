@@ -190,6 +190,13 @@ model User {
   // one access-token lifetime (default 15m) without an extra DB read per request.
   bannedAt         DateTime?
   bannedReason     String?
+  // Marks the single reserved "Admin" bot account used to deliver feedback
+  // replies (FeedbackService) — never a real login. ChatService lets a
+  // system account message/be messaged by anyone, bypassing the normal
+  // friends-only gate, and surfaces the thread in listConversations() even
+  // without a Friendship row: replying to feedback must never silently
+  // friend the real admin's personal account with a stranger.
+  isSystemAccount  Boolean      @default(false)
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 

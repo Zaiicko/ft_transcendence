@@ -1569,7 +1569,7 @@
       "noAccount": "Hesap olmadan gönderildi — uygulama içinden yanıt verilemez.",
       "reply": "Yanıtla",
       "replyModalTitle": "{{username}} kullanıcısına yanıtla",
-      "replyModalIntro": "Mesajın, hesabından doğrudan mesaj olarak gönderilecek.",
+      "replyModalIntro": "Mesajın, kişisel hesabından değil, özel bir \"Admin\" hesabından gönderilecek — arkadaş olarak eklenmeyeceksiniz.",
       "replyPlaceholder": "Yanıtın…",
       "sendReply": "Yanıtı gönder"
     }

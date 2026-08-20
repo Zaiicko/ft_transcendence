@@ -1569,7 +1569,7 @@
       "noAccount": "Inviato senza account — nessuna risposta possibile nell'app.",
       "reply": "Rispondi",
       "replyModalTitle": "Rispondi a {{username}}",
-      "replyModalIntro": "Il tuo messaggio verrà inviato come messaggio diretto dal tuo account.",
+      "replyModalIntro": "Il tuo messaggio verrà inviato da un account «Admin» dedicato, non dal tuo account personale — non verrete aggiunti come amici.",
       "replyPlaceholder": "La tua risposta…",
       "sendReply": "Invia risposta"
     }
