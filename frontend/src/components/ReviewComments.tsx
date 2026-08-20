@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useRequireAuth } from '../auth/useRequireAuth';
 import Avatar from './Avatar';
-import { ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
+import { FlagIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
+import ReportModal from './ReportModal';
 import { onCommentReaction } from '../games/commentBus';
 import { apiFetch } from '../lib/api';
 
@@ -153,6 +154,8 @@ function CommentNode({
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(comment.text);
+  const [reporting, setReporting] = useState(false);
+  const [reported, setReported] = useState(false);
 
   // Resync without an effect: when the parent refetches it passes a new `comment` object → realign local state during render.
   if (comment !== seen) {
@@ -326,6 +329,20 @@ function CommentNode({
                     {t('comments.delete')}
                   </button>
                 )}
+                {!mine && currentUserId != null && (
+                  <button
+                    type="button"
+                    disabled={reported}
+                    onClick={() => setReporting(true)}
+                    title={t('report.title')}
+                    aria-label={t('report.title')}
+                    className={`inline-flex items-center transition ${
+                      reported ? 'text-zinc-400 dark:text-zinc-600' : 'hover:text-red-400'
+                    }`}
+                  >
+                    <FlagIcon className="h-3.5 w-3.5" />
+                  </button>
+                )}
               </div>
             </>
           )}
@@ -371,6 +388,17 @@ function CommentNode({
               )}
         </div>
       </div>
+      {reporting && (
+        <ReportModal
+          targetType="COMMENT"
+          targetId={c.id}
+          onClose={() => setReporting(false)}
+          onReported={() => {
+            setReported(true);
+            setReporting(false);
+          }}
+        />
+      )}
     </li>
   );
 }

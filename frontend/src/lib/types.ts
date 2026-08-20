@@ -380,6 +380,9 @@ export interface PublicUser {
   // own view. Public by default (opt-out) — see backend/prisma/schema.prisma.
   libraryPublic: boolean;
   hasPassword: boolean;
+  // No self-service promotion path — set directly in the DB. Drives the
+  // admin nav entry and the /admin/reports route guard.
+  role: 'USER' | 'ADMIN';
   // Onboarding wizard finished or explicitly skipped. While false, redirect to /welcome (see ProtectedRoute).
   onboarded: boolean;
   // Guided tour already seen or skipped. While false (and onboarded true), it auto-starts once.

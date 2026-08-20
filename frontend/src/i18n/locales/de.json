@@ -40,7 +40,8 @@
     "closeMenu": "Menü schließen",
     "notificationPrefs": "Benachrichtigungseinstellungen",
     "navigation": "Navigationsmenü",
-    "replayTutorial": "Tour erneut ansehen"
+    "replayTutorial": "Tour erneut ansehen",
+    "adminReports": "Meldungen"
   },
   "footer": {
     "tagline": "Das Letterboxd der Videospiele · 42-Projekt",
@@ -1498,6 +1499,43 @@
         "title": "Einstellungen",
         "body": "Öffne hier deine Einstellungen: Profil, Benachrichtigungen, Design und Sprache."
       }
+    }
+  },
+  "report": {
+    "title": "Melden",
+    "intro": "Bitte teile uns mit, warum du diesen Inhalt meldest. Unser Team wird ihn prüfen.",
+    "reasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Belästigung",
+      "HATE_SPEECH": "Hassrede",
+      "SPOILER": "Nicht gekennzeichneter Spoiler",
+      "OTHER": "Sonstiges"
+    },
+    "detailsPlaceholder": "Zusätzliche Details (optional)",
+    "submit": "Meldung senden",
+    "alreadyReported": "Du hast diesen Inhalt bereits gemeldet.",
+    "ownContent": "Du kannst deinen eigenen Inhalt nicht melden.",
+    "unexpectedError": "Etwas ist schiefgelaufen. Bitte versuche es später erneut."
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "Moderation",
+      "heading": "Meldungen",
+      "status": {
+        "PENDING": "Offen",
+        "RESOLVED": "Bearbeitet",
+        "DISMISSED": "Abgelehnt"
+      },
+      "empty": "Keine Meldungen vorhanden.",
+      "targetType": {
+        "REVIEW": "Rezension",
+        "COMMENT": "Kommentar"
+      },
+      "viewInContext": "Im Kontext ansehen",
+      "reportedBy": "Gemeldet von",
+      "dismiss": "Ablehnen",
+      "deleteContent": "Inhalt löschen",
+      "contentDeleted": "Dieser Inhalt wurde gelöscht."
     }
   }
 }

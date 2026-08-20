@@ -45,6 +45,15 @@ export function LinkIcon({ className = 'h-4 w-4' }: IconProps) {
   );
 }
 
+export function FlagIcon({ className = 'h-4 w-4' }: IconProps) {
+  return (
+    <svg {...svgProps} className={`${BASE} ${className}`}>
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <path d="M4 22V3" />
+    </svg>
+  );
+}
+
 export function CheckIcon({ className = 'h-4 w-4' }: IconProps) {
   return (
     <svg {...svgProps} className={`${BASE} ${className}`}>

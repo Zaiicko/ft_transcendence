@@ -169,6 +169,19 @@ export class ReviewCommentsService {
     await this.emitChanged(reviewId);
   }
 
+  // Moderation path (ReportsService, after an admin resolves a report with
+  // action=delete) — same tombstone-or-hard-delete behaviour as remove(),
+  // skipping the ownership check.
+  async removeAsAdmin(id: number) {
+    const comment = await this.prisma.reviewComment.findUnique({
+      where: { id },
+      select: { reviewId: true },
+    });
+    if (!comment) throw new NotFoundException();
+    await this.removeOrTombstone(id);
+    await this.emitChanged(comment.reviewId);
+  }
+
   // Reddit-style: a comment with replies becomes an anonymous tombstone so the
   // thread below survives; a leaf is really deleted, after which ancestor
   // tombstones left without children are pruned.

@@ -40,7 +40,8 @@
     "closeMenu": "关闭菜单",
     "notificationPrefs": "通知偏好设置",
     "navigation": "导航菜单",
-    "replayTutorial": "重新观看教程"
+    "replayTutorial": "重新观看教程",
+    "adminReports": "举报"
   },
   "footer": {
     "tagline": "电子游戏版的 Letterboxd · 42 项目",
@@ -1498,6 +1499,43 @@
         "title": "设置",
         "body": "在这里打开设置：个人资料、通知、主题和语言。"
       }
+    }
+  },
+  "report": {
+    "title": "举报",
+    "intro": "请告诉我们您举报此内容的原因，我们的团队会进行审核。",
+    "reasons": {
+      "SPAM": "垃圾信息",
+      "HARASSMENT": "骚扰",
+      "HATE_SPEECH": "仇恨言论",
+      "SPOILER": "未标记的剧透",
+      "OTHER": "其他"
+    },
+    "detailsPlaceholder": "补充说明（可选）",
+    "submit": "提交举报",
+    "alreadyReported": "您已经举报过此内容。",
+    "ownContent": "您无法举报自己的内容。",
+    "unexpectedError": "出现错误，请稍后重试。"
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "内容审核",
+      "heading": "举报",
+      "status": {
+        "PENDING": "待处理",
+        "RESOLVED": "已处理",
+        "DISMISSED": "已驳回"
+      },
+      "empty": "暂无举报。",
+      "targetType": {
+        "REVIEW": "评测",
+        "COMMENT": "评论"
+      },
+      "viewInContext": "查看原文",
+      "reportedBy": "举报人",
+      "dismiss": "驳回",
+      "deleteContent": "删除内容",
+      "contentDeleted": "该内容已被删除。"
     }
   }
 }

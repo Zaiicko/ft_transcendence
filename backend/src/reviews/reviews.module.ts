@@ -22,6 +22,6 @@ import { ReviewsService } from './reviews.service';
     CommentsController,
   ],
   providers: [ReviewsGateway, ReviewsService, ReviewCommentsService],
-  exports: [ReviewsService], // for the future games module (average rating)
+  exports: [ReviewsService, ReviewCommentsService], // ReviewsService: game/company average rating. ReviewCommentsService: ReportsModule's admin-delete path.
 })
 export class ReviewsModule {}

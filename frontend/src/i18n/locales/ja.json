@@ -40,7 +40,8 @@
     "closeMenu": "メニューを閉じる",
     "notificationPrefs": "通知設定",
     "navigation": "ナビゲーションメニュー",
-    "replayTutorial": "チュートリアルをもう一度"
+    "replayTutorial": "チュートリアルをもう一度",
+    "adminReports": "通報"
   },
   "footer": {
     "tagline": "ビデオゲーム版 Letterboxd ・ 42 プロジェクト",
@@ -1498,6 +1499,43 @@
         "title": "設定",
         "body": "ここから設定を開けます：プロフィール、通知、テーマ、言語。"
       }
+    }
+  },
+  "report": {
+    "title": "通報する",
+    "intro": "このコンテンツを通報する理由をお知らせください。運営チームが確認します。",
+    "reasons": {
+      "SPAM": "スパム",
+      "HARASSMENT": "嫌がらせ",
+      "HATE_SPEECH": "ヘイトスピーチ",
+      "SPOILER": "未表示のネタバレ",
+      "OTHER": "その他"
+    },
+    "detailsPlaceholder": "追加の詳細（任意）",
+    "submit": "通報を送信",
+    "alreadyReported": "このコンテンツは既に通報済みです。",
+    "ownContent": "自分のコンテンツは通報できません。",
+    "unexpectedError": "エラーが発生しました。後でもう一度お試しください。"
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "モデレーション",
+      "heading": "通報",
+      "status": {
+        "PENDING": "未対応",
+        "RESOLVED": "対応済み",
+        "DISMISSED": "却下"
+      },
+      "empty": "通報はありません。",
+      "targetType": {
+        "REVIEW": "レビュー",
+        "COMMENT": "コメント"
+      },
+      "viewInContext": "文脈で見る",
+      "reportedBy": "通報者",
+      "dismiss": "却下",
+      "deleteContent": "コンテンツを削除",
+      "contentDeleted": "このコンテンツは削除されました。"
     }
   }
 }

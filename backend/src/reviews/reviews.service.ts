@@ -399,6 +399,18 @@ export class ReviewsService {
     this.gateway.emitToTarget(target, 'review:deleted', { reviewId: id });
   }
 
+  // Moderation path (ReportsService, after an admin resolves a report with
+  // action=delete) — same effect as remove() but skips the ownership check.
+  async removeAsAdmin(id: number) {
+    const review = await this.prisma.review.findUnique({
+      where: { id },
+      select: { gameId: true, companyId: true },
+    });
+    if (!review) throw new NotFoundException();
+    await this.prisma.review.delete({ where: { id } });
+    this.gateway.emitToTarget(review, 'review:deleted', { reviewId: id });
+  }
+
   async like(userId: number, reviewId: number) {
     try {
       // Atomic: liking always clears any existing dislike from the same user

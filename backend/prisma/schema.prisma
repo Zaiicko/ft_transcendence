@@ -69,6 +69,30 @@ enum PanoramaGuessStatus {
   ABANDONED
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ReportTargetType {
+  REVIEW
+  COMMENT
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  HATE_SPEECH
+  SPOILER
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
 // ---------- Users & social ----------
 
 model User {
@@ -153,6 +177,8 @@ model User {
   // the cron: an account is only "due" when this is null or stale. Bumped on
   // EVERY attempt, failures included, so a private profile isn't hammered.
   completionCheckedAt DateTime?
+  // No self-service path: promote via `UPDATE "User" SET role = 'ADMIN'`.
+  role             UserRole     @default(USER)
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
@@ -179,6 +205,8 @@ model User {
   coverGuessMatches   CoverGuessMatch[]
   screenshotGuessMatches ScreenshotGuessMatch[]
   panoramaGuessMatches PanoramaGuessMatch[]
+  reportsMade         Report[] @relation("ReportsMade")
+  reportsResolved     Report[] @relation("ReportsResolved")
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -364,6 +392,7 @@ model Review {
   comments     ReviewComment[]
   messages     Message[]
   translations ReviewTranslation[]
+  reports      Report[]
 
   // One review per user per target. NULLs never collide in a Postgres unique
   // index, so each constraint only bites for its own target kind.
@@ -434,6 +463,7 @@ model ReviewComment {
 
   likes    ReviewCommentLike[]
   dislikes ReviewCommentDislike[]
+  reports  Report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -466,6 +496,45 @@ model ReviewCommentDislike {
 
   @@unique([userId, commentId])
   @@index([commentId])
+}
+
+// User-submitted report on a review or comment, queued for an admin to
+// resolve (delete the content or dismiss the report) from /admin/reports.
+// Exactly one of review/comment is set, matching targetType — enforced in
+// the service layer, same pattern as Review's game/company split above.
+model Report {
+  id           Int              @id @default(autoincrement())
+  reporter     User             @relation("ReportsMade", fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId   Int
+  targetType   ReportTargetType
+  // SetNull, not Cascade: a resolved report is a moderation record — deleting
+  // the reported content (the whole point of action=delete) must not also
+  // wipe the report that documents the decision. Verified this the hard way:
+  // with Cascade, resolving a report deleted the review, which cascaded onto
+  // the just-created Report row before its own status update ran, silently
+  // erasing the very row being resolved.
+  review       Review?          @relation(fields: [reviewId], references: [id], onDelete: SetNull)
+  reviewId     Int?
+  comment      ReviewComment?   @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  commentId    Int?
+  reason       ReportReason
+  details      String?
+  status       ReportStatus     @default(PENDING)
+  resolvedBy   User?            @relation("ReportsResolved", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedById Int?
+  resolvedAt   DateTime?
+  createdAt    DateTime         @default(now())
+
+  // One report per user per target — TWO separate 2-column constraints, not
+  // one 3-column one: a single [reporterId, reviewId, commentId] constraint
+  // would never fire, since whichever of reviewId/commentId is unset is NULL
+  // on every row of that target type, and NULL never equals NULL in a
+  // Postgres unique index (verified: a duplicate report slipped through
+  // before this fix). Same [userId, gameId]/[userId, companyId] pattern as
+  // Review, just split into two declarations instead of one.
+  @@unique([reporterId, reviewId])
+  @@unique([reporterId, commentId])
+  @@index([status])
 }
 
 // "Done" status + date — feeds the yearly calendar and the per-game heart count

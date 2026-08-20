@@ -21,6 +21,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { OgModule } from './og/og.module';
 import { PresenceModule } from './presence/presence.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ReportsModule } from './reports/reports.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PsnModule } from './psn/psn.module';
 import { XboxModule } from './xbox/xbox.module';
@@ -63,6 +64,7 @@ import { UsersModule } from './users/users.module';
     CoverGuessModule,
     ScreenshotGuessModule,
     PanoramaGuessModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

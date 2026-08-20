@@ -40,7 +40,8 @@
     "closeMenu": "Fermer le menu",
     "notificationPrefs": "Préférences de notifications",
     "navigation": "Menu de navigation",
-    "replayTutorial": "Revoir le tuto"
+    "replayTutorial": "Revoir le tuto",
+    "adminReports": "Signalements"
   },
   "footer": {
     "tagline": "Le Letterboxd des jeux vidéo · projet 42",
@@ -1498,6 +1499,43 @@
         "title": "Réglages",
         "body": "Ouvre tes réglages ici : profil, notifications, thème et langue."
       }
+    }
+  },
+  "report": {
+    "title": "Signaler",
+    "intro": "Merci de préciser pourquoi vous signalez ce contenu. Notre équipe l'examinera.",
+    "reasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Harcèlement",
+      "HATE_SPEECH": "Discours haineux",
+      "SPOILER": "Spoiler non signalé",
+      "OTHER": "Autre"
+    },
+    "detailsPlaceholder": "Détails supplémentaires (facultatif)",
+    "submit": "Envoyer le signalement",
+    "alreadyReported": "Vous avez déjà signalé ce contenu.",
+    "ownContent": "Vous ne pouvez pas signaler votre propre contenu.",
+    "unexpectedError": "Une erreur est survenue. Réessayez plus tard."
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "Modération",
+      "heading": "Signalements",
+      "status": {
+        "PENDING": "En attente",
+        "RESOLVED": "Traités",
+        "DISMISSED": "Rejetés"
+      },
+      "empty": "Aucun signalement ici.",
+      "targetType": {
+        "REVIEW": "Critique",
+        "COMMENT": "Commentaire"
+      },
+      "viewInContext": "Voir en contexte",
+      "reportedBy": "Signalé par",
+      "dismiss": "Rejeter",
+      "deleteContent": "Supprimer le contenu",
+      "contentDeleted": "Ce contenu a été supprimé."
     }
   }
 }

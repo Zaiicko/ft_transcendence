@@ -36,6 +36,13 @@ const gearIcon = (
   </>
 );
 
+const flagIcon = (
+  <>
+    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+    <path d="M4 22V3" />
+  </>
+);
+
 const sunIcon = (
   <>
     <circle cx="12" cy="12" r="5" />
@@ -424,6 +431,16 @@ export default function Layout() {
                         >
                           <Icon>{gearIcon}</Icon> {t('menu.settings')}
                         </Link>
+                        {user.role === 'ADMIN' && (
+                          <Link
+                            to="/admin/reports"
+                            role="menuitem"
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
+                          >
+                            <Icon>{flagIcon}</Icon> {t('menu.adminReports')}
+                          </Link>
+                        )}
                       </>
                     )}
                     <button

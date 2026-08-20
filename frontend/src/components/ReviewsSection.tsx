@@ -13,7 +13,8 @@ import EmptyState, { PencilIcon } from './EmptyState';
 import FounderBadge from './FounderBadge';
 import LeaderboardRankBadge from './LeaderboardRankBadge';
 import Modal from './Modal';
-import { CheckIcon, CommentIcon, LinkIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
+import { CheckIcon, CommentIcon, FlagIcon, LinkIcon, ThumbsDownIcon, ThumbsUpIcon } from './ReactionIcons';
+import ReportModal from './ReportModal';
 import ReviewComments from './ReviewComments';
 import ShareButton from './ShareButton';
 import Stars from './Stars';
@@ -88,6 +89,10 @@ export default function ReviewsSection({
   const [editingId, setEditingId] = useState<number | null>(null);
   // Id of the review pending a delete confirmation (null = no confirm dialog open).
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  // Id of the review being reported (null = no report modal open) + ids
+  // already reported this session, to swap the flag for a confirmation.
+  const [reportingId, setReportingId] = useState<number | null>(null);
+  const [reportedIds, setReportedIds] = useState<Set<number>>(new Set());
   // The review form is collapsed by default, opened by a button.
   const [showForm, setShowForm] = useState(false);
   const reviewRef = useRef<HTMLElement>(null);
@@ -579,6 +584,22 @@ export default function ReviewsSection({
                         <LinkIcon className="h-3.5 w-3.5" />
                       )}
                     </button>
+                    {user && r.user?.id !== user.id && (
+                      <button
+                        type="button"
+                        disabled={reportedIds.has(r.id)}
+                        onClick={() => setReportingId(r.id)}
+                        title={t('report.title')}
+                        aria-label={t('report.title')}
+                        className={`inline-flex items-center justify-center rounded-full border px-2.5 py-1 transition ${
+                          reportedIds.has(r.id)
+                            ? 'border-zinc-400/60 text-zinc-400 dark:border-zinc-600 dark:text-zinc-600'
+                            : 'border-zinc-400/60 text-zinc-500 hover:border-red-400 hover:text-red-400 dark:border-zinc-600 dark:text-zinc-400'
+                        }`}
+                      >
+                        <FlagIcon className="h-3.5 w-3.5" />
+                      </button>
+                    )}
                     <div className="ml-auto flex items-center gap-3 text-zinc-400 dark:text-zinc-500">
                       {user && r.user?.id === user.id && (
                         <>
@@ -649,6 +670,17 @@ export default function ReviewsSection({
             </button>
           </div>
         </Modal>
+      )}
+      {reportingId !== null && (
+        <ReportModal
+          targetType="REVIEW"
+          targetId={reportingId}
+          onClose={() => setReportingId(null)}
+          onReported={() => {
+            setReportedIds((prev) => new Set(prev).add(reportingId));
+            setReportingId(null);
+          }}
+        />
       )}
     </section>
   );

@@ -1,11 +1,13 @@
 import { lazy, useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
+import AdminRoute from './auth/AdminRoute';
 import ProtectedRoute from './auth/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 
 // Route-level code-splitting: each page is a separate lazy chunk; the loading fallback lives in Layout's <Suspense>.
+const AdminReports = lazy(() => import('./pages/AdminReports'));
 const Catalog = lazy(() => import('./pages/Catalog'));
 const Company = lazy(() => import('./pages/Company'));
 const Feed = lazy(() => import('./pages/Feed'));
@@ -89,6 +91,9 @@ export default function App() {
               <Route path="/u/:username/library" element={<PlayerLibrary />} />
               <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />
               <Route path="/psn" element={<Navigate to="/library?platform=psn" replace />} />
+              <Route element={<AdminRoute />}>
+                <Route path="/admin/reports" element={<AdminReports />} />
+              </Route>
             </Route>
             <Route path="*" element={<NotFound />} />
           </Route>

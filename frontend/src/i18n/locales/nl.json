@@ -40,7 +40,8 @@
     "closeMenu": "Menu sluiten",
     "notificationPrefs": "Meldingsvoorkeuren",
     "navigation": "Navigatiemenu",
-    "replayTutorial": "Rondleiding opnieuw"
+    "replayTutorial": "Rondleiding opnieuw",
+    "adminReports": "Meldingen"
   },
   "footer": {
     "tagline": "De Letterboxd van videogames · 42-project",
@@ -1498,6 +1499,43 @@
         "title": "Instellingen",
         "body": "Open hier je instellingen: profiel, meldingen, thema en taal."
       }
+    }
+  },
+  "report": {
+    "title": "Melden",
+    "intro": "Laat ons weten waarom je deze inhoud meldt. Ons team bekijkt het.",
+    "reasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Intimidatie",
+      "HATE_SPEECH": "Haatzaaiende taal",
+      "SPOILER": "Ongemarkeerde spoiler",
+      "OTHER": "Anders"
+    },
+    "detailsPlaceholder": "Extra details (optioneel)",
+    "submit": "Melding versturen",
+    "alreadyReported": "Je hebt deze inhoud al gemeld.",
+    "ownContent": "Je kunt je eigen inhoud niet melden.",
+    "unexpectedError": "Er is iets misgegaan. Probeer het later opnieuw."
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "Moderatie",
+      "heading": "Meldingen",
+      "status": {
+        "PENDING": "In behandeling",
+        "RESOLVED": "Afgehandeld",
+        "DISMISSED": "Afgewezen"
+      },
+      "empty": "Geen meldingen hier.",
+      "targetType": {
+        "REVIEW": "Recensie",
+        "COMMENT": "Reactie"
+      },
+      "viewInContext": "Bekijk in context",
+      "reportedBy": "Gemeld door",
+      "dismiss": "Afwijzen",
+      "deleteContent": "Inhoud verwijderen",
+      "contentDeleted": "Deze inhoud is verwijderd."
     }
   }
 }

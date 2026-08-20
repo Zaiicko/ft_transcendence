@@ -40,7 +40,8 @@
     "closeMenu": "Close menu",
     "notificationPrefs": "Notification preferences",
     "navigation": "Navigation menu",
-    "replayTutorial": "Replay the tour"
+    "replayTutorial": "Replay the tour",
+    "adminReports": "Reports"
   },
   "footer": {
     "tagline": "The Letterboxd of video games · 42 project",
@@ -1498,6 +1499,43 @@
         "title": "Settings",
         "body": "Open your settings here: profile, notifications, theme and language."
       }
+    }
+  },
+  "report": {
+    "title": "Report",
+    "intro": "Please tell us why you're reporting this content. Our team will review it.",
+    "reasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Harassment",
+      "HATE_SPEECH": "Hate speech",
+      "SPOILER": "Unmarked spoiler",
+      "OTHER": "Other"
+    },
+    "detailsPlaceholder": "Additional details (optional)",
+    "submit": "Send report",
+    "alreadyReported": "You already reported this content.",
+    "ownContent": "You can't report your own content.",
+    "unexpectedError": "Something went wrong. Please try again later."
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "Moderation",
+      "heading": "Reports",
+      "status": {
+        "PENDING": "Pending",
+        "RESOLVED": "Resolved",
+        "DISMISSED": "Dismissed"
+      },
+      "empty": "No reports here.",
+      "targetType": {
+        "REVIEW": "Review",
+        "COMMENT": "Comment"
+      },
+      "viewInContext": "View in context",
+      "reportedBy": "Reported by",
+      "dismiss": "Dismiss",
+      "deleteContent": "Delete content",
+      "contentDeleted": "This content has been deleted."
     }
   }
 }

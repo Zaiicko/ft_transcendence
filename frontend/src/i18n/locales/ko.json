@@ -40,7 +40,8 @@
     "closeMenu": "메뉴 닫기",
     "notificationPrefs": "알림 설정",
     "navigation": "탐색 메뉴",
-    "replayTutorial": "튜토리얼 다시 보기"
+    "replayTutorial": "튜토리얼 다시 보기",
+    "adminReports": "신고"
   },
   "footer": {
     "tagline": "비디오 게임의 Letterboxd · 42 프로젝트",
@@ -1498,6 +1499,43 @@
         "title": "설정",
         "body": "여기서 설정을 열 수 있습니다: 프로필, 알림, 테마, 언어."
       }
+    }
+  },
+  "report": {
+    "title": "신고하기",
+    "intro": "이 콘텐츠를 신고하는 이유를 알려주세요. 저희 팀이 검토하겠습니다.",
+    "reasons": {
+      "SPAM": "스팸",
+      "HARASSMENT": "괴롭힘",
+      "HATE_SPEECH": "혐오 발언",
+      "SPOILER": "표시되지 않은 스포일러",
+      "OTHER": "기타"
+    },
+    "detailsPlaceholder": "추가 세부정보 (선택 사항)",
+    "submit": "신고 보내기",
+    "alreadyReported": "이미 이 콘텐츠를 신고했습니다.",
+    "ownContent": "본인의 콘텐츠는 신고할 수 없습니다.",
+    "unexpectedError": "문제가 발생했습니다. 나중에 다시 시도해 주세요."
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "모더레이션",
+      "heading": "신고",
+      "status": {
+        "PENDING": "대기 중",
+        "RESOLVED": "처리됨",
+        "DISMISSED": "기각됨"
+      },
+      "empty": "신고가 없습니다.",
+      "targetType": {
+        "REVIEW": "리뷰",
+        "COMMENT": "댓글"
+      },
+      "viewInContext": "본문에서 보기",
+      "reportedBy": "신고자",
+      "dismiss": "기각",
+      "deleteContent": "콘텐츠 삭제",
+      "contentDeleted": "이 콘텐츠는 삭제되었습니다."
     }
   }
 }

@@ -40,7 +40,8 @@
     "closeMenu": "Zamknij menu",
     "notificationPrefs": "Preferencje powiadomień",
     "navigation": "Menu nawigacji",
-    "replayTutorial": "Powtórz samouczek"
+    "replayTutorial": "Powtórz samouczek",
+    "adminReports": "Zgłoszenia"
   },
   "footer": {
     "tagline": "Letterboxd dla gier wideo · projekt 42",
@@ -1498,6 +1499,43 @@
         "title": "Ustawienia",
         "body": "Otwórz tutaj ustawienia: profil, powiadomienia, motyw i język."
       }
+    }
+  },
+  "report": {
+    "title": "Zgłoś",
+    "intro": "Powiedz nam, dlaczego zgłaszasz tę treść. Nasz zespół ją sprawdzi.",
+    "reasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Nękanie",
+      "HATE_SPEECH": "Mowa nienawiści",
+      "SPOILER": "Nieoznaczony spoiler",
+      "OTHER": "Inne"
+    },
+    "detailsPlaceholder": "Dodatkowe szczegóły (opcjonalnie)",
+    "submit": "Wyślij zgłoszenie",
+    "alreadyReported": "Już zgłosiłeś/aś tę treść.",
+    "ownContent": "Nie możesz zgłosić własnej treści.",
+    "unexpectedError": "Coś poszło nie tak. Spróbuj ponownie później."
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "Moderacja",
+      "heading": "Zgłoszenia",
+      "status": {
+        "PENDING": "Oczekujące",
+        "RESOLVED": "Rozpatrzone",
+        "DISMISSED": "Odrzucone"
+      },
+      "empty": "Brak zgłoszeń.",
+      "targetType": {
+        "REVIEW": "Recenzja",
+        "COMMENT": "Komentarz"
+      },
+      "viewInContext": "Zobacz w kontekście",
+      "reportedBy": "Zgłoszone przez",
+      "dismiss": "Odrzuć",
+      "deleteContent": "Usuń treść",
+      "contentDeleted": "Ta treść została usunięta."
     }
   }
 }

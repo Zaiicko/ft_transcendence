@@ -40,7 +40,8 @@
     "closeMenu": "Menüyü kapat",
     "notificationPrefs": "Bildirim tercihleri",
     "navigation": "Gezinme menüsü",
-    "replayTutorial": "Turu tekrar izle"
+    "replayTutorial": "Turu tekrar izle",
+    "adminReports": "Şikayetler"
   },
   "footer": {
     "tagline": "Video oyunlarının Letterboxd'u · 42 projesi",
@@ -1498,6 +1499,43 @@
         "title": "Ayarlar",
         "body": "Ayarlarını buradan aç: profil, bildirimler, tema ve dil."
       }
+    }
+  },
+  "report": {
+    "title": "Şikayet et",
+    "intro": "Bu içeriği neden şikayet ettiğinizi bize bildirin. Ekibimiz inceleyecektir.",
+    "reasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Taciz",
+      "HATE_SPEECH": "Nefret söylemi",
+      "SPOILER": "İşaretlenmemiş spoiler",
+      "OTHER": "Diğer"
+    },
+    "detailsPlaceholder": "Ek ayrıntılar (isteğe bağlı)",
+    "submit": "Şikayeti gönder",
+    "alreadyReported": "Bu içeriği zaten şikayet ettiniz.",
+    "ownContent": "Kendi içeriğinizi şikayet edemezsiniz.",
+    "unexpectedError": "Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin."
+  },
+  "admin": {
+    "reports": {
+      "eyebrow": "Moderasyon",
+      "heading": "Şikayetler",
+      "status": {
+        "PENDING": "Bekleyen",
+        "RESOLVED": "Çözüldü",
+        "DISMISSED": "Reddedildi"
+      },
+      "empty": "Burada şikayet yok.",
+      "targetType": {
+        "REVIEW": "Değerlendirme",
+        "COMMENT": "Yorum"
+      },
+      "viewInContext": "Bağlamında görüntüle",
+      "reportedBy": "Şikayet eden",
+      "dismiss": "Reddet",
+      "deleteContent": "İçeriği sil",
+      "contentDeleted": "Bu içerik silindi."
     }
   }
 }
