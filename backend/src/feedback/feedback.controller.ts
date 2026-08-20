@@ -32,6 +32,15 @@ export class FeedbackController {
     return this.feedbackService.list(status ?? 'OPEN');
   }
 
+  // The ticket owner closing their own thread from the chat UI — not an
+  // admin action, so no AdminGuard. Declared before ':id/...' even though
+  // the literal 'mine' segment can't collide with a numeric :id anyway.
+  @UseGuards(JwtAuthGuard)
+  @Patch('mine/close')
+  closeMine(@CurrentUser() user: JwtPayload) {
+    return this.feedbackService.closeLatestForUser(user.sub);
+  }
+
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Patch(':id/resolve')
   resolve(@CurrentUser() admin: JwtPayload, @Param('id', ParseIntPipe) id: number) {

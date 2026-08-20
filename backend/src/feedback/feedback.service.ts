@@ -106,6 +106,45 @@ export class FeedbackService {
     return { ok: true };
   }
 
+  // Ticket-system behaviour: the user's OWN latest ticket, whichever status
+  // it's in. Both reopen (a chat reply) and close (the user's own button)
+  // act on this — a user only ever has one active thread with the bot, so
+  // there's no ambiguity about which ticket a reply belongs to.
+  private latestForUser(userId: number) {
+    return this.prisma.feedback.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, status: true },
+    });
+  }
+
+  // Called by ChatService when the user messages the Admin bot — if their
+  // latest ticket was already resolved, a reply means they need more help,
+  // so it goes back on the admin's Open queue. Already-open is a no-op.
+  async reopenLatestForUser(userId: number) {
+    const latest = await this.latestForUser(userId);
+    if (latest && latest.status === 'RESOLVED') {
+      await this.prisma.feedback.update({
+        where: { id: latest.id },
+        data: { status: 'OPEN', resolvedById: null, resolvedAt: null },
+      });
+    }
+  }
+
+  // The user's own "close ticket" action (from their chat thread with the
+  // bot) — same effect as an admin resolving it, just attributed to the
+  // user themselves. A no-op if there's no ticket or it's already resolved.
+  async closeLatestForUser(userId: number) {
+    const latest = await this.latestForUser(userId);
+    if (latest && latest.status === 'OPEN') {
+      await this.prisma.feedback.update({
+        where: { id: latest.id },
+        data: { status: 'RESOLVED', resolvedById: userId, resolvedAt: new Date() },
+      });
+    }
+    return { ok: true };
+  }
+
   private async getOrCreateAdminBot(): Promise<number> {
     const existing = await this.prisma.user.findFirst({
       where: { isSystemAccount: true },

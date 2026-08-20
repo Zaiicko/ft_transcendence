@@ -182,7 +182,15 @@ export interface ChatMessage {
 }
 
 export interface ChatConversation {
-  friend: { id: number; username: string; avatarUrl: string | null; isOnline: boolean };
+  friend: {
+    id: number;
+    username: string;
+    avatarUrl: string | null;
+    isOnline: boolean;
+    // The feedback-reply "Admin" bot — drives the "Close ticket" affordance
+    // in the thread view (see ChatWidget's Thread component).
+    isSystemAccount: boolean;
+  };
   lastMessage: ChatMessage | null;
   unread: number;
 }

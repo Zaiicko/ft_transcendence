@@ -966,7 +966,9 @@
     "noMessage": "Нет сообщений",
     "sharedGame": "Игра (поделились)",
     "sharedReview": "Обзор (поделились)",
-    "sharedProfile": "Профиль (поделились)"
+    "sharedProfile": "Профиль (поделились)",
+    "closeTicket": "Закрыть тикет",
+    "ticketClosed": "Тикет закрыт"
   },
   "company": {
     "notFound": "Студия не найдена.",

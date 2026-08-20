@@ -966,7 +966,9 @@
     "noMessage": "Mesaj yok",
     "sharedGame": "Paylaşılan oyun",
     "sharedReview": "Paylaşılan inceleme",
-    "sharedProfile": "Paylaşılan profil"
+    "sharedProfile": "Paylaşılan profil",
+    "closeTicket": "Bileti kapat",
+    "ticketClosed": "Bilet kapatıldı"
   },
   "company": {
     "notFound": "Stüdyo bulunamadı.",

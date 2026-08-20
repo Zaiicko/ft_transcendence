@@ -966,7 +966,9 @@
     "noMessage": "Geen bericht",
     "sharedGame": "Gedeelde game",
     "sharedReview": "Gedeelde recensie",
-    "sharedProfile": "Gedeeld profiel"
+    "sharedProfile": "Gedeeld profiel",
+    "closeTicket": "Ticket sluiten",
+    "ticketClosed": "Ticket gesloten"
   },
   "company": {
     "notFound": "Studio niet gevonden.",

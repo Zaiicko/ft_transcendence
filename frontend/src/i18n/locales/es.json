@@ -966,7 +966,9 @@
     "noMessage": "Sin mensajes",
     "sharedGame": "Juego compartido",
     "sharedReview": "Reseña compartida",
-    "sharedProfile": "Perfil compartido"
+    "sharedProfile": "Perfil compartido",
+    "closeTicket": "Cerrar ticket",
+    "ticketClosed": "Ticket cerrado"
   },
   "company": {
     "notFound": "Estudio no encontrado.",

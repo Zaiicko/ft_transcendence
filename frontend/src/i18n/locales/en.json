@@ -966,7 +966,9 @@
     "noMessage": "No message",
     "sharedGame": "Shared game",
     "sharedReview": "Shared review",
-    "sharedProfile": "Shared profile"
+    "sharedProfile": "Shared profile",
+    "closeTicket": "Close ticket",
+    "ticketClosed": "Ticket closed"
   },
   "company": {
     "notFound": "Studio not found.",

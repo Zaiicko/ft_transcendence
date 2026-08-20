@@ -966,7 +966,9 @@
     "noMessage": "Brak wiadomości",
     "sharedGame": "Udostępniona gra",
     "sharedReview": "Udostępniona recenzja",
-    "sharedProfile": "Udostępniony profil"
+    "sharedProfile": "Udostępniony profil",
+    "closeTicket": "Zamknij zgłoszenie",
+    "ticketClosed": "Zgłoszenie zamknięte"
   },
   "company": {
     "notFound": "Nie znaleziono studia.",

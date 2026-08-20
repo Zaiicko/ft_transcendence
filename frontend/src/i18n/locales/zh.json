@@ -966,7 +966,9 @@
     "noMessage": "暂无消息",
     "sharedGame": "分享的游戏",
     "sharedReview": "分享的评价",
-    "sharedProfile": "分享的主页"
+    "sharedProfile": "分享的主页",
+    "closeTicket": "关闭工单",
+    "ticketClosed": "工单已关闭"
   },
   "company": {
     "notFound": "未找到工作室。",

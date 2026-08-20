@@ -966,7 +966,9 @@
     "noMessage": "メッセージなし",
     "sharedGame": "共有されたゲーム",
     "sharedReview": "共有されたレビュー",
-    "sharedProfile": "共有されたプロフィール"
+    "sharedProfile": "共有されたプロフィール",
+    "closeTicket": "チケットを閉じる",
+    "ticketClosed": "チケットを閉じました"
   },
   "company": {
     "notFound": "スタジオが見つかりません。",

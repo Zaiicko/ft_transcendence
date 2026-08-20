@@ -966,7 +966,9 @@
     "noMessage": "메시지 없음",
     "sharedGame": "공유된 게임",
     "sharedReview": "공유된 리뷰",
-    "sharedProfile": "공유된 프로필"
+    "sharedProfile": "공유된 프로필",
+    "closeTicket": "티켓 닫기",
+    "ticketClosed": "티켓이 닫혔습니다"
   },
   "company": {
     "notFound": "스튜디오를 찾을 수 없습니다.",
