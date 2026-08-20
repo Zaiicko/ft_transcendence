@@ -179,6 +179,12 @@ model User {
   completionCheckedAt DateTime?
   // No self-service path: promote via `UPDATE "User" SET role = 'ADMIN'`.
   role             UserRole     @default(USER)
+  // Set by an admin (PATCH /users/:id/ban). Enforced in AuthService.issueTokens
+  // — every login/refresh/2FA-completion path funnels through it — rather
+  // than on every request via the JWT strategy, so a ban takes effect within
+  // one access-token lifetime (default 15m) without an extra DB read per request.
+  bannedAt         DateTime?
+  bannedReason     String?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
@@ -207,6 +213,7 @@ model User {
   panoramaGuessMatches PanoramaGuessMatch[]
   reportsMade         Report[] @relation("ReportsMade")
   reportsResolved     Report[] @relation("ReportsResolved")
+  reportsAsTarget     Report[] @relation("ReportsTargetAuthor")
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -517,6 +524,12 @@ model Report {
   reviewId     Int?
   comment      ReviewComment?   @relation(fields: [commentId], references: [id], onDelete: SetNull)
   commentId    Int?
+  // Snapshot of the review/comment author at report time, captured
+  // separately from review.user/comment.user — those go through the
+  // content's own SetNull and (for a deleted account) get anonymised, which
+  // would make banning the right person impossible once content is gone.
+  targetAuthor   User?          @relation("ReportsTargetAuthor", fields: [targetAuthorId], references: [id], onDelete: SetNull)
+  targetAuthorId Int?
   reason       ReportReason
   details      String?
   status       ReportStatus     @default(PENDING)

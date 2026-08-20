@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { CompaniesModule } from './companies/companies.module';
 import { CompletionsModule } from './completions/completions.module';
 import { FeedModule } from './feed/feed.module';
+import { FeedbackModule } from './feedback/feedback.module';
 import { FriendsModule } from './friends/friends.module';
 import { GamesModule } from './games/games.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
@@ -65,6 +66,7 @@ import { UsersModule } from './users/users.module';
     ScreenshotGuessModule,
     PanoramaGuessModule,
     ReportsModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

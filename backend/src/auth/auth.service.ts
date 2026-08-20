@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { AuthProvider, Prisma, User, VerificationTokenType } from '@prisma/client';
@@ -155,6 +155,16 @@ export class AuthService {
   }
 
   async issueTokens(user: User): Promise<TokenPair> {
+    // Single choke point for every path that mints a session (local login,
+    // OAuth/Steam callbacks, 2FA completion, refresh rotation) — enforcing
+    // the ban here instead of per-request in JwtStrategy avoids an extra DB
+    // read on every authenticated call, at the cost of at most one
+    // access-token lifetime (JWT_ACCESS_TTL, default 15m) before an
+    // already-issued token stops working. ban() also revokes refresh
+    // tokens, so the next refresh attempt fails immediately regardless.
+    if (user.bannedAt) {
+      throw new ForbiddenException('This account has been banned');
+    }
     const accessTtl = this.config.get<string>('JWT_ACCESS_TTL') ?? '15m';
     const refreshTtlMs = this.parseDurationMs(this.config.get<string>('JWT_REFRESH_TTL') ?? '30d');
 

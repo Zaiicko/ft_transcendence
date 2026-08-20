@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "Das Letterboxd der Videospiele · 42-Projekt",
     "privacy": "Datenschutzrichtlinie",
-    "terms": "Nutzungsbedingungen"
+    "terms": "Nutzungsbedingungen",
+    "feedback": "Fehler melden"
   },
   "languagePicker": {
     "title": "Sprache"
@@ -72,7 +73,8 @@
       "errorGeneric": "Bei der Anmeldung ist etwas schiefgelaufen — versuch es bitte erneut.",
       "steamFailed": "Anmeldung mit Steam fehlgeschlagen — bitte versuch es erneut",
       "sessionExpired": "Deine Sitzung ist abgelaufen — bitte melde dich erneut an",
-      "subtitle": "Setze dein Spieltagebuch dort fort, wo du aufgehört hast."
+      "subtitle": "Setze dein Spieltagebuch dort fort, wo du aufgehört hast.",
+      "banned": "Dieses Konto wurde gesperrt."
     },
     "twoFactor": {
       "title": "Zwei-Faktor-Code",
@@ -1535,7 +1537,22 @@
       "reportedBy": "Gemeldet von",
       "dismiss": "Ablehnen",
       "deleteContent": "Inhalt löschen",
-      "contentDeleted": "Dieser Inhalt wurde gelöscht."
+      "contentDeleted": "Dieser Inhalt wurde gelöscht.",
+      "banAuthor": "{{username}} sperren",
+      "unbanAuthor": "{{username}} entsperren",
+      "banModalTitle": "{{username}} sperren",
+      "banModalIntro": "Dieses Konto kann sich nicht mehr anmelden, bis es entsperrt wird.",
+      "banReasonPlaceholder": "Grund (optional, wird im Admin-Protokoll gespeichert)",
+      "confirmBan": "Sperrung bestätigen"
     }
+  },
+  "feedback": {
+    "title": "Fehler melden / Feedback geben",
+    "intro": "Ein Problem oder eine Idee? Beschreibe es hier, wir schauen es uns an.",
+    "messagePlaceholder": "Beschreibe das Problem oder deine Idee …",
+    "emailPlaceholder": "Deine E-Mail (optional, damit wir antworten können)",
+    "submit": "Senden",
+    "thanks": "Danke! Deine Nachricht wurde gesendet.",
+    "unexpectedError": "Etwas ist schiefgelaufen. Bitte versuche es später erneut."
   }
 }

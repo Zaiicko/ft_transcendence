@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "The Letterboxd of video games · 42 project",
     "privacy": "Privacy Policy",
-    "terms": "Terms of Service"
+    "terms": "Terms of Service",
+    "feedback": "Report a bug"
   },
   "languagePicker": {
     "title": "Language"
@@ -72,7 +73,8 @@
       "errorGeneric": "Something went wrong signing in — please try again.",
       "steamFailed": "Steam sign-in failed — please try again",
       "sessionExpired": "Your session has expired — please log in again",
-      "subtitle": "Pick up your game journal right where you left off."
+      "subtitle": "Pick up your game journal right where you left off.",
+      "banned": "This account has been banned."
     },
     "twoFactor": {
       "title": "Two-factor code",
@@ -1535,7 +1537,22 @@
       "reportedBy": "Reported by",
       "dismiss": "Dismiss",
       "deleteContent": "Delete content",
-      "contentDeleted": "This content has been deleted."
+      "contentDeleted": "This content has been deleted.",
+      "banAuthor": "Ban {{username}}",
+      "unbanAuthor": "Unban {{username}}",
+      "banModalTitle": "Ban {{username}}",
+      "banModalIntro": "This account won't be able to log in until it's unbanned.",
+      "banReasonPlaceholder": "Reason (optional, kept in the admin log)",
+      "confirmBan": "Confirm ban"
     }
+  },
+  "feedback": {
+    "title": "Report a bug / send feedback",
+    "intro": "Found a problem or have an idea? Tell us here, we'll take a look.",
+    "messagePlaceholder": "Describe the problem or your idea…",
+    "emailPlaceholder": "Your email (optional, so we can reply)",
+    "submit": "Send",
+    "thanks": "Thanks! Your message has been sent.",
+    "unexpectedError": "Something went wrong. Please try again later."
   }
 }

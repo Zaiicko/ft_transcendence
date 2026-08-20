@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "ビデオゲーム版 Letterboxd ・ 42 プロジェクト",
     "privacy": "プライバシーポリシー",
-    "terms": "利用規約"
+    "terms": "利用規約",
+    "feedback": "不具合を報告"
   },
   "languagePicker": {
     "title": "言語"
@@ -72,7 +73,8 @@
       "errorGeneric": "サインイン中に問題が発生しました。もう一度お試しください。",
       "steamFailed": "Steam でのサインインに失敗しました。もう一度お試しください",
       "sessionExpired": "セッションの有効期限が切れました。もう一度ログインしてください",
-      "subtitle": "ゲーム日記を続きから再開しよう。"
+      "subtitle": "ゲーム日記を続きから再開しよう。",
+      "banned": "このアカウントはBANされています。"
     },
     "twoFactor": {
       "title": "二段階認証コード",
@@ -1535,7 +1537,22 @@
       "reportedBy": "通報者",
       "dismiss": "却下",
       "deleteContent": "コンテンツを削除",
-      "contentDeleted": "このコンテンツは削除されました。"
+      "contentDeleted": "このコンテンツは削除されました。",
+      "banAuthor": "{{username}} をBANする",
+      "unbanAuthor": "{{username}} のBANを解除する",
+      "banModalTitle": "{{username}} をBANする",
+      "banModalIntro": "このアカウントはBAN解除されるまでログインできなくなります。",
+      "banReasonPlaceholder": "理由（任意、管理ログに記録されます）",
+      "confirmBan": "BANを確定する"
     }
+  },
+  "feedback": {
+    "title": "不具合を報告 / フィードバックを送る",
+    "intro": "問題やアイデアがありますか？こちらにご記入ください。確認いたします。",
+    "messagePlaceholder": "問題やアイデアを記入してください…",
+    "emailPlaceholder": "メールアドレス（任意、返信のため）",
+    "submit": "送信",
+    "thanks": "ありがとうございます！メッセージが送信されました。",
+    "unexpectedError": "エラーが発生しました。後でもう一度お試しください。"
   }
 }

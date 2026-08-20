@@ -50,7 +50,13 @@ export default function Login() {
         navigate(from, { replace: true });
       }
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : t('auth.login.genericError'));
+      setError(
+        err instanceof ApiError && err.status === 403
+          ? t('auth.login.banned')
+          : err instanceof ApiError
+            ? err.message
+            : t('auth.login.genericError'),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -64,7 +70,13 @@ export default function Login() {
       await completeTwoFactorLogin(code);
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : t('auth.twoFactor.invalidCode'));
+      setError(
+        err instanceof ApiError && err.status === 403
+          ? t('auth.login.banned')
+          : err instanceof ApiError
+            ? err.message
+            : t('auth.twoFactor.invalidCode'),
+      );
     } finally {
       setSubmitting(false);
     }

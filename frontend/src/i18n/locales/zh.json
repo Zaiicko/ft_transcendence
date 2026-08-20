@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "电子游戏版的 Letterboxd · 42 项目",
     "privacy": "隐私政策",
-    "terms": "服务条款"
+    "terms": "服务条款",
+    "feedback": "反馈问题"
   },
   "languagePicker": {
     "title": "语言"
@@ -72,7 +73,8 @@
       "errorGeneric": "登录时出现问题，请重试。",
       "steamFailed": "Steam 登录失败，请重试",
       "sessionExpired": "你的会话已过期，请重新登录",
-      "subtitle": "从上次离开的地方继续你的游戏日志。"
+      "subtitle": "从上次离开的地方继续你的游戏日志。",
+      "banned": "该账号已被封禁。"
     },
     "twoFactor": {
       "title": "双重验证码",
@@ -1535,7 +1537,22 @@
       "reportedBy": "举报人",
       "dismiss": "驳回",
       "deleteContent": "删除内容",
-      "contentDeleted": "该内容已被删除。"
+      "contentDeleted": "该内容已被删除。",
+      "banAuthor": "封禁 {{username}}",
+      "unbanAuthor": "解封 {{username}}",
+      "banModalTitle": "封禁 {{username}}",
+      "banModalIntro": "该账号在被解封之前将无法登录。",
+      "banReasonPlaceholder": "原因（可选，会记录在管理员日志中）",
+      "confirmBan": "确认封禁"
     }
+  },
+  "feedback": {
+    "title": "反馈问题 / 提交意见",
+    "intro": "遇到问题或有什么想法？在这里告诉我们，我们会查看。",
+    "messagePlaceholder": "描述问题或你的想法……",
+    "emailPlaceholder": "您的邮箱（可选，方便我们回复）",
+    "submit": "发送",
+    "thanks": "谢谢！您的消息已发送。",
+    "unexpectedError": "出现错误，请稍后重试。"
   }
 }

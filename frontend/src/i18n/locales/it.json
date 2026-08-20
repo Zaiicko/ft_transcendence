@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "Il Letterboxd dei videogiochi · progetto 42",
     "privacy": "Informativa sulla privacy",
-    "terms": "Termini di servizio"
+    "terms": "Termini di servizio",
+    "feedback": "Segnala un bug"
   },
   "languagePicker": {
     "title": "Lingua"
@@ -72,7 +73,8 @@
       "errorGeneric": "Qualcosa è andato storto durante l'accesso — riprova.",
       "steamFailed": "Accesso con Steam non riuscito — riprova",
       "sessionExpired": "La tua sessione è scaduta — accedi di nuovo",
-      "subtitle": "Riprendi il tuo diario di gioco da dove l'hai lasciato."
+      "subtitle": "Riprendi il tuo diario di gioco da dove l'hai lasciato.",
+      "banned": "Questo account è stato bannato."
     },
     "twoFactor": {
       "title": "Codice a due fattori",
@@ -1535,7 +1537,22 @@
       "reportedBy": "Segnalato da",
       "dismiss": "Respingi",
       "deleteContent": "Elimina contenuto",
-      "contentDeleted": "Questo contenuto è stato eliminato."
+      "contentDeleted": "Questo contenuto è stato eliminato.",
+      "banAuthor": "Banna {{username}}",
+      "unbanAuthor": "Rimuovi il ban a {{username}}",
+      "banModalTitle": "Banna {{username}}",
+      "banModalIntro": "Questo account non potrà accedere finché non verrà sbannato.",
+      "banReasonPlaceholder": "Motivo (facoltativo, conservato nel registro admin)",
+      "confirmBan": "Conferma ban"
     }
+  },
+  "feedback": {
+    "title": "Segnala un bug / lascia un feedback",
+    "intro": "Un problema, un'idea? Descrivila qui, ci daremo un'occhiata.",
+    "messagePlaceholder": "Descrivi il problema o la tua idea…",
+    "emailPlaceholder": "La tua email (facoltativa, per poterti rispondere)",
+    "submit": "Invia",
+    "thanks": "Grazie! Il tuo messaggio è stato inviato.",
+    "unexpectedError": "Si è verificato un errore. Riprova più tardi."
   }
 }

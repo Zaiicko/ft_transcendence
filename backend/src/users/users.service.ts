@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { FriendshipStatus, Prisma } from '@prisma/client';
 import { existsSync } from 'fs';
 import { unlink } from 'fs/promises';
@@ -36,6 +36,39 @@ export class UsersService {
   // derived here, never passed in by callers.
   create(data: Omit<Prisma.UserCreateInput, 'usernameLower'>) {
     return this.prisma.user.create({ data: { ...data, usernameLower: data.username.toLowerCase() } });
+  }
+
+  // Blocks future logins/refreshes (AuthService.issueTokens checks
+  // bannedAt), so lockout lands within one access-token lifetime. Existing
+  // refresh tokens are also revoked right away — same pattern as logout() —
+  // so a silent refresh fails immediately instead of waiting that out.
+  async ban(adminId: number, targetId: number, reason?: string) {
+    if (targetId === adminId) throw new ForbiddenException("You can't ban yourself");
+    const target = await this.prisma.user.findUnique({
+      where: { id: targetId },
+      select: { role: true },
+    });
+    if (!target) throw new NotFoundException();
+    if (target.role === 'ADMIN') throw new ForbiddenException("You can't ban another admin");
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: targetId },
+        data: { bannedAt: new Date(), bannedReason: reason ?? null },
+      }),
+      this.prisma.refreshToken.updateMany({
+        where: { userId: targetId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      }),
+    ]);
+  }
+
+  async unban(targetId: number) {
+    const target = await this.prisma.user.findUnique({ where: { id: targetId }, select: { id: true } });
+    if (!target) throw new NotFoundException();
+    await this.prisma.user.update({
+      where: { id: targetId },
+      data: { bannedAt: null, bannedReason: null },
+    });
   }
 
   findById(id: number) {

@@ -4,6 +4,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from '../auth/AuthContext';
 import Avatar from './Avatar';
 import ChatWidget from './ChatWidget';
+import FeedbackModal from './FeedbackModal';
 import LanguageSwitcher from './LanguageSwitcher';
 import GameInviteOverlay from '../minigames/GameInviteOverlay';
 import NotificationBell from './NotificationBell';
@@ -111,6 +112,7 @@ export default function Layout() {
   const [languagePickerOpen, setLanguagePickerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   // Prevents the tour from auto-restarting in the same session after it's closed (tutorialSeen only turns true after the POST).
   const tourAutoStarted = useRef(false);
 
@@ -523,12 +525,21 @@ export default function Layout() {
             <Link to="/terms-of-service" className="transition hover:text-accent">
               {t('footer.terms')}
             </Link>
+            <button
+              type="button"
+              onClick={() => setFeedbackOpen(true)}
+              className="transition hover:text-accent"
+            >
+              {t('footer.feedback')}
+            </button>
             <span className="font-normal normal-case text-zinc-400 dark:text-zinc-600">
               © {new Date().getFullYear()}
             </span>
           </nav>
         </div>
       </footer>
+
+      {feedbackOpen && <FeedbackModal onClose={() => setFeedbackOpen(false)} />}
 
       {notifPrefsOpen && (
         <div

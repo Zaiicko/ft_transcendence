@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "El Letterboxd de los videojuegos · proyecto 42",
     "privacy": "Política de privacidad",
-    "terms": "Términos del servicio"
+    "terms": "Términos del servicio",
+    "feedback": "Informar de un error"
   },
   "languagePicker": {
     "title": "Idioma"
@@ -72,7 +73,8 @@
       "errorGeneric": "Algo salió mal al iniciar sesión — inténtalo de nuevo.",
       "steamFailed": "Error al iniciar sesión con Steam — inténtalo de nuevo",
       "sessionExpired": "Tu sesión ha caducado — inicia sesión de nuevo",
-      "subtitle": "Retoma tu diario de juego donde lo dejaste."
+      "subtitle": "Retoma tu diario de juego donde lo dejaste.",
+      "banned": "Esta cuenta ha sido baneada."
     },
     "twoFactor": {
       "title": "Código de dos factores",
@@ -1535,7 +1537,22 @@
       "reportedBy": "Denunciado por",
       "dismiss": "Descartar",
       "deleteContent": "Eliminar contenido",
-      "contentDeleted": "Este contenido ha sido eliminado."
+      "contentDeleted": "Este contenido ha sido eliminado.",
+      "banAuthor": "Banear a {{username}}",
+      "unbanAuthor": "Desbanear a {{username}}",
+      "banModalTitle": "Banear a {{username}}",
+      "banModalIntro": "Esta cuenta no podrá iniciar sesión hasta que sea desbaneada.",
+      "banReasonPlaceholder": "Motivo (opcional, se guarda en el registro de administración)",
+      "confirmBan": "Confirmar baneo"
     }
+  },
+  "feedback": {
+    "title": "Informar de un error / enviar comentarios",
+    "intro": "¿Un problema, una idea? Cuéntanoslo aquí, lo revisaremos.",
+    "messagePlaceholder": "Describe el problema o tu idea…",
+    "emailPlaceholder": "Tu email (opcional, para poder responderte)",
+    "submit": "Enviar",
+    "thanks": "¡Gracias! Tu mensaje se ha enviado correctamente.",
+    "unexpectedError": "Ha ocurrido un error. Inténtalo de nuevo más tarde."
   }
 }

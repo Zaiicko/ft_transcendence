@@ -21,6 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { randomUUID } from 'crypto';
 import { diskStorage } from 'multer';
+import { AdminGuard } from '../auth/admin.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtPayload } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -28,6 +29,7 @@ import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { hashPassword, verifyPassword } from '../auth/password.util';
 import { AVATARS_DIR } from '../common/uploads';
 import { MailerService } from '../mailer/mailer.service';
+import { BanUserDto } from './dto/ban-user.dto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { AvatarFrameDto } from './dto/avatar-frame.dto';
@@ -101,6 +103,24 @@ export class UsersController {
     const user = await this.usersService.findById(id);
     if (!user) throw new NotFoundException();
     return toPublicUserLite(user);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id/ban')
+  @HttpCode(204)
+  async ban(
+    @CurrentUser() admin: JwtPayload,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: BanUserDto,
+  ) {
+    await this.usersService.ban(admin.sub, id, dto.reason);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Delete(':id/ban')
+  @HttpCode(204)
+  async unban(@Param('id', ParseIntPipe) id: number) {
+    await this.usersService.unban(id);
   }
 
   @UseGuards(JwtAuthGuard)

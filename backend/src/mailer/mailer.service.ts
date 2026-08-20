@@ -6,6 +6,9 @@ export interface MailMessage {
   to: string;
   subject: string;
   html: string;
+  // Set so a human reading the notification (e.g. feedback.service.ts) can
+  // just hit "reply" instead of copy-pasting an address out of the body.
+  replyTo?: string;
 }
 
 @Injectable()

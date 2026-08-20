@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "Letterboxd dla gier wideo · projekt 42",
     "privacy": "Polityka prywatności",
-    "terms": "Warunki korzystania"
+    "terms": "Warunki korzystania",
+    "feedback": "Zgłoś błąd"
   },
   "languagePicker": {
     "title": "Język"
@@ -72,7 +73,8 @@
       "errorGeneric": "Coś poszło nie tak podczas logowania — spróbuj ponownie.",
       "steamFailed": "Logowanie przez Steam nie powiodło się — spróbuj ponownie",
       "sessionExpired": "Twoja sesja wygasła — zaloguj się ponownie",
-      "subtitle": "Wróć do swojego dziennika gier tam, gdzie skończyłeś."
+      "subtitle": "Wróć do swojego dziennika gier tam, gdzie skończyłeś.",
+      "banned": "To konto zostało zablokowane."
     },
     "twoFactor": {
       "title": "Kod dwuskładnikowy",
@@ -1535,7 +1537,22 @@
       "reportedBy": "Zgłoszone przez",
       "dismiss": "Odrzuć",
       "deleteContent": "Usuń treść",
-      "contentDeleted": "Ta treść została usunięta."
+      "contentDeleted": "Ta treść została usunięta.",
+      "banAuthor": "Zablokuj {{username}}",
+      "unbanAuthor": "Odblokuj {{username}}",
+      "banModalTitle": "Zablokuj {{username}}",
+      "banModalIntro": "To konto nie będzie mogło się zalogować, dopóki nie zostanie odblokowane.",
+      "banReasonPlaceholder": "Powód (opcjonalnie, zapisywany w dzienniku administracyjnym)",
+      "confirmBan": "Potwierdź blokadę"
     }
+  },
+  "feedback": {
+    "title": "Zgłoś błąd / prześlij opinię",
+    "intro": "Problem albo pomysł? Opisz go tutaj, przyjrzymy się temu.",
+    "messagePlaceholder": "Opisz problem lub swój pomysł…",
+    "emailPlaceholder": "Twój e-mail (opcjonalnie, abyśmy mogli odpowiedzieć)",
+    "submit": "Wyślij",
+    "thanks": "Dziękujemy! Twoja wiadomość została wysłana.",
+    "unexpectedError": "Coś poszło nie tak. Spróbuj ponownie później."
   }
 }

@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import EmptyState from '../components/EmptyState';
+import Modal from '../components/Modal';
 import { FlagIcon } from '../components/ReactionIcons';
 import SectionHead from '../components/SectionHead';
 import { apiFetch } from '../lib/api';
 
 type ReportStatus = 'PENDING' | 'RESOLVED' | 'DISMISSED';
 type Author = { id: number; username: string; avatarUrl: string | null };
+type TargetAuthor = Author & { bannedAt: string | null };
 
 interface ReportT {
   id: number;
@@ -17,6 +19,7 @@ interface ReportT {
   details: string | null;
   createdAt: string;
   reporter: Author;
+  targetAuthor: TargetAuthor | null;
   review: {
     id: number;
     title: string;
@@ -56,6 +59,11 @@ export default function AdminReports() {
   const [reports, setReports] = useState<ReportT[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [banTarget, setBanTarget] = useState<TargetAuthor | null>(null);
+  // Local override of bannedAt per user id — the fetched list can go stale
+  // the moment a ban/unban succeeds, and the same author can appear on
+  // several report cards at once.
+  const [banOverrides, setBanOverrides] = useState<Record<number, boolean>>({});
 
   // Tab switch restarts the skeleton, same pattern as Catalog's filter change:
   // set during render, not inside the effect below.
@@ -84,6 +92,16 @@ export default function AdminReports() {
         body: JSON.stringify({ action }),
       });
       setReports((list) => list.filter((r) => r.id !== id));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function unban(userId: number) {
+    setBusyId(userId);
+    try {
+      await apiFetch(`/users/${userId}/ban`, { method: 'DELETE' });
+      setBanOverrides((o) => ({ ...o, [userId]: false }));
     } finally {
       setBusyId(null);
     }
@@ -175,24 +193,50 @@ export default function AdminReports() {
                   )}
                 </div>
 
-                {status === 'PENDING' && (
-                  <div className="mt-4 flex justify-end gap-2">
-                    <button
-                      type="button"
-                      disabled={busyId === r.id}
-                      onClick={() => resolve(r.id, 'dismiss')}
-                      className="rounded-full border border-zinc-400/60 px-4 py-1.5 text-xs font-semibold transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-600"
-                    >
-                      {t('admin.reports.dismiss')}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={busyId === r.id}
-                      onClick={() => resolve(r.id, 'delete')}
-                      className="rounded-full bg-red-500 px-4 py-1.5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
-                    >
-                      {t('admin.reports.deleteContent')}
-                    </button>
+                {(r.targetAuthor || status === 'PENDING') && (
+                  <div className="mt-4 flex items-center justify-between gap-2 border-t border-zinc-900/10 pt-3 dark:border-zinc-100/10">
+                    <div>
+                      {r.targetAuthor &&
+                        (banOverrides[r.targetAuthor.id] ?? r.targetAuthor.bannedAt !== null ? (
+                          <button
+                            type="button"
+                            disabled={busyId === r.targetAuthor.id}
+                            onClick={() => r.targetAuthor && unban(r.targetAuthor.id)}
+                            className="text-xs font-semibold text-zinc-500 underline-offset-2 transition hover:text-accent hover:underline disabled:opacity-50"
+                          >
+                            {t('admin.reports.unbanAuthor', { username: r.targetAuthor.username })}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => r.targetAuthor && setBanTarget(r.targetAuthor)}
+                            className="text-xs font-semibold text-red-400 underline-offset-2 transition hover:underline"
+                          >
+                            {t('admin.reports.banAuthor', { username: r.targetAuthor.username })}
+                          </button>
+                        ))}
+                    </div>
+
+                    {status === 'PENDING' && (
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          disabled={busyId === r.id}
+                          onClick={() => resolve(r.id, 'dismiss')}
+                          className="rounded-full border border-zinc-400/60 px-4 py-1.5 text-xs font-semibold transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-600"
+                        >
+                          {t('admin.reports.dismiss')}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busyId === r.id}
+                          onClick={() => resolve(r.id, 'delete')}
+                          className="rounded-full bg-red-500 px-4 py-1.5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+                        >
+                          {t('admin.reports.deleteContent')}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </article>
@@ -200,6 +244,79 @@ export default function AdminReports() {
           })}
         </div>
       )}
+      {banTarget && (
+        <BanUserModal
+          username={banTarget.username}
+          onClose={() => setBanTarget(null)}
+          onBanned={() => {
+            setBanOverrides((o) => ({ ...o, [banTarget.id]: true }));
+            setBanTarget(null);
+          }}
+          userId={banTarget.id}
+        />
+      )}
     </div>
+  );
+}
+
+function BanUserModal({
+  userId,
+  username,
+  onClose,
+  onBanned,
+}: {
+  userId: number;
+  username: string;
+  onClose: () => void;
+  onBanned: () => void;
+}) {
+  const { t } = useTranslation();
+  const [reason, setReason] = useState('');
+  const [sending, setSending] = useState(false);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    setSending(true);
+    try {
+      await apiFetch(`/users/${userId}/ban`, {
+        method: 'PATCH',
+        body: JSON.stringify({ reason: reason.trim() || undefined }),
+      });
+      onBanned();
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <Modal title={t('admin.reports.banModalTitle', { username })} onClose={onClose}>
+      <form onSubmit={submit} className="flex flex-col gap-3">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('admin.reports.banModalIntro')}</p>
+        <textarea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder={t('admin.reports.banReasonPlaceholder')}
+          maxLength={500}
+          rows={3}
+          className="field w-full resize-none px-4 py-2"
+        />
+        <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full px-4 py-2 text-sm text-zinc-500 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+          >
+            {t('common.cancel')}
+          </button>
+          <button
+            type="submit"
+            disabled={sending}
+            className="rounded-full bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+          >
+            {t('admin.reports.confirmBan')}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }

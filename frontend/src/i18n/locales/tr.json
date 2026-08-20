@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "Video oyunlarının Letterboxd'u · 42 projesi",
     "privacy": "Gizlilik Politikası",
-    "terms": "Hizmet Şartları"
+    "terms": "Hizmet Şartları",
+    "feedback": "Hata bildir"
   },
   "languagePicker": {
     "title": "Dil"
@@ -72,7 +73,8 @@
       "errorGeneric": "Giriş yapılırken bir şeyler ters gitti — lütfen tekrar dene.",
       "steamFailed": "Steam ile giriş başarısız oldu — lütfen tekrar dene",
       "sessionExpired": "Oturumun sona erdi — lütfen tekrar giriş yap",
-      "subtitle": "Oyun günlüğüne kaldığın yerden devam et."
+      "subtitle": "Oyun günlüğüne kaldığın yerden devam et.",
+      "banned": "Bu hesap yasaklandı."
     },
     "twoFactor": {
       "title": "İki faktörlü kod",
@@ -1535,7 +1537,22 @@
       "reportedBy": "Şikayet eden",
       "dismiss": "Reddet",
       "deleteContent": "İçeriği sil",
-      "contentDeleted": "Bu içerik silindi."
+      "contentDeleted": "Bu içerik silindi.",
+      "banAuthor": "{{username}} kullanıcısını yasakla",
+      "unbanAuthor": "{{username}} kullanıcısının yasağını kaldır",
+      "banModalTitle": "{{username}} kullanıcısını yasakla",
+      "banModalIntro": "Bu hesap, yasağı kaldırılana kadar giriş yapamayacak.",
+      "banReasonPlaceholder": "Neden (isteğe bağlı, yönetici günlüğünde saklanır)",
+      "confirmBan": "Yasağı onayla"
     }
+  },
+  "feedback": {
+    "title": "Hata bildir / geri bildirim gönder",
+    "intro": "Bir sorun mu var, bir fikrin mi var? Buraya yaz, göz atacağız.",
+    "messagePlaceholder": "Sorunu veya fikrini açıkla…",
+    "emailPlaceholder": "E-postan (isteğe bağlı, yanıt verebilmemiz için)",
+    "submit": "Gönder",
+    "thanks": "Teşekkürler! Mesajın gönderildi.",
+    "unexpectedError": "Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin."
   }
 }

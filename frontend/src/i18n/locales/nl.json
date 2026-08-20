@@ -46,7 +46,8 @@
   "footer": {
     "tagline": "De Letterboxd van videogames · 42-project",
     "privacy": "Privacybeleid",
-    "terms": "Servicevoorwaarden"
+    "terms": "Servicevoorwaarden",
+    "feedback": "Bug melden"
   },
   "languagePicker": {
     "title": "Taal"
@@ -72,7 +73,8 @@
       "errorGeneric": "Er ging iets mis bij het inloggen — probeer het opnieuw.",
       "steamFailed": "Inloggen met Steam mislukt — probeer het opnieuw",
       "sessionExpired": "Je sessie is verlopen — log opnieuw in",
-      "subtitle": "Pak je speeldagboek weer op waar je gebleven was."
+      "subtitle": "Pak je speeldagboek weer op waar je gebleven was.",
+      "banned": "Dit account is verbannen."
     },
     "twoFactor": {
       "title": "Tweestapsverificatiecode",
@@ -1535,7 +1537,22 @@
       "reportedBy": "Gemeld door",
       "dismiss": "Afwijzen",
       "deleteContent": "Inhoud verwijderen",
-      "contentDeleted": "Deze inhoud is verwijderd."
+      "contentDeleted": "Deze inhoud is verwijderd.",
+      "banAuthor": "{{username}} verbannen",
+      "unbanAuthor": "Verbanning van {{username}} opheffen",
+      "banModalTitle": "{{username}} verbannen",
+      "banModalIntro": "Dit account kan niet meer inloggen totdat de verbanning wordt opgeheven.",
+      "banReasonPlaceholder": "Reden (optioneel, bewaard in het adminlogboek)",
+      "confirmBan": "Verbanning bevestigen"
     }
+  },
+  "feedback": {
+    "title": "Bug melden / feedback geven",
+    "intro": "Een probleem of een idee? Vertel het ons hier, we kijken ernaar.",
+    "messagePlaceholder": "Beschrijf het probleem of je idee…",
+    "emailPlaceholder": "Je e-mail (optioneel, zodat we kunnen reageren)",
+    "submit": "Versturen",
+    "thanks": "Bedankt! Je bericht is verzonden.",
+    "unexpectedError": "Er is iets misgegaan. Probeer het later opnieuw."
   }
 }

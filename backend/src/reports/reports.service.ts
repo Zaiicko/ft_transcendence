@@ -12,6 +12,9 @@ import { ReviewsService } from '../reviews/reviews.service';
 import { CreateReportDto } from './dto/create-report.dto';
 
 const publicAuthor = { select: { id: true, username: true, avatarUrl: true } };
+const publicAuthorWithBan = {
+  select: { id: true, username: true, avatarUrl: true, bannedAt: true },
+};
 
 @Injectable()
 export class ReportsService {
@@ -22,6 +25,7 @@ export class ReportsService {
   ) {}
 
   async create(reporterId: number, dto: CreateReportDto) {
+    let targetAuthorId: number | null;
     if (dto.targetType === 'REVIEW') {
       if (!dto.reviewId) throw new BadRequestException('reviewId is required');
       const review = await this.prisma.review.findUnique({
@@ -32,6 +36,7 @@ export class ReportsService {
       if (review.userId === reporterId) {
         throw new ForbiddenException("You can't report your own review");
       }
+      targetAuthorId = review.userId;
     } else {
       if (!dto.commentId) throw new BadRequestException('commentId is required');
       const comment = await this.prisma.reviewComment.findUnique({
@@ -42,6 +47,7 @@ export class ReportsService {
       if (comment.userId === reporterId) {
         throw new ForbiddenException("You can't report your own comment");
       }
+      targetAuthorId = comment.userId;
     }
 
     try {
@@ -51,6 +57,9 @@ export class ReportsService {
           targetType: dto.targetType,
           reviewId: dto.targetType === 'REVIEW' ? dto.reviewId : null,
           commentId: dto.targetType === 'COMMENT' ? dto.commentId : null,
+          // Snapshot at report time — survives the content later being
+          // deleted/anonymised, so an admin can still ban the right person.
+          targetAuthorId,
           reason: dto.reason,
           details: dto.details,
         },
@@ -69,6 +78,7 @@ export class ReportsService {
       orderBy: { createdAt: 'asc' },
       include: {
         reporter: publicAuthor,
+        targetAuthor: publicAuthorWithBan,
         review: {
           select: {
             id: true,
