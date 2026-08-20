@@ -41,7 +41,7 @@
     "notificationPrefs": "알림 설정",
     "navigation": "탐색 메뉴",
     "replayTutorial": "튜토리얼 다시 보기",
-    "adminReports": "신고"
+    "adminPanel": "관리자 패널"
   },
   "footer": {
     "tagline": "비디오 게임의 Letterboxd · 42 프로젝트",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "이 계정은 차단이 해제될 때까지 로그인할 수 없습니다.",
       "banReasonPlaceholder": "사유 (선택 사항, 관리자 로그에 기록됨)",
       "confirmBan": "차단 확인"
+    },
+    "panel": {
+      "eyebrow": "관리",
+      "heading": "관리자 패널",
+      "categories": {
+        "reports": "신고",
+        "feedback": "피드백"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "대기 중",
+        "RESOLVED": "처리됨"
+      },
+      "empty": "여기에는 아무것도 없습니다.",
+      "anonymous": "익명",
+      "markResolved": "처리 완료로 표시"
     }
   },
   "feedback": {

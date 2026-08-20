@@ -41,7 +41,7 @@
     "notificationPrefs": "Bildirim tercihleri",
     "navigation": "Gezinme menüsü",
     "replayTutorial": "Turu tekrar izle",
-    "adminReports": "Şikayetler"
+    "adminPanel": "Yönetici paneli"
   },
   "footer": {
     "tagline": "Video oyunlarının Letterboxd'u · 42 projesi",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "Bu hesap, yasağı kaldırılana kadar giriş yapamayacak.",
       "banReasonPlaceholder": "Neden (isteğe bağlı, yönetici günlüğünde saklanır)",
       "confirmBan": "Yasağı onayla"
+    },
+    "panel": {
+      "eyebrow": "Yönetim",
+      "heading": "Yönetici paneli",
+      "categories": {
+        "reports": "Şikayetler",
+        "feedback": "Geri bildirim"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "Açık",
+        "RESOLVED": "Çözüldü"
+      },
+      "empty": "Burada bir şey yok.",
+      "anonymous": "Anonim",
+      "markResolved": "Çözüldü olarak işaretle"
     }
   },
   "feedback": {

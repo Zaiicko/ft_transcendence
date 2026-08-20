@@ -7,7 +7,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 
 // Route-level code-splitting: each page is a separate lazy chunk; the loading fallback lives in Layout's <Suspense>.
-const AdminReports = lazy(() => import('./pages/AdminReports'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const Catalog = lazy(() => import('./pages/Catalog'));
 const Company = lazy(() => import('./pages/Company'));
 const Feed = lazy(() => import('./pages/Feed'));
@@ -92,7 +92,7 @@ export default function App() {
               <Route path="/steam" element={<Navigate to="/library?platform=steam" replace />} />
               <Route path="/psn" element={<Navigate to="/library?platform=psn" replace />} />
               <Route element={<AdminRoute />}>
-                <Route path="/admin/reports" element={<AdminReports />} />
+                <Route path="/admin" element={<AdminPanel />} />
               </Route>
             </Route>
             <Route path="*" element={<NotFound />} />

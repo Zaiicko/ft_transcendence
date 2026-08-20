@@ -41,7 +41,7 @@
     "notificationPrefs": "通知設定",
     "navigation": "ナビゲーションメニュー",
     "replayTutorial": "チュートリアルをもう一度",
-    "adminReports": "通報"
+    "adminPanel": "管理パネル"
   },
   "footer": {
     "tagline": "ビデオゲーム版 Letterboxd ・ 42 プロジェクト",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "このアカウントはBAN解除されるまでログインできなくなります。",
       "banReasonPlaceholder": "理由（任意、管理ログに記録されます）",
       "confirmBan": "BANを確定する"
+    },
+    "panel": {
+      "eyebrow": "管理",
+      "heading": "管理パネル",
+      "categories": {
+        "reports": "通報",
+        "feedback": "フィードバック"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "未対応",
+        "RESOLVED": "対応済み"
+      },
+      "empty": "ここには何もありません。",
+      "anonymous": "匿名",
+      "markResolved": "対応済みにする"
     }
   },
   "feedback": {

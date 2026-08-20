@@ -41,7 +41,7 @@
     "notificationPrefs": "Preferencias de notificaciones",
     "navigation": "Menú de navegación",
     "replayTutorial": "Volver a ver el tutorial",
-    "adminReports": "Denuncias"
+    "adminPanel": "Panel de administración"
   },
   "footer": {
     "tagline": "El Letterboxd de los videojuegos · proyecto 42",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "Esta cuenta no podrá iniciar sesión hasta que sea desbaneada.",
       "banReasonPlaceholder": "Motivo (opcional, se guarda en el registro de administración)",
       "confirmBan": "Confirmar baneo"
+    },
+    "panel": {
+      "eyebrow": "Administración",
+      "heading": "Panel de administración",
+      "categories": {
+        "reports": "Denuncias",
+        "feedback": "Comentarios"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "Abiertos",
+        "RESOLVED": "Resueltos"
+      },
+      "empty": "No hay nada aquí.",
+      "anonymous": "Anónimo",
+      "markResolved": "Marcar como resuelto"
     }
   },
   "feedback": {

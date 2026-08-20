@@ -41,7 +41,7 @@
     "notificationPrefs": "Preferencje powiadomień",
     "navigation": "Menu nawigacji",
     "replayTutorial": "Powtórz samouczek",
-    "adminReports": "Zgłoszenia"
+    "adminPanel": "Panel administratora"
   },
   "footer": {
     "tagline": "Letterboxd dla gier wideo · projekt 42",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "To konto nie będzie mogło się zalogować, dopóki nie zostanie odblokowane.",
       "banReasonPlaceholder": "Powód (opcjonalnie, zapisywany w dzienniku administracyjnym)",
       "confirmBan": "Potwierdź blokadę"
+    },
+    "panel": {
+      "eyebrow": "Administracja",
+      "heading": "Panel administratora",
+      "categories": {
+        "reports": "Zgłoszenia",
+        "feedback": "Opinie"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "Otwarte",
+        "RESOLVED": "Rozpatrzone"
+      },
+      "empty": "Nic tu nie ma.",
+      "anonymous": "Anonim",
+      "markResolved": "Oznacz jako rozpatrzone"
     }
   },
   "feedback": {

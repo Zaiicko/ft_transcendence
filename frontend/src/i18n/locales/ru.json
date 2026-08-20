@@ -41,7 +41,7 @@
     "notificationPrefs": "Настройки уведомлений",
     "navigation": "Меню навигации",
     "replayTutorial": "Пройти обучение снова",
-    "adminReports": "Жалобы"
+    "adminPanel": "Панель администратора"
   },
   "footer": {
     "tagline": "Letterboxd для видеоигр · проект 42",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "Этот аккаунт не сможет войти в систему, пока не будет разблокирован.",
       "banReasonPlaceholder": "Причина (необязательно, сохраняется в журнале администратора)",
       "confirmBan": "Подтвердить блокировку"
+    },
+    "panel": {
+      "eyebrow": "Администрирование",
+      "heading": "Панель администратора",
+      "categories": {
+        "reports": "Жалобы",
+        "feedback": "Отзывы"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "Открытые",
+        "RESOLVED": "Обработанные"
+      },
+      "empty": "Здесь пока пусто.",
+      "anonymous": "Аноним",
+      "markResolved": "Отметить как обработанное"
     }
   },
   "feedback": {

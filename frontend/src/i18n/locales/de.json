@@ -41,7 +41,7 @@
     "notificationPrefs": "Benachrichtigungseinstellungen",
     "navigation": "Navigationsmenü",
     "replayTutorial": "Tour erneut ansehen",
-    "adminReports": "Meldungen"
+    "adminPanel": "Admin-Bereich"
   },
   "footer": {
     "tagline": "Das Letterboxd der Videospiele · 42-Projekt",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "Dieses Konto kann sich nicht mehr anmelden, bis es entsperrt wird.",
       "banReasonPlaceholder": "Grund (optional, wird im Admin-Protokoll gespeichert)",
       "confirmBan": "Sperrung bestätigen"
+    },
+    "panel": {
+      "eyebrow": "Administration",
+      "heading": "Admin-Bereich",
+      "categories": {
+        "reports": "Meldungen",
+        "feedback": "Feedback"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "Offen",
+        "RESOLVED": "Bearbeitet"
+      },
+      "empty": "Hier ist nichts.",
+      "anonymous": "Anonym",
+      "markResolved": "Als bearbeitet markieren"
     }
   },
   "feedback": {

@@ -41,7 +41,7 @@
     "notificationPrefs": "通知偏好设置",
     "navigation": "导航菜单",
     "replayTutorial": "重新观看教程",
-    "adminReports": "举报"
+    "adminPanel": "管理面板"
   },
   "footer": {
     "tagline": "电子游戏版的 Letterboxd · 42 项目",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "该账号在被解封之前将无法登录。",
       "banReasonPlaceholder": "原因（可选，会记录在管理员日志中）",
       "confirmBan": "确认封禁"
+    },
+    "panel": {
+      "eyebrow": "管理",
+      "heading": "管理面板",
+      "categories": {
+        "reports": "举报",
+        "feedback": "反馈"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "待处理",
+        "RESOLVED": "已处理"
+      },
+      "empty": "这里暂无内容。",
+      "anonymous": "匿名",
+      "markResolved": "标记为已处理"
     }
   },
   "feedback": {

@@ -41,7 +41,7 @@
     "notificationPrefs": "Meldingsvoorkeuren",
     "navigation": "Navigatiemenu",
     "replayTutorial": "Rondleiding opnieuw",
-    "adminReports": "Meldingen"
+    "adminPanel": "Adminpaneel"
   },
   "footer": {
     "tagline": "De Letterboxd van videogames · 42-project",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "Dit account kan niet meer inloggen totdat de verbanning wordt opgeheven.",
       "banReasonPlaceholder": "Reden (optioneel, bewaard in het adminlogboek)",
       "confirmBan": "Verbanning bevestigen"
+    },
+    "panel": {
+      "eyebrow": "Beheer",
+      "heading": "Adminpaneel",
+      "categories": {
+        "reports": "Meldingen",
+        "feedback": "Feedback"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "Open",
+        "RESOLVED": "Afgehandeld"
+      },
+      "empty": "Niets hier.",
+      "anonymous": "Anoniem",
+      "markResolved": "Markeren als afgehandeld"
     }
   },
   "feedback": {

@@ -8,6 +8,40 @@ import { FlagIcon } from '../components/ReactionIcons';
 import SectionHead from '../components/SectionHead';
 import { apiFetch } from '../lib/api';
 
+type Category = 'reports' | 'feedback';
+const CATEGORIES: Category[] = ['reports', 'feedback'];
+
+export default function AdminPanel() {
+  const { t } = useTranslation();
+  const [category, setCategory] = useState<Category>('reports');
+
+  return (
+    <div className="mx-auto max-w-4xl px-4 py-8">
+      <SectionHead eyebrow={t('admin.panel.eyebrow')} title={t('admin.panel.heading')} />
+      <div className="mb-6 mt-4 flex gap-2">
+        {CATEGORIES.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => setCategory(c)}
+            className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
+              category === c
+                ? 'border-accent bg-accent text-zinc-950'
+                : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+            }`}
+          >
+            {t(`admin.panel.categories.${c}`)}
+          </button>
+        ))}
+      </div>
+
+      {category === 'reports' ? <ReportsPanel /> : <FeedbackPanel />}
+    </div>
+  );
+}
+
+// ---------- Reports ----------
+
 type ReportStatus = 'PENDING' | 'RESOLVED' | 'DISMISSED';
 type Author = { id: number; username: string; avatarUrl: string | null };
 type TargetAuthor = Author & { bannedAt: string | null };
@@ -38,7 +72,7 @@ interface ReportT {
   } | null;
 }
 
-const TABS: ReportStatus[] = ['PENDING', 'RESOLVED', 'DISMISSED'];
+const REPORT_TABS: ReportStatus[] = ['PENDING', 'RESOLVED', 'DISMISSED'];
 
 function targetLink(r: ReportT): string | null {
   if (r.review) {
@@ -53,7 +87,7 @@ function targetLink(r: ReportT): string | null {
   return null;
 }
 
-export default function AdminReports() {
+function ReportsPanel() {
   const { t, i18n } = useTranslation();
   const [status, setStatus] = useState<ReportStatus>('PENDING');
   const [reports, setReports] = useState<ReportT[]>([]);
@@ -108,10 +142,9 @@ export default function AdminReports() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <SectionHead eyebrow={t('admin.reports.eyebrow')} title={t('admin.reports.heading')} />
-      <div className="mb-6 mt-4 flex gap-2">
-        {TABS.map((s) => (
+    <>
+      <div className="mb-6 flex gap-2">
+        {REPORT_TABS.map((s) => (
           <button
             key={s}
             type="button"
@@ -255,7 +288,7 @@ export default function AdminReports() {
           userId={banTarget.id}
         />
       )}
-    </div>
+    </>
   );
 }
 
@@ -318,5 +351,128 @@ function BanUserModal({
         </div>
       </form>
     </Modal>
+  );
+}
+
+// ---------- Feedback ----------
+
+type FeedbackStatus = 'OPEN' | 'RESOLVED';
+
+interface FeedbackT {
+  id: number;
+  message: string;
+  email: string | null;
+  url: string | null;
+  createdAt: string;
+  user: Author | null;
+}
+
+const FEEDBACK_TABS: FeedbackStatus[] = ['OPEN', 'RESOLVED'];
+
+function FeedbackPanel() {
+  const { t, i18n } = useTranslation();
+  const [status, setStatus] = useState<FeedbackStatus>('OPEN');
+  const [items, setItems] = useState<FeedbackT[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [busyId, setBusyId] = useState<number | null>(null);
+
+  const [prevStatus, setPrevStatus] = useState(status);
+  if (status !== prevStatus) {
+    setPrevStatus(status);
+    setLoading(true);
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    apiFetch<FeedbackT[]>(`/feedback?status=${status}`)
+      .then((list) => !cancelled && setItems(list))
+      .catch(() => !cancelled && setItems([]))
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [status]);
+
+  async function resolve(id: number) {
+    setBusyId(id);
+    try {
+      await apiFetch(`/feedback/${id}/resolve`, { method: 'PATCH' });
+      setItems((list) => list.filter((f) => f.id !== id));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  return (
+    <>
+      <div className="mb-6 flex gap-2">
+        {FEEDBACK_TABS.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setStatus(s)}
+            className={`rounded-full border px-3 py-1 text-xs transition ${
+              status === s
+                ? 'border-accent bg-accent font-medium text-zinc-950'
+                : 'border-zinc-400/60 text-zinc-500 hover:border-accent hover:text-accent dark:border-zinc-600 dark:text-zinc-400'
+            }`}
+          >
+            {t(`admin.feedback.status.${s}`)}
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-zinc-500">{t('common.loading')}</p>
+      ) : items.length === 0 ? (
+        <EmptyState icon={<FlagIcon className="h-5 w-5" />} title={t('admin.feedback.empty')} />
+      ) : (
+        <div className="flex flex-col gap-4">
+          {items.map((f) => (
+            <article key={f.id} className="card p-5">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                {f.user ? (
+                  <>
+                    <Avatar username={f.user.username} avatarUrl={f.user.avatarUrl} size={18} />
+                    <span className="font-medium">{f.user.username}</span>
+                  </>
+                ) : (
+                  <span>{f.email ?? t('admin.feedback.anonymous')}</span>
+                )}
+                <span>·</span>
+                <span>{new Date(f.createdAt).toLocaleString(i18n.language)}</span>
+                {f.url && (
+                  <>
+                    <span>·</span>
+                    <a
+                      href={f.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="max-w-xs truncate text-accent hover:underline"
+                    >
+                      {f.url}
+                    </a>
+                  </>
+                )}
+              </div>
+              <p className="mt-2 whitespace-pre-line text-sm text-zinc-700 dark:text-zinc-200">{f.message}</p>
+
+              {status === 'OPEN' && (
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="button"
+                    disabled={busyId === f.id}
+                    onClick={() => resolve(f.id)}
+                    className="rounded-full border border-zinc-400/60 px-4 py-1.5 text-xs font-semibold transition hover:opacity-70 disabled:opacity-50 dark:border-zinc-600"
+                  >
+                    {t('admin.feedback.markResolved')}
+                  </button>
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+    </>
   );
 }

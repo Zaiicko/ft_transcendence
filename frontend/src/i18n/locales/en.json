@@ -41,7 +41,7 @@
     "notificationPrefs": "Notification preferences",
     "navigation": "Navigation menu",
     "replayTutorial": "Replay the tour",
-    "adminReports": "Reports"
+    "adminPanel": "Admin panel"
   },
   "footer": {
     "tagline": "The Letterboxd of video games · 42 project",
@@ -1544,6 +1544,23 @@
       "banModalIntro": "This account won't be able to log in until it's unbanned.",
       "banReasonPlaceholder": "Reason (optional, kept in the admin log)",
       "confirmBan": "Confirm ban"
+    },
+    "panel": {
+      "eyebrow": "Administration",
+      "heading": "Admin panel",
+      "categories": {
+        "reports": "Reports",
+        "feedback": "Feedback"
+      }
+    },
+    "feedback": {
+      "status": {
+        "OPEN": "Open",
+        "RESOLVED": "Resolved"
+      },
+      "empty": "Nothing here.",
+      "anonymous": "Anonymous",
+      "markResolved": "Mark as resolved"
     }
   },
   "feedback": {

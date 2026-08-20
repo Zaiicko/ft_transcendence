@@ -435,12 +435,12 @@ export default function Layout() {
                         </Link>
                         {user.role === 'ADMIN' && (
                           <Link
-                            to="/admin/reports"
+                            to="/admin"
                             role="menuitem"
                             onClick={() => setMenuOpen(false)}
                             className="flex items-center gap-2 px-3 py-2 hover:bg-zinc-900/5 dark:hover:bg-zinc-100/10"
                           >
-                            <Icon>{flagIcon}</Icon> {t('menu.adminReports')}
+                            <Icon>{flagIcon}</Icon> {t('menu.adminPanel')}
                           </Link>
                         )}
                       </>

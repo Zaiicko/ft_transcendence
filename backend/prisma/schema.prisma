@@ -93,6 +93,11 @@ enum ReportStatus {
   DISMISSED
 }
 
+enum FeedbackStatus {
+  OPEN
+  RESOLVED
+}
+
 // ---------- Users & social ----------
 
 model User {
@@ -214,6 +219,8 @@ model User {
   reportsMade         Report[] @relation("ReportsMade")
   reportsResolved     Report[] @relation("ReportsResolved")
   reportsAsTarget     Report[] @relation("ReportsTargetAuthor")
+  feedbackSubmitted   Feedback[] @relation("FeedbackSubmitted")
+  feedbackResolved    Feedback[] @relation("FeedbackResolved")
 }
 
 // Opaque refresh tokens (rotated on use) backing the short-lived JWT access token
@@ -547,6 +554,26 @@ model Report {
   // Review, just split into two declarations instead of one.
   @@unique([reporterId, reviewId])
   @@unique([reporterId, commentId])
+  @@index([status])
+}
+
+// Free-form bug report / feedback from the footer button — open to guests,
+// so `user` is optional and `email` covers the guest-reply case. Reviewed
+// from the "Feedback" category of /admin (same page as Report, different
+// tab) instead of only living in an admin's inbox.
+model Feedback {
+  id           Int            @id @default(autoincrement())
+  user         User?          @relation("FeedbackSubmitted", fields: [userId], references: [id], onDelete: SetNull)
+  userId       Int?
+  email        String?
+  message      String
+  url          String?
+  status       FeedbackStatus @default(OPEN)
+  resolvedBy   User?          @relation("FeedbackResolved", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedById Int?
+  resolvedAt   DateTime?
+  createdAt    DateTime       @default(now())
+
   @@index([status])
 }
 
