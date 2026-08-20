@@ -81,7 +81,7 @@ export default function ReportModal({
           placeholder={t('report.detailsPlaceholder')}
           maxLength={1000}
           rows={3}
-          className="field w-full resize-none px-4 py-2"
+          className="field w-full resize-none !rounded-xl px-4 py-2"
         />
         {error && <p className="text-sm text-red-400">{error}</p>}
         <div className="flex items-center justify-end gap-2">

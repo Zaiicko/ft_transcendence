@@ -331,7 +331,7 @@ function BanUserModal({
           placeholder={t('admin.reports.banReasonPlaceholder')}
           maxLength={500}
           rows={3}
-          className="field w-full resize-none px-4 py-2"
+          className="field w-full resize-none !rounded-xl px-4 py-2"
         />
         <div className="flex items-center justify-end gap-2">
           <button

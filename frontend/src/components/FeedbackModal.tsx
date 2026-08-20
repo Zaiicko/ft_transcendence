@@ -52,7 +52,7 @@ export default function FeedbackModal({ onClose }: { onClose: () => void }) {
             minLength={5}
             required
             rows={4}
-            className="field w-full resize-none px-4 py-2"
+            className="field w-full resize-none !rounded-xl px-4 py-2"
           />
           {!user && (
             <input
