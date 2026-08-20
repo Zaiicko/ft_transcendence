@@ -332,7 +332,13 @@
     "achievement": "Obiettivo sbloccato: <b>{{name}}</b>",
     "prefAchievement": "Obiettivi",
     "prefAchievementHint": "Quando sblocchi un obiettivo",
-    "clear": "Svuota"
+    "clear": "Svuota",
+    "feedbackReply": "Il team ha risposto al tuo ticket",
+    "feedbackResolved": "Il tuo ticket è stato contrassegnato come risolto",
+    "prefFeedbackReply": "Risposta al ticket",
+    "prefFeedbackReplyHint": "Quando il team risponde al tuo ticket di feedback",
+    "prefFeedbackResolved": "Ticket risolto",
+    "prefFeedbackResolvedHint": "Quando il tuo ticket di feedback viene contrassegnato come risolto"
   },
   "minigames": {
     "hub": {

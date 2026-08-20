@@ -332,7 +332,13 @@
     "achievement": "Logro desbloqueado: <b>{{name}}</b>",
     "prefAchievement": "Logros",
     "prefAchievementHint": "Cuando desbloqueas un logro",
-    "clear": "Vaciar"
+    "clear": "Vaciar",
+    "feedbackReply": "El equipo respondió a tu ticket",
+    "feedbackResolved": "Tu ticket se marcó como resuelto",
+    "prefFeedbackReply": "Respuesta a un ticket",
+    "prefFeedbackReplyHint": "Cuando el equipo responde a tu ticket de comentarios",
+    "prefFeedbackResolved": "Ticket resuelto",
+    "prefFeedbackResolvedHint": "Cuando tu ticket de comentarios se marca como resuelto"
   },
   "minigames": {
     "hub": {

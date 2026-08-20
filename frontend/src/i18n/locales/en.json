@@ -332,7 +332,13 @@
     "achievement": "Achievement unlocked: <b>{{name}}</b>",
     "prefAchievement": "Achievements",
     "prefAchievementHint": "When you unlock an achievement",
-    "clear": "Clear"
+    "clear": "Clear",
+    "feedbackReply": "The team replied to your ticket",
+    "feedbackResolved": "Your ticket was marked as resolved",
+    "prefFeedbackReply": "Ticket reply",
+    "prefFeedbackReplyHint": "When the team replies to your feedback ticket",
+    "prefFeedbackResolved": "Ticket resolved",
+    "prefFeedbackResolvedHint": "When your feedback ticket is marked as resolved"
   },
   "minigames": {
     "hub": {

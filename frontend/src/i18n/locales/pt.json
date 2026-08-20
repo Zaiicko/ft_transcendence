@@ -332,7 +332,13 @@
     "achievement": "Conquista desbloqueada: <b>{{name}}</b>",
     "prefAchievement": "Conquistas",
     "prefAchievementHint": "Quando você desbloqueia uma conquista",
-    "clear": "Limpar"
+    "clear": "Limpar",
+    "feedbackReply": "A equipa respondeu ao teu ticket",
+    "feedbackResolved": "O teu ticket foi marcado como resolvido",
+    "prefFeedbackReply": "Resposta a um ticket",
+    "prefFeedbackReplyHint": "Quando a equipa responde ao teu ticket de feedback",
+    "prefFeedbackResolved": "Ticket resolvido",
+    "prefFeedbackResolvedHint": "Quando o teu ticket de feedback é marcado como resolvido"
   },
   "minigames": {
     "hub": {

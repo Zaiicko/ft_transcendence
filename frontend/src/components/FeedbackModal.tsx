@@ -25,10 +25,20 @@ type Tab = 'new' | 'mine';
 // report shouldn't require an account). Logged-in users get a second tab
 // listing their own tickets — each with its own thread, so several can be
 // followed independently instead of one shared inbox.
-export default function FeedbackModal({ onClose }: { onClose: () => void }) {
+//
+// initialTicketId: set when opened from a FEEDBACK_REPLY/FEEDBACK_RESOLVED
+// notification (see FeedbackButton's 'saveboxd:open-ticket' listener) —
+// jumps straight to "My tickets" with that ticket expanded.
+export default function FeedbackModal({
+  onClose,
+  initialTicketId = null,
+}: {
+  onClose: () => void;
+  initialTicketId?: number | null;
+}) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [tab, setTab] = useState<Tab>('new');
+  const [tab, setTab] = useState<Tab>(initialTicketId ? 'mine' : 'new');
 
   return (
     <Modal title={t('feedback.title')} onClose={onClose}>
@@ -50,7 +60,11 @@ export default function FeedbackModal({ onClose }: { onClose: () => void }) {
           ))}
         </div>
       )}
-      {tab === 'new' ? <NewFeedbackForm onClose={onClose} /> : <MyTickets />}
+      {tab === 'new' ? (
+        <NewFeedbackForm onClose={onClose} />
+      ) : (
+        <MyTickets initialTicketId={initialTicketId} />
+      )}
     </Modal>
   );
 }
@@ -132,10 +146,10 @@ function NewFeedbackForm({ onClose }: { onClose: () => void }) {
   );
 }
 
-function MyTickets() {
+function MyTickets({ initialTicketId }: { initialTicketId: number | null }) {
   const { t } = useTranslation();
   const [tickets, setTickets] = useState<TicketT[] | null>(null);
-  const [openId, setOpenId] = useState<number | null>(null);
+  const [openId, setOpenId] = useState<number | null>(initialTicketId);
 
   useEffect(() => {
     let cancelled = false;

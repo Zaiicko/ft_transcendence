@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { ConfigService } from '@nestjs/config';
 import { FeedbackStatus } from '@prisma/client';
 import { MailerService } from '../mailer/mailer.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 
@@ -18,6 +19,7 @@ export class FeedbackService {
     private prisma: PrismaService,
     private mailer: MailerService,
     private config: ConfigService,
+    private notifications: NotificationsService,
   ) {}
 
   async create(userId: number | undefined, dto: CreateFeedbackDto) {
@@ -65,6 +67,7 @@ export class FeedbackService {
       where: { id },
       data: { status: 'RESOLVED', resolvedById: adminId, resolvedAt: new Date() },
     });
+    if (feedback.userId) void this.notifications.feedbackResolved(feedback.userId, id);
     return { ok: true };
   }
 
@@ -77,6 +80,7 @@ export class FeedbackService {
     await this.prisma.feedbackMessage.create({
       data: { feedbackId: id, fromAdmin: true, text: message },
     });
+    if (feedback.userId) void this.notifications.feedbackReplied(feedback.userId, id);
     return { ok: true };
   }
 

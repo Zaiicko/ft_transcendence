@@ -46,6 +46,8 @@ enum NotificationType {
   FRIEND_JOINED
   ACHIEVEMENT
   GAME_INVITE
+  FEEDBACK_REPLY
+  FEEDBACK_RESOLVED
 }
 
 enum CoverGuessStatus {

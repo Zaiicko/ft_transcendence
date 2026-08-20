@@ -332,7 +332,13 @@
     "achievement": "Erfolg freigeschaltet: <b>{{name}}</b>",
     "prefAchievement": "Erfolge",
     "prefAchievementHint": "Wenn du einen Erfolg freischaltest",
-    "clear": "Leeren"
+    "clear": "Leeren",
+    "feedbackReply": "Das Team hat auf dein Ticket geantwortet",
+    "feedbackResolved": "Dein Ticket wurde als gelöst markiert",
+    "prefFeedbackReply": "Antwort auf Ticket",
+    "prefFeedbackReplyHint": "Wenn das Team auf dein Feedback-Ticket antwortet",
+    "prefFeedbackResolved": "Ticket gelöst",
+    "prefFeedbackResolvedHint": "Wenn dein Feedback-Ticket als gelöst markiert wird"
   },
   "minigames": {
     "hub": {

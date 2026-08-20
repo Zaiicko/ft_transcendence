@@ -9,6 +9,7 @@ import type { AppNotification } from '../lib/types';
 import AchievementIcon from './AchievementIcon';
 import { useNotificationSocket } from '../notifications/useNotificationSocket';
 import Avatar from './Avatar';
+import { FlagIcon } from './ReactionIcons';
 
 // Navbar notification bell: unread dot + dropdown panel, real-time via `notification:new`.
 export default function NotificationBell() {
@@ -156,6 +157,16 @@ export default function NotificationBell() {
                       onClick={() => {
                         if (!n.readAt) markRead(n.id);
                         setOpen(false);
+                        if (
+                          (n.type === 'FEEDBACK_REPLY' || n.type === 'FEEDBACK_RESOLVED') &&
+                          n.payload.feedbackId
+                        ) {
+                          window.dispatchEvent(
+                            new CustomEvent('saveboxd:open-ticket', {
+                              detail: { feedbackId: n.payload.feedbackId },
+                            }),
+                          );
+                        }
                       }}
                       className={`flex gap-3 px-4 py-3 transition hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
                         n.readAt ? '' : 'bg-accent/5'
@@ -167,6 +178,10 @@ export default function NotificationBell() {
                             family={parseAchievementKey(n.payload.achievementKey ?? '').family}
                             className="h-4 w-4"
                           />
+                        </span>
+                      ) : n.type === 'FEEDBACK_REPLY' || n.type === 'FEEDBACK_RESOLVED' ? (
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+                          <FlagIcon className="h-4 w-4" />
                         </span>
                       ) : (
                         <Avatar
@@ -212,6 +227,11 @@ function linkFor(n: AppNotification): string {
     case 'NEW_MESSAGE':
     case 'FRIEND_JOINED':
       return p.actorUsername ? `/u/${p.actorUsername}` : '#';
+    // No real route for a ticket — the click handler above opens the
+    // feedback bubble's "My tickets" tab via a custom event instead.
+    case 'FEEDBACK_REPLY':
+    case 'FEEDBACK_RESOLVED':
+      return '#';
     default:
       return '#';
   }
@@ -255,6 +275,10 @@ function messageFor(n: AppNotification): ReactNode {
           components={components}
         />
       );
+    case 'FEEDBACK_REPLY':
+      return i18n.t('notifications.feedbackReply');
+    case 'FEEDBACK_RESOLVED':
+      return i18n.t('notifications.feedbackResolved');
     case 'ACHIEVEMENT': {
       const { family, threshold } = parseAchievementKey(n.payload.achievementKey ?? '');
       const name = FAMILY_NAME_KEY[family] ? `${i18n.t(FAMILY_NAME_KEY[family])} (${threshold})` : '';

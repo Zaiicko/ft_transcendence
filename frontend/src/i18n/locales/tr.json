@@ -332,7 +332,13 @@
     "achievement": "Başarım açıldı: <b>{{name}}</b>",
     "prefAchievement": "Başarımlar",
     "prefAchievementHint": "Bir başarım açtığında",
-    "clear": "Temizle"
+    "clear": "Temizle",
+    "feedbackReply": "Ekip biletine yanıt verdi",
+    "feedbackResolved": "Biletin çözüldü olarak işaretlendi",
+    "prefFeedbackReply": "Bilet yanıtı",
+    "prefFeedbackReplyHint": "Ekip geri bildirim biletine yanıt verdiğinde",
+    "prefFeedbackResolved": "Bilet çözüldü",
+    "prefFeedbackResolvedHint": "Geri bildirim biletin çözüldü olarak işaretlendiğinde"
   },
   "minigames": {
     "hub": {

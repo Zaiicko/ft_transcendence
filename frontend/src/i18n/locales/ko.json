@@ -332,7 +332,13 @@
     "achievement": "업적 달성: <b>{{name}}</b>",
     "prefAchievement": "업적",
     "prefAchievementHint": "업적을 달성했을 때",
-    "clear": "지우기"
+    "clear": "지우기",
+    "feedbackReply": "팀이 회원님의 티켓에 답장했습니다",
+    "feedbackResolved": "회원님의 티켓이 처리 완료로 표시되었습니다",
+    "prefFeedbackReply": "티켓 답장",
+    "prefFeedbackReplyHint": "팀이 피드백 티켓에 답장할 때",
+    "prefFeedbackResolved": "티켓 처리 완료",
+    "prefFeedbackResolvedHint": "피드백 티켓이 처리 완료로 표시될 때"
   },
   "minigames": {
     "hub": {

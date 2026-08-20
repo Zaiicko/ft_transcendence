@@ -332,7 +332,13 @@
     "achievement": "Odblokowano osiągnięcie: <b>{{name}}</b>",
     "prefAchievement": "Osiągnięcia",
     "prefAchievementHint": "Gdy odblokujesz osiągnięcie",
-    "clear": "Wyczyść"
+    "clear": "Wyczyść",
+    "feedbackReply": "Zespół odpowiedział na Twoje zgłoszenie",
+    "feedbackResolved": "Twoje zgłoszenie zostało oznaczone jako rozpatrzone",
+    "prefFeedbackReply": "Odpowiedź na zgłoszenie",
+    "prefFeedbackReplyHint": "Gdy zespół odpowie na Twoje zgłoszenie",
+    "prefFeedbackResolved": "Zgłoszenie rozpatrzone",
+    "prefFeedbackResolvedHint": "Gdy Twoje zgłoszenie zostanie oznaczone jako rozpatrzone"
   },
   "minigames": {
     "hub": {

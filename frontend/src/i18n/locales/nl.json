@@ -332,7 +332,13 @@
     "achievement": "Prestatie ontgrendeld: <b>{{name}}</b>",
     "prefAchievement": "Prestaties",
     "prefAchievementHint": "Wanneer je een prestatie ontgrendelt",
-    "clear": "Wissen"
+    "clear": "Wissen",
+    "feedbackReply": "Het team heeft op je ticket gereageerd",
+    "feedbackResolved": "Je ticket is als afgehandeld gemarkeerd",
+    "prefFeedbackReply": "Reactie op ticket",
+    "prefFeedbackReplyHint": "Wanneer het team op je feedbackticket reageert",
+    "prefFeedbackResolved": "Ticket afgehandeld",
+    "prefFeedbackResolvedHint": "Wanneer je feedbackticket als afgehandeld wordt gemarkeerd"
   },
   "minigames": {
     "hub": {

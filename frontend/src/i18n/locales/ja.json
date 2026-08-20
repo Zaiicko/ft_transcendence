@@ -332,7 +332,13 @@
     "achievement": "実績を解除：<b>{{name}}</b>",
     "prefAchievement": "実績",
     "prefAchievementHint": "実績を解除したとき",
-    "clear": "クリア"
+    "clear": "クリア",
+    "feedbackReply": "チームがあなたのチケットに返信しました",
+    "feedbackResolved": "あなたのチケットは対応済みになりました",
+    "prefFeedbackReply": "チケットへの返信",
+    "prefFeedbackReplyHint": "チームがフィードバックチケットに返信したとき",
+    "prefFeedbackResolved": "チケット対応済み",
+    "prefFeedbackResolvedHint": "フィードバックチケットが対応済みになったとき"
   },
   "minigames": {
     "hub": {

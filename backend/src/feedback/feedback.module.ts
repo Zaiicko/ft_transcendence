@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '../mailer/mailer.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { FeedbackController } from './feedback.controller';
 import { FeedbackService } from './feedback.service';
 
 @Module({
-  imports: [MailerModule],
+  imports: [MailerModule, NotificationsModule],
   controllers: [FeedbackController],
   providers: [FeedbackService],
 })

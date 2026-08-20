@@ -203,6 +203,26 @@ export class NotificationsService {
     }
   }
 
+  // ---- Feedback ticket notifications (called by FeedbackService) ----
+  // Only for the admin's actions reaching the submitter — the user's own
+  // replies/closes on their own ticket never notify themselves.
+
+  async feedbackReplied(userId: number, feedbackId: number): Promise<void> {
+    try {
+      await this.deliver(userId, NotificationType.FEEDBACK_REPLY, { feedbackId });
+    } catch (err) {
+      this.logger.warn(`feedbackReplied notification failed: ${(err as Error).message}`);
+    }
+  }
+
+  async feedbackResolved(userId: number, feedbackId: number): Promise<void> {
+    try {
+      await this.deliver(userId, NotificationType.FEEDBACK_RESOLVED, { feedbackId });
+    } catch (err) {
+      this.logger.warn(`feedbackResolved notification failed: ${(err as Error).message}`);
+    }
+  }
+
   private async actorPayload(actorId: number) {
     const actor = await this.prisma.user.findUnique({
       where: { id: actorId },
@@ -226,6 +246,8 @@ export class NotificationsService {
     NotificationType.COMMENT_REPLY,
     NotificationType.FRIEND_JOINED,
     NotificationType.ACHIEVEMENT,
+    NotificationType.FEEDBACK_REPLY,
+    NotificationType.FEEDBACK_RESOLVED,
   ];
 
   private async wants(userId: number, type: NotificationType): Promise<boolean> {

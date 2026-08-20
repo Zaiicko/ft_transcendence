@@ -332,7 +332,13 @@
     "achievement": "解锁成就：<b>{{name}}</b>",
     "prefAchievement": "成就",
     "prefAchievementHint": "当你解锁成就时",
-    "clear": "清空"
+    "clear": "清空",
+    "feedbackReply": "团队回复了你的工单",
+    "feedbackResolved": "你的工单已被标记为已处理",
+    "prefFeedbackReply": "工单回复",
+    "prefFeedbackReplyHint": "当团队回复你的反馈工单时",
+    "prefFeedbackResolved": "工单已处理",
+    "prefFeedbackResolvedHint": "当你的反馈工单被标记为已处理时"
   },
   "minigames": {
     "hub": {

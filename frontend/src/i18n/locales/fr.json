@@ -332,7 +332,13 @@
     "achievement": "Succès débloqué : <b>{{name}}</b>",
     "prefAchievement": "Succès",
     "prefAchievementHint": "Quand tu débloques un succès",
-    "clear": "Effacer"
+    "clear": "Effacer",
+    "feedbackReply": "L'équipe a répondu à ton ticket",
+    "feedbackResolved": "Ton ticket a été marqué comme traité",
+    "prefFeedbackReply": "Réponse à un ticket",
+    "prefFeedbackReplyHint": "Quand l'équipe répond à ton ticket de feedback",
+    "prefFeedbackResolved": "Ticket traité",
+    "prefFeedbackResolvedHint": "Quand ton ticket de feedback est marqué comme traité"
   },
   "minigames": {
     "hub": {

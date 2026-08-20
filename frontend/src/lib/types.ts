@@ -131,7 +131,9 @@ export type NotificationType =
   | 'COMMENT_REPLY'
   | 'NEW_MESSAGE'
   | 'FRIEND_JOINED'
-  | 'ACHIEVEMENT';
+  | 'ACHIEVEMENT'
+  | 'FEEDBACK_REPLY'
+  | 'FEEDBACK_RESOLVED';
 
 // payload depends on type; all fields are therefore optional on the front
 export interface AppNotification {
@@ -152,6 +154,9 @@ export interface AppNotification {
     via?: 'steam' | '42';
     // ACHIEVEMENT: key of the unlocked achievement
     achievementKey?: string;
+    // FEEDBACK_REPLY / FEEDBACK_RESOLVED: which ticket (opens it via
+    // FeedbackButton's 'saveboxd:open-ticket' event, see NotificationBell)
+    feedbackId?: number;
   };
   readAt: string | null;
   createdAt: string;

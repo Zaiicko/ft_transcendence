@@ -332,7 +332,13 @@
     "achievement": "Достижение открыто: <b>{{name}}</b>",
     "prefAchievement": "Достижения",
     "prefAchievementHint": "Когда вы открываете достижение",
-    "clear": "Очистить"
+    "clear": "Очистить",
+    "feedbackReply": "Команда ответила на ваш тикет",
+    "feedbackResolved": "Ваш тикет отмечен как обработанный",
+    "prefFeedbackReply": "Ответ на тикет",
+    "prefFeedbackReplyHint": "Когда команда отвечает на ваш тикет обратной связи",
+    "prefFeedbackResolved": "Тикет обработан",
+    "prefFeedbackResolvedHint": "Когда ваш тикет обратной связи отмечен как обработанный"
   },
   "minigames": {
     "hub": {

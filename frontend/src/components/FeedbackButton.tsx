@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import FeedbackModal from './FeedbackModal';
 import { FlagIcon } from './ReactionIcons';
@@ -9,18 +9,44 @@ import { FlagIcon } from './ReactionIcons';
 export default function FeedbackButton() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [openTicketId, setOpenTicketId] = useState<number | null>(null);
+
+  // A ticket-reply/resolved notification has no real route to link to (the
+  // "My tickets" list lives inside this modal, not a page) — NotificationBell
+  // dispatches this event instead, which opens the bubble straight to the
+  // right ticket.
+  useEffect(() => {
+    function onOpenTicket(e: Event) {
+      const id = (e as CustomEvent<{ feedbackId: number }>).detail?.feedbackId;
+      setOpenTicketId(id ?? null);
+      setOpen(true);
+    }
+    window.addEventListener('saveboxd:open-ticket', onOpenTicket);
+    return () => window.removeEventListener('saveboxd:open-ticket', onOpenTicket);
+  }, []);
 
   return (
     <div data-tour="feedback" className="fixed bottom-4 left-4 z-40">
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpenTicketId(null);
+          setOpen(true);
+        }}
         aria-label={t('feedback.title')}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-zinc-950 shadow-xl transition hover:brightness-110"
       >
         <FlagIcon className="h-6 w-6" />
       </button>
-      {open && <FeedbackModal onClose={() => setOpen(false)} />}
+      {open && (
+        <FeedbackModal
+          initialTicketId={openTicketId}
+          onClose={() => {
+            setOpen(false);
+            setOpenTicketId(null);
+          }}
+        />
+      )}
     </div>
   );
 }
