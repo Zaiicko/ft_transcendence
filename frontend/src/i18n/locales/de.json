@@ -1500,6 +1500,10 @@
       "menu": {
         "title": "Einstellungen",
         "body": "Öffne hier deine Einstellungen: Profil, Benachrichtigungen, Design und Sprache."
+      },
+      "feedback": {
+        "title": "Fehler melden",
+        "body": "Ein Problem oder eine Idee? Nutze die Sprechblase unten links, um es uns mitzuteilen."
       }
     }
   },

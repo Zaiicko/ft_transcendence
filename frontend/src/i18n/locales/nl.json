@@ -1500,6 +1500,10 @@
       "menu": {
         "title": "Instellingen",
         "body": "Open hier je instellingen: profiel, meldingen, thema en taal."
+      },
+      "feedback": {
+        "title": "Bug melden",
+        "body": "Een probleem of een idee? Gebruik de bubbel linksonder om het ons te laten weten."
       }
     }
   },

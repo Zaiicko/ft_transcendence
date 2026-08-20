@@ -1500,6 +1500,10 @@
       "menu": {
         "title": "Ayarlar",
         "body": "Ayarlarını buradan aç: profil, bildirimler, tema ve dil."
+      },
+      "feedback": {
+        "title": "Hata bildir",
+        "body": "Bir sorun mu var, bir fikrin mi var? Sol alttaki balonu kullanarak bize bildir."
       }
     }
   },

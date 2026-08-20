@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 const STEP_KEYS = [
   'home',
   'chat',
+  'feedback',
   'search',
   'catalog',
   'feed',

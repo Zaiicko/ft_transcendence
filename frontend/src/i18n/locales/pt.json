@@ -1500,6 +1500,10 @@
       "menu": {
         "title": "Definições",
         "body": "Abre aqui as tuas definições: perfil, notificações, tema e idioma."
+      },
+      "feedback": {
+        "title": "Reportar um problema",
+        "body": "Um problema ou uma ideia? Usa o balão em baixo à esquerda para nos dizeres."
       }
     }
   },

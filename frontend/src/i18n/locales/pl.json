@@ -1500,6 +1500,10 @@
       "menu": {
         "title": "Ustawienia",
         "body": "Otwórz tutaj ustawienia: profil, powiadomienia, motyw i język."
+      },
+      "feedback": {
+        "title": "Zgłoś błąd",
+        "body": "Problem albo pomysł? Skorzystaj z dymka w lewym dolnym rogu, aby nam o tym powiedzieć."
       }
     }
   },

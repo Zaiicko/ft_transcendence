@@ -1500,6 +1500,10 @@
       "menu": {
         "title": "Ajustes",
         "body": "Abre aquí tus ajustes: perfil, notificaciones, tema e idioma."
+      },
+      "feedback": {
+        "title": "Informar de un error",
+        "body": "¿Un problema o una idea? Usa la burbuja de abajo a la izquierda para contárnoslo."
       }
     }
   },

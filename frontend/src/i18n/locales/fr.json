@@ -1500,6 +1500,10 @@
       "menu": {
         "title": "Réglages",
         "body": "Ouvre tes réglages ici : profil, notifications, thème et langue."
+      },
+      "feedback": {
+        "title": "Signaler un bug",
+        "body": "Un problème ou une idée ? Utilise la bulle en bas à gauche pour nous le dire."
       }
     }
   },
