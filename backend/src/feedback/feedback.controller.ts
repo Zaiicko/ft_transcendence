@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { FeedbackStatus } from '@prisma/client';
 import { AdminGuard } from '../auth/admin.guard';
@@ -32,13 +43,12 @@ export class FeedbackController {
     return this.feedbackService.list(status ?? 'OPEN');
   }
 
-  // The ticket owner closing their own thread from the chat UI — not an
-  // admin action, so no AdminGuard. Declared before ':id/...' even though
-  // the literal 'mine' segment can't collide with a numeric :id anyway.
+  // Declared before ':id/...' for clarity — 'mine' can't collide with a
+  // numeric :id anyway.
   @UseGuards(JwtAuthGuard)
-  @Patch('mine/close')
-  closeMine(@CurrentUser() user: JwtPayload) {
-    return this.feedbackService.closeLatestForUser(user.sub);
+  @Get('mine')
+  mine(@CurrentUser() user: JwtPayload) {
+    return this.feedbackService.myTickets(user.sub);
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
@@ -49,11 +59,25 @@ export class FeedbackController {
 
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Patch(':id/reply')
-  reply(
-    @CurrentUser() admin: JwtPayload,
+  reply(@Param('id', ParseIntPipe) id: number, @Body() dto: ReplyFeedbackDto) {
+    return this.feedbackService.reply(id, dto.message);
+  }
+
+  // Owner-only reply, from their own "My tickets" thread — no AdminGuard.
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/messages')
+  replyMine(
+    @CurrentUser() user: JwtPayload,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: ReplyFeedbackDto,
   ) {
-    return this.feedbackService.reply(admin.sub, id, dto.message);
+    return this.feedbackService.replyAsOwner(user.sub, id, dto.message);
+  }
+
+  // Owner-only "close" — deletes the ticket and its thread.
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  closeMine(@CurrentUser() user: JwtPayload, @Param('id', ParseIntPipe) id: number) {
+    return this.feedbackService.closeAsOwner(user.sub, id);
   }
 }

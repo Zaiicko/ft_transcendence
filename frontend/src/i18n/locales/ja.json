@@ -966,9 +966,7 @@
     "noMessage": "メッセージなし",
     "sharedGame": "共有されたゲーム",
     "sharedReview": "共有されたレビュー",
-    "sharedProfile": "共有されたプロフィール",
-    "closeTicket": "チケットを閉じる",
-    "ticketClosed": "チケットを閉じました"
+    "sharedProfile": "共有されたプロフィール"
   },
   "company": {
     "notFound": "スタジオが見つかりません。",
@@ -1567,13 +1565,15 @@
       "empty": "ここには何もありません。",
       "anonymous": "匿名",
       "markResolved": "対応済みにする",
-      "replyHint": "返信するとユーザーにダイレクトメッセージが送信されます。",
+      "replyHint": "返信はこのチケットのスレッドに表示されます。",
       "noAccount": "アカウントなしで送信されたため、アプリ内での返信はできません。",
       "reply": "返信",
       "replyModalTitle": "{{username}} に返信",
-      "replyModalIntro": "メッセージは個人アカウントではなく、専用の「Admin」アカウントから送信されます。友達として追加されることはありません。",
+      "replyModalIntro": "返信はこのチケットのスレッドに追加され、ユーザーは「自分のチケット」で確認できます。",
       "replyPlaceholder": "返信内容…",
-      "sendReply": "返信を送信"
+      "sendReply": "返信を送信",
+      "fromAdmin": "管理者",
+      "fromUser": "ユーザー"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "メールアドレス（任意、返信のため）",
     "submit": "送信",
     "thanks": "ありがとうございます！メッセージが送信されました。",
-    "unexpectedError": "エラーが発生しました。後でもう一度お試しください。"
+    "unexpectedError": "エラーが発生しました。後でもう一度お試しください。",
+    "tabs": {
+      "new": "新規",
+      "mine": "自分のチケット"
+    },
+    "noTickets": "まだチケットを送信していません。",
+    "replyPlaceholder": "返信内容…",
+    "closeConfirm": "このチケットを完全に削除しますか？",
+    "closeConfirmButton": "はい、削除する",
+    "closeTicket": "チケットを閉じる",
+    "sendReply": "返信"
   }
 }

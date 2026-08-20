@@ -966,9 +966,7 @@
     "noMessage": "暂无消息",
     "sharedGame": "分享的游戏",
     "sharedReview": "分享的评价",
-    "sharedProfile": "分享的主页",
-    "closeTicket": "关闭工单",
-    "ticketClosed": "工单已关闭"
+    "sharedProfile": "分享的主页"
   },
   "company": {
     "notFound": "未找到工作室。",
@@ -1567,13 +1565,15 @@
       "empty": "这里暂无内容。",
       "anonymous": "匿名",
       "markResolved": "标记为已处理",
-      "replyHint": "回复会向该用户发送一条私信。",
+      "replyHint": "你的回复会显示在该工单的对话中。",
       "noAccount": "以访客身份提交 — 无法在应用内回复。",
       "reply": "回复",
       "replyModalTitle": "回复 {{username}}",
-      "replyModalIntro": "你的消息将通过专用的「Admin」账号发送，而非你的个人账号 — 双方不会被添加为好友。",
+      "replyModalIntro": "你的回复将被添加到该工单的对话中，用户可在「我的工单」中查看。",
       "replyPlaceholder": "输入回复……",
-      "sendReply": "发送回复"
+      "sendReply": "发送回复",
+      "fromAdmin": "管理员",
+      "fromUser": "用户"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "您的邮箱（可选，方便我们回复）",
     "submit": "发送",
     "thanks": "谢谢！您的消息已发送。",
-    "unexpectedError": "出现错误，请稍后重试。"
+    "unexpectedError": "出现错误，请稍后重试。",
+    "tabs": {
+      "new": "新建",
+      "mine": "我的工单"
+    },
+    "noTickets": "你还没有提交过工单。",
+    "replyPlaceholder": "输入回复…",
+    "closeConfirm": "永久删除该工单？",
+    "closeConfirmButton": "是，删除",
+    "closeTicket": "关闭工单",
+    "sendReply": "回复"
   }
 }

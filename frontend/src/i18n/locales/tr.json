@@ -966,9 +966,7 @@
     "noMessage": "Mesaj yok",
     "sharedGame": "Paylaşılan oyun",
     "sharedReview": "Paylaşılan inceleme",
-    "sharedProfile": "Paylaşılan profil",
-    "closeTicket": "Bileti kapat",
-    "ticketClosed": "Bilet kapatıldı"
+    "sharedProfile": "Paylaşılan profil"
   },
   "company": {
     "notFound": "Stüdyo bulunamadı.",
@@ -1567,13 +1565,15 @@
       "empty": "Burada bir şey yok.",
       "anonymous": "Anonim",
       "markResolved": "Çözüldü olarak işaretle",
-      "replyHint": "Yanıtlamak kullanıcıya doğrudan mesaj gönderir.",
+      "replyHint": "Yanıtın bu biletin konu akışında görünecek.",
       "noAccount": "Hesap olmadan gönderildi — uygulama içinden yanıt verilemez.",
       "reply": "Yanıtla",
       "replyModalTitle": "{{username}} kullanıcısına yanıtla",
-      "replyModalIntro": "Mesajın, kişisel hesabından değil, özel bir \"Admin\" hesabından gönderilecek — arkadaş olarak eklenmeyeceksiniz.",
+      "replyModalIntro": "Yanıtın bu biletin konu akışına eklenecek ve kullanıcı tarafından \"Biletlerim\" altında görülebilecek.",
       "replyPlaceholder": "Yanıtın…",
-      "sendReply": "Yanıtı gönder"
+      "sendReply": "Yanıtı gönder",
+      "fromAdmin": "Admin",
+      "fromUser": "Kullanıcı"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "E-postan (isteğe bağlı, yanıt verebilmemiz için)",
     "submit": "Gönder",
     "thanks": "Teşekkürler! Mesajın gönderildi.",
-    "unexpectedError": "Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin."
+    "unexpectedError": "Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin.",
+    "tabs": {
+      "new": "Yeni",
+      "mine": "Biletlerim"
+    },
+    "noTickets": "Henüz bir bilet göndermedin.",
+    "replyPlaceholder": "Yanıtın…",
+    "closeConfirm": "Bu bilet kalıcı olarak silinsin mi?",
+    "closeConfirmButton": "Evet, sil",
+    "closeTicket": "Bileti kapat",
+    "sendReply": "Yanıtla"
   }
 }

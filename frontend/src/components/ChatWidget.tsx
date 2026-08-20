@@ -273,38 +273,9 @@ function Thread({
 }) {
   const { t } = useTranslation();
   const endRef = useRef<HTMLDivElement>(null);
-  const [closing, setClosing] = useState(false);
-  const [closed, setClosed] = useState(false);
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'end' });
   }, [messages]);
-
-  // Reset the "closed" confirmation when switching to a different thread —
-  // set during render (Catalog's filter-change pattern), not inside an effect.
-  const [prevFriendId, setPrevFriendId] = useState(friend?.id);
-  if (friend?.id !== prevFriendId) {
-    setPrevFriendId(friend?.id);
-    setClosed(false);
-  }
-
-  async function closeTicket() {
-    setClosing(true);
-    try {
-      await apiFetch('/feedback/mine/close', { method: 'PATCH' });
-      setClosed(true);
-    } finally {
-      setClosing(false);
-    }
-  }
-
-  const identity = friend && (
-    <span className="relative shrink-0">
-      <Avatar username={friend.username} avatarUrl={friend.avatarUrl} size={28} />
-      {friend.isOnline && (
-        <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 dark:border-zinc-900" />
-      )}
-    </span>
-  );
 
   return (
     <>
@@ -317,30 +288,19 @@ function Thread({
         >
           <BackIcon />
         </button>
-        {friend &&
-          (friend.isSystemAccount ? (
-            <span className="flex min-w-0 items-center gap-2">
-              {identity}
-              <span className="truncate font-medium">{friend.username}</span>
-            </span>
-          ) : (
-            <Link
-              to={`/u/${friend.username}`}
-              className="flex min-w-0 items-center gap-2 hover:opacity-80"
-            >
-              {identity}
-              <span className="truncate font-medium">{friend.username}</span>
-            </Link>
-          ))}
-        {friend?.isSystemAccount && (
-          <button
-            type="button"
-            disabled={closing || closed}
-            onClick={closeTicket}
-            className="ml-auto shrink-0 rounded-full border border-zinc-300 px-3 py-1 text-xs font-semibold text-zinc-500 transition hover:border-accent hover:text-accent disabled:opacity-50 dark:border-zinc-600"
+        {friend && (
+          <Link
+            to={`/u/${friend.username}`}
+            className="flex min-w-0 items-center gap-2 hover:opacity-80"
           >
-            {closed ? t('chat.ticketClosed') : t('chat.closeTicket')}
-          </button>
+            <span className="relative shrink-0">
+              <Avatar username={friend.username} avatarUrl={friend.avatarUrl} size={28} />
+              {friend.isOnline && (
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 dark:border-zinc-900" />
+              )}
+            </span>
+            <span className="truncate font-medium">{friend.username}</span>
+          </Link>
         )}
       </header>
 

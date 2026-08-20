@@ -966,9 +966,7 @@
     "noMessage": "Brak wiadomości",
     "sharedGame": "Udostępniona gra",
     "sharedReview": "Udostępniona recenzja",
-    "sharedProfile": "Udostępniony profil",
-    "closeTicket": "Zamknij zgłoszenie",
-    "ticketClosed": "Zgłoszenie zamknięte"
+    "sharedProfile": "Udostępniony profil"
   },
   "company": {
     "notFound": "Nie znaleziono studia.",
@@ -1567,13 +1565,15 @@
       "empty": "Nic tu nie ma.",
       "anonymous": "Anonim",
       "markResolved": "Oznacz jako rozpatrzone",
-      "replyHint": "Odpowiedź wysyła użytkownikowi wiadomość bezpośrednią.",
+      "replyHint": "Twoja odpowiedź pojawi się w wątku tego zgłoszenia.",
       "noAccount": "Wysłano bez konta — odpowiedź w aplikacji nie jest możliwa.",
       "reply": "Odpowiedz",
       "replyModalTitle": "Odpowiedz {{username}}",
-      "replyModalIntro": "Twoja wiadomość zostanie wysłana z dedykowanego konta „Admin”, a nie z Twojego osobistego konta — nie zostaniecie dodani jako znajomi.",
+      "replyModalIntro": "Twoja odpowiedź zostanie dodana do wątku tego zgłoszenia, widocznego dla użytkownika w „Moje zgłoszenia”.",
       "replyPlaceholder": "Twoja odpowiedź…",
-      "sendReply": "Wyślij odpowiedź"
+      "sendReply": "Wyślij odpowiedź",
+      "fromAdmin": "Admin",
+      "fromUser": "Użytkownik"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "Twój e-mail (opcjonalnie, abyśmy mogli odpowiedzieć)",
     "submit": "Wyślij",
     "thanks": "Dziękujemy! Twoja wiadomość została wysłana.",
-    "unexpectedError": "Coś poszło nie tak. Spróbuj ponownie później."
+    "unexpectedError": "Coś poszło nie tak. Spróbuj ponownie później.",
+    "tabs": {
+      "new": "Nowe",
+      "mine": "Moje zgłoszenia"
+    },
+    "noTickets": "Nie wysłałeś/aś jeszcze żadnego zgłoszenia.",
+    "replyPlaceholder": "Twoja odpowiedź…",
+    "closeConfirm": "Trwale usunąć to zgłoszenie?",
+    "closeConfirmButton": "Tak, usuń",
+    "closeTicket": "Zamknij zgłoszenie",
+    "sendReply": "Odpowiedz"
   }
 }

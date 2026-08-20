@@ -966,9 +966,7 @@
     "noMessage": "Keine Nachricht",
     "sharedGame": "Geteiltes Spiel",
     "sharedReview": "Geteilte Rezension",
-    "sharedProfile": "Geteiltes Profil",
-    "closeTicket": "Ticket schließen",
-    "ticketClosed": "Ticket geschlossen"
+    "sharedProfile": "Geteiltes Profil"
   },
   "company": {
     "notFound": "Studio nicht gefunden.",
@@ -1567,13 +1565,15 @@
       "empty": "Hier ist nichts.",
       "anonymous": "Anonym",
       "markResolved": "Als bearbeitet markieren",
-      "replyHint": "Antworten sendet dem Nutzer eine Direktnachricht.",
+      "replyHint": "Deine Antwort erscheint im Thread dieses Tickets.",
       "noAccount": "Ohne Konto gesendet — keine Antwort in der App möglich.",
       "reply": "Antworten",
       "replyModalTitle": "Auf {{username}} antworten",
-      "replyModalIntro": "Deine Nachricht wird von einem eigenen „Admin“-Konto gesendet, nicht von deinem persönlichen Konto — ihr werdet nicht als Freunde hinzugefügt.",
+      "replyModalIntro": "Deine Antwort wird zum Thread dieses Tickets hinzugefügt und ist für den Nutzer unter „Meine Tickets“ sichtbar.",
       "replyPlaceholder": "Deine Antwort …",
-      "sendReply": "Antwort senden"
+      "sendReply": "Antwort senden",
+      "fromAdmin": "Admin",
+      "fromUser": "Nutzer"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "Deine E-Mail (optional, damit wir antworten können)",
     "submit": "Senden",
     "thanks": "Danke! Deine Nachricht wurde gesendet.",
-    "unexpectedError": "Etwas ist schiefgelaufen. Bitte versuche es später erneut."
+    "unexpectedError": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+    "tabs": {
+      "new": "Neu",
+      "mine": "Meine Tickets"
+    },
+    "noTickets": "Du hast noch kein Ticket gesendet.",
+    "replyPlaceholder": "Deine Antwort …",
+    "closeConfirm": "Dieses Ticket endgültig löschen?",
+    "closeConfirmButton": "Ja, löschen",
+    "closeTicket": "Ticket schließen",
+    "sendReply": "Antworten"
   }
 }

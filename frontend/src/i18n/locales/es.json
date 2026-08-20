@@ -966,9 +966,7 @@
     "noMessage": "Sin mensajes",
     "sharedGame": "Juego compartido",
     "sharedReview": "Reseña compartida",
-    "sharedProfile": "Perfil compartido",
-    "closeTicket": "Cerrar ticket",
-    "ticketClosed": "Ticket cerrado"
+    "sharedProfile": "Perfil compartido"
   },
   "company": {
     "notFound": "Estudio no encontrado.",
@@ -1567,13 +1565,15 @@
       "empty": "No hay nada aquí.",
       "anonymous": "Anónimo",
       "markResolved": "Marcar como resuelto",
-      "replyHint": "Responder envía un mensaje directo al usuario.",
+      "replyHint": "Tu respuesta aparecerá en el hilo de este ticket.",
       "noAccount": "Enviado sin cuenta — no es posible responder desde la app.",
       "reply": "Responder",
       "replyModalTitle": "Responder a {{username}}",
-      "replyModalIntro": "Tu mensaje se enviará desde una cuenta «Admin» dedicada, no desde tu cuenta personal — no os añadiréis como amigos.",
+      "replyModalIntro": "Tu respuesta se añadirá al hilo de este ticket, visible para el usuario en «Mis tickets».",
       "replyPlaceholder": "Tu respuesta…",
-      "sendReply": "Enviar respuesta"
+      "sendReply": "Enviar respuesta",
+      "fromAdmin": "Admin",
+      "fromUser": "Usuario"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "Tu email (opcional, para poder responderte)",
     "submit": "Enviar",
     "thanks": "¡Gracias! Tu mensaje se ha enviado correctamente.",
-    "unexpectedError": "Ha ocurrido un error. Inténtalo de nuevo más tarde."
+    "unexpectedError": "Ha ocurrido un error. Inténtalo de nuevo más tarde.",
+    "tabs": {
+      "new": "Nuevo",
+      "mine": "Mis tickets"
+    },
+    "noTickets": "Aún no has enviado ningún ticket.",
+    "replyPlaceholder": "Tu respuesta…",
+    "closeConfirm": "¿Eliminar este ticket definitivamente?",
+    "closeConfirmButton": "Sí, eliminar",
+    "closeTicket": "Cerrar ticket",
+    "sendReply": "Responder"
   }
 }

@@ -966,9 +966,7 @@
     "noMessage": "Geen bericht",
     "sharedGame": "Gedeelde game",
     "sharedReview": "Gedeelde recensie",
-    "sharedProfile": "Gedeeld profiel",
-    "closeTicket": "Ticket sluiten",
-    "ticketClosed": "Ticket gesloten"
+    "sharedProfile": "Gedeeld profiel"
   },
   "company": {
     "notFound": "Studio niet gevonden.",
@@ -1567,13 +1565,15 @@
       "empty": "Niets hier.",
       "anonymous": "Anoniem",
       "markResolved": "Markeren als afgehandeld",
-      "replyHint": "Reageren stuurt de gebruiker een directe boodschap.",
+      "replyHint": "Je antwoord verschijnt in de thread van dit ticket.",
       "noAccount": "Verzonden zonder account — reageren in de app is niet mogelijk.",
       "reply": "Reageren",
       "replyModalTitle": "Reageren naar {{username}}",
-      "replyModalIntro": "Je bericht wordt verzonden vanaf een speciaal 'Admin'-account, niet vanaf je persoonlijke account — jullie worden niet als vrienden toegevoegd.",
+      "replyModalIntro": "Je antwoord wordt toegevoegd aan de thread van dit ticket, zichtbaar voor de gebruiker onder 'Mijn tickets'.",
       "replyPlaceholder": "Je antwoord…",
-      "sendReply": "Antwoord versturen"
+      "sendReply": "Antwoord versturen",
+      "fromAdmin": "Admin",
+      "fromUser": "Gebruiker"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "Je e-mail (optioneel, zodat we kunnen reageren)",
     "submit": "Versturen",
     "thanks": "Bedankt! Je bericht is verzonden.",
-    "unexpectedError": "Er is iets misgegaan. Probeer het later opnieuw."
+    "unexpectedError": "Er is iets misgegaan. Probeer het later opnieuw.",
+    "tabs": {
+      "new": "Nieuw",
+      "mine": "Mijn tickets"
+    },
+    "noTickets": "Je hebt nog geen ticket verstuurd.",
+    "replyPlaceholder": "Je antwoord…",
+    "closeConfirm": "Dit ticket definitief verwijderen?",
+    "closeConfirmButton": "Ja, verwijderen",
+    "closeTicket": "Ticket sluiten",
+    "sendReply": "Reageren"
   }
 }

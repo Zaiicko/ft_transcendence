@@ -358,6 +358,13 @@ function BanUserModal({
 
 type FeedbackStatus = 'OPEN' | 'RESOLVED';
 
+interface FeedbackMessageT {
+  id: number;
+  fromAdmin: boolean;
+  text: string;
+  createdAt: string;
+}
+
 interface FeedbackT {
   id: number;
   message: string;
@@ -365,6 +372,7 @@ interface FeedbackT {
   url: string | null;
   createdAt: string;
   user: Author | null;
+  messages: FeedbackMessageT[];
 }
 
 const FEEDBACK_TABS: FeedbackStatus[] = ['OPEN', 'RESOLVED'];
@@ -458,6 +466,21 @@ function FeedbackPanel() {
               </div>
               <p className="mt-2 whitespace-pre-line text-sm text-zinc-700 dark:text-zinc-200">{f.message}</p>
 
+              {f.messages.length > 0 && (
+                <div className="mt-3 flex flex-col gap-2 border-t border-zinc-900/10 pt-3 dark:border-zinc-100/10">
+                  {f.messages.map((m) => (
+                    <div key={m.id} className="text-sm">
+                      <span
+                        className={`mr-2 text-xs font-semibold ${m.fromAdmin ? 'text-accent' : 'text-zinc-500 dark:text-zinc-400'}`}
+                      >
+                        {m.fromAdmin ? t('admin.feedback.fromAdmin') : t('admin.feedback.fromUser')}
+                      </span>
+                      <span className="whitespace-pre-line text-zinc-700 dark:text-zinc-200">{m.text}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {status === 'OPEN' && (
                 <div className="mt-4 flex items-center justify-between gap-2">
                   {f.user ? (
@@ -500,8 +523,18 @@ function FeedbackPanel() {
           feedbackId={replyTarget.id}
           username={replyTarget.user!.username}
           onClose={() => setReplyTarget(null)}
-          onReplied={() => {
-            setItems((list) => list.filter((f) => f.id !== replyTarget.id));
+          onReplied={(text) => {
+            const newMessage: FeedbackMessageT = {
+              id: -Date.now(), // temp key, replaced on next full refetch
+              fromAdmin: true,
+              text,
+              createdAt: new Date().toISOString(),
+            };
+            setItems((list) =>
+              list.map((f) =>
+                f.id === replyTarget.id ? { ...f, messages: [...f.messages, newMessage] } : f,
+              ),
+            );
             setReplyTarget(null);
           }}
         />
@@ -519,7 +552,7 @@ function ReplyFeedbackModal({
   feedbackId: number;
   username: string;
   onClose: () => void;
-  onReplied: () => void;
+  onReplied: (text: string) => void;
 }) {
   const { t } = useTranslation();
   const [message, setMessage] = useState('');
@@ -535,7 +568,7 @@ function ReplyFeedbackModal({
         method: 'PATCH',
         body: JSON.stringify({ message: body }),
       });
-      onReplied();
+      onReplied(body);
     } finally {
       setSending(false);
     }

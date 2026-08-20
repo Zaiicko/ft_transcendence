@@ -190,13 +190,6 @@ model User {
   // one access-token lifetime (default 15m) without an extra DB read per request.
   bannedAt         DateTime?
   bannedReason     String?
-  // Marks the single reserved "Admin" bot account used to deliver feedback
-  // replies (FeedbackService) — never a real login. ChatService lets a
-  // system account message/be messaged by anyone, bypassing the normal
-  // friends-only gate, and surfaces the thread in listConversations() even
-  // without a Friendship row: replying to feedback must never silently
-  // friend the real admin's personal account with a stranger.
-  isSystemAccount  Boolean      @default(false)
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
@@ -569,19 +562,36 @@ model Report {
 // from the "Feedback" category of /admin (same page as Report, different
 // tab) instead of only living in an admin's inbox.
 model Feedback {
-  id           Int            @id @default(autoincrement())
-  user         User?          @relation("FeedbackSubmitted", fields: [userId], references: [id], onDelete: SetNull)
+  id           Int              @id @default(autoincrement())
+  user         User?            @relation("FeedbackSubmitted", fields: [userId], references: [id], onDelete: SetNull)
   userId       Int?
   email        String?
   message      String
   url          String?
-  status       FeedbackStatus @default(OPEN)
-  resolvedBy   User?          @relation("FeedbackResolved", fields: [resolvedById], references: [id], onDelete: SetNull)
+  status       FeedbackStatus   @default(OPEN)
+  resolvedBy   User?            @relation("FeedbackResolved", fields: [resolvedById], references: [id], onDelete: SetNull)
   resolvedById Int?
   resolvedAt   DateTime?
-  createdAt    DateTime       @default(now())
+  createdAt    DateTime         @default(now())
+  messages     FeedbackMessage[]
 
   @@index([status])
+}
+
+// Ticket thread: the back-and-forth after the original submission above.
+// Each ticket (Feedback) has its own thread, so a user with several open
+// tickets can follow/reply to each independently — deliberately NOT reused
+// from the friends-only chat DM system, which has no concept of "which
+// ticket" a message belongs to.
+model FeedbackMessage {
+  id         Int      @id @default(autoincrement())
+  feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  feedbackId Int
+  fromAdmin  Boolean
+  text       String
+  createdAt  DateTime @default(now())
+
+  @@index([feedbackId])
 }
 
 // "Done" status + date — feeds the yearly calendar and the per-game heart count

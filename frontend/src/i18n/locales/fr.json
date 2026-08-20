@@ -966,9 +966,7 @@
     "noMessage": "Aucun message",
     "sharedGame": "Jeu partagé",
     "sharedReview": "Avis partagé",
-    "sharedProfile": "Profil partagé",
-    "closeTicket": "Clôturer le ticket",
-    "ticketClosed": "Ticket clôturé"
+    "sharedProfile": "Profil partagé"
   },
   "company": {
     "notFound": "Studio introuvable.",
@@ -1567,13 +1565,15 @@
       "empty": "Rien ici.",
       "anonymous": "Anonyme",
       "markResolved": "Marquer comme traité",
-      "replyHint": "Répondre envoie un message direct à l'utilisateur.",
+      "replyHint": "Ta réponse apparaîtra dans le fil de ce ticket.",
       "noAccount": "Envoyé sans compte — pas de réponse possible dans l'app.",
       "reply": "Répondre",
       "replyModalTitle": "Répondre à {{username}}",
-      "replyModalIntro": "Ton message sera envoyé depuis un compte « Admin » dédié, pas depuis ton compte personnel — vous ne serez pas ajoutés en amis.",
+      "replyModalIntro": "Ta réponse sera ajoutée au fil de ce ticket, visible par l'utilisateur dans « Mes tickets ».",
       "replyPlaceholder": "Ta réponse…",
-      "sendReply": "Envoyer la réponse"
+      "sendReply": "Envoyer la réponse",
+      "fromAdmin": "Admin",
+      "fromUser": "Utilisateur"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "Ton email (facultatif, pour qu'on puisse te répondre)",
     "submit": "Envoyer",
     "thanks": "Merci ! Ton message a bien été envoyé.",
-    "unexpectedError": "Une erreur est survenue. Réessaie plus tard."
+    "unexpectedError": "Une erreur est survenue. Réessaie plus tard.",
+    "tabs": {
+      "new": "Nouveau",
+      "mine": "Mes tickets"
+    },
+    "noTickets": "Tu n'as pas encore envoyé de ticket.",
+    "replyPlaceholder": "Ta réponse…",
+    "closeConfirm": "Supprimer définitivement ce ticket ?",
+    "closeConfirmButton": "Oui, supprimer",
+    "closeTicket": "Clôturer le ticket",
+    "sendReply": "Répondre"
   }
 }

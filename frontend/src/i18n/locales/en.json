@@ -966,9 +966,7 @@
     "noMessage": "No message",
     "sharedGame": "Shared game",
     "sharedReview": "Shared review",
-    "sharedProfile": "Shared profile",
-    "closeTicket": "Close ticket",
-    "ticketClosed": "Ticket closed"
+    "sharedProfile": "Shared profile"
   },
   "company": {
     "notFound": "Studio not found.",
@@ -1567,13 +1565,15 @@
       "empty": "Nothing here.",
       "anonymous": "Anonymous",
       "markResolved": "Mark as resolved",
-      "replyHint": "Replying sends the user a direct message.",
+      "replyHint": "Your reply will appear in this ticket's thread.",
       "noAccount": "Sent without an account — no in-app reply possible.",
       "reply": "Reply",
       "replyModalTitle": "Reply to {{username}}",
-      "replyModalIntro": "Your message will be sent from a dedicated \"Admin\" account, not your personal one — you won't be added as friends.",
+      "replyModalIntro": "Your reply will be added to this ticket's thread, visible to the user under \"My tickets\".",
       "replyPlaceholder": "Your reply…",
-      "sendReply": "Send reply"
+      "sendReply": "Send reply",
+      "fromAdmin": "Admin",
+      "fromUser": "User"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "Your email (optional, so we can reply)",
     "submit": "Send",
     "thanks": "Thanks! Your message has been sent.",
-    "unexpectedError": "Something went wrong. Please try again later."
+    "unexpectedError": "Something went wrong. Please try again later.",
+    "tabs": {
+      "new": "New",
+      "mine": "My tickets"
+    },
+    "noTickets": "You haven't sent any ticket yet.",
+    "replyPlaceholder": "Your reply…",
+    "closeConfirm": "Permanently delete this ticket?",
+    "closeConfirmButton": "Yes, delete",
+    "closeTicket": "Close ticket",
+    "sendReply": "Reply"
   }
 }

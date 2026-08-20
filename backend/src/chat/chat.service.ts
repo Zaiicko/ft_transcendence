@@ -4,12 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { FriendshipStatus, MessageType, Prisma } from '@prisma/client';
-import {
-  FEEDBACK_TICKET_REOPENER,
-  FeedbackTicketReopener,
-} from '../feedback/feedback-ticket.interface';
 import { PresenceService } from '../presence/presence.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ChatGateway } from './chat.gateway';
@@ -38,26 +33,17 @@ export class ChatService {
     private readonly prisma: PrismaService,
     private readonly presence: PresenceService,
     private readonly gateway: ChatGateway,
-    // Lazily resolved (like AuthController does for FriendsService) so
-    // reopening a feedback ticket on a user's reply doesn't require
-    // ChatModule to import FeedbackModule — FeedbackModule already imports
-    // ChatModule the other way round, and Nest module imports can't cycle.
-    private readonly moduleRef: ModuleRef,
   ) {}
 
   // Conversations are the friend list, each with its last message, unread count
-  // and online status. Sorted with active conversations first. Also includes
-  // any system account (e.g. the feedback-reply "Admin" bot) the user has
-  // message history with, even without a Friendship row — see assertFriends.
+  // and online status. Sorted with active conversations first.
   async listConversations(userId: number) {
     const friendIds = await this.friendIds(userId);
-    const systemIds = await this.systemContactIds(userId);
-    const otherIds = [...new Set([...friendIds, ...systemIds])];
-    if (otherIds.length === 0) return [];
+    if (friendIds.length === 0) return [];
 
     const friends = await this.prisma.user.findMany({
-      where: { id: { in: otherIds } },
-      select: { id: true, username: true, avatarUrl: true, isSystemAccount: true },
+      where: { id: { in: friendIds } },
+      select: { id: true, username: true, avatarUrl: true },
     });
 
     const convos = await Promise.all(
@@ -105,7 +91,7 @@ export class ChatService {
 
   async send(userId: number, dto: SendMessageDto) {
     if (dto.toUserId === userId) throw new BadRequestException('Cannot message yourself');
-    const systemSideId = await this.assertFriends(userId, dto.toUserId);
+    await this.assertFriends(userId, dto.toUserId);
     const type = dto.type ?? MessageType.TEXT;
     const data = await this.buildMessageData(userId, dto, type);
 
@@ -117,17 +103,6 @@ export class ChatService {
     // message, the same shape as the thread and the conversation list.
     this.gateway.emitToUser(dto.toUserId, 'chat:message', message);
     this.gateway.emitToUser(userId, 'chat:message', message);
-
-    // A real user (not the bot itself) replying to the feedback bot reopens
-    // their latest ticket if it was resolved — ticket-system behaviour: the
-    // admin panel should see it needs attention again.
-    if (systemSideId === dto.toUserId) {
-      this.moduleRef
-        .get<FeedbackTicketReopener>(FEEDBACK_TICKET_REOPENER, { strict: false })
-        .reopenLatestForUser(userId)
-        .catch(() => {});
-    }
-
     return message;
   }
 
@@ -209,19 +184,7 @@ export class ChatService {
     return rows.map((f) => (f.requesterId === userId ? f.addresseeId : f.requesterId));
   }
 
-  // Returns the system-account side of the pair when the friend check was
-  // bypassed for that reason, null otherwise — send() uses this to know
-  // whether to reopen a feedback ticket, without a second lookup.
-  private async assertFriends(userId: number, otherId: number): Promise<number | null> {
-    // A system account (the feedback-reply "Admin" bot) can message, and be
-    // messaged by, anyone — replying to feedback must never require or
-    // create a real Friendship row between a stranger and an admin.
-    const systemSide = await this.prisma.user.findFirst({
-      where: { id: { in: [userId, otherId] }, isSystemAccount: true },
-      select: { id: true },
-    });
-    if (systemSide) return systemSide.id;
-
+  private async assertFriends(userId: number, otherId: number) {
     const friendship = await this.prisma.friendship.findFirst({
       where: {
         status: FriendshipStatus.ACCEPTED,
@@ -233,28 +196,5 @@ export class ChatService {
       select: { id: true },
     });
     if (!friendship) throw new ForbiddenException('You can only message friends');
-    return null;
-  }
-
-  // System accounts (e.g. the feedback-reply bot) the user has exchanged at
-  // least one message with — surfaced in listConversations() even without a
-  // Friendship row. There's normally exactly one such account, so this is a
-  // cheap existence check per system account rather than a full message scan.
-  private async systemContactIds(userId: number): Promise<number[]> {
-    const systemUsers = await this.prisma.user.findMany({
-      where: { isSystemAccount: true },
-      select: { id: true },
-    });
-    if (systemUsers.length === 0) return [];
-    const withHistory = await Promise.all(
-      systemUsers.map(async (s) => {
-        const exists = await this.prisma.message.findFirst({
-          where: this.betweenFilter(userId, s.id),
-          select: { id: true },
-        });
-        return exists ? s.id : null;
-      }),
-    );
-    return withHistory.filter((id): id is number => id !== null);
   }
 }

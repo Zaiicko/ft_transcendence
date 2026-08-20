@@ -966,9 +966,7 @@
     "noMessage": "메시지 없음",
     "sharedGame": "공유된 게임",
     "sharedReview": "공유된 리뷰",
-    "sharedProfile": "공유된 프로필",
-    "closeTicket": "티켓 닫기",
-    "ticketClosed": "티켓이 닫혔습니다"
+    "sharedProfile": "공유된 프로필"
   },
   "company": {
     "notFound": "스튜디오를 찾을 수 없습니다.",
@@ -1567,13 +1565,15 @@
       "empty": "여기에는 아무것도 없습니다.",
       "anonymous": "익명",
       "markResolved": "처리 완료로 표시",
-      "replyHint": "답장하면 사용자에게 다이렉트 메시지가 전송됩니다.",
+      "replyHint": "답장은 이 티켓의 대화에 표시됩니다.",
       "noAccount": "계정 없이 제출됨 — 앱 내 답장이 불가능합니다.",
       "reply": "답장",
       "replyModalTitle": "{{username}}님에게 답장",
-      "replyModalIntro": "메시지는 회원님의 개인 계정이 아닌 전용 \"Admin\" 계정에서 전송됩니다 — 친구로 추가되지 않습니다.",
+      "replyModalIntro": "답장은 이 티켓의 대화에 추가되며, 사용자는 \"내 티켓\"에서 확인할 수 있습니다.",
       "replyPlaceholder": "답장 내용…",
-      "sendReply": "답장 보내기"
+      "sendReply": "답장 보내기",
+      "fromAdmin": "관리자",
+      "fromUser": "사용자"
     }
   },
   "feedback": {
@@ -1583,6 +1583,16 @@
     "emailPlaceholder": "이메일 (선택 사항, 답변을 위해)",
     "submit": "보내기",
     "thanks": "감사합니다! 메시지가 전송되었습니다.",
-    "unexpectedError": "문제가 발생했습니다. 나중에 다시 시도해 주세요."
+    "unexpectedError": "문제가 발생했습니다. 나중에 다시 시도해 주세요.",
+    "tabs": {
+      "new": "새로 만들기",
+      "mine": "내 티켓"
+    },
+    "noTickets": "아직 보낸 티켓이 없습니다.",
+    "replyPlaceholder": "답장 내용…",
+    "closeConfirm": "이 티켓을 영구적으로 삭제하시겠습니까?",
+    "closeConfirmButton": "예, 삭제합니다",
+    "closeTicket": "티켓 닫기",
+    "sendReply": "답장"
   }
 }
