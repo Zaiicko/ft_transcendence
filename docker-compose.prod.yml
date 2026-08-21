@@ -96,6 +96,7 @@ services:
       SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
       REDIS_URL: redis://redis:6379/0
       GLITCHTIP_DOMAIN: https://monitoring.saveboxd.com
+      ALLOWED_HOSTS: monitoring.saveboxd.com
       DEFAULT_FROM_EMAIL: ${MAIL_FROM}
       EMAIL_URL: smtp://${SMTP_USER}:${SMTP_PASS}@${SMTP_HOST}:${SMTP_PORT}
       # Only the owner (created via `createsuperuser`) can sign in — this
@@ -117,6 +118,7 @@ services:
       SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
       REDIS_URL: redis://redis:6379/0
       GLITCHTIP_DOMAIN: https://monitoring.saveboxd.com
+      ALLOWED_HOSTS: monitoring.saveboxd.com
       DEFAULT_FROM_EMAIL: ${MAIL_FROM}
       EMAIL_URL: smtp://${SMTP_USER}:${SMTP_PASS}@${SMTP_HOST}:${SMTP_PORT}
       CELERY_WORKER_AUTOSCALE: "1,1"
