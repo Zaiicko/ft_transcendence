@@ -7,6 +7,10 @@ COPY package*.json ./
 RUN npm ci --no-audit --no-fund
 
 COPY . .
+# Vite inlines VITE_* vars at build time — passed as a build arg (see
+# docker-compose.prod.yml), not a runtime env var like the backend's.
+ARG VITE_SENTRY_DSN
+ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
 RUN npm run build
 
 # Stage 2 — serve the static bundle

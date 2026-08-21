@@ -31,7 +31,7 @@ echo "### Requesting the real certificate…"
 $compose run --rm --entrypoint sh certbot -c "
   rm -rf '$live' '/etc/letsencrypt/archive/$domain' '/etc/letsencrypt/renewal/$domain.conf' &&
   certbot certonly --webroot -w /var/www/certbot \
-    -d '$domain' -d 'www.$domain' \
+    -d '$domain' -d 'www.$domain' -d 'monitoring.$domain' \
     --email '$email' --agree-tos --no-eff-email"
 
 echo "### Reloading nginx with the real certificate…"

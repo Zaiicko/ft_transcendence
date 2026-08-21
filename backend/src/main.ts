@@ -1,16 +1,30 @@
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import * as Sentry from '@sentry/node';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ensureUploadDirs, UPLOADS_ROOT } from './common/uploads';
+import { SentryExceptionFilter } from './common/sentry-exception.filter';
+
+// Self-hosted GlitchTip (Sentry-protocol compatible), not Sentry SaaS — see
+// docker-compose.prod.yml. No-ops locally/in dev where SENTRY_DSN is unset.
+if (process.env.SENTRY_DSN) {
+  Sentry.init({ dsn: process.env.SENTRY_DSN, environment: process.env.NODE_ENV ?? 'development' });
+  process.on('unhandledRejection', (reason) => Sentry.captureException(reason));
+  process.on('uncaughtException', (err) => Sentry.captureException(err));
+}
 
 async function bootstrap() {
   ensureUploadDirs();
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  if (process.env.SENTRY_DSN) {
+    const { httpAdapter } = app.get(HttpAdapterHost);
+    app.useGlobalFilters(new SentryExceptionFilter(httpAdapter));
+  }
 
   app.setGlobalPrefix('api');
   // Standard hardening headers (X-Content-Type-Options, X-Frame-Options,

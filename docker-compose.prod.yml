@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
+      SENTRY_DSN: ${SENTRY_DSN:-}
       DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
       JWT_ACCESS_TTL: ${JWT_ACCESS_TTL}
@@ -63,7 +64,67 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
+      args:
+        VITE_SENTRY_DSN: ${VITE_SENTRY_DSN:-}
     restart: unless-stopped
+
+  # --- Error monitoring (GlitchTip: self-hosted, Sentry-protocol compatible)
+  # -- see monitoring.saveboxd.com in nginx/prod.conf. Reuses the main
+  # postgres instance (separate "glitchtip" database, created once by hand —
+  # this image doesn't support POSTGRES_MULTIPLE_DATABASES) to avoid running
+  # a second Postgres container on a 4GB VPS.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  glitchtip-migrate:
+    image: glitchtip/glitchtip:v4
+    restart: "no"
+    command: ./manage.py migrate
+    environment:
+      DATABASE_URL: ${GLITCHTIP_DATABASE_URL}
+      SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  glitchtip-web:
+    image: glitchtip/glitchtip:v4
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${GLITCHTIP_DATABASE_URL}
+      SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
+      REDIS_URL: redis://redis:6379/0
+      GLITCHTIP_DOMAIN: https://monitoring.saveboxd.com
+      DEFAULT_FROM_EMAIL: ${MAIL_FROM}
+      EMAIL_URL: smtp://${SMTP_USER}:${SMTP_PASS}@${SMTP_HOST}:${SMTP_PORT}
+      # Only the owner (created via `createsuperuser`) can sign in — this
+      # dashboard exposes stack traces, not something to leave self-serve.
+      ENABLE_OPEN_USER_REGISTRATION: "false"
+      CELERY_WORKER_AUTOSCALE: "1,1"
+    depends_on:
+      glitchtip-migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
+
+  glitchtip-worker:
+    image: glitchtip/glitchtip:v4
+    restart: unless-stopped
+    command: ./bin/run-celery-with-beat.sh
+    environment:
+      DATABASE_URL: ${GLITCHTIP_DATABASE_URL}
+      SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
+      REDIS_URL: redis://redis:6379/0
+      GLITCHTIP_DOMAIN: https://monitoring.saveboxd.com
+      DEFAULT_FROM_EMAIL: ${MAIL_FROM}
+      EMAIL_URL: smtp://${SMTP_USER}:${SMTP_PASS}@${SMTP_HOST}:${SMTP_PORT}
+      CELERY_WORKER_AUTOSCALE: "1,1"
+    depends_on:
+      glitchtip-migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
 
   nginx:
     build:
@@ -79,6 +140,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - glitchtip-web
     # Reload every 6h so nginx picks up certificates renewed by certbot
     command: sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'
 
