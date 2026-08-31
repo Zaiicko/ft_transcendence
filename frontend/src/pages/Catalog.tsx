@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
+import EmptyState, { GamepadIcon } from '../components/EmptyState';
 import Select from '../components/Select';
 import { CoverGridSkeleton } from '../components/Skeleton';
 import { StarIcon } from '../components/Stars';
@@ -321,9 +322,28 @@ export default function Catalog() {
           cols="sm:grid-cols-5 lg:grid-cols-8 3xl:grid-cols-10 4xl:grid-cols-12 5xl:grid-cols-[repeat(16,minmax(0,1fr))]"
         />
       ) : games.length === 0 ? (
-        <p className="py-16 text-center text-sm text-zinc-500 dark:text-zinc-400">
-          {t('catalog.noResults')}
-        </p>
+        <EmptyState
+          className="my-6"
+          icon={<GamepadIcon />}
+          title={t('catalog.noResultsTitle')}
+          description={t('catalog.noResults')}
+        >
+          {(query || genre || platform || company) && (
+            <button
+              type="button"
+              onClick={() => {
+                setQ('');
+                setDebouncedQ('');
+                setGenre(null);
+                setPlatform(null);
+                setCompany(null);
+              }}
+              className="mt-2 rounded-lg border border-zinc-400 px-6 py-2 text-sm transition hover:opacity-70 dark:border-zinc-700"
+            >
+              {t('catalog.clearAll')}
+            </button>
+          )}
+        </EmptyState>
       ) : (
         <>
           {/* Covers are already a fixed 3:4 crop straight from IGDB (verified: even their

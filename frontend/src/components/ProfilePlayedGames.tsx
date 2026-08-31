@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import EmptyState, { GamepadIcon } from './EmptyState';
 import { apiFetch } from '../lib/api';
 import type { ProfilePlayedGame } from '../lib/types';
 
@@ -24,6 +25,16 @@ export default function ProfilePlayedGames({ username }: { username: string }) {
   }, [username]);
 
   if (games === null) return <p className="py-6 text-center text-sm text-zinc-500">{t('reviews.loading')}</p>;
+
+  if (games.length === 0) {
+    return (
+      <EmptyState
+        icon={<GamepadIcon />}
+        title={t('profile.noPlayedGames')}
+        description={t('profile.noPlayedGamesDesc')}
+      />
+    );
+  }
 
   return (
     <ul className="flex flex-col gap-2">
