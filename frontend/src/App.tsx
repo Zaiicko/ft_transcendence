@@ -5,6 +5,7 @@ import AdminRoute from './auth/AdminRoute';
 import ProtectedRoute from './auth/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
+import { trackEvent } from './lib/analytics';
 
 // Route-level code-splitting: each page is a separate lazy chunk; the loading fallback lives in Layout's <Suspense>.
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
@@ -50,6 +51,12 @@ function LegacyProfileRedirect() {
   useEffect(() => {
     sessionStorage.removeItem('postLoginRedirect');
   }, []);
+  // ?welcome=1 is only ever set by the backend right after it created a new
+  // account (Google/Discord first sign-in) — never on a login or a link
+  // (those redirect elsewhere), so this can't double-count a returning user.
+  useEffect(() => {
+    if (isWelcome) trackEvent('signup');
+  }, [isWelcome]);
   if (dest) return <Navigate to={dest} replace />;
   if (isWelcome) return <Navigate to="/welcome" replace />;
   return <Navigate to={`/settings${search}`} replace />;

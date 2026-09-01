@@ -43,8 +43,11 @@ export default function Signup() {
         await refreshUser();
       } else {
         await signup(email, password);
-        trackEvent('signup');
       }
+      // Both branches only reach here on a freshly created account — Case
+      // 1/2 (Steam login/link) redirect straight to /profile and never land
+      // on this page, so there's no risk of double-counting a returning user.
+      trackEvent('signup');
       navigate('/welcome', { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
