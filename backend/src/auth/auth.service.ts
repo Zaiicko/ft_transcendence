@@ -4,6 +4,7 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { AuthProvider, Prisma, User, VerificationTokenType } from '@prisma/client';
 import { authenticator } from 'otplib';
 import * as QRCode from 'qrcode';
+import { renderEmail } from '../mailer/email-template';
 import { MailerService } from '../mailer/mailer.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
@@ -246,7 +247,18 @@ export class AuthService {
     await this.mailer.send({
       to: user.email,
       subject: 'Confirm your Saveboxd email',
-      html: `<p>Welcome to Saveboxd! Confirm your email address:</p><p><a href="${link}">${link}</a></p><p>This link expires in 24 hours.</p>`,
+      html: renderEmail({
+        preheader: 'Confirm your email to activate your Saveboxd account.',
+        greeting: `Hi ${user.username},`,
+        bodyHtml:
+          '<p style="margin:0">Welcome to Saveboxd — confirm your email address to activate your account.</p>' +
+          '<p style="margin:12px 0 0">This link expires in 24 hours.</p>',
+        cta: {
+          label: 'Confirm my email',
+          url: link,
+          footerNote: "If the button doesn't work, copy this link into your browser:",
+        },
+      }),
     });
   }
 
@@ -275,7 +287,18 @@ export class AuthService {
     await this.mailer.send({
       to: user.email,
       subject: 'Reset your Saveboxd password',
-      html: `<p>Reset your password:</p><p><a href="${link}">${link}</a></p><p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>`,
+      html: renderEmail({
+        preheader: 'Reset your Saveboxd password.',
+        greeting: `Hi ${user.username},`,
+        bodyHtml:
+          '<p style="margin:0">We received a request to reset your password.</p>' +
+          "<p style=\"margin:12px 0 0\">This link expires in 1 hour. If you didn't request this, you can safely ignore this email.</p>",
+        cta: {
+          label: 'Reset my password',
+          url: link,
+          footerNote: "If the button doesn't work, copy this link into your browser:",
+        },
+      }),
     });
   }
 

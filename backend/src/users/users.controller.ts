@@ -28,6 +28,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { hashPassword, verifyPassword } from '../auth/password.util';
 import { AVATARS_DIR } from '../common/uploads';
+import { renderEmail } from '../mailer/email-template';
 import { MailerService } from '../mailer/mailer.service';
 import { BanUserDto } from './dto/ban-user.dto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
@@ -214,7 +215,13 @@ export class UsersController {
     await this.mailer.send({
       to: data.account.email,
       subject: 'Your Saveboxd data export',
-      html: `<p>A copy of all your personal data was just downloaded from your Saveboxd settings.</p><p>If this wasn't you, change your password and enable two-factor authentication right away.</p>`,
+      html: renderEmail({
+        preheader: 'A copy of your Saveboxd data was just downloaded.',
+        greeting: `Hi ${data.account.username},`,
+        bodyHtml:
+          '<p style="margin:0">A copy of all your personal data was just downloaded from your Saveboxd settings.</p>' +
+          '<p style="margin:12px 0 0">If this wasn\'t you, change your password and enable two-factor authentication right away.</p>',
+      }),
     });
     return data;
   }
@@ -240,7 +247,13 @@ export class UsersController {
     await this.mailer.send({
       to: email,
       subject: 'Your Saveboxd account has been deleted',
-      html: `<p>Your Saveboxd account and personal data have been permanently deleted, as you requested.</p><p>Your reviews and comments are kept but anonymized (shown as from a deleted user). If you did not request this, contact us immediately.</p>`,
+      html: renderEmail({
+        preheader: 'Your Saveboxd account has been deleted.',
+        greeting: `Hi ${user.username},`,
+        bodyHtml:
+          '<p style="margin:0">Your Saveboxd account and personal data have been permanently deleted, as you requested.</p>' +
+          '<p style="margin:12px 0 0">Your reviews and comments are kept but anonymized (shown as from a deleted user). If you did not request this, contact us immediately.</p>',
+      }),
     });
   }
 
