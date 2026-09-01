@@ -66,6 +66,7 @@ services:
       dockerfile: Dockerfile.prod
       args:
         VITE_SENTRY_DSN: ${VITE_SENTRY_DSN:-}
+        VITE_UMAMI_WEBSITE_ID: ${VITE_UMAMI_WEBSITE_ID:-}
     restart: unless-stopped
 
   # --- Error monitoring (GlitchTip: self-hosted, Sentry-protocol compatible)
@@ -128,6 +129,22 @@ services:
       redis:
         condition: service_started
 
+  # --- Privacy-friendly analytics (Umami: self-hosted, cookieless, stores
+  # no personal data — no consent banner needed) -- see
+  # analytics.saveboxd.com in nginx/prod.conf. Reuses the main postgres
+  # instance (separate "umami" database, created once by hand — same
+  # reasoning as glitchtip above, avoids a second Postgres on a 4GB VPS).
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${UMAMI_DATABASE_URL}
+      APP_SECRET: ${UMAMI_APP_SECRET}
+      DISABLE_TELEMETRY: "1"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   nginx:
     build:
       context: ./nginx
@@ -143,6 +160,7 @@ services:
       - backend
       - frontend
       - glitchtip-web
+      - umami
     # Reload every 6h so nginx picks up certificates renewed by certbot
     command: sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'
 

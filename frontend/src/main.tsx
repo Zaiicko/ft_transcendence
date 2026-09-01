@@ -17,6 +17,17 @@ if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({ dsn: import.meta.env.VITE_SENTRY_DSN, tracesSampleRate: 0 });
 }
 
+// Self-hosted Umami (cookieless, no personal data stored — no consent
+// banner needed). Loaded only when a website ID is configured, so local/dev
+// builds never send pageviews.
+if (import.meta.env.VITE_UMAMI_WEBSITE_ID) {
+  const script = document.createElement('script');
+  script.src = 'https://analytics.saveboxd.com/script.js';
+  script.defer = true;
+  script.setAttribute('data-website-id', import.meta.env.VITE_UMAMI_WEBSITE_ID);
+  document.head.appendChild(script);
+}
+
 // Wait for the active language to load (lazy locales) before rendering: no flash of raw keys, and i18n.language is ready for all components.
 void i18nReady.then(() => {
   createRoot(document.getElementById('root')!).render(
