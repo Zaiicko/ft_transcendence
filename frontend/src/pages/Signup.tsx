@@ -43,8 +43,8 @@ export default function Signup() {
         await refreshUser();
       } else {
         await signup(email, password);
+        trackEvent('signup');
       }
-      trackEvent('signup');
       navigate('/welcome', { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
