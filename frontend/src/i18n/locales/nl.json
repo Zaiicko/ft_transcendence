@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Privacybeleid",
-      "lastUpdated": "Laatst bijgewerkt: 22 juli 2026",
+      "lastUpdated": "Laatst bijgewerkt: 1 september 2026",
       "intro": "Saveboxd is een studentenproject in het kader van het 42-curriculum: een catalogus- en recensiesite voor videogames met sociale functies (vrienden, berichten, lijsten). Dit beleid legt uit welke gegevens worden verzameld wanneer u de site gebruikt, waarom, en wat uw rechten zijn.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• Uw activiteit op de site: recensies en beoordelingen van games, games gemarkeerd als gespeeld, aangepaste gamelijsten, vriendschappen, berichten uitgewisseld met uw vrienden, likes en reacties.",
             "• Technische cookies die nodig zijn voor authenticatie (zie de sectie Cookies).",
             "• Standaard technische serverlogs (IP-adres, tijdstempel, opgevraagde pagina), automatisch gegenereerd, zoals op vrijwel elke website.",
-            "Wij verzamelen geen bank- of betaalgegevens, geen precieze locatiegegevens, en gebruiken geen enkele tool voor publieksanalyse of reclame."
+            "• Geanonimiseerde bezoekersstatistieken (bezochte pagina's, herkomst van het verkeer, land, apparaattype), zonder cookie of identificatiecode waarmee u individueel herkend of van bezoek tot bezoek gevolgd kunt worden (zie de sectie Diensten van derden).",
+            "Wij verzamelen geen bank- of betaalgegevens, geen precieze locatiegegevens, en gebruiken geen enkele tool voor reclame of individuele tracking."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "Saveboxd gebruikt uitsluitend cookies die strikt noodzakelijk zijn voor de werking van de site, allemaal technisch en nooit voor reclame:",
             "• authenticatiecookies (inlogsessie, sessievernieuwing, tweefactorauthenticatiestap, koppeling van een extern account), allemaal httpOnly en met beperkte levensduur.",
-            "Er wordt geen enkele reclame- of trackingcookie gebruikt.",
+            "Er wordt geen enkele reclamecookie gebruikt. Ook onze tool voor bezoekersstatistieken (zie de sectie Diensten van derden) plaatst geen enkele cookie op uw browser.",
             "Wij gebruiken ook de lokale opslag (localStorage) van uw browser om twee weergavevoorkeuren te onthouden: de gekozen taal en het lichte/donkere thema. Deze informatie blijft op uw apparaat en wordt nooit naar onze servers verzonden.",
             "Aangezien deze cookies strikt noodzakelijk zijn voor de werking van de dienst, vereisen ze geen voorafgaande toestemming onder de ePrivacy-verordening."
           ]
@@ -1128,7 +1129,8 @@
             "• Google, 42 (Intra) en Discord, als u ervoor kiest in te loggen via een van deze aanbieders;",
             "• Brevo, onze aanbieder voor het versturen van transactionele e-mails, alleen gebruikt voor e-mailverificatie en wachtwoordherstel.",
             "• Kuula, voor de ingesloten (iframe) weergave van de 360°-panorama's die worden gebruikt in de minigame “Raad de locatie” — uw browser laadt deze inhoud rechtstreeks van hun servers, zonder dat Saveboxd hen persoonsgegevens over u doorgeeft;",
-            "Wij gebruiken geen enkele tool voor publieksanalyse, reclame of tracking door derden.",
+            "• Umami, onze eigen tool voor bezoekersstatistieken, self-hosted op onze eigen server: uw gegevens worden nooit doorgegeven aan een derde partij. De tool registreert bezochte pagina's, herkomst van het verkeer, land en apparaattype, zonder cookie en zonder identificatiecode waarmee u individueel herkend of van bezoek tot bezoek gevolgd kunt worden — een zuiver statistische verwerking, vrijgesteld van toestemming op grond van de aanbevelingen van de CNIL (de Franse gegevensbeschermingsautoriteit) over bezoekersstatistieken;",
+            "Wij gebruiken geen enkele tool voor reclame of individuele tracking door derden.",
             "Hosting: deze site wordt gehost door OVH SAS, op een server in Frankrijk."
           ]
         },

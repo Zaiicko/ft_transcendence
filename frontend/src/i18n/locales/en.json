@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Privacy Policy",
-      "lastUpdated": "Last updated: July 22, 2026",
+      "lastUpdated": "Last updated: September 1, 2026",
       "intro": "Saveboxd is a student project built as part of the 42 curriculum: a video game catalog and review site with social features (friends, messaging, lists). This policy explains what data is collected when you use the site, why, and what your rights are.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• Your activity on the site: game reviews and ratings, games marked as played, custom game lists, friendships, messages exchanged with friends, likes and comments.",
             "• Technical cookies required for authentication (see the Cookies section).",
             "• Standard server technical logs (IP address, timestamp, requested page), generated automatically, as on virtually every website.",
-            "We do not collect any banking or payment data, no precise geolocation data, and we do not use any audience-analytics or advertising tools."
+            "• Anonymized audience-measurement statistics (pages visited, traffic source, country, device type), with no cookie or identifier that lets us recognize you individually or track you across visits (see the Third-party services section).",
+            "We do not collect any banking or payment data, no precise geolocation data, and we do not use any advertising or individual-tracking tools."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "Saveboxd only uses cookies strictly necessary for the site to work, all technical and never advertising:",
             "• authentication cookies (login session, session refresh, two-factor authentication step, linking a third-party account), all httpOnly and time-limited.",
-            "No advertising or audience-tracking cookie is used.",
+            "No advertising cookie is used. Our audience-measurement tool (see the Third-party services section) does not set any cookie on your browser either.",
             "We also use your browser's local storage (localStorage) to remember two display preferences: your chosen language and light/dark theme. This information stays on your device and is never sent to our servers.",
             "As these cookies are strictly necessary for the service to function, they do not require prior consent under the ePrivacy regulation."
           ]
@@ -1128,7 +1129,8 @@
             "• Google, 42 (Intra), and Discord, if you choose to sign in via one of these providers;",
             "• Brevo, our transactional email provider, used only for email verification and password reset emails.",
             "• Kuula, for the embedded (iframe) display of the 360° panoramas used in the “Guess the Location” minigame — your browser loads this content directly from their servers, and Saveboxd does not send them any personal data about you;",
-            "We do not use any audience-analytics, advertising, or third-party tracking tool.",
+            "• Umami, our own audience-measurement tool, self-hosted on our server: your data is never shared with any third-party company. It records pages visited, traffic source, country, and device type, with no cookie and no identifier that lets us recognize you individually or track you across visits — a purely statistical process, exempt from consent requirements under the audience-measurement recommendations of the CNIL, France's data protection authority;",
+            "We do not use any advertising or individual third-party tracking tools.",
             "Hosting: this site is hosted by OVH SAS, on a server located in France."
           ]
         },

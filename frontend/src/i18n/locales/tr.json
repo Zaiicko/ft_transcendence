@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Gizlilik Politikası",
-      "lastUpdated": "Son güncelleme: 22 Temmuz 2026",
+      "lastUpdated": "Son güncelleme: 1 Eylül 2026",
       "intro": "Saveboxd, 42 müfredatı kapsamında geliştirilen bir öğrenci projesidir: sosyal özellikler (arkadaşlar, mesajlaşma, listeler) içeren bir video oyunu kataloğu ve inceleme sitesi. Bu politika, siteyi kullandığınızda hangi verilerin toplandığını, neden toplandığını ve haklarınızın neler olduğunu açıklar.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• Sitedeki etkinliğiniz: oyun incelemeleri ve puanları, oynandı olarak işaretlenen oyunlar, özel oyun listeleri, arkadaşlıklar, arkadaşlarınızla değişilen mesajlar, beğeniler ve yorumlar.",
             "• Kimlik doğrulama için gerekli teknik çerezler (bkz. Çerezler bölümü).",
             "• Neredeyse her web sitesinde olduğu gibi otomatik olarak oluşturulan standart teknik sunucu günlükleri (IP adresi, zaman damgası, istenen sayfa).",
-            "Herhangi bir banka veya ödeme verisi, hassas konum verisi toplamıyoruz ve herhangi bir kitle analitiği veya reklam aracı kullanmıyoruz."
+            "• Anonimleştirilmiş ziyaret istatistikleri (ziyaret edilen sayfalar, trafik kaynağı, ülke, cihaz türü), sizi bireysel olarak tanımamızı veya ziyaretler arasında takip etmemizi sağlayacak hiçbir çerez veya tanımlayıcı olmadan (bkz. Üçüncü taraf hizmetler bölümü).",
+            "Herhangi bir banka veya ödeme verisi, hassas konum verisi toplamıyoruz ve herhangi bir reklam veya bireysel izleme aracı kullanmıyoruz."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "Saveboxd yalnızca sitenin çalışması için kesinlikle gerekli olan, tamamı teknik ve asla reklam amaçlı olmayan çerezleri kullanır:",
             "• kimlik doğrulama çerezleri (oturum açma oturumu, oturum yenileme, iki faktörlü kimlik doğrulama adımı, üçüncü taraf hesap bağlama), tümü httpOnly ve süreli.",
-            "Hiçbir reklam veya izleme çerezi kullanılmaz.",
+            "Hiçbir reklam çerezi kullanılmaz. Ziyaret istatistikleri aracımız (bkz. Üçüncü taraf hizmetler bölümü) da tarayıcınıza hiçbir çerez yerleştirmez.",
             "Ayrıca, iki görüntüleme tercihini hatırlamak için tarayıcınızın yerel depolamasını (localStorage) kullanıyoruz: seçilen dil ve açık/koyu tema. Bu bilgiler cihazınızda kalır ve asla sunucularımıza gönderilmez.",
             "Bu çerezler hizmetin çalışması için kesinlikle gerekli olduğundan, ePrivacy yönetmeliği kapsamında önceden onay gerektirmezler."
           ]
@@ -1128,7 +1129,8 @@
             "• bu sağlayıcılardan biriyle giriş yapmayı seçerseniz Google, 42 (Intra) ve Discord;",
             "• yalnızca e-posta doğrulama ve parola sıfırlama e-postaları için kullanılan işlemsel e-posta sağlayıcımız Brevo.",
             "• “Yeri Tahmin Et” mini oyununda kullanılan 360° panoramaların gömülü (iframe) olarak görüntülenmesi için Kuula — tarayıcınız bu içeriği doğrudan onların sunucularından yükler ve Saveboxd sizinle ilgili hiçbir kişisel veriyi onlara iletmez;",
-            "Hiçbir kitle analitiği, reklam veya üçüncü taraf izleme aracı kullanmıyoruz.",
+            "• Umami, kendi sunucumuzda kendi barındırdığımız kendi ziyaret istatistikleri aracımız: verileriniz hiçbir üçüncü taraf şirkete iletilmez. Ziyaret edilen sayfaları, trafik kaynağını, ülkeyi ve cihaz türünü kaydeder; sizi bireysel olarak tanımamızı veya ziyaretler arasında takip etmemizi sağlayacak hiçbir çerez veya tanımlayıcı kullanmaz — CNIL'in (Fransız veri koruma otoritesi) ziyaret istatistikleri konusundaki tavsiyeleri uyarınca onay gerektirmeyen, tamamen istatistiksel bir işlemdir;",
+            "Hiçbir reklam veya üçüncü taraf bireysel izleme aracı kullanmıyoruz.",
             "Barındırma: bu site OVH SAS tarafından, Fransa'da bulunan bir sunucuda barındırılmaktadır."
           ]
         },

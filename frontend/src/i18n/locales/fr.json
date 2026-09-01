@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Politique de confidentialité",
-      "lastUpdated": "Dernière mise à jour : 22 juillet 2026",
+      "lastUpdated": "Dernière mise à jour : 1 septembre 2026",
       "intro": "Saveboxd est un projet étudiant réalisé dans le cadre du cursus 42, sous la forme d'un site de catalogue et de critique de jeux vidéo avec des fonctionnalités sociales (amis, messagerie, listes). Cette politique explique quelles données sont collectées lorsque vous utilisez le site, pourquoi, et quels sont vos droits.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• Votre activité sur le site : critiques et notes de jeux, jeux marqués comme joués, listes de jeux personnalisées, relations d'amitié, messages échangés avec vos amis, j'aime et commentaires.",
             "• Des cookies techniques nécessaires à l'authentification (voir la section Cookies).",
             "• Les journaux techniques standards du serveur (adresse IP, horodatage, page demandée), générés automatiquement, comme sur la quasi-totalité des sites.",
-            "Nous ne collectons aucune donnée bancaire, aucune donnée de géolocalisation précise, et n'utilisons aucun outil d'analyse d'audience ou de publicité."
+            "• Des statistiques de fréquentation anonymisées (pages visitées, provenance du trafic, pays, type d'appareil), sans cookie ni identifiant permettant de vous reconnaître individuellement ou de vous suivre d'une visite à l'autre (voir la section Services tiers).",
+            "Nous ne collectons aucune donnée bancaire, aucune donnée de géolocalisation précise, et n'utilisons aucun outil publicitaire ou de suivi individuel."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "Saveboxd utilise uniquement des cookies strictement nécessaires au fonctionnement du site, tous techniques, jamais publicitaires :",
             "• des cookies d'authentification (session, rafraîchissement de session, étape de double authentification, liaison d'un compte tiers), tous httpOnly et à durée de vie limitée.",
-            "Aucun cookie de suivi publicitaire ou d'analyse d'audience n'est utilisé.",
+            "Aucun cookie publicitaire n'est utilisé. Notre outil de mesure d'audience (voir la section Services tiers) ne dépose lui non plus aucun cookie sur votre navigateur.",
             "Nous utilisons également le stockage local (localStorage) de votre navigateur pour mémoriser deux préférences d'affichage : la langue choisie et le thème clair/sombre. Ces informations restent sur votre appareil et ne sont jamais transmises à nos serveurs.",
             "Ces cookies étant strictement nécessaires au fonctionnement du service, ils ne requièrent pas de consentement préalable au titre de la réglementation ePrivacy."
           ]
@@ -1128,7 +1129,8 @@
             "• Google, 42 (Intra) et Discord, si vous choisissez de vous connecter via l'un de ces fournisseurs ;",
             "• Brevo, notre prestataire d'envoi d'e-mails transactionnels, utilisé uniquement pour les e-mails de vérification d'adresse et de réinitialisation de mot de passe.",
             "• Kuula, pour l'affichage intégré (iframe) des panoramas 360° utilisés dans le mini-jeu « Devine le lieu » — votre navigateur charge ce contenu directement depuis leurs serveurs, sans qu'aucune donnée personnelle vous concernant ne leur soit transmise par Saveboxd ;",
-            "Nous n'utilisons aucun outil d'analyse d'audience, de publicité ou de suivi tiers.",
+            "• Umami, notre propre outil de mesure d'audience, auto-hébergé sur notre serveur : vos données ne sont transmises à aucune société tierce. Il enregistre les pages visitées, la provenance du trafic, le pays et le type d'appareil, sans cookie et sans identifiant permettant de vous reconnaître individuellement ou de vous suivre d'une visite à l'autre — un traitement purement statistique, exempté de consentement au titre des recommandations de la CNIL sur la mesure d'audience ;",
+            "Nous n'utilisons aucun outil publicitaire ou de suivi individuel tiers.",
             "Hébergement : ce site est hébergé par OVH SAS, sur un serveur situé en France."
           ]
         },

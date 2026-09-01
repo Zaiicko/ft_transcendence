@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Política de privacidade",
-      "lastUpdated": "Última atualização: 22 de julho de 2026",
+      "lastUpdated": "Última atualização: 1 de setembro de 2026",
       "intro": "Saveboxd é um projeto estudantil desenvolvido no âmbito do currículo 42: um site de catálogo e críticas de videojogos com funcionalidades sociais (amigos, mensagens, listas). Esta política explica que dados são recolhidos quando utiliza o site, porquê, e quais são os seus direitos.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• A sua atividade no site: críticas e classificações de jogos, jogos marcados como jogados, listas de jogos personalizadas, relações de amizade, mensagens trocadas com os seus amigos, gostos e comentários.",
             "• Cookies técnicos necessários para a autenticação (ver a secção Cookies).",
             "• Os registos técnicos padrão do servidor (endereço IP, data e hora, página solicitada), gerados automaticamente, como em praticamente todos os sites.",
-            "Não recolhemos quaisquer dados bancários ou de pagamento, nenhum dado de geolocalização precisa, e não utilizamos qualquer ferramenta de análise de audiência ou publicidade."
+            "• Estatísticas de audiência anonimizadas (páginas visitadas, origem do tráfego, país, tipo de dispositivo), sem qualquer cookie ou identificador que permita reconhecê-lo individualmente ou seguir o seu percurso entre visitas (ver a secção Serviços de terceiros).",
+            "Não recolhemos quaisquer dados bancários ou de pagamento, nenhum dado de geolocalização precisa, e não utilizamos qualquer ferramenta publicitária ou de rastreamento individual."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "O Saveboxd utiliza apenas cookies estritamente necessários ao funcionamento do site, todos técnicos, nunca publicitários:",
             "• cookies de autenticação (sessão de início de sessão, renovação de sessão, etapa de autenticação de dois fatores, associação de uma conta terceira), todos httpOnly e com duração limitada.",
-            "Não é utilizado qualquer cookie de rastreamento publicitário ou de análise de audiência.",
+            "Não é utilizado qualquer cookie publicitário. A nossa ferramenta de medição de audiência (ver a secção Serviços de terceiros) também não deposita qualquer cookie no seu navegador.",
             "Utilizamos também o armazenamento local (localStorage) do seu navegador para memorizar duas preferências de exibição: o idioma escolhido e o tema claro/escuro. Esta informação permanece no seu dispositivo e nunca é transmitida aos nossos servidores.",
             "Uma vez que estes cookies são estritamente necessários ao funcionamento do serviço, não requerem consentimento prévio nos termos do regulamento ePrivacy."
           ]
@@ -1128,7 +1129,8 @@
             "• Google, 42 (Intra) e Discord, caso opte por iniciar sessão através de um destes fornecedores;",
             "• Brevo, o nosso fornecedor de envio de e-mails transacionais, utilizado apenas para os e-mails de verificação de endereço e redefinição de palavra-passe.",
             "• Kuula, para a exibição incorporada (iframe) dos panoramas 360° utilizados no minijogo «Adivinhe o local» — o seu navegador carrega este conteúdo diretamente dos servidores deles, sem que o Saveboxd lhes transmita qualquer dado pessoal seu;",
-            "Não utilizamos qualquer ferramenta de análise de audiência, publicidade ou rastreamento de terceiros.",
+            "• Umami, a nossa própria ferramenta de medição de audiência, autoalojada no nosso servidor: os seus dados nunca são transmitidos a qualquer empresa terceira. Regista as páginas visitadas, a origem do tráfego, o país e o tipo de dispositivo, sem cookie e sem identificador que permita reconhecê-lo individualmente ou seguir o seu percurso entre visitas — um tratamento puramente estatístico, isento de consentimento nos termos das recomendações da CNIL (a autoridade francesa de proteção de dados) sobre medição de audiência;",
+            "Não utilizamos qualquer ferramenta publicitária ou de rastreamento individual de terceiros.",
             "Alojamento: este site está alojado pela OVH SAS, num servidor localizado em França."
           ]
         },

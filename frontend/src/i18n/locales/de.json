@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Datenschutzerklärung",
-      "lastUpdated": "Zuletzt aktualisiert: 22. Juli 2026",
+      "lastUpdated": "Zuletzt aktualisiert: 1. September 2026",
       "intro": "Saveboxd ist ein Studierendenprojekt im Rahmen des 42-Curriculums: eine Videospiel-Katalog- und Bewertungsseite mit sozialen Funktionen (Freunde, Nachrichten, Listen). Diese Erklärung beschreibt, welche Daten bei der Nutzung der Seite erhoben werden, warum, und welche Rechte Sie haben.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• Ihre Aktivität auf der Seite: Spielbewertungen und -kritiken, als gespielt markierte Spiele, benutzerdefinierte Spiellisten, Freundschaften, mit Freunden ausgetauschte Nachrichten, Likes und Kommentare.",
             "• Technische Cookies, die für die Authentifizierung erforderlich sind (siehe Abschnitt Cookies).",
             "• Standardmäßige technische Serverprotokolle (IP-Adresse, Zeitstempel, angeforderte Seite), automatisch erzeugt, wie auf praktisch jeder Website.",
-            "Wir erheben keine Bank- oder Zahlungsdaten, keine präzisen Standortdaten, und verwenden keine Analyse- oder Werbewerkzeuge."
+            "• Anonymisierte Nutzungsstatistiken (aufgerufene Seiten, Herkunft des Traffics, Land, Gerätetyp), ohne Cookie oder Kennung, die es ermöglicht, Sie individuell wiederzuerkennen oder Sie über mehrere Besuche hinweg zu verfolgen (siehe Abschnitt Dienste Dritter).",
+            "Wir erheben keine Bank- oder Zahlungsdaten, keine präzisen Standortdaten, und verwenden keine Werbe- oder individuellen Tracking-Werkzeuge."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "Saveboxd verwendet ausschließlich Cookies, die für den Betrieb der Seite unbedingt erforderlich sind, alle technisch und niemals werblich:",
             "• Authentifizierungs-Cookies (Anmeldesitzung, Sitzungserneuerung, Zwei-Faktor-Authentifizierungsschritt, Verknüpfung eines externen Kontos), alle httpOnly und zeitlich begrenzt.",
-            "Es werden keine Werbe- oder Tracking-Cookies verwendet.",
+            "Es werden keine Werbe-Cookies verwendet. Auch unser Analysetool (siehe Abschnitt Dienste Dritter) setzt keinerlei Cookie in Ihrem Browser.",
             "Wir verwenden außerdem den lokalen Speicher (localStorage) Ihres Browsers, um zwei Anzeigeeinstellungen zu speichern: die gewählte Sprache und das helle/dunkle Design. Diese Informationen verbleiben auf Ihrem Gerät und werden niemals an unsere Server übertragen.",
             "Da diese Cookies für den Betrieb des Dienstes unbedingt erforderlich sind, ist gemäß der ePrivacy-Verordnung keine vorherige Einwilligung erforderlich."
           ]
@@ -1128,7 +1129,8 @@
             "• Google, 42 (Intra) und Discord, sofern Sie sich über einen dieser Anbieter anmelden;",
             "• Brevo, unser Anbieter für den Versand von Transaktions-E-Mails, ausschließlich für E-Mail-Verifizierung und Passwort-Zurücksetzung verwendet.",
             "• Kuula, für die eingebettete Anzeige (iframe) der 360°-Panoramen im Minispiel „Errate den Ort“ — Ihr Browser lädt diesen Inhalt direkt von deren Servern, ohne dass Saveboxd ihnen personenbezogene Daten über Sie übermittelt;",
-            "Wir verwenden keine Analyse-, Werbe- oder Tracking-Tools Dritter.",
+            "• Umami, unser eigenes Analysetool, selbst gehostet auf unserem Server: Ihre Daten werden an kein Drittunternehmen übermittelt. Es erfasst aufgerufene Seiten, Herkunft des Traffics, Land und Gerätetyp, ohne Cookie und ohne Kennung, die es ermöglicht, Sie individuell wiederzuerkennen oder Sie über mehrere Besuche hinweg zu verfolgen — eine rein statistische Verarbeitung, die gemäß den Empfehlungen der CNIL (der französischen Datenschutzbehörde) zur Reichweitenmessung von der Einwilligungspflicht befreit ist;",
+            "Wir verwenden keine Werbe- oder individuellen Tracking-Tools Dritter.",
             "Hosting: Diese Seite wird von OVH SAS auf einem Server in Frankreich gehostet."
           ]
         },

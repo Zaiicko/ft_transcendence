@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Informativa sulla privacy",
-      "lastUpdated": "Ultimo aggiornamento: 22 luglio 2026",
+      "lastUpdated": "Ultimo aggiornamento: 1 settembre 2026",
       "intro": "Saveboxd è un progetto studentesco realizzato nell'ambito del percorso 42: un sito di catalogazione e recensione di videogiochi con funzionalità sociali (amici, messaggistica, liste). Questa informativa spiega quali dati vengono raccolti quando utilizzi il sito, perché, e quali sono i tuoi diritti.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• La tua attività sul sito: recensioni e valutazioni di giochi, giochi contrassegnati come giocati, liste di giochi personalizzate, relazioni di amicizia, messaggi scambiati con i tuoi amici, «mi piace» e commenti.",
             "• Cookie tecnici necessari per l'autenticazione (vedi la sezione Cookie).",
             "• I registri tecnici standard del server (indirizzo IP, data e ora, pagina richiesta), generati automaticamente, come su praticamente tutti i siti web.",
-            "Non raccogliamo alcun dato bancario o di pagamento, alcun dato di geolocalizzazione precisa, e non utilizziamo alcuno strumento di analisi del pubblico o pubblicitario."
+            "• Statistiche di traffico anonimizzate (pagine visitate, provenienza del traffico, paese, tipo di dispositivo), senza alcun cookie né identificatore che permetta di riconoscerti individualmente o di seguirti da una visita all'altra (vedi la sezione Servizi di terze parti).",
+            "Non raccogliamo alcun dato bancario o di pagamento, alcun dato di geolocalizzazione precisa, e non utilizziamo alcuno strumento pubblicitario o di tracciamento individuale."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "Saveboxd utilizza esclusivamente cookie strettamente necessari al funzionamento del sito, tutti tecnici, mai pubblicitari:",
             "• cookie di autenticazione (sessione di accesso, rinnovo della sessione, fase di autenticazione a due fattori, collegamento di un account terzo), tutti httpOnly e a durata limitata.",
-            "Non viene utilizzato alcun cookie di tracciamento pubblicitario o di analisi del pubblico.",
+            "Non viene utilizzato alcun cookie pubblicitario. Anche il nostro strumento di misurazione del pubblico (vedi la sezione Servizi di terze parti) non deposita alcun cookie sul tuo browser.",
             "Utilizziamo anche l'archiviazione locale (localStorage) del tuo browser per memorizzare due preferenze di visualizzazione: la lingua scelta e il tema chiaro/scuro. Queste informazioni restano sul tuo dispositivo e non vengono mai trasmesse ai nostri server.",
             "Poiché questi cookie sono strettamente necessari al funzionamento del servizio, non richiedono consenso preventivo ai sensi della normativa ePrivacy."
           ]
@@ -1128,7 +1129,8 @@
             "• Google, 42 (Intra) e Discord, se scegli di accedere tramite uno di questi fornitori;",
             "• Brevo, il nostro fornitore di invio e-mail transazionali, utilizzato solo per le e-mail di verifica dell'indirizzo e di reimpostazione della password.",
             "• Kuula, per la visualizzazione integrata (iframe) dei panorami a 360° utilizzati nel minigioco «Indovina il luogo» — il tuo browser carica questo contenuto direttamente dai loro server, senza che Saveboxd trasmetta loro alcun dato personale che ti riguarda;",
-            "Non utilizziamo alcuno strumento di analisi del pubblico, pubblicitario o di tracciamento di terze parti.",
+            "• Umami, il nostro strumento di misurazione del pubblico, self-hosted sul nostro server: i tuoi dati non vengono mai trasmessi a società terze. Registra le pagine visitate, la provenienza del traffico, il paese e il tipo di dispositivo, senza cookie e senza identificatore che permetta di riconoscerti individualmente o di seguirti da una visita all'altra — un trattamento puramente statistico, esentato dal consenso ai sensi delle raccomandazioni della CNIL (l'autorità francese per la protezione dei dati) sulla misurazione del pubblico;",
+            "Non utilizziamo alcuno strumento pubblicitario o di tracciamento individuale di terze parti.",
             "Hosting: questo sito è ospitato da OVH SAS, su un server situato in Francia."
           ]
         },

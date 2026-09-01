@@ -1046,7 +1046,7 @@
   "legal": {
     "privacy": {
       "title": "Polityka prywatności",
-      "lastUpdated": "Ostatnia aktualizacja: 22 lipca 2026",
+      "lastUpdated": "Ostatnia aktualizacja: 1 września 2026",
       "intro": "Saveboxd to studencki projekt zrealizowany w ramach programu 42: strona z katalogiem i recenzjami gier wideo z funkcjami społecznościowymi (znajomi, wiadomości, listy). Niniejsza polityka wyjaśnia, jakie dane są zbierane podczas korzystania ze strony, dlaczego, oraz jakie masz prawa.",
       "sections": {
         "dataCollected": {
@@ -1059,7 +1059,8 @@
             "• Twoją aktywność na stronie: recenzje i oceny gier, gry oznaczone jako ukończone, niestandardowe listy gier, relacje ze znajomymi, wiadomości wymieniane ze znajomymi, polubienia i komentarze.",
             "• Techniczne pliki cookie niezbędne do uwierzytelniania (patrz sekcja Pliki cookie).",
             "• Standardowe techniczne dzienniki serwera (adres IP, znacznik czasu, żądana strona), generowane automatycznie, jak na praktycznie każdej stronie internetowej.",
-            "Nie zbieramy żadnych danych bankowych ani płatniczych, żadnych precyzyjnych danych geolokalizacyjnych, i nie korzystamy z żadnych narzędzi analityki odbiorców ani reklamowych."
+            "• Zanonimizowane statystyki oglądalności (odwiedzone strony, źródło ruchu, kraj, typ urządzenia), bez pliku cookie ani identyfikatora umożliwiającego rozpoznanie Cię indywidualnie lub śledzenie Cię między wizytami (patrz sekcja Usługi stron trzecich).",
+            "Nie zbieramy żadnych danych bankowych ani płatniczych, żadnych precyzyjnych danych geolokalizacyjnych, i nie korzystamy z żadnych narzędzi reklamowych ani indywidualnego śledzenia."
           ]
         },
         "purposes": {
@@ -1114,7 +1115,7 @@
           "body": [
             "Saveboxd wykorzystuje wyłącznie pliki cookie ściśle niezbędne do działania strony, wszystkie techniczne, nigdy reklamowe:",
             "• pliki cookie uwierzytelniające (sesja logowania, odświeżanie sesji, etap uwierzytelniania dwuskładnikowego, łączenie konta zewnętrznego), wszystkie httpOnly i o ograniczonym czasie trwania.",
-            "Nie są wykorzystywane żadne pliki cookie do śledzenia reklamowego ani analityki odbiorców.",
+            "Nie jest wykorzystywany żaden plik cookie reklamowy. Nasze narzędzie do pomiaru oglądalności (patrz sekcja Usługi stron trzecich) również nie zapisuje żadnego pliku cookie w Twojej przeglądarce.",
             "Wykorzystujemy również pamięć lokalną (localStorage) Twojej przeglądarki, aby zapamiętać dwie preferencje wyświetlania: wybrany język oraz jasny/ciemny motyw. Informacje te pozostają na Twoim urządzeniu i nigdy nie są przesyłane na nasze serwery.",
             "Ponieważ te pliki cookie są ściśle niezbędne do działania usługi, nie wymagają wcześniejszej zgody na mocy przepisów ePrivacy."
           ]
@@ -1128,7 +1129,8 @@
             "• Google, 42 (Intra) i Discord, jeśli zdecydujesz się zalogować przez jednego z tych dostawców;",
             "• Brevo, naszego dostawcę wysyłki wiadomości transakcyjnych, wykorzystywanego wyłącznie do e-maili weryfikacyjnych i resetowania hasła.",
             "• Kuula, w celu wyświetlania osadzonych (iframe) panoram 360° używanych w minigrze „Zgadnij miejsce” — Twoja przeglądarka ładuje tę zawartość bezpośrednio z ich serwerów, a Saveboxd nie przekazuje im żadnych Twoich danych osobowych;",
-            "Nie korzystamy z żadnych narzędzi analityki odbiorców, reklamowych ani śledzących stron trzecich.",
+            "• Umami, nasze własne narzędzie do pomiaru oglądalności, hostowane samodzielnie na naszym serwerze: Twoje dane nigdy nie są przekazywane żadnej firmie zewnętrznej. Rejestruje ono odwiedzone strony, źródło ruchu, kraj i typ urządzenia, bez pliku cookie i bez identyfikatora umożliwiającego rozpoznanie Cię indywidualnie lub śledzenie Cię między wizytami — czysto statystyczne przetwarzanie, zwolnione z obowiązku uzyskania zgody na mocy zaleceń CNIL (francuskiego organu ochrony danych) dotyczących pomiaru oglądalności;",
+            "Nie korzystamy z żadnych narzędzi reklamowych ani indywidualnego śledzenia przez strony trzecie.",
             "Hosting: ta strona jest hostowana przez OVH SAS, na serwerze zlokalizowanym we Francji."
           ]
         },
