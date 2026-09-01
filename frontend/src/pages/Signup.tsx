@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import AuthShell from '../components/AuthShell';
 import OAuthButtons from '../components/OAuthButtons';
+import { trackEvent } from '../lib/analytics';
 import { apiFetch, ApiError } from '../lib/api';
 
 // Steam personas allow spaces/emojis ours don't — prefill what we can.
@@ -43,6 +44,7 @@ export default function Signup() {
       } else {
         await signup(email, password);
       }
+      trackEvent('signup');
       navigate('/welcome', { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
